@@ -253,7 +253,7 @@ All limits are adjustable in settings, with these defaults:
 
 | Supply | Feeds | Notes |
 |---|---|---|
-| 12V aux battery | Everything 12V, winch | **TBC:** is there a 12V battery after the conversion, and what's the DC-DC rating? The winch needs a real battery, not just the DC-DC |
+| 12V aux battery (kept after the conversion, confirmed) | Everything 12V, winch | Charged by the kit's DC-DC. Winch runs straight off this battery with its own breaker. DC-DC rating still **TBC** (decides how long the winch can run before the battery sags) |
 | 5V 5A buck (from 12V via `power.hold`) | Pi 5 + screen | Pi 5 throttles on a 3A supply |
 | Own small 5V buck (from switched 12V) | Pico 2 | Separate from the Pi so the Pico keeps running if the Pi goes down. USB to the Pi is for data and reflashing only |
 
@@ -265,7 +265,8 @@ All limits are adjustable in settings, with these defaults:
 - [ ] Do the light bars dim with PWM? Test one with a cheap dimmer
 - [ ] Shinegle CAN bit rate and message layout (record with dash + programmer)
 - [ ] Shinegle reverse signal: CAN or a wire?
-- [ ] 12V battery and DC-DC rating
+- [x] 12V battery: yes, kept after the conversion
+- [ ] DC-DC converter rating
 - [ ] 5V buck converter rating (needs 5A)
 - [ ] Relay board works off 3.3V logic?
 - [ ] Trailer indicators wanted? (Teryx has none stock; would need 2 more outputs)
