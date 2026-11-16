@@ -46,6 +46,11 @@ export function evaluate(st, settings, prev = new Set(), now = Date.now(), linkL
     if (st.get("mc.limp")) add("a:limp", "warn", "Motor controller has cut power back (limp mode).");
   }
 
+  // Handbrake left on: only worth a shout once you try to drive with it.
+  const moving = (st.get("mc.speed") || 0) > 2 || (st.get("mc.throttle") || 0) > 5;
+  if (st.get("in.park") && st.get("mc.direction") !== "neutral" && moving)
+    add("a:handbrake", "warn", "Handbrake is still on. Let it off before you drive.");
+
   const v12 = st.get("an.aux_12v");
   if (!asList(st.get("pico.faults")).includes("low_12v") && st.get("pico.online") !== false && under(was("a:12v"), v12, 11.8, 0.3))
     add("a:12v", "warn", `12V battery low (${v12.toFixed(1)} V). Check the DC-DC.`);

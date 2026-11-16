@@ -37,6 +37,7 @@ class DriverInput:
     mode: str = "eco"          # eco / normal / sport
     grade_pct: float = 0.0     # + = uphill
     extra_load_w: float = 0.0  # winch etc on the 12 V side
+    handbrake: bool = False    # holds the wheels (the drive demo pulls it on and off)
 
 
 @dataclass
@@ -117,6 +118,8 @@ class Vehicle:
         f_aero = 0.5 * 1.2 * 1.6 * v * v * sign
         f_grade = MASS_KG * 9.81 * math.sin(math.atan(i.grade_pct / 100))
         f_brake = 6000.0 * i.brake * sign
+        if i.handbrake:
+            f_brake += 3500.0 * sign
         # Regen when coasting with no throttle (only with a gear in)
         f_regen = 0.0
         if direction and i.throttle == 0 and speed > 1.5:
@@ -127,6 +130,9 @@ class Vehicle:
         nv = v + a * dt
         # Stop cleanly instead of rocking back and forth around zero
         if abs(nv) < 0.05 and f_drive == 0 and abs(f_grade) < abs(f_roll) + abs(f_brake) + 50:
+            nv = 0.0
+        # Handbrake on: the wheels don't turn from a standstill unless the motor beats it
+        if i.handbrake and v == 0 and abs(f_drive - f_grade) < 3500.0:
             nv = 0.0
         if direction == 0 and v != 0 and (nv > 0) != (v > 0):
             nv = 0.0

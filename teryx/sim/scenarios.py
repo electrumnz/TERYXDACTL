@@ -190,7 +190,92 @@ class KeyOff(Scenario):
         sim.bench_inputs.pop("in.ignition", None)
 
 
+class DriveDemo(Scenario):
+    """A scripted drive to watch the dash (and the virtual Teryx) react.
+
+    Each step is (seconds, caption, what the driver does). The caption shows on the dash's
+    demo player, which can pause, restart or skip a step (see Simulator.apply).
+    Driver keys: dir, target (km/h, held with drive_to), throttle / brake (fixed, 0..1),
+    hb (handbrake), mode, grade (%).
+    """
+
+    name, label = "drive_demo", "Drive demo (scripted)"
+    help = ("About 100 s of normal driving: handbrake, pull away, speed up, cruise, regen, "
+            "hard braking, reverse with the camera, a hill up and down, then park. Loops.")
+
+    STEPS = [
+        (5, "Parked. Key on, handbrake on, in neutral.", dict(dir="neutral", hb=True, target=0)),
+        (3, "Into drive. Handbrake is still on.", dict(dir="forward", hb=True, target=0)),
+        (4, "Oops, throttle with the handbrake on. The dash warns you.",
+         dict(dir="forward", hb=True, throttle=0.35)),
+        (2, "Handbrake off.", dict(dir="forward", target=0)),
+        (8, "Pulling away gently.", dict(dir="forward", target=15)),
+        (9, "Speeding up to 40 km/h in normal mode.", dict(dir="forward", mode="normal", target=40)),
+        (8, "Cruising at 40.", dict(dir="forward", mode="normal", target=40)),
+        (6, "Off the throttle. Regen puts some charge back.", dict(dir="forward", throttle=0, brake=0)),
+        (5, "Braking hard. Brake lights on.", dict(dir="forward", brake=0.4)),
+        (3, "Stopped, foot on the brake.", dict(dir="forward", brake=0.3)),
+        (3, "Handbrake on, back to neutral.", dict(dir="neutral", hb=True, target=0)),
+        (3, "Into reverse, handbrake off. Reverse camera pops up.", dict(dir="reverse", brake=0.3)),
+        (9, "Backing up slowly. Tap the big button to flick the rear light bar.",
+         dict(dir="reverse", target=5)),
+        (3, "Braking.", dict(dir="reverse", brake=0.4)),
+        (4, "Handbrake on, neutral. Camera stays 3 s, then goes back.",
+         dict(dir="neutral", hb=True, target=0)),
+        (3, "Into drive, handbrake off.", dict(dir="forward", target=0)),
+        (10, "Up a steep hill. Watch the power and the motor temp.",
+         dict(dir="forward", target=20, grade=18)),
+        (8, "Down the other side. Regen holds it back.", dict(dir="forward", target=15, grade=-15)),
+        (6, "Easing to a stop.", dict(dir="forward", brake=0.15)),
+        (5, "Parked. Handbrake on, neutral. Starting again soon.", dict(dir="neutral", hb=True, target=0)),
+    ]
+
+    def step_at(self, t: float) -> int:
+        t %= self.LENGTH
+        return max(k for k, s0 in enumerate(self.STARTS) if s0 <= t)
+
+    def start(self, sim):
+        self.update(sim, 0.0, 0.0)
+
+    def update(self, sim, t, dt):
+        k = self.step_at(t)
+        do = self.STEPS[k][2]
+        v, i = sim.vehicle, sim.vehicle.inp
+        i.direction = do.get("dir", "neutral")
+        i.mode = do.get("mode", "normal")
+        i.grade_pct = float(do.get("grade", 0))
+        i.handbrake = bool(do.get("hb", False))
+        sim.bench_inputs["in.park"] = i.handbrake      # handbrake switch, as the Pico would see it
+        if "target" in do:
+            drive_to(sim, do["target"], gain=0.3 if i.direction == "reverse" else 0.12)
+            if do["target"] == 0 and v.speed_kmh < 0.5:
+                i.brake = 0.0 if i.handbrake else i.brake
+        else:
+            i.throttle = float(do.get("throttle", 0.0))
+            i.brake = float(do.get("brake", 0.0)) if v.speed_kmh > 0.2 or do.get("brake") else 0.0
+
+    def info(self, t: float) -> dict:
+        k = self.step_at(t)
+        tl = t % self.LENGTH
+        return {"step": k, "steps": len(self.STEPS), "caption": self.STEPS[k][1],
+                "next": self.STEPS[(k + 1) % len(self.STEPS)][1],
+                "t": round(tl, 1), "length": self.LENGTH,
+                "step_left": round(self.STARTS[k] + self.STEPS[k][0] - tl, 1)}
+
+    def seek_step(self, k: int) -> float:
+        """Scenario time for the start of step k (wraps)."""
+        return float(self.STARTS[k % len(self.STEPS)])
+
+    def stop(self, sim):
+        sim.vehicle.inp.handbrake = False
+        sim.bench_inputs.pop("in.park", None)
+
+
+DriveDemo.STARTS = [sum(st[0] for st in DriveDemo.STEPS[:k]) for k in range(len(DriveDemo.STEPS))]
+DriveDemo.LENGTH = sum(st[0] for st in DriveDemo.STEPS)
+
+
 SCENARIOS: dict[str, type[Scenario]] = {
-    c.name: c for c in (Idle, Trail, Reversing, LowBattery, HillClimb, ShinegleFaults,
+    c.name: c for c in (Idle, DriveDemo, Trail, Reversing, LowBattery, HillClimb, ShinegleFaults,
                         ActuatorFaults, CommsLoss, KeyOff, Manual)
 }

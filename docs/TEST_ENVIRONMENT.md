@@ -59,6 +59,7 @@ Pick them on the sim panel or with `--scenario`.
 | Name | What happens | Good for testing |
 |---|---|---|
 | `idle` | Parked, key on, neutral | 4WD, diff, tray, winch, lights |
+| `drive_demo` | Scripted drive, about 100 s: handbrake, pull away, speed up, cruise, regen, hard braking, reverse, hill up and down, park. Loops | Watching the whole dash react, see below |
 | `trail` | 2 minute loop: climbs, descents, stops, a quick blast | Speed, power, battery, temps |
 | `reversing` | Backs up, stops, drives off, repeats | Reverse camera, rear pods |
 | `low_battery` | Starts at 15 % and drains fast, limp under 10 % | Low battery warnings, limp mode |
@@ -68,6 +69,19 @@ Pick them on the sim panel or with `--scenario`.
 | `comms_loss` | Shinegle then control box go quiet for 4 s | Offline / stale display |
 | `key_off` | Key off after 3 s | Shutdown and power hold |
 | `manual` | You drive with the sim panel sliders | Anything |
+
+### Drive demo
+
+`python -m teryx run --scenario drive_demo --ui dash/web` (with `PYTHONPATH=dash/server`
+for the dash extras), or pick "Drive demo (scripted)" on the sim panel. The dash shows a
+player bar at the top that says what the driver is doing, with restart, pause/play and skip
+buttons. The same thing over the API: `{"paused": true}`, `{"restart": true}`,
+`{"demo_step": 11}` to `/api/sim`. The steps live in `DriveDemo.STEPS` in
+`teryx/sim/scenarios.py`, one line each, so they're easy to change. The virtual Teryx
+(`/virtual`) follows along on its own because it reads the same state.
+
+The sim's handbrake holds the wheels and sets the control box's `in.park` input, so the
+dash sees it just like the real handbrake switch.
 
 The sim panel also lets you set SOC and ambient temperature, tick any fault,
 force any wired input (ignition, brake, tray limits, winch remote...), cut

@@ -129,6 +129,7 @@ export class DriveScreen {
     if (d > 2) chips.push(`<span class="tb-chip on">DIFF ${d}%</span>`);
     if (st.get("light.rear")) chips.push(`<span class="tb-chip on">REAR LIGHTS</span>`);
     if (st.get("winch.armed")) chips.push(`<span class="tb-chip" style="color:var(--bad);border-color:var(--bad)">WINCH ARMED</span>`);
+    if (st.get("in.park")) chips.push(`<span class="tb-chip" style="color:var(--bad);border-color:var(--bad)">HANDBRAKE</span>`);
     if (st.get("in.brake")) chips.push(`<span class="tb-chip" style="color:var(--bad);border-color:var(--bad)">BRAKE</span>`);
     const html = chips.join("");
     if (html !== this._chips) { q("#d-chips").innerHTML = html; this._chips = html; }
