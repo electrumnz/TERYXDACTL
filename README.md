@@ -10,6 +10,7 @@ control box does the safety-critical switching, and they talk over CAN.
 | Test bench (fake Shinegle + control box) | `teryx/` | [`docs/TEST_ENVIRONMENT.md`](docs/TEST_ENVIRONMENT.md) |
 | Dash touch UI (Pi 5) | `dash/` | [`dash/README.md`](dash/README.md) |
 | Control box firmware (Pico 2) | `firmware/control-box/` | [`firmware/control-box/README.md`](firmware/control-box/README.md) |
+| 3D-printed screen mount, sun hood and boxes | `cad/` | [`cad/README.md`](cad/README.md), [`cad/MEASURING.md`](cad/MEASURING.md) |
 | Ideas and open-source projects to learn from | `docs/` | [`inspiration.md`](docs/inspiration.md) |
 
 Everything runs on a laptop with no Teryx attached, using the simulator.
