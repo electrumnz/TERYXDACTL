@@ -201,15 +201,20 @@ and programmer plugged in.
 | ID | From → To | Rate | Contents |
 |---|---|---|---|
 | 0x700 | Pi → Pico | 10 Hz | Heartbeat: counter (u8), dash state (u8) |
-| 0x701 | Pi → Pico | on change | Lights: front 1–4, interior brightness (u8 ×5, 0–255), effect id (u8), rear on (bit), auto-rear (bit) |
-| 0x702 | Pi → Pico | on change | Drive: 4WD request (u8: 0=2WD, 1=4WD), diff target % (u8) |
-| 0x703 | Pi → Pico | 10 Hz while held | Hold-to-run: tray (i8: −1 down, 0 stop, +1 up), winch (i8: −1 out, 0 stop, +1 in), winch armed (bit) |
+| 0x701 | Pi → Pico | on change + every 1 s | Lights: front 1–4, interior brightness (u8 ×5, 0–255), effect id (u8), rear on (bit), auto-rear (bit) |
+| 0x702 | Pi → Pico | on change + every 1 s | Drive: 4WD request (u8: 0=2WD, 1=4WD), diff target % (u8) |
+| 0x703 | Pi → Pico | 10 Hz while held | Hold-to-run: tray (i8: −1 down, 0 stop, +1 up), winch (i8: −1 out, 0 stop, +1 in), winch armed (bit). Pico stops the motion if no 0x703 for 300 ms |
 | 0x704 | Pi → Pico | on change | Settings: speed limits, timeouts (see section 7) |
-| 0x710 | Pico → Pi | 10 Hz | Heartbeat + status: counter, fault flags (u16), ignition, brake, reverse |
-| 0x711 | Pico → Pi | 10 Hz | Outputs: relay bits (u8), light levels (u8 ×5) |
-| 0x712 | Pico → Pi | 10 Hz | Actuators: diff % (u8), 4WD state (u8), tray state (u8), currents (u8 ×3, 0.1A) |
+| 0x710 | Pico → Pi | 10 Hz | Status: b0 counter, b1–2 fault flags (u16, see below), b3 digital inputs B0–B7 as bits, b4 Pico state (0 boot, 1 ok, 2 degraded, 3 failsafe), b5 reject reason (low nibble) + reject counter (high nibble), b6 bit 0 winch armed |
+| 0x711 | Pico → Pi | 10 Hz | Outputs: b0 relay bits, b1–5 light levels (u8 ×5), b6 active light effect |
+| 0x712 | Pico → Pi | 10 Hz | Actuators: b0 diff %, b1 4WD state, b2 tray state, b3–5 currents (u8 ×3, 0.1A), b6 tray estimated % (from run time), b7 diff target % |
 | 0x713 | Pico → Pi | 1 Hz | 12V aux (u16, mV), Pico temp (i8) |
 | 0x71F | Pi → Pico | on demand | Firmware update request (Pico reboots to bootloader) |
+
+**Fault flag bits (0x710 b1–2):** 0 dash link lost, 1 speed unknown,
+2 4WD timeout, 3 4WD overcurrent, 4 diff timeout, 5 diff pot stuck,
+6 tray timeout, 7 tray overcurrent, 8 tray limit switch, 9 winch interlock,
+10 low 12V, 11 Pico hot, 12 watchdog reset, 13–15 spare.
 
 The Shinegle's own messages are read by **both** the Pi (for the screen) and
 the Pico (for speed interlocks).

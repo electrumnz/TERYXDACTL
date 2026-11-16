@@ -64,9 +64,28 @@ inputs:
     mc.mode:       {enum: [eco, normal, sport]}
     mc.faults:     {bitfield: 16}
 
+can_layout:
+  resend_state_s: 1          # 0x701/0x702 also resent every 1 s
+  pico_state: [boot, ok, degraded, failsafe]   # 0x710 b4
+  fault_bits:                # 0x710 b1-2 (u16)
+    0: dash_link
+    1: speed_unknown
+    2: fourwd_timeout
+    3: fourwd_overcurrent
+    4: diff_timeout
+    5: diff_pot_stuck
+    6: tray_timeout
+    7: tray_overcurrent
+    8: tray_limit_switch
+    9: winch_interlock
+    10: low_12v
+    11: pico_hot
+    12: watchdog_reset
+
 safety:                      # defaults, adjustable in settings
   heartbeat_timeout_ms: 500
   speed_timeout_ms: 500
+  hold_to_run_timeout_ms: 300
   fourwd_max_kmh: 5
   fourwd_max_run_s: 3
   fourwd_overcurrent_a: 6
