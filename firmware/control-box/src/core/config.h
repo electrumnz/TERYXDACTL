@@ -3,8 +3,14 @@
 // settings.h instead, so they can be changed from the dash.
 #pragma once
 
+// Set by CMake from firmware/VERSION ("major.minor"). The dash compares that
+// file in a release with what 0x713 reports to decide if an update is due.
+#ifndef FW_VERSION_MAJOR
 #define FW_VERSION_MAJOR 0
+#endif
+#ifndef FW_VERSION_MINOR
 #define FW_VERSION_MINOR 1
+#endif
 #define FW_VERSION_PATCH 0
 
 // ---- Pico 2 pins --------------------------------------------------------------

@@ -18,6 +18,11 @@ endif()
 project(teryx_control_box C CXX ASM)
 set(CMAKE_C_STANDARD 11)
 
+# Firmware version lives in firmware/VERSION as "major.minor".
+file(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/../VERSION FW_VERSION LIMIT_COUNT 1)
+string(REGEX MATCH "^([0-9]+)\\.([0-9]+)" _ ${FW_VERSION})
+add_compile_definitions(FW_VERSION_MAJOR=${CMAKE_MATCH_1} FW_VERSION_MINOR=${CMAKE_MATCH_2})
+
 set(CORE_SRC
     src/core/controller.c
     src/core/settings.c

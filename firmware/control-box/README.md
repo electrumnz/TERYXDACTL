@@ -51,6 +51,8 @@ python -m teryx run --bus udp --no-controlbox    # terminal 2: sim + dash
 wired inputs (ignition, brake, reverse, tray limits, winch remote, park) and
 injects faults with the `0x7E0` bench frame. The real Pico ignores `0x7E0`.
 
+The firmware version comes from `firmware/VERSION` ("major.minor"), which the dash compares with what `0x713` reports.
+
 Settings the dash saves (`0x704` key `0xF0`) go to `control-box-settings.bin`
 on the PC, and to the last 4 KB of flash on the Pico.
 
