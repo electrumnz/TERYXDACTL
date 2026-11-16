@@ -1,0 +1,19 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+# Local config and logs: keep personal stuff (wifi, keys, location) out of the repo
+config/local*.yaml
+config/*.local.*
+*.env
+.env
+logs/
+captures/
+*.log
+*.asc
+*.blf
+!tests/data/*.log
