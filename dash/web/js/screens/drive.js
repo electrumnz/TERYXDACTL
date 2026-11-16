@@ -1,7 +1,8 @@
 // Main drive screen: speed, gear, power, battery, temps, and a quick look at the drivetrain and lights.
 import { el, $ } from "../ui/controls.js";
 import { vehicleDiagram } from "../ui/vehicle.js";
-import { icon } from "../ui/icons.js";
+import { sensorWidget } from "../ui/sensors.js";
+import { fmtKm } from "../tripdata.js";
 
 export function socFromVolts(v, cells) {
   // Rough lithium curve per cell. Only used if the Shinegle doesn't send a state of charge.
@@ -28,6 +29,7 @@ export class DriveScreen {
             <h3>Battery</h3>
             <div class="batt-big"><span class="big-val num" id="d-soc">--</span><span class="unit">%</span></div>
             <div class="batt-bar"><div id="d-socbar"></div></div>
+            <div class="kv"><span class="k">Range</span><span class="v num" id="d-range">--</span></div>
             <div class="kv"><span class="k">Pack</span><span class="v num" id="d-v">-- V</span></div>
             <div class="kv"><span class="k">Current</span><span class="v num" id="d-a">-- A</span></div>
             <div class="kv"><span class="k">Pack temp</span><span class="v num" id="d-bt">--</span></div>
@@ -57,16 +59,15 @@ export class DriveScreen {
         </div>
         <div class="col">
           <div class="panel" id="d-veh"><h3>Drivetrain</h3></div>
-          <div class="panel grow" id="d-tilt-panel">
-            <h3>Tilt</h3>
-            <div class="kv"><span class="k">Roll</span><span class="v num" id="d-roll">--</span></div>
-            <div class="kv"><span class="k">Pitch</span><span class="v num" id="d-pitch">--</span></div>
-          </div>
+          <div class="panel grow" id="d-sens"><h3>Tilt and GPS</h3></div>
         </div>
       </div>`;
     this.root = root;
     this.veh = vehicleDiagram();
+    this.veh.root.classList.add("small");
     $(root, "#d-veh").appendChild(this.veh.root);
+    this.sens = sensorWidget(this.ctx.settings);
+    $(root, "#d-sens").appendChild(this.sens.root);
   }
 
   update(st) {
@@ -132,12 +133,10 @@ export class DriveScreen {
     const html = chips.join("");
     if (html !== this._chips) { q("#d-chips").innerHTML = html; this._chips = html; }
 
-    const roll = st.get("pi.imu.roll"), pitch = st.get("pi.imu.pitch");
-    q("#d-tilt-panel").style.visibility = roll == null ? "hidden" : "";
-    if (roll != null) {
-      const cls = (x) => (Math.abs(x) > 30 ? "bad" : Math.abs(x) > 20 ? "warn" : "");
-      q("#d-roll").textContent = `${roll.toFixed(0)}°`; q("#d-roll").className = `v num ${cls(roll)}`;
-      q("#d-pitch").textContent = `${pitch.toFixed(0)}°`; q("#d-pitch").className = `v num ${cls(pitch)}`;
-    }
+    this.sens.update(st);
+    const tr = this.ctx.trips && this.ctx.trips.data;
+    const rk = tr && tr.range_km;
+    q("#d-range").textContent = rk == null || !mcOn ? "--" : `${tr.basis === "guess" ? "about " : ""}${fmtKm(rk, mph)}`;
+    q("#d-range").className = `v num ${rk != null && rk < 5 ? "bad" : rk != null && rk < 15 ? "warn" : ""}`;
   }
 }

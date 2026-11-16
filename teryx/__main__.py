@@ -6,6 +6,7 @@
     python -m teryx monitor --bus udp   print decoded CAN frames
     python -m teryx replay FILE         play a candump/.asc/.blf log onto the bus
     python -m teryx canmap              write docs/CAN_PROTOCOL.md and docs/teryx.dbc
+    python -m teryx decode ...          Shinegle decoding kit (docs/shinegle-decode.md)
 """
 
 from __future__ import annotations
@@ -145,6 +146,68 @@ def cmd_canmap(args) -> None:
     print(f"wrote {write_dbc(args.dbc)}")
 
 
+def cmd_decode(args) -> None:
+    from pathlib import Path
+    what = args.what
+    if what == "steps":
+        from .decode.procedure import STEPS
+        for i, st in enumerate(STEPS, 1):
+            print(f"{i:>2}. {st.title}{'  (optional)' if st.optional else ''}  [{st.id}]")
+            if st.safety:
+                print(f"    SAFETY: {st.safety}")
+            print(f"    {st.do}")
+            if st.phases:
+                print(f"    Marks: {' > '.join(st.phases)}")
+            if st.readings:
+                print(f"    Read off the Shinegle dash: {', '.join(st.readings)}")
+        return
+    if what == "demo":
+        from .decode.demo import make_demo
+        folder = make_demo(args.folder or "captures/demo")
+        print(f"made a practice capture in {folder}\nnext:  python -m teryx decode analyse {folder}")
+        return
+    if what == "bitrate":
+        from .decode import bitrate
+        if args.socketcan:
+            rate = bitrate.try_socketcan(args.socketcan, args.seconds)
+        elif args.port:
+            rate = bitrate.try_slcan(args.port, args.seconds)
+        else:
+            sys.exit("give --port /dev/ttyACM0 (or COM5) for the sniffer, or --socketcan can0")
+        print(f"\nBest: {rate // 1000}k" if rate else "\nNo frames at any rate. Check wiring, key on, and the 120 ohm terminator.")
+        return
+    if what == "capture":
+        from .decode.capture import capture
+        only = args.steps.split(",") if args.steps else None
+        capture(args.bus, args.out, only=only, free=args.free, include_optional=not args.no_optional,
+                name=args.name)
+        return
+    if what == "analyse":
+        from .decode.analyse import analyse, write_outputs
+        res = analyse(args.folder)
+        files = write_outputs(res, args.out)
+        found = ", ".join(sorted(res.chosen)) or "nothing yet"
+        print(f"found: {found}")
+        if res.request_response:
+            print("NOTE: the controller went quiet without its dash. See the report.")
+        for k, f in files.items():
+            print(f"wrote {f}")
+        return
+    if what == "check":
+        from .decode.check import check
+        text = check(args.dbc, args.folder)
+        print(text)
+        if args.out:
+            Path(args.out).write_text(text, encoding="utf-8")
+        return
+    if what == "install":
+        from .decode.check import install
+        for line in install(args.dbc):
+            print(line)
+        print("now run:  python -m teryx canmap   and   python -m pytest")
+        return
+
+
 def main(argv=None) -> None:
     p = argparse.ArgumentParser(prog="teryx", description="Teryx OS dash and test bench")
     p.add_argument("-v", "--verbose", action="store_true")
@@ -194,7 +257,37 @@ def main(argv=None) -> None:
     sp.add_argument("--dbc", default="docs/teryx.dbc")
     sp.set_defaults(fn=cmd_canmap)
 
+    sp = sub.add_parser("decode", help="Shinegle decoding kit: capture, analyse, check, install")
+    dsub = sp.add_subparsers(dest="what", required=True)
+    d = dsub.add_parser("steps", help="print the capture procedure")
+    d = dsub.add_parser("demo", help="make a practice capture from a made-up controller")
+    d.add_argument("folder", nargs="?")
+    d = dsub.add_parser("bitrate", help="find the bus speed (listen only)")
+    d.add_argument("--port", help="sniffer serial port, e.g. /dev/ttyACM0 or COM5")
+    d.add_argument("--socketcan", help="interface, e.g. can0 (needs sudo)")
+    d.add_argument("--seconds", type=float, default=2.0)
+    d = dsub.add_parser("capture", help="record the bus while walking through the procedure")
+    d.add_argument("--bus", default="slcan:/dev/ttyACM0@250000",
+                   help="e.g. slcan:/dev/ttyACM0@250000, slcan:COM5@250000, socketcan:can0")
+    d.add_argument("--out", default="captures", help="folder for capture sessions (kept out of git)")
+    d.add_argument("--name", help="session folder name (default: date and time)")
+    d.add_argument("--steps", help="only these step ids, comma separated (see: decode steps)")
+    d.add_argument("--no-optional", action="store_true", help="skip the optional steps")
+    d.add_argument("--free", action="store_true", help="no procedure, just record with your own marks")
+    d = dsub.add_parser("analyse", aliases=["analyze"], help="guess the layout and write a draft .dbc")
+    d.add_argument("folder", help="capture folder (or a log file)")
+    d.add_argument("--out", help="where to write the report and draft (default: the capture folder)")
+    d = dsub.add_parser("check", help="decode a capture with a .dbc and compare with the readings")
+    d.add_argument("dbc")
+    d.add_argument("folder")
+    d.add_argument("--out", help="also save the check as a .md file")
+    d = dsub.add_parser("install", help="make a .dbc the Shinegle layout Teryx OS uses")
+    d.add_argument("dbc")
+    sp.set_defaults(fn=cmd_decode)
+
     args = p.parse_args(argv)
+    if getattr(args, "what", None) == "analyze":
+        args.what = "analyse"
     logging.basicConfig(level=logging.DEBUG if args.verbose else logging.INFO,
                         format="%(asctime)s %(name)s %(levelname)s %(message)s")
     signal.signal(signal.SIGTERM, lambda *_: sys.exit(0))

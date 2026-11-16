@@ -10,6 +10,9 @@ from .codec import Message
 
 
 def _bits(s) -> str:
+    if s.big_endian:
+        lo = min(s.bits())
+        return f"big-endian, MSB at byte {s.start // 8} bit {s.start % 8} ({s.length} bits, lowest bit {lo // 8}.{lo % 8})"
     if s.start % 8 == 0 and s.length % 8 == 0:
         b0, n = s.start // 8, s.length // 8
         return f"byte {b0}" if n == 1 else f"bytes {b0}-{b0 + n - 1}"
@@ -74,11 +77,15 @@ def render() -> str:
               f"| {M.SETTING_SAVE} (0xF0) | save to flash | | | |",
               f"| {M.SETTING_RESET} (0xF1) | reset to defaults | | | |",
               f"| {M.SETTING_CLEAR_FAULTS} (0xF2) | clear latched faults | | | |", ""]
-    parts += ["## Shinegle SG1202 (PLACEHOLDER)", "",
-              "Made-up layout so we can build now. Replace in `teryx/canbus/shinegle.py` "
-              "once the real bus has been recorded.", ""]
+    if SG.PLACEHOLDER:
+        parts += ["## Shinegle SG1202 (PLACEHOLDER)", "",
+                  "Made-up layout so we can build now. It lives in `teryx/canbus/shinegle.dbc`; "
+                  "replace that file once the real bus has been decoded (docs/shinegle-decode.md).", ""]
+    else:
+        parts += ["## Shinegle SG1202", "",
+                  "Decoded from the real controller. Source: `teryx/canbus/shinegle.dbc`.", ""]
     parts += [_table(m) for m in SG.SHINEGLE_MESSAGES]
-    parts += [_enum("Shinegle fault bits (placeholder)", SG.FAULT_BITS)]
+    parts += [_enum("Shinegle fault bits" + (" (placeholder)" if SG.PLACEHOLDER else ""), SG.FAULT_BITS)]
     return "\n".join(parts)
 
 

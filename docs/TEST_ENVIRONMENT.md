@@ -124,22 +124,17 @@ both kinds of bar can be tested.
 
 ## Swapping in the real Shinegle
 
-The Shinegle's CAN layout isn't published, so `teryx/canbus/shinegle.py` is a
-**placeholder**. It is the only file that knows the Shinegle frame layout.
-Everything else uses the io-map names (`mc.speed`, `mc.batt_v`...).
+The Shinegle's CAN layout isn't published, so `teryx/canbus/shinegle.dbc` is a
+**placeholder**. It is the only file that knows the Shinegle frame layout;
+`shinegle.py` loads it and turns it into the io-map names (`mc.speed`,
+`mc.batt_v`...) that everything else uses.
 
-1. Wire the Pi's CAN HAT onto the Shinegle bus. **Listen only** to start with.
-2. `sudo scripts/setup_can_pi.sh can0 250000` (try 500000 if nothing decodes).
-3. Record a few minutes with the Shinegle dash and programmer plugged in, doing
-   one thing at a time (sit idle, roll forward, reverse, rev, brake, charge):
-   `candump -l can0`. Keep captures out of git (they're gitignored).
-4. `python -m teryx dash --bus socketcan:can0` and open `/api/bus` to see which
-   CAN ids are unknown, or use `cansniffer can0` to watch bytes change.
-5. Rewrite the Message definitions and the `decode`/`encode` functions in
-   `shinegle.py` to match. As long as `decode` returns the same `mc.*` names,
-   the dash and sim don't change.
-6. `python -m teryx replay your_capture.log --bus udp --loop` with
-   `python -m teryx dash --bus udp` lets you check the decoding on the laptop.
+The decoding kit (a Pico 2 sniffer plus `python -m teryx decode ...`) records
+the real bus while you follow a guided procedure, works out the layout, and
+writes a new `shinegle.dbc`. Step-by-step guide: [shinegle-decode.md](shinegle-decode.md).
+
+To try a different .dbc without replacing the shipped one, set
+`TERYX_SHINEGLE_DBC=/path/to/file.dbc` before running the sim, dash or tests.
 
 ## On the Pi
 

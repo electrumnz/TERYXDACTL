@@ -4,7 +4,14 @@ import { Link } from "./link.js";
 import { Settings } from "./settings.js";
 import { icon } from "./ui/icons.js";
 import { el, toast } from "./ui/controls.js";
-import { PICO_FAULTS, MC_FAULTS, REJECTS, faultText, asList } from "./text.js";
+import { REJECTS } from "./text.js";
+import { Alerts } from "./alerts.js";
+import { Sound } from "./sound.js";
+import { autoTheme } from "./theme.js";
+import { TripData } from "./tripdata.js";
+import { fitToScreen } from "./fit.js";
+import { keyboardOpen } from "./ui/keyboard.js";
+import { TripsScreen } from "./screens/trips.js";
 import { DriveScreen } from "./screens/drive.js";
 import { DrivetrainScreen } from "./screens/drivetrain.js";
 import { LightsScreen } from "./screens/lights.js";
@@ -31,15 +38,28 @@ const ctx = {
       loadPicoLimits();
     } catch (e) { toast(`Control box didn't take that setting (${e.message}).`, "bad"); }
   },
+  themeInfo() {
+    const prev = document.body.classList.contains("theme-day") ? "day" : "night";
+    return autoTheme(store, settings, new Date(), prev);
+  },
   applyTheme() {
     let t = settings.get("theme");
-    if (t === "auto") { const h = new Date().getHours(); t = h >= 7 && h < 19 ? "day" : "night"; }
-    document.body.className = `theme-${t}`;
+    if (t === "auto") t = this.themeInfo().theme;
+    const cls = `theme-${t}`;
+    if (document.body.className !== cls) document.body.className = cls;
+  },
+  applySound() {
+    Sound.enabled = settings.get("sound.enabled") !== false;
+    Sound.volume = settings.get("sound.volume") ?? 0.7;
+    Sound.clicks = settings.get("sound.clicks") !== false;
   },
   show(id) { show(id); },
 };
 
-const screens = [DriveScreen, DrivetrainScreen, LightsScreen, WinchScreen, TrayScreen, CameraScreen, SettingsScreen].map((C) => new C(ctx));
+ctx.alerts = new Alerts(store, settings);
+ctx.trips = new TripData(ctx);
+
+const screens = [DriveScreen, TripsScreen, DrivetrainScreen, LightsScreen, WinchScreen, TrayScreen, CameraScreen, SettingsScreen].map((C) => new C(ctx));
 const byId = Object.fromEntries(screens.map((s) => [s.id, s]));
 
 function buildNav() {
@@ -66,8 +86,7 @@ function show(id) {
   try { localStorage.setItem("teryx.screen", id); } catch {}
 }
 
-// ---- top bar, faults, reverse camera ----
-let lastFaults = new Set();
+// ---- top bar, alerts, reverse camera ----
 let beforeReverse = null, reverseOffTimer = null;
 
 function topbar(st) {
@@ -102,33 +121,30 @@ function topbar(st) {
   document.getElementById("tb-alert").style.color = st.get("link.demo") && alert === "DEMO MODE" ? "var(--info)" : "";
 }
 
-function faults(st) {
-  const now = [
-    ...asList(st.get("pico.faults")).map((c) => ({ key: `p:${c}`, code: c, text: faultText(c, PICO_FAULTS), sev: (PICO_FAULTS[c] || {}).sev || "bad" })),
-    ...asList(st.get("mc.faults")).map((c) => ({ key: `m:${c}`, code: c, text: faultText(c, MC_FAULTS), sev: (MC_FAULTS[c] || {}).sev || "bad" })),
-  ];
-  const keys = new Set(now.map((f) => f.key));
-  const fresh = now.filter((f) => !lastFaults.has(f.key));
-  lastFaults = keys;
-  if (fresh.length) store.emit("faults-changed", fresh);
+// Alerts banner: the worst alert not yet OK'd, along the bottom.
+function alertBanner(st) {
+  ctx.alerts.tick(st);
+  const now = ctx.alerts.active, open = ctx.alerts.unacked();
   const banner = document.getElementById("fault-banner");
-  const worst = now.find((f) => f.sev === "bad") || now[0];
-  if (!worst || (ctx.dismissed && ctx.dismissed === [...keys].sort().join())) { banner.hidden = true; }
+  const worst = open[0];
+  if (!worst) banner.hidden = true;
   else {
     banner.hidden = false;
-    banner.style.background = worst.sev === "bad" ? "var(--bad)" : "var(--warn)";
-    banner.style.color = worst.sev === "bad" ? "#fff" : "#1a1200";
-    const more = now.length > 1 ? ` (+${now.length - 1} more)` : "";
-    const html = `<span>${worst.text}${more}</span><span><button data-a="view">VIEW</button> <button data-a="hide">HIDE</button></span>`;
+    banner.dataset.sev = worst.sev;
+    const more = open.length > 1 ? ` (+${open.length - 1} more)` : "";
+    const html = `<span class="fb-text">${worst.text}${more}</span><span class="fb-btns"><button class="fb-btn" data-a="view">VIEW</button><button class="fb-btn" data-a="hide">OK</button></span>`;
     if (banner._h !== html) {
       banner.innerHTML = html; banner._h = html;
       banner.querySelector('[data-a="view"]').onclick = () => { show("settings"); byId.settings.open("faults"); };
-      banner.querySelector('[data-a="hide"]').onclick = () => { ctx.dismissed = [...keys].sort().join(); banner.hidden = true; };
+      banner.querySelector('[data-a="hide"]').onclick = () => { ctx.alerts.ack(); banner.hidden = true; };
     }
   }
+  const bad = now.some((a) => a.sev === "bad"), any = now.length > 0;
   const badge = document.querySelector('.nav-btn[data-id="settings"] .badge');
-  if (now.length && !badge) document.querySelector('.nav-btn[data-id="settings"]').appendChild(el(`<span class="badge"></span>`));
-  if (!now.length && badge) badge.remove();
+  if (any && !badge) document.querySelector('.nav-btn[data-id="settings"]').appendChild(el(`<span class="badge"></span>`));
+  if (!any && badge) badge.remove();
+  const b2 = document.querySelector('.nav-btn[data-id="settings"] .badge');
+  if (b2) b2.classList.toggle("warn", !bad);
 }
 
 function reverseCamera(st) {
@@ -136,7 +152,7 @@ function reverseCamera(st) {
   if (!settings.get("camera.autoOnReverse")) return;
   if (rev) {
     clearTimeout(reverseOffTimer); reverseOffTimer = null;
-    if (ctx.current.id !== "camera") { beforeReverse = ctx.current.id; show("camera"); }
+    if (ctx.current.id !== "camera" && !keyboardOpen()) { beforeReverse = ctx.current.id; show("camera"); }
   } else if (beforeReverse && !reverseOffTimer) {
     // Stay on the camera for a few seconds after leaving reverse (handy for shuffling back and forth).
     reverseOffTimer = setTimeout(() => { if (ctx.current.id === "camera") show(beforeReverse); beforeReverse = null; reverseOffTimer = null; }, 3000);
@@ -152,18 +168,48 @@ async function loadPicoLimits() {
 }
 
 // ---- start up ----
+function soundButton() {
+  const b = document.getElementById("tb-sound");
+  const draw = () => { b.innerHTML = icon(settings.get("sound.enabled") === false ? "belloff" : "bell"); b.classList.toggle("off", settings.get("sound.enabled") === false); };
+  b.onclick = () => {
+    // One tap: OK any beeping alarm. If nothing is beeping, mute or unmute.
+    if (ctx.alerts.unacked().length) { ctx.alerts.ack(); document.getElementById("fault-banner").hidden = true; return; }
+    settings.set("sound.enabled", settings.get("sound.enabled") === false); ctx.applySound(); draw();
+    toast(settings.get("sound.enabled") ? "Sounds on." : "Sounds off. Alerts still show on screen.");
+  };
+  settings.subscribe((path) => { if (path.startsWith("sound")) draw(); });
+  draw();
+}
+
+// Splash: shows from the first paint (it's in index.html) until the first live state arrives.
+function hideSplash() {
+  const sp = document.getElementById("splash"); if (!sp || sp.classList.contains("gone")) return;
+  sp.classList.add("gone");
+  setTimeout(() => sp.remove(), 400);
+}
+
 async function main() {
+  fitToScreen();
+  const splashMsg = document.getElementById("splash-msg");
+  if (splashMsg) splashMsg.textContent = "Loading settings";
   await settings.load();
+  ctx.applySound();
   ctx.applyTheme();
-  setInterval(() => ctx.applyTheme(), 60000);
+  setInterval(() => ctx.applyTheme(), 30000);
   buildNav();
+  soundButton();
   let first = "drive";
   try { first = new URLSearchParams(location.search).get("screen") || localStorage.getItem("teryx.screen") || "drive"; } catch {}
   show(byId[first] ? first : "drive");
 
-  store.on("reject", (code) => toast(REJECTS[code] || `Control box said no (${code}).`, "bad"));
+  store.on("reject", (code) => { Sound.play("reject"); toast(REJECTS[code] || `Control box said no (${code}).`, "bad"); });
+  ctx.alerts.on((fresh) => store.emit("faults-changed", fresh));
+  // A tick on every press, so a gloved tap is felt (heard) even if nothing moves yet.
+  document.addEventListener("pointerdown", (e) => { if (e.target.closest("button, .lt-big, .slider, select")) Sound.play("click"); }, true);
+  let firstState = true;
   store.subscribe((st) => {
-    topbar(st); faults(st); reverseCamera(st);
+    if (firstState && (st.get("pico.online") || st.get("link.demo"))) { firstState = false; hideSplash(); }
+    topbar(st); alertBanner(st); reverseCamera(st);
     // Only the screen on show is redrawn, to keep the Pi cool.
     if (ctx.current) ctx.current.update(st);
     // Anything moving stops if we navigate away (each screen's hide() also does this).
@@ -173,11 +219,16 @@ async function main() {
     document.getElementById("tb-clock").textContent = d.toLocaleTimeString("en-NZ", { hour: "2-digit", minute: "2-digit", hour12: false });
   }, 1000);
   store.loop();
+  if (splashMsg) splashMsg.textContent = "Connecting to the control box";
   link.start();
+  ctx.trips.start();
+  // Don't hold the screen hostage: after a few seconds show the dash anyway (the top bar says what's missing).
+  setTimeout(hideSplash, 4000);
 
   loadPicoLimits();
   window.addEventListener("blur", () => link.stopAllHolds());
 }
 
 window.teryx = ctx; // handy from the browser console on the bench
+window.teryxSound = Sound;
 main();

@@ -202,3 +202,68 @@ async def test_parked_flag_from_control_box_wins(gw):
 async def test_clear_faults_sends_key(client, gw):
     assert (await client.post("/api/pico-settings/clear-faults")).status == 200
     assert gw.sent[-1] == (0xF2, 1)
+
+
+# ---------- trips ----------
+
+async def test_trips_endpoint_and_reset(client, gw):
+    from teryx_dash.routes import TRIPS_KEY
+    trips = client.server.app[TRIPS_KEY]
+    gw.state.update({"mc.soc": 60, "mc.batt_v": 76, "mc.batt_a": 40, "mc.speed": 30, "in.ignition": True})
+    for t in range(1, 200):
+        trips.sample(gw.snapshot(), now=t)
+    d = await (await client.get("/api/trips")).json()
+    assert d["trip_a"]["km"] > 1 and d["range_km"] > 0 and d["pack_kwh"] == 7.5
+    await client.put("/api/settings", json={"packKwh": 10})
+    d = await (await client.get("/api/trips")).json()
+    assert d["pack_kwh"] == 10
+    d = await (await client.post("/api/trips/reset/trip-a")).json()
+    assert d["trip_a"]["km"] == 0
+    assert (await client.post("/api/trips/reset/everything")).status == 404
+
+
+# ---------- Wi-Fi from the on-screen keyboard ----------
+
+@pytest.fixture
+def nmcli(monkeypatch):
+    calls = []
+    outputs = {}
+
+    async def fake_run(*args, timeout=20, stderr=False):
+        calls.append(args)
+        for key, out in outputs.items():
+            if key in " ".join(args):
+                return out
+        return ""
+    monkeypatch.setattr(routes, "_run", fake_run)
+    monkeypatch.setattr(routes.shutil, "which", lambda name: "/usr/bin/" + name)
+    return calls, outputs
+
+
+async def test_wifi_add_passes_args_without_a_shell(client, nmcli):
+    calls, outputs = nmcli
+    outputs["dev wifi connect"] = "Device 'wlan0' successfully activated"
+    r = await client.post("/api/wifi/add", json={"ssid": "Shed; rm -rf /", "password": "pass word 1"})
+    assert r.status == 200
+    assert calls[-1] == ("nmcli", "dev", "wifi", "connect", "Shed; rm -rf /", "password", "pass word 1")
+
+
+async def test_wifi_add_checks_input(client, nmcli):
+    assert (await client.post("/api/wifi/add", json={"ssid": ""})).status == 400
+    assert (await client.post("/api/wifi/add", json={"ssid": "x" * 33})).status == 400
+    assert (await client.post("/api/wifi/add", json={"ssid": "Shed", "password": "short"})).status == 400
+
+
+async def test_wifi_add_reports_failure(client, nmcli):
+    _, outputs = nmcli
+    outputs["dev wifi connect"] = "Error: Connection activation failed: Secrets were required"
+    r = await client.post("/api/wifi/add", json={"ssid": "Shed", "password": "wrongpass"})
+    assert r.status == 502
+
+
+async def test_wifi_scan_parses_and_dedupes(client, nmcli):
+    _, outputs = nmcli
+    outputs["dev wifi list"] = "Shed:70:WPA2\nShed:40:WPA2\nCafe\\:Free:55:\n:30:WPA2\n"
+    d = await (await client.get("/api/wifi/scan")).json()
+    assert d["networks"] == [{"ssid": "Shed", "signal": 70, "secure": True},
+                             {"ssid": "Cafe:Free", "signal": 55, "secure": False}]

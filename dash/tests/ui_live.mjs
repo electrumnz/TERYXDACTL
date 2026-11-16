@@ -32,6 +32,7 @@ await page.goto(`${BASE}/?screen=drive`);
 await page.evaluate(() => { teryx.settings.set("theme", "night"); teryx.applyTheme(); });
 await sleep(1500);
 check(await page.$eval("#tb-link", (e) => e.classList.contains("ok")), "control box shows online");
+check(!(await page.$("#splash")), "boot splash has gone once the control box answers");
 await shot("live-drive-idle");
 
 // Lights
@@ -127,6 +128,141 @@ await shot("live-settings-limits");
 await page.click('#s-nav button[data-k="faults"]');
 await sleep(400);
 await shot("live-settings-faults");
+
+
+// ---------- polish for real use ----------
+const SIZE_MIN = 60;  // px at 1280x800 on a 10.1" screen = about 10 mm, the least for a gloved finger
+async function smallTargets() {
+  return page.evaluate((min) => {
+    const s = window.__teryxScale || 1, out = [];
+    document.querySelectorAll("#app button, #app select, #app .lt-big, #app .slider, #app .arm-slide .knob").forEach((e) => {
+      if (!e.offsetParent) return;
+      const r = e.getBoundingClientRect(); if (!r.width) return;
+      const w = r.width / s, h = r.height / s;
+      if (Math.min(w, h) < min) out.push(`${e.className || e.tagName} "${e.textContent.trim().slice(0, 12)}" ${Math.round(w)}x${Math.round(h)}`);
+    });
+    return out;
+  }, SIZE_MIN);
+}
+await sim({ scenario: "idle", soc: 85 });
+const small = [];
+for (const id of ["drive", "trips", "drivetrain", "lights", "winch", "tray", "camera"]) { await nav(id); await sleep(300); small.push(...(await smallTargets())); }
+await nav("settings");
+for (const k of ["display", "sounds", "lights", "camera", "limits", "diff", "faults", "updates", "wifi", "about"]) {
+  await page.click(`#s-nav button[data-k="${k}"]`); await sleep(500); small.push(...(await smallTargets()));
+}
+check(small.length === 0, `every button is at least ${SIZE_MIN} px (about 10 mm) ${small.join(", ")}`);
+
+// On-screen keyboard: name a light bar by tapping keys
+await page.click('#s-nav button[data-k="lights"]');
+await sleep(300);
+await page.selectOption("#s-body select.big >> nth=0", "__type");
+await page.waitForSelector(".kb-overlay");
+await shot("live-keyboard");
+const tap = async (k) => page.click(`.kb-key[data-k="${k}"]`);
+for (let i = 0; i < 12; i++) await tap("back");
+await tap("shift"); await tap("s"); await tap("p"); await tap("o"); await tap("t"); await tap("space");
+await tap("123"); await tap("1"); await tap("done");
+await sleep(500);
+const lname = await page.evaluate(() => teryx.settings.light("light.front_1").name);
+check(lname === "Spot 1", `typed a light name on the keyboard ("${lname}")`);
+check(!(await page.$(".kb-overlay")), "keyboard closes on Done");
+await page.selectOption("#s-body select.big >> nth=0", "__type");
+await page.waitForSelector(".kb-overlay");
+await page.click(".kb-cancel");
+check((await page.evaluate(() => teryx.settings.light("light.front_1").name)) === "Spot 1", "cancel leaves the name alone");
+await page.evaluate(() => teryx.settings.set("lights.light.front_1.name", "Bar 1"));
+
+// Wi-Fi page copes with no NetworkManager on the bench
+await page.click('#s-nav button[data-k="wifi"]');
+await sleep(800);
+check(/Wi-Fi status|Connected to/.test(await page.$eval("#s-body", (e) => e.textContent)), "Wi-Fi page loads (or says why not)");
+
+// Trips: drive a bit, then check the trip and range
+await sim({ scenario: "trail" });
+await sleep(8000);
+let trips = await (await fetch(`${BASE}/api/trips`)).json();
+check(trips.current && trips.current.km > 0.01, `trip logs distance (${trips.current && trips.current.km} km)`);
+check(trips.current.used_wh > 0, `trip logs energy (${trips.current.used_wh} Wh)`);
+check(trips.range_km > 0, `range estimate (${trips.range_km} km at ${trips.wh_per_km} Wh/km)`);
+await nav("trips");
+await sleep(3500);
+check(/km/.test(await page.$eval("#tr-range-u", (e) => e.textContent)) && (await page.$eval("#tr-range", (e) => e.textContent)) !== "--", "trips screen shows range");
+await shot("live-trips");
+await page.click("#tr-reset"); await page.click("#tr-reset");
+await sleep(400);
+trips = await (await fetch(`${BASE}/api/trips`)).json();
+check(trips.trip_a.km < 0.01, "trip A resets with two taps");
+await nav("drive");
+await sleep(500);
+check(/km/.test(await page.$eval("#d-range", (e) => e.textContent)), "range shows on the drive screen");
+
+// Tilt and GPS widget (fake sensors in the sim)
+check(/°/.test(await page.$eval("#sn-roll", (e) => e.textContent)), "tilt widget shows roll");
+check(/[NSEW]+ \d+°/.test(await page.$eval("#sn-head", (e) => e.textContent)), "GPS widget shows heading");
+
+// Alerts with sound: a steep side slope
+await sim({ scenario: "idle" });
+await page.evaluate(() => teryx.alerts.acked.clear());
+await sim({ tilt: { roll: 34 } });
+await page.waitForFunction(() => /Rollover/.test(document.getElementById("fault-banner").textContent), null, { timeout: 5000 }).catch(() => {});
+const banner = await page.$eval("#fault-banner", (e) => ({ hidden: e.hidden, text: e.textContent, sev: e.dataset.sev }));
+check(!banner.hidden && banner.sev === "bad" && /Rollover/.test(banner.text), `tilt alarm shows ("${banner.text.slice(0, 50)}")`);
+const played = await page.evaluate(() => (window.teryxSound || { log: [] }).log.map((x) => x.kind));
+check(played.includes("bad"), `alarm sound played (${played.slice(-4).join(",")})`);
+await shot("live-alert-tilt");
+await page.click('#fault-banner [data-a="hide"]');
+check(await page.$eval("#fault-banner", (e) => e.hidden), "OK hides the alarm");
+await sim({ tilt: { roll: 27 } });
+await sleep(1200);
+check(/side slope/i.test(await page.$eval("#fault-banner", (e) => e.textContent)), "drops to a warning when less steep");
+await sim({ tilt: null });
+await sleep(1200);
+check(await page.$eval("#fault-banner", (e) => e.hidden), "alert clears when level again");
+await sim({ soc: 15 });
+await page.waitForFunction(() => /Battery low/.test(document.getElementById("fault-banner").textContent), null, { timeout: 5000 }).catch(() => {});
+check(/Battery low/.test(await page.$eval("#fault-banner", (e) => e.textContent)), "low battery warning");
+await sim({ soc: 85 });
+
+// Day/night by the sun
+const sun = await page.evaluate(async () => {
+  const t = await import("/js/theme.js");
+  const st = { get: () => undefined }, set = { get: (k) => (k === "themeRegion" ? "canterbury" : undefined) };
+  return {
+    noon: t.autoTheme(st, set, new Date("2026-12-21T00:00:00Z")).theme,      // 1 pm NZDT
+    midnight: t.autoTheme(st, set, new Date("2026-12-21T12:00:00Z")).theme,  // 1 am NZDT
+    gps: t.autoTheme({ get: (k) => ({ "pi.gps.fix": true, "pi.gps.lat": 51.5, "pi.gps.lon": 0 })[k] }, set, new Date("2026-12-21T12:00:00Z")).theme, // London midday
+  };
+});
+check(sun.noon === "day" && sun.midnight === "night", `auto theme follows the sun (${sun.noon}/${sun.midnight})`);
+check(sun.gps === "day", "auto theme uses the GPS position when there's a fix");
+
+// Fits other screen sizes: 1024x600, and slide-to-arm still works when scaled
+const small600 = await browser.newPage({ viewport: { width: 1024, height: 600 } });
+small600.on("pageerror", (e) => errors.push(e.message));
+await small600.goto(`${BASE}/?screen=winch`);
+await sleep(1500);
+const fit = await small600.evaluate(() => { const r = document.getElementById("app").getBoundingClientRect(); return { w: r.width, h: r.height, x: r.left, y: r.top, s: window.__teryxScale }; });
+check(fit.w <= 1024 && fit.h <= 600 && fit.x >= 0 && fit.y >= 0, `dash fits a 1024x600 screen (${Math.round(fit.w)}x${Math.round(fit.h)} at ${fit.s})`);
+const k2 = await (await small600.$("#w-arm .knob")).boundingBox(), a2 = await (await small600.$("#w-arm")).boundingBox();
+await small600.mouse.move(k2.x + k2.width / 2, k2.y + k2.height / 2);
+await small600.mouse.down();
+await small600.mouse.move(a2.x + a2.width - 12, k2.y + k2.height / 2, { steps: 10 });
+await small600.mouse.up();
+s = await waitFor((s) => s["winch.armed"] === true);
+check(s["winch.armed"] === true, "slide to arm works on a scaled screen");
+if (SHOTS) await small600.screenshot({ path: `${SHOTS}/live-1024x600.png` });
+await small600.click("#w-arm");
+await waitFor((s) => s["winch.armed"] === false);
+await small600.close();
+
+// The virtual Teryx runs off the same feed
+const v = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+const verr = []; v.on("pageerror", (e) => verr.push(e.message));
+await v.goto(`${BASE}/virtual`);
+await sleep(2500);
+check(verr.length === 0 && (await v.$("canvas")) !== null, `virtual Teryx runs alongside the dash ${verr.join(" | ")}`);
+await v.close();
 
 check(errors.length === 0, `no page errors ${errors.join(" | ")}`);
 await sim({ scenario: "idle" });

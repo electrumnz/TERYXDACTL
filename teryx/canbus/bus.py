@@ -23,7 +23,10 @@ from .udpbus import DEFAULT_PORT, UdpCanBus
 DEFAULT_BITRATE = 250_000  # IO list: match the Shinegle, likely 250k (TBC)
 
 
-def open_bus(spec: str = "virtual") -> can.BusABC:
+def open_bus(spec: str = "virtual", listen_only: bool = False) -> can.BusABC:
+    """Open a bus from a spec string. ``listen_only`` asks the adaptor never to
+    send or ACK (slcan adaptors like the Teryx sniffer do this with the "L"
+    command; for socketcan it's set with ``ip link``, see setup_can_pi.sh)."""
     spec = spec.strip()
     iface, _, rest = spec.partition(":")
     if iface == "udp":
@@ -39,4 +42,8 @@ def open_bus(spec: str = "virtual") -> can.BusABC:
         kwargs["bitrate"] = int(bitrate)
     elif iface not in ("socketcan",):
         kwargs["bitrate"] = DEFAULT_BITRATE
+    if listen_only and iface == "slcan":
+        kwargs["listen_only"] = True
+    if iface == "slcan":
+        kwargs.setdefault("sleep_after_open", 0.5)
     return can.Bus(**kwargs)

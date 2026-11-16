@@ -54,8 +54,10 @@ python -m teryx run --bus udp --no-controlbox
 
 Before the Pico is involved, prove the Pi's CAN HAT works.
 
-1. Wire the HAT's CAN H/L to a USB CAN adaptor (or the spare Pico gs_usb
-   sniffer) with 120Ω at both ends. Check 60Ω across H and L with power off.
+1. Wire the HAT's CAN H/L to a USB CAN adaptor (or the Teryx CAN sniffer from
+   `firmware/can-sniffer`, with its GP15 transmit jumper fitted so it can send;
+   on Linux `sudo slcand -o -s5 /dev/ttyACM0 can1 && sudo ip link set can1 up`
+   makes it a normal `can1`) with 120Ω at both ends. Check 60Ω across H and L with power off.
 2. On the Pi: `candump can0`. On the other end send a frame, e.g.
    `cansend can0 123#DEADBEEF`.
 

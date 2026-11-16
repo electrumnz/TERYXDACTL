@@ -1,0 +1,41 @@
+name: CAN sniffer firmware
+
+on:
+  push:
+    paths: ["firmware/can-sniffer/**", "firmware/control-box/src/host/**", ".github/workflows/can-sniffer.yml"]
+  pull_request:
+    paths: ["firmware/can-sniffer/**", "firmware/control-box/src/host/**", ".github/workflows/can-sniffer.yml"]
+
+jobs:
+  host-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build host version
+        run: cmake -S firmware/can-sniffer -B build-host -DSNIFFER_HOST=ON && cmake --build build-host
+      - name: Run tests
+        run: ctest --test-dir build-host --output-on-failure
+
+  pico2:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        crystal: [8000000, 16000000]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Arm compiler
+        run: sudo apt-get update && sudo apt-get install -y gcc-arm-none-eabi libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib
+      - name: Get Pico SDK
+        run: |
+          git clone --depth 1 -b 2.1.1 https://github.com/raspberrypi/pico-sdk.git "$RUNNER_TEMP/pico-sdk"
+          git -C "$RUNNER_TEMP/pico-sdk" submodule update --init --depth 1 lib/tinyusb
+      - name: Build for Pico 2
+        run: |
+          cmake -S firmware/can-sniffer -B build -DPICO_BOARD=pico2 -DPICO_SDK_PATH="$RUNNER_TEMP/pico-sdk" -DSNIFFER_OSC_HZ=${{ matrix.crystal }}
+          cmake --build build -j4
+          mhz=$(( ${{ matrix.crystal }} / 1000000 ))
+          cp build/teryx_can_sniffer.uf2 "teryx_can_sniffer_${mhz}mhz.uf2"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: teryx_can_sniffer-${{ matrix.crystal }}
+          path: teryx_can_sniffer_*mhz.uf2

@@ -11,6 +11,9 @@ export const $$ = (root, sel) => [...root.querySelectorAll(sel)];
 
 export function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
 
+/** How much the 1280x800 layout is scaled to fit the real screen (see fit.js). */
+export function screenScale() { return window.__teryxScale || 1; }
+
 /**
  * Horizontal drag slider. onChange(value, final) fires while dragging (throttled) and once on release.
  * setActual(v) shows what the control box reports, as a thin marker, so you can see it catching up.
@@ -97,7 +100,7 @@ export function slideToArm(root, { onArm, onDisarm, isArmed }) {
   });
   knob.addEventListener("pointermove", (e) => {
     if (!dragging) return;
-    dx = clamp(e.clientX - startX, 0, max());
+    dx = clamp((e.clientX - startX) / screenScale(), 0, max());
     knob.style.left = `${5 + dx}px`;
   });
   const end = () => {

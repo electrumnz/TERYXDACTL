@@ -12,7 +12,11 @@ export const LIGHTS = [
 
 export const DEFAULTS = {
   units: "kmh",            // kmh | mph
-  theme: "auto",           // night | day | auto (day 7am to 7pm)
+  theme: "auto",           // night | day | auto (by the sun: GPS position, else themeRegion)
+  themeRegion: "wellington", // rough area for Auto when there's no GPS fix (see theme.js REGIONS)
+  packKwh: 7.5,            // traction pack size for the range estimate (72 V x 105 Ah, TBC)
+  sound: { enabled: true, volume: 0.7, clicks: true },
+  tilt: { rollWarn: 25, rollBad: 32, pitchWarn: 28, pitchBad: 35 },   // degrees, for the tilt alerts
   powerMaxKw: 10,          // scale of the power bar (7.5 kW motor, peaks above)
   regenMaxKw: 4,
   cells: 24,               // for a voltage-based battery % if the Shinegle doesn't send one (72V pack, TBC)
@@ -59,7 +63,7 @@ export class Settings {
     if (keys[0] === "lights" && keys.length > 3) { o = o.lights[keys.slice(1, -1).join(".")]; o[keys.at(-1)] = value; }
     else { keys.slice(0, -1).forEach((k) => (o = o[k] ??= {})); o[keys.at(-1)] = value; }
     this.save();
-    this.subs.forEach((fn) => fn(path, value));
+    [...this.subs].forEach((fn) => fn(path, value));   // copy, so a subscriber added now isn't called in this round
   }
   light(id) { return this.v.lights[id] || { name: id, dimmable: true }; }
   subscribe(fn) { this.subs.add(fn); }

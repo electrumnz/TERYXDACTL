@@ -11,16 +11,66 @@ not stopped, not armed), the dash says why in plain words.
 
 | Screen | What it does |
 |---|---|
-| Drive | Speed, gear (R/N/D), power and regen bar, battery %, pack volts/amps/temp, 12V, motor and controller temps, throttle, mode, odometer, tilt (if an IMU is fitted), a top-down view showing 2WD/4WD, diff lock and lights |
+| Drive | Speed, gear (R/N/D), power and regen bar, battery % and range left, pack volts/amps/temp, 12V, motor and controller temps, throttle, mode, odometer, a top-down view showing 2WD/4WD, diff lock and lights, and the tilt and GPS widget |
+| Trips | This trip (key on to key off), trip A (reset with two taps), range left, energy used and put back, Wh/km, and past trips |
 | 4WD | 2WD/4WD switch and diff lock 0-100% (slider plus Open/25/50/75/Lock). Shows the target and where the actuator actually is, and locks out above the speed limits |
 | Lights | 4 front bars, interior bar, rear pods (Off / Auto in reverse / On), trailer status. Each bar is dimmable or on/off only (set in Settings). Presets (All on/off, Trail, Work, Spot) and effects (Steady, Breathe, Strobe, Chase, Outside pair, Inside pair) |
 | Winch | Slide to arm (so a knee can't arm it), then hold IN or OUT. Lifting your finger stops it. Shows checks and the auto-disarm countdown |
 | Tray | Hold UP or DOWN. Only when stopped. Shows limit switches, current and position |
 | Camera | Reverse camera with guide lines and mirror. Pops up on its own in reverse and goes back 3 s after |
-| Settings | Display (night/day/auto, units), lights setup, camera, control box safety limits, diff pot calibration, faults, updates (OTA), Wi-Fi, about |
+| Settings | Display (night/day/auto, units, pack size), sounds and alerts, lights setup, camera, control box safety limits, diff pot calibration, faults, updates (OTA), Wi-Fi, about |
 
 Faults from the control box or motor controller show as a banner along the bottom with plain
 English text, and are listed under Settings > Faults.
+
+## Built for the real screen
+
+The screen is a 10.1" 1280x800 capacitive touch panel (16:10, 350 nits). The dash is drawn
+for exactly that. On any other size (1024x600, 1920x1200, a laptop on the bench) the whole
+dash scales to fit and is centred, so nothing is cut off and touches still land in the right place.
+
+![Trips](docs/screens/trips.png)
+
+**Glove-friendly.** Everything you press is at least 64 px (about 11 mm on this screen), the
+top bar sound button is 60 px with a bigger hit area. `ui_live.mjs` measures every button on
+every screen and fails if anything is under 60 px. Each press gives a small click sound (can be
+turned off) so you know a gloved tap landed.
+
+**On-screen keyboard** for Wi-Fi passwords, network names and light names. Big keys, shift
+(tap twice for caps lock), numbers and symbols pages, hold backspace to delete fast, and show or
+hide for passwords. Done acts when you lift your finger, so the lift can't press whatever is
+underneath. A real keyboard plugged into the Pi works too.
+
+![Keyboard](docs/screens/keyboard.png)
+
+**Alerts with sound.** As well as control box and motor controller faults, the dash watches:
+battery low (20%) and very low (10%), motor, controller and pack temps, limp mode, 12V low,
+lost link to the control box, and tilt (once a sensor is fitted). Warnings beep twice. Serious
+ones beep three times and keep beeping every 6 s until you tap OK on the banner (or the bell in
+the top bar). The bell also mutes and unmutes. Each alert has a small gap before it clears, so
+a value sitting on the line doesn't keep setting it off. Sounds are made in the browser, so
+there are no sound files. Settings > Sounds and alerts has volume, clicks and the tilt limits.
+
+![Tilt alarm](docs/screens/alert-tilt.png)
+
+**Day/night Auto** goes by the sun: the GPS position when there's a fix, otherwise a rough
+area picked in Settings > Display (no exact location is saved). Night starts a little after
+sunset. A light sensor (`pi.light_lux`) wins if one is ever fitted. Day is the high contrast
+theme for full sun.
+
+**Trips and range.** The Pi logs trips (not the browser), so they survive a screen restart.
+Range = energy left in the pack / your use per km over the last 10 km, falling back to your
+average, then a first guess of 180 Wh/km. Set the real pack size in Settings > Display
+(default 7.5 kWh, for 72 V x 105 Ah). Trips are saved to `~/.config/teryx/trips.json` on the Pi.
+
+**Tilt and GPS widget**, ready for sensors that aren't fitted yet. It reads the `pi.imu.*` and
+`pi.gps.*` keys (see `docs/DASH_API.md`) and says "not fitted yet" until they show up. The
+simulator has a fake tilt sensor and GPS so it can be tried on the bench
+(`{"tilt": {"roll": 30}}` to `/api/sim` holds a tilt, `{"sensor": ["gps", false]}` turns one off).
+
+**Boot.** `dash/deploy/install-splash.sh` (run by `install-pi.sh`) puts the Teryx logo up from
+power on instead of scrolling text, and the dash page shows the same logo until the control box
+answers (4 s at most).
 
 ## Camera: USB or RCA, both work
 
@@ -85,9 +135,11 @@ The tag message shows on the Updates screen.
 
 ## Wi-Fi
 
-The Updates screen uses the Pi's built-in Wi-Fi. Add networks the normal Raspberry Pi way
-(`sudo nmtui`, or the desktop Wi-Fi menu). Settings > Wi-Fi shows the link and switches
-between saved networks. Network names and passwords stay on the Pi, never in this repo.
+The Updates screen uses the Pi's built-in Wi-Fi. Settings > Wi-Fi shows nearby networks: tap
+one and type its password on the on-screen keyboard. You can also type a hidden network's name,
+switch between saved networks, or forget one. It uses NetworkManager (`nmcli`, never through a
+shell); `install-pi.sh` adds a polkit rule (`50-teryx-wifi.rules`) so the dash user can manage
+Wi-Fi and nothing else. Network names and passwords stay on the Pi, never in this repo.
 
 ## Where things are
 
@@ -100,6 +152,12 @@ dash/web/                 the UI (plain HTML/CSS/JS, no build step)
   js/text.js              plain-English fault and refusal text
   js/demo.js              built-in demo vehicle
   js/screens/*.js         one file per screen
+  js/alerts.js            alerts the dash watches for, plus faults; sounds in js/sound.js
+  js/theme.js             day/night by the sun
+  js/tripdata.js          trip and range figures (from the Pi, or in-page in demo mode)
+  js/fit.js               scales the 1280x800 layout to the real screen
+  js/ui/keyboard.js       on-screen keyboard
+  js/ui/sensors.js        tilt and GPS widget
   js/ui/                  controls (sliders, hold buttons, slide-to-arm), icons, vehicle drawing
 dash/server/teryx_dash/   /api/ routes: settings, control box limits, OTA, Wi-Fi, system, camera
 dash/deploy/              systemd units, kiosk launcher, Pi installer
@@ -117,7 +175,10 @@ node dash/tests/ui_live.mjs                 # needs the simulator running on :80
 
 `ui_live.mjs` drives the real UI with the mouse as a finger: lights, presets, 4WD, diff lock,
 arming and running the winch, the tray, a refusal when too fast, the camera popping up in
-reverse, the fault banner and the safety limits page.
+reverse, the fault banner and the safety limits page. Then: button sizes on every screen,
+typing on the keyboard, trips and range, the tilt/GPS widget, the tilt alarm with sound,
+low battery, day/night by the sun, fitting a 1024x600 screen (with slide-to-arm still working)
+and the virtual Teryx running off the same feed.
 
 ## Safety notes
 
