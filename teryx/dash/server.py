@@ -2,6 +2,7 @@
 
     /            the UI (the basic test screen, or any folder given with --ui)
     /sim         simulator control page (only when the sim is running here)
+    /virtual     3D virtual Teryx driven by the live state
     /ws          websocket: state out at 20 Hz, requests and holds in
     /api/state   one-off state snapshot (handy for curl)
     /api/sim     GET sim status, POST changes (only when the sim is running here)
@@ -56,6 +57,9 @@ def build_app(gateway: Gateway, sim=None, ui_dir: str | Path | None = None,
         if sim is None:
             raise web.HTTPNotFound(text="Simulator is not running in this process")
         return web.FileResponse(WEB / "sim" / "index.html")
+
+    async def virtual_page(_req):
+        return web.FileResponse(WEB / "virtual" / "index.html")
 
     async def api_state(_req):
         return web.json_response(_with_sim(gateway.snapshot(), sim), dumps=_json)
@@ -159,6 +163,9 @@ def build_app(gateway: Gateway, sim=None, ui_dir: str | Path | None = None,
     app.router.add_get("/sim", sim_page)
     app.router.add_static("/sim-static/", WEB / "sim")
     app.router.add_static("/common/", WEB / "common")
+    app.router.add_static("/vendor/", WEB / "vendor")
+    app.router.add_get("/virtual", virtual_page)
+    app.router.add_static("/virtual-static/", WEB / "virtual")
 
     _load_plugins(app, gateway, plugins)
 
@@ -171,6 +178,7 @@ def _with_sim(state: dict, sim) -> dict:
     if sim is not None:
         state["sim.scenario"] = sim.scenario.name
         state["sim.links"] = dict(sim.links)
+        state["sim.grade_pct"] = round(sim.vehicle.inp.grade_pct, 1)
     return state
 
 

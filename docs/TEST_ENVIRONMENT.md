@@ -73,6 +73,29 @@ The sim panel also lets you set SOC and ambient temperature, tick any fault,
 force any wired input (ignition, brake, tray limits, winch remote...), cut
 either CAN link, and run the sim up to 5x faster.
 
+## Virtual Teryx
+
+`/virtual` (also shown at the top of the sim panel) is a simple low-poly 3D
+UTV that shows what the CAN bus is saying, live:
+
+- wheels turn and the ground scrolls with speed, the body pitches on hills
+- the four front bars, interior bar and rear pods light up at their actual
+  output level, so dimming and effects (strobe, chase, SOS...) show as they
+  would on the real bars
+- the tray tips up with the tray position, and its actuator extends
+- the front driveshaft lights up in 4WD, and the front diff ring glows with
+  the diff lock %
+- the winch drum spins and the cable pays out or winds in
+- brake and tail lights, and the trailer plug's tail and brake pins
+- **See-through** shows the drivetrain under the body, **Night** turns the
+  sun off so the lights stand out (keys `x` and `n`)
+
+It only reads the dash feed, so it works the same on the sim, a replayed log
+or the real bus. The shape is our own, not a copy of the Kawasaki. three.js
+(MIT) is bundled in `teryx/web/vendor/` so it works with no internet.
+
+![Virtual Teryx at night](img/virtual-teryx-night.png)
+
 ## The fake control box
 
 `teryx/sim/controlbox.py` behaves like the Pico frame for frame, and doubles
