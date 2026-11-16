@@ -74,6 +74,7 @@ still drives, lights stay as they were, and anything moving stops.
 | 2x micro limit switches | Tray up / down end stops | $5 |
 | Fuse block (blade, 12-way) + inline fuses | Every output fused | $30 |
 | Power-hold relay (or use relay 8) | Lets the Pi shut down cleanly after key-off | – |
+| Spare Pico + MCP2515 module | USB CAN adaptor (gs_usb) for sniffing the Shinegle with SavvyCAN in step 4 | $20 |
 | IMU (ICM-20948 or MPU-6050), optional | Roll / pitch gauge | $10 |
 
 ---
@@ -263,7 +264,7 @@ All limits are adjustable in settings, with these defaults:
 
 - [ ] Camera type: USB or RCA/AHD
 - [ ] Do the light bars dim with PWM? Test one with a cheap dimmer
-- [ ] Shinegle CAN bit rate and message layout (record with dash + programmer)
+- [ ] Shinegle CAN bit rate and message layout (record with dash + programmer). Listen-only, try 250k then 500k, check if frames stop without the Shinegle dash (request/response), log findings to `shinegle.dbc`
 - [ ] Shinegle reverse signal: CAN or a wire?
 - [x] 12V battery: yes, kept after the conversion
 - [ ] DC-DC converter rating
