@@ -1,137 +1,175 @@
-"""Shinegle SG1202 adapter. THE ONLY FILE THAT KNOWS THE SHINEGLE FRAME LAYOUT.
+"""Shinegle SG1202 adapter.
 
-Everything else in Teryx OS works with the io-map names (mc.speed, mc.batt_v ...).
-This file turns raw Shinegle CAN frames into those names, and (for the
-simulator) turns them back into frames.
+The Shinegle frame layout lives in ONE file: ``teryx/canbus/shinegle.dbc``.
+This module loads it and turns raw Shinegle frames into the io-map names
+(``mc.speed``, ``mc.batt_v`` ...) that the dash, sim and tests use, and (for
+the simulator) turns io-map values back into frames.
 
-!!! PLACEHOLDER !!!
-Shinegle don't publish their CAN layout. The IDs and bit positions below are
-made up so we can build and test now. Once we've recorded the real bus with the
-Shinegle dash + programmer plugged in (see docs/TEST_ENVIRONMENT.md, "Swapping
-in the real Shinegle"), replace the Message definitions and the two functions
-at the bottom. The dash, sim and tests keep working as long as ``decode``
-still returns the same mc.* names.
+The shipped .dbc is a PLACEHOLDER (made up so we could build first). The
+decoding kit (``python -m teryx decode ...``, see docs/shinegle-decode.md)
+writes a real one. Drop it in place and everything picks it up. Nothing in
+here needs editing as long as the .dbc follows the naming rules below.
+
+Signal naming rules in the .dbc (anything else is ignored by the dash):
+
+    speed       km/h                 -> mc.speed
+    rpm         motor rpm            -> mc.rpm      (motor_rpm works too)
+    direction   value table with neutral / forward / reverse   -> mc.direction
+    mode        value table with eco / normal / sport          -> mc.mode
+    throttle    %                    -> mc.throttle
+    brake, ready, limp   0/1         -> mc.brake, mc.ready, mc.limp
+    batt_v, batt_a (+ = draw), soc   -> mc.batt_v, mc.batt_a, mc.soc
+    motor_temp, ctrl_temp, batt_temp -> same names under mc.
+    odometer    km                   -> mc.odometer
+    fault_<name>   one bit each; the signal comment is the text the dash shows
+    counter     rolling counter, filled in by the sim
+
+If the controller only sends rpm, put ``teryx.kmh_per_rpm=<number>`` in the
+file's general comment (CM_ "...") and speed is worked out from rpm.
+
+Set the TERYX_SHINEGLE_DBC environment variable to try another .dbc without
+replacing the shipped one.
 """
 
 from __future__ import annotations
 
-from .codec import Message, Signal as S
+import os
+import re
+from pathlib import Path
 
-PLACEHOLDER = True
+from .codec import Message
+from .dbc import load
 
-DIRECTION = {0: "neutral", 1: "forward", 2: "reverse"}
-MODE = {0: "eco", 1: "normal", 2: "sport"}
-FAULT_BITS = {   # mc.faults, 16-bit field
-    0: "over_current",
-    1: "over_voltage",
-    2: "under_voltage",
-    3: "motor_over_temp",
-    4: "controller_over_temp",
-    5: "hall_sensor",
-    6: "throttle",
-    7: "comms",
-    8: "battery_over_temp",
-    9: "precharge",
+DBC_PATH = Path(os.environ.get("TERYX_SHINEGLE_DBC") or Path(__file__).with_name("shinegle.dbc"))
+
+_SIMPLE = {   # dbc signal name -> io-map name, plain numbers
+    "speed": "mc.speed", "rpm": "mc.rpm", "motor_rpm": "mc.rpm", "throttle": "mc.throttle",
+    "batt_v": "mc.batt_v", "batt_a": "mc.batt_a", "soc": "mc.soc",
+    "motor_temp": "mc.motor_temp", "ctrl_temp": "mc.ctrl_temp", "batt_temp": "mc.batt_temp",
+    "odometer": "mc.odometer",
 }
-FAULT_TEXT = {
-    "over_current": "Motor over current",
-    "over_voltage": "Battery voltage too high",
-    "under_voltage": "Battery voltage too low",
-    "motor_over_temp": "Motor too hot",
-    "controller_over_temp": "Controller too hot",
-    "hall_sensor": "Motor position sensor fault",
-    "throttle": "Throttle fault",
-    "comms": "Controller comms fault",
-    "battery_over_temp": "Battery too hot",
-    "precharge": "Precharge fault",
+_FLAGS = {"brake": "mc.brake", "ready": "mc.ready", "limp": "mc.limp"}
+_ENUMS = {"direction": ("mc.direction", "neutral"), "mode": ("mc.mode", "eco")}
+
+# Every mc.* value the dash expects, with what to show before the first frame
+# arrives (or forever, if the real controller doesn't send it).
+MC_DEFAULTS = {
+    "mc.speed": 0.0, "mc.rpm": 0, "mc.direction": "neutral", "mc.mode": "eco",
+    "mc.throttle": 0, "mc.brake": False, "mc.ready": False, "mc.limp": False,
+    "mc.batt_v": 0.0, "mc.batt_a": 0.0, "mc.soc": 0, "mc.power_kw": 0.0,
+    "mc.motor_temp": 0, "mc.ctrl_temp": 0, "mc.batt_temp": 0,
+    "mc.faults": [], "mc.odometer": 0.0,
 }
 
-SG_MOTOR = Message(
-    "SG_MOTOR", 0x180, "shinegle", 50, placeholder=True,
-    comment="Bytes 0-2 are what the Pico reads for its speed interlocks.",
-    signals=(
-        S("speed", 0, 16, scale=0.1, unit="km/h"),
-        S("direction", 16, 8, choices=DIRECTION),
-        S("mode", 24, 2, choices=MODE),
-        S("ready", 26, 1),
-        S("limp", 27, 1),
-        S("brake", 28, 1),
-        S("throttle", 32, 8, unit="%"),
-        S("motor_rpm", 40, 16, signed=True, unit="rpm"),
-        S("counter", 56, 8),
-    ),
-)
-SG_BATTERY = Message(
-    "SG_BATTERY", 0x181, "shinegle", 100, placeholder=True,
-    signals=(
-        S("batt_v", 0, 16, scale=0.1, unit="V"),
-        S("batt_a", 16, 16, scale=0.1, signed=True, unit="A", comment="+ = draw, - = regen"),
-        S("soc", 32, 8, unit="%"),
-        S("counter", 56, 8),
-    ),
-)
-SG_TEMPS = Message(
-    "SG_TEMPS", 0x182, "shinegle", 500, placeholder=True,
-    signals=(
-        S("motor_temp", 0, 8, offset=-40, unit="C"),
-        S("ctrl_temp", 8, 8, offset=-40, unit="C"),
-        S("batt_temp", 16, 8, offset=-40, unit="C"),
-        S("counter", 56, 8),
-    ),
-)
-SG_FAULTS = Message(
-    "SG_FAULTS", 0x183, "shinegle", 200, placeholder=True,
-    signals=(
-        S("faults", 0, 16),
-        S("odometer", 16, 32, scale=0.1, unit="km"),
-        S("counter", 56, 8),
-    ),
-)
 
-SHINEGLE_MESSAGES: tuple[Message, ...] = (SG_MOTOR, SG_BATTERY, SG_TEMPS, SG_FAULTS)
-SPEED_MESSAGE = SG_MOTOR   # the Pico watches this one for its speed interlocks
+def _pretty(name: str) -> str:
+    return name.replace("_", " ").capitalize()
 
 
-def decode(msg: Message, v: dict) -> dict:
-    """Raw decoded Shinegle signals -> io-map mc.* values."""
-    if msg is SG_MOTOR:
-        return {
-            "mc.speed": v["speed"],
-            "mc.rpm": v["motor_rpm"],
-            "mc.direction": DIRECTION.get(v["direction"], "neutral"),
-            "mc.mode": MODE.get(v["mode"], "eco"),
-            "mc.throttle": v["throttle"],
-            "mc.brake": bool(v["brake"]),
-            "mc.ready": bool(v["ready"]),
-            "mc.limp": bool(v["limp"]),
-        }
-    if msg is SG_BATTERY:
-        return {"mc.batt_v": v["batt_v"], "mc.batt_a": v["batt_a"], "mc.soc": v["soc"],
-                "mc.power_kw": round(v["batt_v"] * v["batt_a"] / 1000, 2)}
-    if msg is SG_TEMPS:
-        return {"mc.motor_temp": v["motor_temp"], "mc.ctrl_temp": v["ctrl_temp"],
-                "mc.batt_temp": v["batt_temp"]}
-    if msg is SG_FAULTS:
-        return {"mc.faults": [n for b, n in FAULT_BITS.items() if v["faults"] & (1 << b)],
-                "mc.odometer": v["odometer"]}
-    return {}
+class Layout:
+    """One Shinegle layout (a loaded .dbc) with the io-map translation built in."""
+
+    def __init__(self, messages, general: str = ""):
+        self.messages: tuple[Message, ...] = tuple(messages)
+        self.general = general
+        self.placeholder = any(m.placeholder for m in self.messages) or "PLACEHOLDER" in general
+        self.fault_bits: dict[int, str] = {}
+        self.fault_text: dict[str, str] = {}
+        self.fault_owner: dict[str, str] = {}
+        self.direction = {0: "neutral", 1: "forward", 2: "reverse"}
+        self.mode = {0: "eco", 1: "normal", 2: "sport"}
+        self.speed_message = None
+        for m in self.messages:
+            for sig in m.signals:
+                if sig.name.startswith("fault_"):
+                    n = sig.name[len("fault_"):]
+                    self.fault_bits[len(self.fault_bits)] = n
+                    self.fault_text[n] = sig.comment or _pretty(n)
+                    self.fault_owner[n] = m.name
+                elif sig.name == "direction" and sig.choices:
+                    self.direction = {k: v.lower() for k, v in sig.choices.items()}
+                elif sig.name == "mode" and sig.choices:
+                    self.mode = {k: v.lower() for k, v in sig.choices.items()}
+                elif sig.name == "speed" and self.speed_message is None:
+                    self.speed_message = m
+        kmh = re.search(r"teryx\.kmh_per_rpm\s*=\s*([-+.\deE]+)", general)
+        self.kmh_per_rpm = float(kmh.group(1)) if kmh else None
+        if self.speed_message is None and self.kmh_per_rpm:   # speed worked out from rpm instead
+            self.speed_message = next((m for m in self.messages for sig in m.signals
+                                       if sig.name in ("rpm", "motor_rpm")), None)
+        self.by_name = {m.name: m for m in self.messages}
+        self.by_id = {m.can_id: m for m in self.messages}
+
+    @classmethod
+    def from_file(cls, path) -> Layout:
+        return cls(*load(path, default_sender="shinegle"))
+
+    def decode(self, msg: Message, v: dict) -> dict:
+        """Raw decoded Shinegle signals -> io-map mc.* values (only what this frame carries)."""
+        out: dict = {}
+        faults = None
+        for name, value in v.items():
+            if name in _SIMPLE:
+                out[_SIMPLE[name]] = value
+            elif name in _FLAGS:
+                out[_FLAGS[name]] = bool(value)
+            elif name in _ENUMS:
+                key, default = _ENUMS[name]
+                table = self.direction if name == "direction" else self.mode
+                out[key] = table.get(int(value), default)
+            elif name.startswith("fault_"):
+                faults = faults or []
+                if value:
+                    faults.append(name[len("fault_"):])
+        if faults is not None:
+            out["mc.faults"] = faults
+        if "mc.speed" not in out and "mc.rpm" in out and self.kmh_per_rpm:
+            out["mc.speed"] = round(abs(out["mc.rpm"]) * self.kmh_per_rpm, 1)
+        if "mc.batt_v" in out and "mc.batt_a" in out:
+            out["mc.power_kw"] = round(out["mc.batt_v"] * out["mc.batt_a"] / 1000, 2)
+        return out
+
+    def merge(self, state: dict, msg: Message, v: dict) -> None:
+        """Fold one frame into a running state dict (power and faults can span frames)."""
+        new = self.decode(msg, v)
+        if "mc.faults" in new:
+            others = [f for f in state.get("mc.faults", ()) if self.fault_owner.get(f) != msg.name]
+            new["mc.faults"] = others + new["mc.faults"]
+        state.update(new)
+        if "mc.batt_v" in state and "mc.batt_a" in state:
+            state["mc.power_kw"] = round(state["mc.batt_v"] * state["mc.batt_a"] / 1000, 2)
+
+    def encode(self, mc: dict) -> list[tuple[Message, dict]]:
+        """io-map mc.* values -> list of (Message, raw values). Used by the simulator."""
+        rev = {"direction": {n: k for k, n in self.direction.items()},
+               "mode": {n: k for k, n in self.mode.items()}}
+        active = set(mc.get("mc.faults", ()))
+        out = []
+        for m in self.messages:
+            values = {}
+            for sig in m.signals:
+                n = sig.name
+                if n in _SIMPLE and _SIMPLE[n] in mc:
+                    values[n] = mc[_SIMPLE[n]]
+                elif n in _FLAGS:
+                    values[n] = int(bool(mc.get(_FLAGS[n], False)))
+                elif n in _ENUMS:
+                    key, default = _ENUMS[n]
+                    values[n] = rev[n].get(mc.get(key, default), 0)
+                elif n.startswith("fault_"):
+                    values[n] = int(n[len("fault_"):] in active)
+            out.append((m, values))
+        return out
 
 
-def encode(mc: dict) -> list[tuple[Message, dict]]:
-    """io-map mc.* values -> list of (Message, raw values). Used by the simulator."""
-    rev_dir = {n: k for k, n in DIRECTION.items()}
-    rev_mode = {n: k for k, n in MODE.items()}
-    rev_fault = {n: k for k, n in FAULT_BITS.items()}
-    return [
-        (SG_MOTOR, {
-            "motor_rpm": mc["mc.rpm"], "speed": mc["mc.speed"],
-            "direction": rev_dir[mc["mc.direction"]], "mode": rev_mode[mc["mc.mode"]],
-            "throttle": mc["mc.throttle"],
-            "brake": int(mc["mc.brake"]), "ready": int(mc["mc.ready"]), "limp": int(mc["mc.limp"]),
-        }),
-        (SG_BATTERY, {"batt_v": mc["mc.batt_v"], "batt_a": mc["mc.batt_a"], "soc": mc["mc.soc"]}),
-        (SG_TEMPS, {"motor_temp": mc["mc.motor_temp"], "ctrl_temp": mc["mc.ctrl_temp"],
-                    "batt_temp": mc["mc.batt_temp"]}),
-        (SG_FAULTS, {"faults": sum(1 << rev_fault[f] for f in mc["mc.faults"]),
-                     "odometer": mc["mc.odometer"]}),
-    ]
+LAYOUT = Layout.from_file(DBC_PATH)
+
+# Module-level names the rest of Teryx OS uses
+SHINEGLE_MESSAGES: tuple[Message, ...] = LAYOUT.messages
+GENERAL_COMMENT = LAYOUT.general
+PLACEHOLDER = LAYOUT.placeholder
+FAULT_BITS, FAULT_TEXT = LAYOUT.fault_bits, LAYOUT.fault_text
+DIRECTION, MODE = LAYOUT.direction, LAYOUT.mode
+SPEED_MESSAGE, KMH_PER_RPM = LAYOUT.speed_message, LAYOUT.kmh_per_rpm
+BY_NAME = LAYOUT.by_name
+decode, merge, encode = LAYOUT.decode, LAYOUT.merge, LAYOUT.encode

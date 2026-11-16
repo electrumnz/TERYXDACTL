@@ -148,11 +148,13 @@ class ControlBox:
     # ------------------------------------------------------------ bus input
     def on_frame(self, name: str, v: dict, now: float) -> None:
         self.t = now
-        if name == "SG_MOTOR":
-            self.last_speed = now
-            self.speed = v["speed"]
-            self.direction = SG.DIRECTION.get(v["direction"], "neutral")
-            self.brake = bool(v["brake"])
+        if name in SG.BY_NAME:
+            mc = SG.decode(SG.BY_NAME[name], v)
+            if "mc.speed" in mc:
+                self.last_speed = now
+                self.speed = mc["mc.speed"]
+            self.direction = mc.get("mc.direction", self.direction)
+            self.brake = mc.get("mc.brake", self.brake)
         elif name == "PI_HEARTBEAT":
             self.last_dash = now
         elif name == "PI_LIGHTS":

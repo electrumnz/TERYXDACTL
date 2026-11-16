@@ -1,8 +1,12 @@
 """Tiny CAN signal codec.
 
-Signals are packed little-endian (Intel byte order, same as most DBC files),
-so the definitions here can be turned into a .dbc file later if we want to use
-tools like SavvyCAN or cantools.
+Our own messages are packed little-endian (Intel byte order). Signals can
+also be big-endian (Motorola), because a lot of Chinese motor controllers use
+that, and the Shinegle layout we decode may need it. Bit numbering follows the
+DBC rules exactly, so a .dbc file from SavvyCAN or cantools loads straight in:
+
+    little-endian ("@1"): start = least significant bit, counting up
+    big-endian    ("@0"): start = most significant bit, in DBC "sawtooth" order
 
     raw = (value - offset) / scale        physical = raw * scale + offset
 """
@@ -23,6 +27,17 @@ class Signal:
     unit: str = ""
     choices: dict[int, str] | None = None  # optional enum labels
     comment: str = ""
+    big_endian: bool = False   # Motorola byte order (DBC "@0")
+
+    def bits(self) -> list[int]:
+        """Absolute bit positions (bit 0 = LSB of byte 0), least significant first."""
+        if not self.big_endian:
+            return list(range(self.start, self.start + self.length))
+        out, pos = [], self.start
+        for _ in range(self.length):       # walk from the MSB down
+            out.append(pos)
+            pos = pos + 15 if pos % 8 == 0 else pos - 1
+        return out[::-1]
 
     @property
     def raw_min(self) -> int:
@@ -60,9 +75,10 @@ class Message:
         self._by_name.update({s.name: s for s in self.signals})
         used = 0
         for s in self.signals:
-            mask = ((1 << s.length) - 1) << s.start
-            if s.start + s.length > self.dlc * 8:
+            bits = s.bits()
+            if min(bits) < 0 or max(bits) >= self.dlc * 8:
                 raise ValueError(f"{self.name}.{s.name} does not fit in {self.dlc} bytes")
+            mask = sum(1 << b for b in bits)
             if used & mask:
                 raise ValueError(f"{self.name}.{s.name} overlaps another signal")
             used |= mask
@@ -76,14 +92,22 @@ class Message:
             raw = s.to_raw(float(values.get(s.name, s.offset)))
             if raw < 0:
                 raw += 1 << s.length
-            word |= (raw & ((1 << s.length) - 1)) << s.start
+            raw &= (1 << s.length) - 1
+            if s.big_endian:
+                for i, b in enumerate(s.bits()):
+                    word |= ((raw >> i) & 1) << b
+            else:
+                word |= raw << s.start
         return word.to_bytes(self.dlc, "little")
 
     def decode(self, data: bytes) -> dict:
         word = int.from_bytes(bytes(data).ljust(self.dlc, b"\0")[: self.dlc], "little")
         out = {}
         for s in self.signals:
-            raw = (word >> s.start) & ((1 << s.length) - 1)
+            if s.big_endian:
+                raw = sum(((word >> b) & 1) << i for i, b in enumerate(s.bits()))
+            else:
+                raw = (word >> s.start) & ((1 << s.length) - 1)
             if s.signed and raw >= 1 << (s.length - 1):
                 raw -= 1 << s.length
             out[s.name] = s.to_phys(raw)

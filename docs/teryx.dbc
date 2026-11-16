@@ -14,7 +14,7 @@ BO_ 384 SG_MOTOR: 8 SHINEGLE
  SG_ limp : 27|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ brake : 28|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ throttle : 32|8@1+ (1,0) [0|255] "%" Vector__XXX
- SG_ motor_rpm : 40|16@1- (1,0) [-32768|32767] "rpm" Vector__XXX
+ SG_ rpm : 40|16@1- (1,0) [-32768|32767] "rpm" Vector__XXX
  SG_ counter : 56|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 385 SG_BATTERY: 8 SHINEGLE
@@ -30,7 +30,16 @@ BO_ 386 SG_TEMPS: 8 SHINEGLE
  SG_ counter : 56|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 387 SG_FAULTS: 8 SHINEGLE
- SG_ faults : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ fault_over_current : 0|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ fault_over_voltage : 1|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ fault_under_voltage : 2|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ fault_motor_over_temp : 3|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ fault_controller_over_temp : 4|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ fault_hall_sensor : 5|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ fault_throttle : 6|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ fault_comms : 7|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ fault_battery_over_temp : 8|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ fault_precharge : 9|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ odometer : 16|32@1+ (0.1,0) [0|4.29497e+08] "km" Vector__XXX
  SG_ counter : 56|8@1+ (1,0) [0|255] "" Vector__XXX
 
@@ -124,6 +133,16 @@ CM_ BO_ 384 "PLACEHOLDER layout. Bytes 0-2 are what the Pico reads for its speed
 CM_ SG_ 385 batt_a "+ = draw, - = regen";
 CM_ BO_ 385 "PLACEHOLDER layout.";
 CM_ BO_ 386 "PLACEHOLDER layout.";
+CM_ SG_ 387 fault_over_current "Motor over current";
+CM_ SG_ 387 fault_over_voltage "Battery voltage too high";
+CM_ SG_ 387 fault_under_voltage "Battery voltage too low";
+CM_ SG_ 387 fault_motor_over_temp "Motor too hot";
+CM_ SG_ 387 fault_controller_over_temp "Controller too hot";
+CM_ SG_ 387 fault_hall_sensor "Motor position sensor fault";
+CM_ SG_ 387 fault_throttle "Throttle fault";
+CM_ SG_ 387 fault_comms "Controller comms fault";
+CM_ SG_ 387 fault_battery_over_temp "Battery too hot";
+CM_ SG_ 387 fault_precharge "Precharge fault";
 CM_ BO_ 387 "PLACEHOLDER layout.";
 CM_ BO_ 1792 "Pico stops tray, winch and actuators if this goes quiet for 500 ms.";
 CM_ SG_ 1793 rear_auto "Rear pods on automatically in reverse";
@@ -155,6 +174,22 @@ CM_ SG_ 2016 force_mask "Which input bits to force";
 CM_ SG_ 2016 fault_inject "See BENCH_FAULTS";
 CM_ SG_ 2016 aux_mv "Fake 12V reading, 0 = leave alone";
 CM_ BO_ 2016 "HOST/BENCH BUILD ONLY. Lets the simulator drive the Pico's wired inputs and inject faults. The real Pico firmware ignores it.";
+
+BA_DEF_ BO_ "GenMsgCycleTime" INT 0 65535;
+BA_DEF_DEF_ "GenMsgCycleTime" 0;
+BA_ "GenMsgCycleTime" BO_ 384 50;
+BA_ "GenMsgCycleTime" BO_ 385 100;
+BA_ "GenMsgCycleTime" BO_ 386 500;
+BA_ "GenMsgCycleTime" BO_ 387 200;
+BA_ "GenMsgCycleTime" BO_ 1792 100;
+BA_ "GenMsgCycleTime" BO_ 1793 1000;
+BA_ "GenMsgCycleTime" BO_ 1794 1000;
+BA_ "GenMsgCycleTime" BO_ 1795 100;
+BA_ "GenMsgCycleTime" BO_ 1808 100;
+BA_ "GenMsgCycleTime" BO_ 1809 100;
+BA_ "GenMsgCycleTime" BO_ 1810 100;
+BA_ "GenMsgCycleTime" BO_ 1811 1000;
+BA_ "GenMsgCycleTime" BO_ 2016 100;
 
 VAL_ 384 direction 0 "neutral" 1 "forward" 2 "reverse" ;
 VAL_ 384 mode 0 "eco" 1 "normal" 2 "sport" ;

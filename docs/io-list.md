@@ -74,7 +74,7 @@ still drives, lights stay as they were, and anything moving stops.
 | 2x micro limit switches | Tray up / down end stops | $5 |
 | Fuse block (blade, 12-way) + inline fuses | Every output fused | $30 |
 | Power-hold relay (or use relay 8) | Lets the Pi shut down cleanly after key-off | – |
-| Spare Pico + MCP2515 module | USB CAN adaptor (gs_usb) for sniffing the Shinegle with SavvyCAN in step 4 | $20 |
+| Spare Pico + MCP2515 module | USB CAN adaptor for sniffing the Shinegle in step 4 (`firmware/can-sniffer`, slcan + SavvyCAN GVRET) | $20 |
 | IMU (ICM-20948 or MPU-6050), optional | Roll / pitch gauge | $10 |
 
 ---
