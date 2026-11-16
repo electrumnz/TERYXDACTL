@@ -5,6 +5,7 @@ Description=Teryx dash server
 After=network.target
 # CAN interface must be up first (see README: can0 via the CAN HAT overlay)
 Wants=sys-subsystem-net-devices-can0.device
+After=sys-subsystem-net-devices-can0.device
 
 [Service]
 User=teryx

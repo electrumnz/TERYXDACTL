@@ -1,0 +1,25 @@
+name: Dash and scripts
+
+on:
+  push:
+    paths: ["dash/**", "teryx/**", "scripts/**", "tools/**", ".github/workflows/dash.yml"]
+  pull_request:
+    paths: ["dash/**", "teryx/**", "scripts/**", "tools/**", ".github/workflows/dash.yml"]
+
+jobs:
+  dash-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"   # Raspberry Pi OS Bookworm ships 3.11
+      - run: pip install -e ".[dev]" -e dash/server
+      - run: python -m pytest -q
+        working-directory: dash
+
+  shell-scripts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: shellcheck scripts/*.sh tools/pi/*.sh dash/deploy/*.sh

@@ -255,8 +255,11 @@ All limits are adjustable in settings, with these defaults:
 | Supply | Feeds | Notes |
 |---|---|---|
 | 12V aux battery (kept after the conversion, confirmed) | Everything 12V, winch | Charged by the kit's DC-DC. Winch runs straight off this battery with its own breaker. DC-DC rating still **TBC** (decides how long the winch can run before the battery sags) |
-| 5V 5A buck (from 12V via `power.hold`) | Pi 5 + screen | Pi 5 throttles on a 3A supply |
-| Own small 5V buck (from switched 12V) | Pico 2 | Separate from the Pi so the Pico keeps running if the Pi goes down. USB to the Pi is for data and reflashing only |
+| "Dash 12V" rail = key switch **or** `power.hold` relay contacts (wired in parallel) | Both 5V bucks below | Key on powers the rail; the Pico closes `power.hold` straight away, so after key-off the rail stays up until the Pico drops it |
+| 5V 5A buck (from the dash 12V rail) | Pi 5 + screen | Pi 5 throttles on a 3A supply |
+| Own small 5V buck (from the dash 12V rail) | Pico 2 | Separate from the Pi so the Pico keeps running if the Pi goes down, and still on after key-off so it can hold the Pi up. USB to the Pi is for data and reflashing only |
+
+Wiring detail: [`docs/wiring.md`](wiring.md).
 
 ---
 
