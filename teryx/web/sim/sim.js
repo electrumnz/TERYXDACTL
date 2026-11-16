@@ -65,4 +65,26 @@ async function poll() {
   try { render(await (await fetch("/api/sim")).json()); } catch (e) { /* server restarting */ }
   try { $("state").textContent = JSON.stringify(await (await fetch("/api/state")).json(), null, 1); } catch (e) {}
 }
+// Pretend phone for the dash's Media screen (only when the dash server extras are loaded).
+async function audioPost(cmd) {
+  try { renderAudio(await (await fetch("/api/audio/sim", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(cmd) })).json()); } catch (e) {}
+}
+function renderAudio(a) {
+  if (!a || a.backend !== "sim") return;
+  $("audio-sec").hidden = false;
+  const ph = a.bt.player, dev = a.bt.devices[0];
+  document.querySelectorAll("#sim-phone button").forEach(b => b.classList.toggle("on", b.dataset.v === (dev && dev.connected ? "1" : "0")));
+  document.querySelectorAll("#sim-play button").forEach(b => b.classList.toggle("on", b.dataset.v === (ph && ph.status === "playing" ? "1" : "0")));
+  const out = (a.outputs.find(o => o.default) || {}).label || "?";
+  $("audio-readout").textContent =
+    `phone: ${dev ? (dev.connected ? "connected" : "paired") : "none"}${a.bt.pairing ? `  (pairing open ${a.bt.pairing}s)` : ""}\n` +
+    (ph ? `${ph.status}: ${ph.title} - ${ph.artist}\n` : "nothing playing\n") +
+    `output: ${out}  phone level ${Math.round(a.bt_level * 100)}%${a.ducked ? "  (DUCKED for an alert)" : ""}`;
+}
+document.querySelectorAll("#sim-phone button").forEach(b => b.onclick = () => audioPost({ phone: b.dataset.v === "1" }));
+document.querySelectorAll("#sim-play button").forEach(b => b.onclick = () => audioPost({ playing: b.dataset.v === "1" }));
+async function pollAudio() {
+  try { const r = await fetch("/api/audio"); if (r.ok) renderAudio(await r.json()); } catch (e) {}
+}
+setInterval(pollAudio, 1000); pollAudio();
 setInterval(poll, 500); poll();

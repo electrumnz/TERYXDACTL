@@ -16,6 +16,8 @@ settings screens need:
     GET      /api/trips, POST /api/trips/reset/trip-a|history   trip log and range estimate
     GET      /api/system, POST /api/system/restart|shutdown
     GET      /api/camera.mjpg           camera as an MJPEG stream (fallback for the camera screen)
+    GET/POST /api/audio/...             audio outputs, volume, ducking, Bluetooth phone (see media.py)
+    GET      /api/media/...             music on the Pi and USB sticks, internet radio relay
 
 Nothing personal is stored in the repo: settings live in ~/.config/teryx/ on the Pi.
 """

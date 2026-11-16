@@ -256,6 +256,66 @@ await small600.click("#w-arm");
 await waitFor((s) => s["winch.armed"] === false);
 await small600.close();
 
+// Media: music plays, dips under an alert and in reverse, the phone takes over, CarPlay test picture
+const audio = (cmd) => fetch(`${BASE}/api/audio/sim`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(cmd) }).then((r) => r.json());
+const audioState = () => fetch(`${BASE}/api/audio`).then((r) => r.json());
+await audio({ phone: false });
+await sim({ scenario: "idle" });
+await nav("media");
+await page.click('#md-tabs button[data-k="music"]');
+await page.waitForSelector(".md-track", { timeout: 5000 });
+await page.click('.md-track[data-i="0"]');
+await sleep(2000);
+const mp = await page.evaluate(() => ({ playing: teryxMedia.player.playing, vol: teryxMedia.player.a.volume, level: teryxMedia.mixer.level }));
+check(mp.playing, "a demo tune plays from the Pi");
+check(Math.abs(mp.vol - mp.level) < 0.02, `music plays at the volume set (${mp.vol.toFixed(2)})`);
+check(await page.$eval("#tb-media", (e) => !e.hidden && e.textContent.includes("Gravel Road")), "top bar shows what's playing");
+await shot("live-media-music");
+await page.evaluate(() => teryxSound.play("warn"));
+await sleep(500);
+let md = await page.evaluate(() => ({ ducked: teryxMedia.mixer.ducked, vol: teryxMedia.player.a.volume, level: teryxMedia.mixer.level, to: teryxMedia.mixer.duckTo }));
+check(md.ducked && md.vol < md.level * md.to + 0.02, `music dips under an alert sound (${md.vol.toFixed(2)})`);
+check((await audioState()).ducked === true, "phone audio on the Pi is told to dip too");
+await sleep(3200);
+md = await page.evaluate(() => ({ ducked: teryxMedia.mixer.ducked, vol: teryxMedia.player.a.volume, level: teryxMedia.mixer.level }));
+check(!md.ducked && Math.abs(md.vol - md.level) < 0.02, "music comes back up after the alert");
+await sim({ direction: "reverse" });
+await sleep(1200);
+check(await page.evaluate(() => teryxMedia.mixer.reasons.has("reverse")), "music drops while reversing");
+await sim({ scenario: "idle" });
+await sleep(4500);
+await nav("media");
+check(await page.evaluate(() => !teryxMedia.mixer.reasons.has("reverse")), "and comes back up out of reverse");
+// Bluetooth phone (the sim's pretend phone)
+await page.click('#md-tabs button[data-k="phone"]');
+await audio({ phone: true });
+await sleep(2500);
+const ph = await page.evaluate(() => ({ np: teryxMedia.nowPlaying(), music: teryxMedia.player.playing }));
+check(ph.np.source === "phone" && ph.np.playing, `phone audio shows as playing ("${ph.np.title}")`);
+check(!ph.music, "music here pauses when the phone starts playing");
+await page.click("#md-next");
+await sleep(600);
+check((await audioState()).bt.player.title !== ph.np.title, "next track button skips on the phone");
+await page.click("#md-play");
+await sleep(600);
+check((await audioState()).bt.player.status === "paused", "pause button pauses the phone");
+await shot("live-media-phone");
+await audio({ phone: false });
+// CarPlay with no adapter: the test picture fills the screen, nav and alerts stay
+await page.click('#md-tabs button[data-k="carplay"]');
+await page.click('#cp-body button[data-a="test"]');
+await sleep(300);
+check(await page.$eval("#md-cp", (e) => !e.hidden), "CarPlay test picture fills the media screen");
+check(await page.$eval("#nav", (e) => e.getBoundingClientRect().width > 50), "nav still shows over CarPlay");
+await page.click("#md-cp-back");
+check(await page.$eval("#md-cp", (e) => e.hidden), "back to the Media tabs from CarPlay");
+await page.evaluate(() => { teryxMedia.carplay.stopTest(); teryxMedia.player.stop(); });
+await nav("settings");
+await page.click('#s-nav button[data-k="audio"]');
+await sleep(800);
+check((await page.$$("#s-body .btn.sm")).length >= 3, "Settings > Audio lists the outputs");
+await shot("live-settings-audio");
+
 // The virtual Teryx runs off the same feed
 const v = await browser.newPage({ viewport: { width: 1280, height: 800 } });
 const verr = []; v.on("pageerror", (e) => verr.push(e.message));

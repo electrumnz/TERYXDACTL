@@ -36,6 +36,17 @@ export const DEFAULTS = {
     autoOnReverse: true,
   },
   updates: { channel: "stable", auto_check: true },
+  media: {
+    volume: 0.6,           // music level (alerts have their own, under sound.volume)
+    duckTo: 0.25,          // music drops to this share of its level while an alert sounds
+    quietInReverse: true,  // and while reversing, so you can hear what's behind you
+    source: "music",       // last tab picked on the Media screen
+    stations: [            // internet radio. RNZ's own stream links (HLS, played through the Pi's ffmpeg)
+      { name: "RNZ National", url: "https://rnz.streamguys1.com/national/national/playlist.m3u8" },
+      { name: "RNZ Concert", url: "https://rnz.streamguys1.com/concert/concert/playlist.m3u8" },
+    ],
+    carplay: { autoStart: true, hand: "rhd" },   // NZ is right-hand drive
+  },
 };
 
 function merge(a, b) {

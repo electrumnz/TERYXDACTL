@@ -18,6 +18,7 @@ not stopped, not armed), the dash says why in plain words.
 | Winch | Slide to arm (so a knee can't arm it), then hold IN or OUT. Lifting your finger stops it. Shows checks and the auto-disarm countdown |
 | Tray | Hold UP or DOWN. Only when stopped. Shows limit switches, current and position |
 | Camera | Reverse camera with guide lines and mirror. Pops up on its own in reverse and goes back 3 s after |
+| Media | Bluetooth audio from a phone, music on the Pi or a USB stick, internet radio, and CarPlay / Android Auto through a Carlinkit USB adapter. One volume; music dips under alerts and in reverse. See [`docs/audio.md`](../docs/audio.md) |
 | Settings | Display (night/day/auto, units, pack size), sounds and alerts, lights setup, camera, control box safety limits, diff pot calibration, faults, updates (OTA), Wi-Fi, about |
 
 Faults from the control box or motor controller show as a banner along the bottom with plain
@@ -156,10 +157,11 @@ dash/web/                 the UI (plain HTML/CSS/JS, no build step)
   js/theme.js             day/night by the sun
   js/tripdata.js          trip and range figures (from the Pi, or in-page in demo mode)
   js/fit.js               scales the 1280x800 layout to the real screen
+  js/media/               media mixer (ducking), music/radio player, CarPlay (node-carplay in lib/)
   js/ui/keyboard.js       on-screen keyboard
   js/ui/sensors.js        tilt and GPS widget
   js/ui/                  controls (sliders, hold buttons, slide-to-arm), icons, vehicle drawing
-dash/server/teryx_dash/   /api/ routes: settings, control box limits, OTA, Wi-Fi, system, camera
+dash/server/teryx_dash/   /api/ routes: settings, control box limits, OTA, Wi-Fi, system, camera, audio and media
 dash/deploy/              systemd units, kiosk launcher, Pi installer
 dash/tests/               server tests (pytest) and an end-to-end UI test against the simulator
 ```
@@ -175,7 +177,8 @@ node dash/tests/ui_live.mjs                 # needs the simulator running on :80
 
 `ui_live.mjs` drives the real UI with the mouse as a finger: lights, presets, 4WD, diff lock,
 arming and running the winch, the tray, a refusal when too fast, the camera popping up in
-reverse, the fault banner and the safety limits page. Then: button sizes on every screen,
+reverse, the fault banner and the safety limits page. Then:
+music playing and dipping under alerts and in reverse, the pretend Bluetooth phone, the CarPlay test picture, button sizes on every screen,
 typing on the keyboard, trips and range, the tilt/GPS widget, the tilt alarm with sound,
 low battery, day/night by the sun, fitting a 1024x600 screen (with slide-to-arm still working)
 and the virtual Teryx running off the same feed.

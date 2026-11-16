@@ -76,6 +76,8 @@ still drives, lights stay as they were, and anything moving stops.
 | Power-hold relay (or use relay 8) | Lets the Pi shut down cleanly after key-off | – |
 | Spare Pico + MCP2515 module | USB CAN adaptor for sniffing the Shinegle in step 4 (`firmware/can-sniffer`, slcan + SavvyCAN GVRET) | $20 |
 | IMU (ICM-20948 or MPU-6050), optional | Roll / pitch gauge | $10 |
+| Carlinkit CPC200-CCPA (or Autokit) USB adapter, optional | CarPlay and Android Auto on the dash ([`audio.md`](audio.md)) | $80–150 |
+| USB DAC or I2S DAC HAT, 12V marine amp, marine speakers, optional | Sound: the Pi feeds the amp, no head unit ([`audio.md`](audio.md)) | $350–1500 |
 
 ---
 
@@ -257,6 +259,7 @@ All limits are adjustable in settings, with these defaults:
 | 12V aux battery (kept after the conversion, confirmed) | Everything 12V, winch | Charged by the kit's DC-DC. Winch runs straight off this battery with its own breaker. DC-DC rating still **TBC** (decides how long the winch can run before the battery sags) |
 | "Dash 12V" rail = key switch **or** `power.hold` relay contacts (wired in parallel) | Both 5V bucks below | Key on powers the rail; the Pico closes `power.hold` straight away, so after key-off the rail stays up until the Pico drops it |
 | 5V 5A buck (from the dash 12V rail) | Pi 5 + screen | Pi 5 throttles on a 3A supply |
+| 12V aux battery, own fuse (optional) | Audio amp | Remote turn-on from the dash 12V rail so it goes off with the key. 4 x 50 W can pull 20–30 A. See [`audio.md`](audio.md) |
 | Own small 5V buck (from the dash 12V rail) | Pico 2 | Separate from the Pi so the Pico keeps running if the Pi goes down, and still on after key-off so it can hold the Pi up. USB to the Pi is for data and reflashing only |
 
 Wiring detail: [`docs/wiring.md`](wiring.md).

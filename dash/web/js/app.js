@@ -19,6 +19,8 @@ import { WinchScreen } from "./screens/winch.js";
 import { TrayScreen } from "./screens/tray.js";
 import { CameraScreen } from "./screens/camera.js";
 import { SettingsScreen } from "./screens/settings.js";
+import { MediaScreen } from "./screens/media.js";
+import { MediaHub } from "./media/hub.js";
 
 // Fallback limits if the control box settings can't be read (match config/io-map.yaml safety defaults).
 const LIMIT_DEFAULTS = { fourwd_max_kmh: 5, diff_max_kmh: 15, tray_overcurrent_da: 10, winch_auto_disarm_s: 120 };
@@ -58,8 +60,11 @@ const ctx = {
 
 ctx.alerts = new Alerts(store, settings);
 ctx.trips = new TripData(ctx);
+ctx.media = new MediaHub(ctx);
+// Music dips under every alert sound. Alerts themselves always play at their own volume.
+Sound.onPlay = (kind) => ctx.media.mixer.pulse(kind === "bad" ? 4000 : 2500);
 
-const screens = [DriveScreen, TripsScreen, DrivetrainScreen, LightsScreen, WinchScreen, TrayScreen, CameraScreen, SettingsScreen].map((C) => new C(ctx));
+const screens = [DriveScreen, TripsScreen, DrivetrainScreen, LightsScreen, WinchScreen, TrayScreen, CameraScreen, MediaScreen, SettingsScreen].map((C) => new C(ctx));
 const byId = Object.fromEntries(screens.map((s) => [s.id, s]));
 
 function buildNav() {
@@ -139,6 +144,8 @@ function alertBanner(st) {
       banner.querySelector('[data-a="hide"]').onclick = () => { ctx.alerts.ack(); banner.hidden = true; };
     }
   }
+  // Keep the music down while a serious alarm is still waiting for OK.
+  ctx.media.mixer.hold("alarm", open.some((a) => a.sev === "bad"));
   const bad = now.some((a) => a.sev === "bad"), any = now.length > 0;
   const badge = document.querySelector('.nav-btn[data-id="settings"] .badge');
   if (any && !badge) document.querySelector('.nav-btn[data-id="settings"]').appendChild(el(`<span class="badge"></span>`));
@@ -149,6 +156,7 @@ function alertBanner(st) {
 
 function reverseCamera(st) {
   const rev = st.get("mc.direction") === "reverse" || !!st.get("in.reverse");
+  ctx.media.mixer.hold("reverse", rev && settings.get("media.quietInReverse") !== false);
   if (!settings.get("camera.autoOnReverse")) return;
   if (rev) {
     clearTimeout(reverseOffTimer); reverseOffTimer = null;
@@ -181,6 +189,24 @@ function soundButton() {
   draw();
 }
 
+// Small "now playing" chip in the top bar. Tap it to go to Media.
+function nowPlayingChip() {
+  const chip = document.getElementById("tb-media");
+  chip.onclick = () => show("media");
+  const draw = () => {
+    const np = ctx.media.nowPlaying();
+    const on = !!(np.title && np.playing);
+    chip.hidden = !on;
+    if (!on) return;
+    const html = `${icon(ctx.media.mixer.ducked ? "volume" : "music")}<span>${np.title.replace(/</g, "&lt;")}</span>`;
+    if (chip._h !== html) { chip.innerHTML = html; chip._h = html; }
+    chip.classList.toggle("ducked", ctx.media.mixer.ducked);
+  };
+  ctx.media.on(draw);
+  setInterval(draw, 2000);
+  draw();
+}
+
 // Splash: shows from the first paint (it's in index.html) until the first live state arrives.
 function hideSplash() {
   const sp = document.getElementById("splash"); if (!sp || sp.classList.contains("gone")) return;
@@ -194,6 +220,7 @@ async function main() {
   if (splashMsg) splashMsg.textContent = "Loading settings";
   await settings.load();
   ctx.applySound();
+  ctx.media.applySettings();
   ctx.applyTheme();
   setInterval(() => ctx.applyTheme(), 30000);
   buildNav();
@@ -222,6 +249,8 @@ async function main() {
   if (splashMsg) splashMsg.textContent = "Connecting to the control box";
   link.start();
   ctx.trips.start();
+  ctx.media.start();
+  nowPlayingChip();
   // Don't hold the screen hostage: after a few seconds show the dash anyway (the top bar says what's missing).
   setTimeout(hideSplash, 4000);
 
@@ -231,4 +260,5 @@ async function main() {
 
 window.teryx = ctx; // handy from the browser console on the bench
 window.teryxSound = Sound;
+window.teryxMedia = ctx.media;
 main();

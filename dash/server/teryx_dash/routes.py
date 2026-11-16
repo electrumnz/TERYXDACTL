@@ -15,6 +15,7 @@ from typing import Any
 from aiohttp import web
 
 from . import pico_settings
+from .media import setup_media_routes
 from .ota import Ota, OtaConfig
 from .trips import DEFAULT_PACK_KWH, TripLog
 
@@ -72,6 +73,8 @@ def setup_routes(app: web.Application, gateway: Any) -> None:
     trips = TripLog(CONFIG_DIR / "trips.json")
     app[TRIPS_KEY] = trips
     r = app.router
+    # Audio, Bluetooth phone, music and radio (media.py).
+    setup_media_routes(app, gateway, lambda: SETTINGS_FILE)
 
     # ---------- dash settings ----------
     async def get_settings(_):

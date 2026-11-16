@@ -1,0 +1,12 @@
+{
+  "name": "teryx-carplay-bundle",
+  "private": true,
+  "description": "Builds dash/web/lib/node-carplay.js from node-carplay (MIT). Run ./build.sh",
+  "license": "MIT",
+  "devDependencies": {
+    "buffer": "6.0.3",
+    "esbuild": "0.24.2",
+    "events": "3.3.0",
+    "node-carplay": "4.1.0"
+  }
+}
