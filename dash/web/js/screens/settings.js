@@ -13,7 +13,7 @@ async function api(path, opts = {}) {
 }
 
 const SECTIONS = [
-  ["display", "Display"], ["sounds", "Sounds and alerts"], ["lights", "Lights setup"], ["camera", "Camera"], ["limits", "Safety limits"],
+  ["display", "Display"], ["sounds", "Sounds and alerts"], ["audio", "Audio and media"], ["lights", "Lights setup"], ["camera", "Camera"], ["limits", "Safety limits"],
   ["diff", "Diff calibration"], ["faults", "Faults"], ["updates", "Updates"], ["wifi", "Wi-Fi"], ["about", "About"],
 ];
 
@@ -100,6 +100,38 @@ export class SettingsScreen {
     deg("tilt.rollBad", "Side slope alarm", "Rollover risk.");
     deg("tilt.pitchWarn", "Up/down warning", "");
     deg("tilt.pitchBad", "Up/down alarm", "");
+  }
+
+  // ---------- Audio and media ----------
+  sec_audio(body) {
+    const s = this.ctx.settings, hub = this.ctx.media;
+    this.title(body, "Audio and media", "Where the sound goes and how music behaves. Alert sounds are set under Sounds and alerts, and are never turned down by the music.");
+    const outBox = el(`<div class="col" style="gap:10px"><div class="muted">Checking…</div></div>`);
+    body.appendChild(row("Sound goes to", "The Pi 5 has no headphone jack. Use a USB DAC or an I2S amp HAT into the amp. HDMI only helps if the HDMI to VGA adapter has a 3.5 mm audio out.", outBox));
+    const lvl = stepper(100, { step: 10, min: 10, max: 100, fmt: (v) => `${v}%`, onChange: (v) => api("audio/output-level", { method: "POST", body: { level: v / 100 } }).catch((e) => toast(`Couldn't set the level (${e.message}).`, "bad")) });
+    body.appendChild(row("Output level", "The feed to the amp. Leave it at 100% and set the amp's gain once, so alerts are always loud enough.", lvl));
+    const fill = async () => {
+      if (this.ctx.store.get("link.demo")) { outBox.innerHTML = `<div class="muted">Not available in demo mode.</div>`; return; }
+      try {
+        const a = await api("audio");
+        if (a.output_level != null) lvl.set(Math.round(a.output_level * 10) * 10);
+        outBox.innerHTML = "";
+        if (!a.outputs.length) outBox.appendChild(el(`<div class="muted">No outputs found. Is PipeWire running? See docs/audio.md.</div>`));
+        a.outputs.forEach((o) => {
+          const b = el(`<button class="btn sm ${o.default ? "on" : ""}" style="justify-content:flex-start;min-width:320px"></button>`);
+          b.textContent = o.label;
+          b.onclick = async () => { try { await api("audio/output", { method: "POST", body: { id: o.id } }); fill(); toast("Sound output changed.", "good"); } catch (e) { toast(`Couldn't switch (${e.message}).`, "bad"); } };
+          outBox.appendChild(b);
+        });
+        if (a.backend === "sim") outBox.appendChild(el(`<div class="muted small">Simulator: these outputs are pretend.</div>`));
+      } catch (e) { outBox.innerHTML = `<div class="muted">Can't reach the Pi's audio (${e.message}).</div>`; }
+    };
+    fill();
+    body.appendChild(row("Music under alerts", "How far music drops while an alert sounds. It comes back up after.", stepper(Math.round((s.get("media.duckTo") ?? 0.25) * 100), { step: 5, min: 0, max: 60, fmt: (v) => (v === 0 ? "Silent" : `${v}%`), onChange: (v) => { s.set("media.duckTo", v / 100); hub.mixer.setDuckTo(v / 100); hub.mixer.pulse(2500); Sound.play("warn"); } })));
+    body.appendChild(row("Quieter in reverse", "Drops the music while reversing, so you can hear what's behind you.", toggle(s.get("media.quietInReverse") !== false, (v) => s.set("media.quietInReverse", v))));
+    this.title(body, "CarPlay and Android Auto", "Through a Carlinkit USB adapter plugged into the Pi.");
+    body.appendChild(row("Start by itself", "Start the adapter when the dash starts or when it's plugged in.", toggle(s.get("media.carplay.autoStart") !== false, (v) => s.set("media.carplay.autoStart", v))));
+    body.appendChild(row("Driver's side", "Puts the CarPlay dock on the driver's side. Takes effect the next time CarPlay starts.", seg([["rhd", "Right (NZ)"], ["lhd", "Left"]], s.get("media.carplay.hand") || "rhd", (v) => s.set("media.carplay.hand", v))));
   }
 
   // ---------- Lights ----------

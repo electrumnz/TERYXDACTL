@@ -9,6 +9,9 @@
 
 let ctx = null, master = null;
 
+/** The one AudioContext the page uses (alerts, and CarPlay audio). Made on first use. */
+export function audioContext() { return audio(); }
+
 function audio() {
   if (!ctx) {
     const AC = window.AudioContext || window.webkitAudioContext;
@@ -49,9 +52,11 @@ export const Sound = {
   volume: 0.7,
   clicks: true,
   log: [],          // what was played, for the bench tests
+  onPlay: null,     // the media mixer listens here, to turn music down under alerts
   play(kind) {
     if (!this.enabled || (kind === "click" && !this.clicks)) return false;
     this.log.push({ kind, at: Date.now() }); if (this.log.length > 50) this.log.shift();
+    if (kind !== "click" && this.onPlay) { try { this.onPlay(kind); } catch {} }
     const a = audio(); if (!a || !PATTERNS[kind]) return false;
     master.gain.value = Math.max(0, Math.min(1, this.volume));
     PATTERNS[kind](a.currentTime + 0.01);

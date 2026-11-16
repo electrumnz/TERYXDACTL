@@ -10,6 +10,7 @@
 #   4. Turns off screen blanking.
 #   5. Installs the dash into /opt/teryx (release folders + rollback) and starts it.
 #   6. Opens the dash full screen when the desktop user logs in.
+#   7. Sound: Bluetooth phone audio, CarPlay adapter, amp output (scripts/audio-setup.sh).
 #
 # Options:
 #   --version TAG     Release tag or branch to install (default: main)
@@ -20,6 +21,7 @@
 #   --can-int GPIO    CAN HAT interrupt pin (default 25)
 #   --bitrate BPS     CAN bit rate (default 250000, must match the Shinegle)
 #   --user NAME       Desktop user that sees the dash (default: the user running sudo)
+#   --i2s OVERLAY     I2S amp/DAC HAT overlay, e.g. hifiberry-dacplus (see docs/audio.md)
 #
 # Wifi is set in Raspberry Pi Imager or the desktop, never in this repo.
 set -euo pipefail
@@ -30,6 +32,7 @@ CAN_OSC=16000000
 CAN_INT=25
 BITRATE=250000
 DESK_USER="${SUDO_USER:-}"
+I2S=""
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -39,7 +42,8 @@ while [ $# -gt 0 ]; do
     --can-int) CAN_INT="$2"; shift 2 ;;
     --bitrate) BITRATE="$2"; shift 2 ;;
     --user) DESK_USER="$2"; shift 2 ;;
-    -h|--help) sed -n '2,25p' "$0"; exit 0 ;;
+    --i2s) I2S="$2"; shift 2 ;;
+    -h|--help) sed -n '2,27p' "$0"; exit 0 ;;
     *) echo "unknown option: $1 (try --help)" >&2; exit 2 ;;
   esac
 done
@@ -56,14 +60,14 @@ HERE="$(cd "$(dirname "$0")/.." && pwd)"
 CONFIG=/boot/firmware/config.txt
 [ -f "$CONFIG" ] || CONFIG=/boot/config.txt
 
-say "1/6 Packages"
+say "1/7 Packages"
 apt-get update -qq
 apt-get install -y -qq git python3-venv python3-pip can-utils ffmpeg picotool curl \
   >/dev/null
 command -v chromium >/dev/null || command -v chromium-browser >/dev/null \
   || apt-get install -y -qq chromium >/dev/null
 
-say "2/6 CAN HAT overlay ($CAN_OSC Hz crystal, interrupt GPIO$CAN_INT)"
+say "2/7 CAN HAT overlay ($CAN_OSC Hz crystal, interrupt GPIO$CAN_INT)"
 BEGIN="# >>> teryx can"
 END="# <<< teryx can"
 sed -i "/^$BEGIN/,/^$END/d" "$CONFIG"
@@ -74,7 +78,7 @@ dtoverlay=mcp2515-can0,oscillator=$CAN_OSC,interrupt=$CAN_INT
 $END
 EOF
 
-say "3/6 can0 at $BITRATE bit/s on boot"
+say "3/7 can0 at $BITRATE bit/s on boot"
 cat > /etc/systemd/network/80-teryx-can0.network <<EOF
 # Written by scripts/pi-setup.sh
 [Match]
@@ -86,16 +90,16 @@ RestartSec=100ms
 EOF
 systemctl enable -q systemd-networkd
 
-say "4/6 Screen blanking off"
+say "4/7 Screen blanking off"
 if command -v raspi-config >/dev/null; then
   raspi-config nonint do_blanking 1 || true
 fi
 
-say "5/6 Dash into /opt/teryx (version $VERSION)"
+say "5/7 Dash into /opt/teryx (version $VERSION)"
 # (Ignore its last lines about the kiosk service: step 6 does that a simpler way.)
 bash "$HERE/dash/deploy/install-pi.sh" "$REPO_URL" "$VERSION"
 
-say "6/6 Full-screen dash for $DESK_USER"
+say "6/7 Full-screen dash for $DESK_USER"
 DESK_HOME="$(getent passwd "$DESK_USER" | cut -d: -f6)"
 install -d -o "$DESK_USER" -g "$DESK_USER" "$DESK_HOME/.config/autostart"
 cat > "$DESK_HOME/.config/autostart/teryx-dash.desktop" <<EOF
@@ -109,6 +113,13 @@ chown "$DESK_USER:$DESK_USER" "$DESK_HOME/.config/autostart/teryx-dash.desktop"
 # Turn on desktop auto-login so the dash comes up with no keyboard.
 if command -v raspi-config >/dev/null; then
   raspi-config nonint do_boot_behaviour B4 || true
+fi
+
+say "7/7 Sound (Bluetooth phone audio, CarPlay adapter, amp output)"
+if [ -n "$I2S" ]; then
+  bash "$HERE/scripts/audio-setup.sh" --user "$DESK_USER" --i2s "$I2S"
+else
+  bash "$HERE/scripts/audio-setup.sh" --user "$DESK_USER"
 fi
 
 say "Done"

@@ -416,3 +416,78 @@ select.big { min-height: var(--touch); font-size: 18px; }
 .gps-head { font-size: 24px; font-weight: 900; }
 .gps-sub { color: var(--muted); font-size: 14px; font-weight: 700; }
 .sens.no-gps .compass { opacity: .35; }
+
+/* ---------- 9 nav buttons, 11 settings sections ---------- */
+#nav { gap: 4px; }
+.nav-btn { height: 78px; }
+.set-nav { gap: 3px; overflow-y: auto; }
+.set-nav button { min-height: 60px; }
+
+/* ---------- top bar: now playing ---------- */
+.tb-media {
+  display: inline-flex; align-items: center; gap: 8px; max-width: 240px; min-width: 64px; height: 60px; padding: 0 14px;
+  border-radius: 12px; border: 2px solid var(--line); background: var(--panel-2); color: var(--text);
+  font-weight: 700; font-size: 15px;
+}
+.tb-media[hidden] { display: none; }
+.tb-media svg { width: 20px; height: 20px; flex: none; color: var(--accent); }
+.tb-media span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tb-media.ducked { opacity: .6; }
+
+/* ---------- media screen ---------- */
+.media { display: flex; flex-direction: column; gap: 16px; height: 100%; }
+.md-tabs { flex: none; }
+.md-tabs button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 68px; }
+.md-tabs button svg { width: 28px; height: 28px; }
+.md-body { flex: 1; min-height: 0; display: grid; grid-template-columns: 420px 1fr; gap: 16px; }
+.md-now { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+.md-art { width: 150px; height: 150px; border-radius: 16px; background: var(--panel-2); border: 1px solid var(--line); display: grid; place-items: center; color: var(--dim); overflow: hidden; align-self: center; flex: none; }
+.md-art svg { width: 64px; height: 64px; }
+.md-art img { width: 100%; height: 100%; object-fit: cover; }
+.md-src { display: flex; align-items: center; gap: 6px; min-height: 18px; justify-content: center; }
+.md-src svg { width: 16px; height: 16px; }
+.md-title { font-size: 26px; font-weight: 800; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.md-artist { text-align: center; font-weight: 700; min-height: 20px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.md-artist.bad { color: var(--bad); }
+.md-bar { height: 12px; border-radius: 6px; background: var(--panel-2); border: 1px solid var(--line); overflow: hidden; }
+.md-bar div { height: 100%; background: var(--accent); }
+.md-bar.live div { background: var(--info); opacity: .5; }
+.md-times { display: flex; justify-content: space-between; margin-top: 4px; min-height: 18px; }
+.md-ctl { display: grid; grid-template-columns: 1fr 1.3fr 1fr; gap: 12px; }
+.md-btn { min-height: 84px; padding: 0; }
+.md-btn svg { width: 36px; height: 36px; }
+.md-play svg { width: 44px; height: 44px; }
+.md-btn:disabled { opacity: .35; }
+.md-duck { min-height: 18px; text-align: center; color: var(--info); }
+.md-side { min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+.md-side > div:last-child, #ph-body, #cp-body { min-height: 0; }
+.md-scroll { flex: 1; overflow-y: auto; min-height: 0; touch-action: pan-y; }
+.md-list { display: flex; flex-direction: column; gap: 8px; }
+.md-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 72px; padding: 8px 12px;
+  border-radius: 12px; border: 2px solid var(--line); background: var(--panel-2); text-align: left; width: 100%; color: var(--text);
+}
+.md-row.on { border-color: var(--accent); }
+.md-row-main { display: flex; align-items: center; gap: 14px; min-width: 0; flex: 1; background: none; border: 0; padding: 0; text-align: left; color: inherit; min-height: 64px; }
+.md-row-main svg { width: 28px; height: 28px; flex: none; color: var(--muted); }
+.md-row.on .md-row-main svg { color: var(--accent); }
+.md-row-main b { display: block; font-size: 18px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.md-row-main > div { min-width: 0; }
+.md-row-btns { display: flex; gap: 8px; flex: none; }
+.md-row-btns .btn svg { width: 24px; height: 24px; }
+.md-url { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 480px; }
+.md-wide { width: 100%; }
+.md-pair { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 14px 16px; border-radius: 12px; border: 2px solid var(--line); background: var(--panel-2); margin-bottom: 12px; }
+.md-pair.on { border-color: var(--info); }
+.md-pair b { font-size: 19px; }
+/* CarPlay picture: fills the whole screen area. The top bar, nav and alert banner stay on top. */
+.md-cp { position: absolute; inset: 0; background: #000; z-index: 5; }
+.md-cp[hidden] { display: none; }
+.md-cp canvas { width: 100%; height: 100%; display: block; touch-action: none; }
+.md-cp-back {
+  position: absolute; right: 12px; bottom: 12px; min-height: 64px; min-width: 64px; padding: 0 16px; border-radius: 14px;
+  border: 2px solid rgba(255,255,255,.25); background: rgba(0,0,0,.55); color: #fff; font-weight: 800; font-size: 16px;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.md-cp-back svg { width: 26px; height: 26px; }
+#screen-media { overflow: hidden; }

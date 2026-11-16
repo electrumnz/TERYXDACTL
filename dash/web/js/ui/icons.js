@@ -31,6 +31,21 @@ const P = {
   compass: '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5 5-2z"/>',
   keyboard: '<rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h0M10 10h0M14 10h0M18 10h0M7 14h10"/>',
   reset: '<path d="M4 12a8 8 0 108-8H8"/><path d="M8 1L5 4l3 3"/>',
+  music: '<path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>',
+  phone: '<rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/>',
+  radio: '<rect x="3" y="8" width="18" height="12" rx="2"/><path d="M7 8l9-5"/><circle cx="15.5" cy="14" r="3"/><path d="M6 12h3M6 16h3"/>',
+  carplay: '<rect x="2" y="4" width="20" height="14" rx="2.5"/><rect x="6" y="8" width="3" height="3" rx=".8"/><rect x="11" y="8" width="3" height="3" rx=".8"/><rect x="15.5" y="8" width="3" height="3" rx=".8"/><path d="M8 21h8"/>',
+  play: '<path d="M7 4l13 8-13 8V4z" fill="currentColor"/>',
+  pause: '<rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor"/><rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor"/>',
+  next: '<path d="M5 5l10 7-10 7V5z" fill="currentColor"/><path d="M19 5v14"/>',
+  prev: '<path d="M19 5L9 12l10 7V5z" fill="currentColor"/><path d="M5 5v14"/>',
+  shuffle: '<path d="M3 6h4l10 12h4M3 18h4l3-3.6M14 9.6L17 6h4"/><path d="M18 3l3 3-3 3M18 15l3 3-3 3"/>',
+  bluetooth: '<path d="M7 7l10 10-5 4V3l5 4L7 17"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  close: '<path d="M6 6l12 12M18 6L6 18"/>',
+  volume: '<path d="M4 9h4l5-4v14l-5-4H4V9z"/><path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12"/>',
+  usb: '<path d="M12 2v15"/><circle cx="12" cy="19" r="2.5"/><path d="M12 13l-5-3V7M12 11l5-3V5"/><rect x="5.5" y="5" width="3" height="2"/><circle cx="17" cy="4" r="1.3"/>',
+  back: '<path d="M15 5l-7 7 7 7"/>',
 };
 
 export function icon(name, cls = "") {
