@@ -1,5 +1,5 @@
-// Front frame that holds the screen. Prints face down, no supports.
-// part = "whole", "left" or "right" (cad/build.sh picks for you)
+// Dash panel: flat face with the screen cut-out and a rim behind it.
+// Prints face down, no supports.
 include <../models.scad>
 part = "whole";
 

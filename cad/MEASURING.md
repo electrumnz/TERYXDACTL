@@ -8,24 +8,27 @@ tape and a marker. Measure twice, write it down, and round **up** to the next
 0.5 mm. The model already adds `fit` (0.6 mm) of clearance each side, so don't
 add your own.
 
-## 1. The screen (10 minutes, on the bench)
+## 1. The screen (15 minutes, on the bench)
 
-Lay the screen face down on a towel.
+The listing gives the outside size (273 x 192 x 41) and the cut-out
+(217 x 135). Check those, and measure the rest. Lay the screen face down on
+a towel.
 
 | Setting | How to measure it |
 |---|---|
-| `scr_w` | Full width of the housing, left edge to right edge. Measure at the top, middle and bottom and use the biggest |
-| `scr_h` | Full height of the housing, same way |
-| `scr_d` | Thickness from the front glass to the deepest point of the back (a bump or the cable boot counts, the cable itself doesn't). Lay it face down on a flat table and measure up to the highest point |
-| `scr_r` | Corner radius. Hold a coin on the corner: a 10c coin is about 10 mm across (5 mm radius), 20c about 22 mm (11 mm radius). Or 0 if the corners are square |
-| `scr_view_w`, `scr_view_h` | Turn it on with a white picture. Measure the lit area, then add 2 to 3 mm. The frame lip covers everything outside this |
-| `scr_view_off_x`, `scr_view_off_y` | If the lit area isn't centred in the housing (often the bottom border is wider), measure how far the centre of the picture is from the centre of the housing. Right and up are plus |
+| `scr_w`, `scr_h` | Width and height of the front bezel |
+| `scr_d` | Overall depth, front glass to the flat back of the case (not the plugs) |
+| `scr_bezel_t` | Thickness of the front bezel only: the step from the glass to where the narrower body starts |
+| `scr_r` | Corner radius of the bezel. A 10c coin is about 10 mm across (5 mm radius), 20c about 22 mm (11 mm radius). 0 if square |
+| `panel_cut_w`, `panel_cut_h` | Width and height of the **body** behind the bezel, where the clips hook on. If it's bigger than 217 x 135, use the body size + 1 mm. The model adds `fit` on top |
+| `clip_room` | Fit a clip and screw to the body. How far out from the body do they reach? Add 5 mm. The back of the panel is kept flat for this far round the cut-out |
+| `scr_vesa`, `scr_vesa_clear` | Centre-to-centre spacing of the 4 wall-bracket holes on the back (75 or 100), and the thread (M4 = 4.5 clearance) |
 | `scr_cable_x`, `scr_cable_y` | Looking at the **front** of the screen, where do the cables come out of the back? Measure from the centre of the back, right and up are plus |
-| `scr_cable_d` | Hole size for the cables. Must pass the biggest plug (HDMI plug is about 21 x 11 mm, so 32 mm is plenty). Bigger if the screen has a fixed power lead with a plug on it |
-| `scr_has_vesa`, `scr_vesa` | Are there 4 threaded holes in a square on the back? 75 mm or 100 mm apart? If so set `scr_has_vesa = true` and they get bolted through the back plate too |
+| `scr_cable_d` | Hole size for the cables. Must pass the biggest plug (VGA plug is about 31 x 16 with its screws, HDMI about 21 x 11) |
 
-Check the listing's spec sheet too if you can open it: look for "outline
-dimension" and "active area". Use your own measurement if they differ.
+While you're there, read the label on the power brick (volts and amps) and
+check which video sockets are on the back (VGA only, or HDMI too). See
+"About the screen" in [README.md](README.md).
 
 ## 2. Your printer
 
@@ -48,9 +51,9 @@ at how it was held in.
    `dash_holes = [[-80, -45], [80, -45], [0, 50]];`
 4. Measure the hole or stud size for `dash_hole_d` (M6 bolt = 6.5, M8 = 8.5,
    M5 = 5.5).
-5. Check the back of the frame won't hit anything: the back plate is
-   `bp_t` (5 mm) thick and the Pi box sticks out 52 mm behind that (more with
-   the fan cowl). If there isn't room straight behind, change `pi_box_pos`
+5. Check the back won't hit anything: the panel and rim are about 41 mm
+   deep, the back plate is `bp_t` (6 mm) thick, and the Pi box sticks out
+   52 mm behind that (more with the fan cowl). If there isn't room straight behind, change `pi_box_pos`
    to slide the box sideways or up.
 6. Note the angle of the dash face. If the screen should tilt back more than
    the dash does, tell Claude and we'll add a wedge spacer.
@@ -84,10 +87,10 @@ sizes for PG7, PG9, PG16, M16 and M20 are at the top of the box section.
 ## 6. Test fit, then print
 
 1. Run `./cad/build.sh fit_test` and print `stl/fit_test_corner.stl`
-   (about an hour, 25 g).
-2. Push the corner of the screen into it. It should go in by hand with a
-   little play, the lip should cover the edge without touching the picture,
-   and the back of the screen should sit about level with the back of the
-   flange.
+   (about an hour and a half, 40 g). It's one corner of the panel with the
+   corner of the cut-out.
+2. Offer it up to the screen from the front. The body should slip through
+   the cut-out corner with a little play, and the bezel corner should sit
+   in the shallow recess.
 3. Too tight? Make `fit` bigger by 0.2. Too loose? Smaller by 0.2. Wrong
    corner shape? Fix `scr_r`. Then print the real thing.

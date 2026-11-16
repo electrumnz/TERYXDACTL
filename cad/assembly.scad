@@ -3,8 +3,10 @@ include <models.scad>
 explode = 0;   // try 40 to pull the parts apart
 
 color("DimGray") frame_model();
-color([0.1, 0.1, 0.12]) translate([0, 0, frame_D - frame_front_t - gasket_t * 0.7 - scr_d]) rbox(scr_w, scr_h, scr_d, scr_r);
-color([0.15, 0.4, 0.6]) translate([scr_view_off_x, scr_view_off_y, frame_D - frame_front_t - 0.5]) rbox(scr_view_w - 4, scr_view_h - 4, 0.5, 1);
+// the screen: bezel on the front of the panel, body through the cut-out
+color([0.1, 0.1, 0.12]) translate([0, 0, frame_D]) rbox(scr_w, scr_h, scr_bezel_t, scr_r);
+color([0.1, 0.1, 0.12]) translate([0, 0, frame_D - body_d]) rbox(panel_cut_w - 1, panel_cut_h - 1, body_d, 1);
+color([0.15, 0.4, 0.6]) translate([0, 0, frame_D + scr_bezel_t]) rbox(217, 135, 0.3, 1);
 color("Gray") translate([0, 0, explode]) hood_model();
 color("SlateGray") translate([0, 0, -explode]) back_plate_model();
 translate([pi_box_pos[0], pi_box_pos[1], -bp_t - 2 * explode]) mirror([0, 0, 1]) {

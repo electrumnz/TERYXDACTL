@@ -10,20 +10,27 @@ e = 0.01;   // tiny overlap so cuts go cleanly through
 // ---------------------------------------------------------------------------
 // Worked-out sizes
 // ---------------------------------------------------------------------------
-cav_w = scr_w + 2 * fit;                 // pocket the screen sits in
+cav_w = scr_w + 2 * fit;                 // locating recess for the bezel
 cav_h = scr_h + 2 * fit;
 cav_r = max(scr_r + fit, 0.5);
 
-frame_out_w = cav_w + 2 * frame_wall;
-frame_out_h = cav_h + 2 * frame_wall;
-frame_out_r = cav_r + frame_wall + frame_r_extra;
+fl_w = cav_w + 2 * frame_flange_w;       // outline of the panel, rim and back plate
+fl_h = cav_h + 2 * frame_flange_w;
+fl_r = cav_r + frame_flange_w;
 
-// Flange back face to front face. The foam gets squashed to about 70%.
-frame_D = frame_front_t + gasket_t * 0.7 + scr_d;
+cut_w = panel_cut_w + 2 * fit;           // cut-out for the screen's body
+cut_h = panel_cut_h + 2 * fit;
 
-fl_w = frame_out_w + 2 * frame_flange_w;  // outline of the flange and back plate
-fl_h = frame_out_h + 2 * frame_flange_w;
-fl_r = frame_out_r + frame_flange_w;
+body_d  = scr_d - scr_bezel_t;           // depth of the body behind the panel
+// Back of the rim to the front of the panel. The back plate then sits
+// right on the back of the screen's case, where the wall-bracket holes are.
+frame_D = panel_t + gasket_t * 0.7 + body_d;
+
+bolt_in = 6;                             // rim bolts this far in from the edge
+// Inner edge of the sun hood's back strip, just inside the rim bolts
+frame_out_w = fl_w - 2 * (bolt_in + 5.5);
+frame_out_h = fl_h - 2 * (bolt_in + 5.5);
+frame_out_r = max(fl_r - bolt_in - 5.5, 1);
 
 frame_split = fl_w > bed_x || fl_h > bed_y;
 bp_split    = fl_w > bed_x || fl_h > bed_y;
@@ -63,8 +70,8 @@ module half(at, side, big = 2000) {
 // ---------------------------------------------------------------------------
 // Bolt positions round the frame flange
 // ---------------------------------------------------------------------------
-fl_mid_x = frame_out_w / 2 + frame_flange_w / 2;   // flange centre line
-fl_mid_y = frame_out_h / 2 + frame_flange_w / 2;
+fl_mid_x = fl_w / 2 - bolt_in;                     // rim bolt line
+fl_mid_y = fl_h / 2 - bolt_in;
 fl_run_x = fl_w / 2 - fl_r;                         // straight part of each edge
 fl_run_y = fl_h / 2 - fl_r;
 n_x = max(2, ceil(2 * fl_run_x / 60) + 1);          // a bolt at least every 60 mm
@@ -91,10 +98,10 @@ module hood_strip_2d() {
             rrect(hood_out_w, hood_in_h + 2 * hood_t, fl_r + hood_gap + hood_t);
             translate([-1000, hood_low_y]) square(2000);
         }
-        rrect(frame_out_w + 0.8, frame_out_h + 0.8, frame_out_r + 0.4);
+        rrect(frame_out_w, frame_out_h, frame_out_r);
     }
 }
-function in_hood_strip(p) = p[1] > hood_low_y + 5 && (abs(p[0]) > frame_out_w / 2 || p[1] > frame_out_h / 2);
+function in_hood_strip(p) = p[1] > hood_low_y + 5;
 
 // ---------------------------------------------------------------------------
 // Sealed box with a gasket groove, corner lid bolts, glands and ears.

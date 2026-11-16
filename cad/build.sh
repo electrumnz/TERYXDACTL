@@ -15,8 +15,8 @@ split() { echo "$info" | grep -q "$1=true"; }
 jobs=()
 add() { jobs+=("$1|$2|$3"); }   # out name | scad file | part
 
-if split frame; then add screen_frame_left  screen_frame part=left;  add screen_frame_right screen_frame part=right
-else add screen_frame screen_frame part=whole; fi
+if split frame; then add dash_panel_left dash_panel part=left;  add dash_panel_right dash_panel part=right
+else add dash_panel dash_panel part=whole; fi
 if split plate; then add back_plate_left back_plate part=left; add back_plate_right back_plate part=right
 else add back_plate back_plate part=whole; fi
 if split hood; then add sun_hood_left sun_hood part=left; add sun_hood_right sun_hood part=right; add sun_hood_splice sun_hood part=splice
@@ -36,4 +36,8 @@ for j in "${jobs[@]}"; do
   [[ $(grep -c facet "stl/$out.stl") -gt 10 ]] || { echo "empty STL: $out" >&2; exit 1; }
   python3 stl_to_binary.py "stl/$out.stl"
 done
+if [[ -z "$only" || "back_plate_dxf" == "$only"* ]]; then
+  echo "-> stl/back_plate.dxf"
+  "$OPENSCAD" --quiet --hardwarnings -o stl/back_plate.dxf parts/back_plate_2d.scad
+fi
 echo "Done."

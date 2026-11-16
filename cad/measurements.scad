@@ -27,67 +27,81 @@ pin_d          = 2.0;   // 1.75 mm filament used as alignment pins at split seam
 fit            = 0.6;   // gap each side between a part and the thing it holds
 
 // ---------------------------------------------------------------------------
-// Touch screen (10.1" waterproof HDMI + USB)
-// Measure the screen's own housing, not the glass.
+// Touch screen: 10.1" 1280x800 industrial panel-mount monitor, metal case,
+// 2.8 kg. It has a thin front bezel, and its body goes through a cut-out
+// and is clamped from behind with the supplied clips and screws. It also
+// has a wall-bracket (VESA style) pattern on the back.
+//
+// LISTING = from the AliExpress listing ("Monitor Size 273*192*41mm",
+// "Hole Size 217*135mm"). Check these with calipers before the big print.
+// GUESS = not on the listing at all; measure it.
 // ---------------------------------------------------------------------------
-scr_w      = 257;   // GUESS outer width of the screen housing
-scr_h      = 167;   // GUESS outer height of the screen housing
-scr_d      = 28;    // GUESS thickness, front glass to the deepest point at the back
-                    //       (not counting cables or plugs)
-scr_r      = 5;     // GUESS corner radius of the housing (0 for square corners)
+scr_w      = 273;   // LISTING front bezel width
+scr_h      = 192;   // LISTING front bezel height
+scr_d      = 41;    // LISTING overall depth, front glass to the back of the case
+scr_r      = 4;     // GUESS bezel corner radius (0 for square corners)
+scr_bezel_t = 6;    // GUESS thickness of the front bezel (the part that sits
+                    //       in front of the panel)
 
-// The part of the front you need to see. The frame lip covers everything
-// outside this, so measure the black border round the picture and stay
-// a few mm outside the lit area.
-scr_view_w     = 226;   // GUESS (1024x600 panels light up about 223 x 126)
-scr_view_h     = 132;   // GUESS
-scr_view_off_x = 0;     // GUESS picture centre offset from housing centre, + = right
-scr_view_off_y = 0;     // GUESS picture centre offset from housing centre, + = up
+// Panel cut-out the body goes through. Must be a little bigger than the
+// body behind the bezel. The listing gives 217 x 135; if the body measures
+// bigger than that, use the body size (fit is added on top).
+panel_cut_w = 217;  // LISTING
+panel_cut_h = 135;  // LISTING
+panel_cut_r = 1;
+clip_room   = 25;   // GUESS clear flat area kept behind the panel round the
+                    //       cut-out for the clips and their screws
 
 // Where the cables leave the back of the screen, measured from the centre
 // of the back. A hole this size goes through the back plate.
 scr_cable_x = 0;        // GUESS + = right when looking at the screen from the front
 scr_cable_y = -35;      // GUESS + = up
-scr_cable_d = 32;       // big enough to pass the HDMI plug (about 21 x 11)
+scr_cable_d = 38;       // big enough to pass the plugs (a VGA plug is about 31 x 16)
 
-// VESA holes on the back of the screen, if it has them
-scr_has_vesa   = false; // GUESS
-scr_vesa       = 75;    // 75 or 100 square
-scr_vesa_clear = 4.5;   // M4
+// Wall-bracket holes on the back of the screen. These carry most of the
+// weight, so bolt them through the back plate.
+scr_has_vesa   = true;
+scr_vesa       = 75;    // GUESS 75 or 100 square (measure hole centres)
+scr_vesa_clear = 4.5;   // GUESS M4 bolts (check the thread)
 
-gasket_t = 2;           // foam tape between the screen face and the frame lip
-
-// ---------------------------------------------------------------------------
-// Front frame (holds the screen)
-// ---------------------------------------------------------------------------
-frame_wall     = 3.2;   // side wall thickness
-frame_front_t  = 3.0;   // thickness of the lip in front of the screen
-frame_flange_w = 10;    // flange round the back, where the bolts go
-frame_flange_t = 9;     // flange thickness (must be more than hood_t + m3_insert_deep)
-frame_r_extra  = 3;     // extra outer corner rounding
-frame_split_x  = 0;     // where the frame is cut if it is too big for the bed
+gasket_t = 2;           // foam tape between the bezel and the panel
 
 // ---------------------------------------------------------------------------
-// Back plate (bolts to the frame, the Pi box and the dash)
+// Dash panel: a flat face with the cut-out, and a deep rim behind it that
+// boxes in the screen's body. The back plate closes the back.
 // ---------------------------------------------------------------------------
-bp_t       = 5;         // thickness
+panel_t        = 5;     // panel thickness (the clips take about 1 to 8 mm)
+frame_wall     = 4;     // rim wall thickness
+frame_flange_w = 12;    // how far the panel sticks out past the bezel
+rib_t          = 3;     // stiffening ribs on the back of the panel
+rib_d          = 10;    // how far the ribs stand off the panel
+frame_split_x  = 0;     // where it is cut if it is too big for the bed
+
+// ---------------------------------------------------------------------------
+// Back plate (bolts to the rim, the screen's wall-bracket holes, the Pi box
+// and the dash). This carries the screen's weight.
+// ---------------------------------------------------------------------------
+bp_t       = 6;         // thickness
 bp_split_x = 60;        // cut line if too big; kept away from the frame cut so
                         // the two seams overlap and hold each other
 
 // How the back plate fixes to the Teryx. Measure the stock gauge cluster's
 // bolt holes (or wherever you will bolt it) relative to where you want the
 // centre of the new screen. List as many as you like.
-dash_holes   = [[-95, -60], [95, -60], [-95, 55], [95, 55]];  // GUESS
+dash_holes   = [[-128, -80], [128, -80], [-128, 80], [128, 80]];  // GUESS
+// Keep these outside the screen's body (about +-110 x +-68) so the nuts can go
+// on the front of the back plate before the panel goes on.
 dash_hole_d  = 6.5;     // GUESS M6 clearance
 // Also add a standard AMPS pattern (30 x 38 mm, M5), handy for a RAM ball
 // mount or an off-the-shelf bracket while the real mount is worked out.
 dash_amps     = true;
-dash_amps_pos = [0, 25];
+dash_amps_pos = [0, 80];   // above the screen body and the Pi box; M5 nuts sit
+                           // in hex pockets on the front of the plate
 
 // ---------------------------------------------------------------------------
 // Sun hood
 // ---------------------------------------------------------------------------
-hood_reach  = 70;       // how far the top sticks out past the screen face
+hood_reach  = 70;       // how far the top sticks out past the screen's bezel
 hood_tilt   = 8;        // degrees the top tips up from level (sheds water)
 hood_side_h = 110;      // how far down the side cheeks run
 hood_t      = 2.6;      // wall thickness. Its back strip is clamped between
