@@ -75,8 +75,10 @@ Settings > Updates checks for new versions and installs them. Releases are git t
 - If a new version fails to start twice, it goes back to the last good one on its own.
   There's also a Roll back button.
 - Control box firmware: if a release has a newer `firmware/VERSION` than the Pico reports,
-  an "Update control box" button appears. It flashes the release's `.uf2` over USB with
-  `picotool` (change with `TERYX_PICO_FLASH_CMD`).
+  an "Update control box" button appears (only while the control box says it's parked). It runs
+  `tools/pi/flash-control-box.sh`, which asks the Pico over CAN to make its outputs safe, flashes
+  the release's `.uf2` with picotool, checks the new version is running and keeps the old one for
+  rollback (change with `TERYX_PICO_FLASH_CMD`).
 
 To publish an update: tag a commit (`git tag -a v0.2.0 -m "What changed"`) and push the tag.
 The tag message shows on the Updates screen.

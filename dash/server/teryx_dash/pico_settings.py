@@ -43,11 +43,15 @@ FALLBACK: list[Setting] = [
     Setting(14, "diff_pot_min_raw", "Diff pot open point", 1000, "raw", None, 1, 0, 32767, editable=False),
     Setting(15, "diff_pot_max_raw", "Diff pot locked point", 25000, "raw", None, 1, 0, 32767, editable=False),
     Setting(16, "light_dimmable_mask", "Dimmable lights", 0b11111, "", None, 1, 0, 31, editable=False),
+    Setting(18, "relay_active_low", "Relay board is active low", 1, "", None, 1, 0, 1, "Set by the relay board type. Only change on the bench.", editable=False),
+    Setting(19, "tray_full_travel_ms", "Tray full travel time", 15000, "ms", None, 500, 1000, 60000, "How long the tray takes end to end, for the position estimate."),
+    Setting(20, "low_12v_mv", "Low 12V warning", 11800, "V", 0.001, 100, 10000, 13000),
     Setting(17, "hold_to_run_timeout_ms", "Hold-to-run stop after", 300, "ms", None, 50, 100, 2000, "Stop the tray or winch if the dash's repeats stop this long."),
 ]
 
 SAVE_KEY = 0xF0
 RESET_KEY = 0xF1
+CLEAR_FAULTS_KEY = 0xF2
 
 
 def _from_teryx() -> list[Setting] | None:
@@ -60,11 +64,11 @@ def _from_teryx() -> list[Setting] | None:
     out: list[Setting] = []
     for key, (name, unit, default, lo, hi) in sorted(SETTINGS.items()):
         base = fb.get(key)
-        scale = 0.1 if unit == "0.1A" else None
+        scale = 0.1 if unit == "0.1A" else 0.001 if unit == "mV" else None
         out.append(Setting(
             key=key, name=name,
             label=base.label if base else name.replace("_", " "),
-            default=default, units="A" if scale else unit, scale=scale,
+            default=default, units={"0.1A": "A", "mV": "V"}.get(unit, unit), scale=scale,
             step=base.step if base else 1, min=lo, max=hi,
             help=base.help if base else "", editable=base.editable if base else True,
         ))

@@ -172,7 +172,13 @@ export class SettingsScreen {
       ...asList(st.get("pico.faults")).map((c) => ({ src: "Control box", code: c, text: faultText(c, PICO_FAULTS), sev: (PICO_FAULTS[c] || {}).sev || "bad" })),
       ...asList(st.get("mc.faults")).map((c) => ({ src: "Motor controller", code: c, text: faultText(c, MC_FAULTS), sev: (MC_FAULTS[c] || {}).sev || "bad" })),
     ];
-    this.title(body, "Active faults");
+    const head = el(`<div class="row" style="justify-content:space-between;align-items:center"><h3 style="margin:0">Active faults</h3><button class="btn sm">Clear latched faults</button></div>`);
+    head.querySelector("button").onclick = async () => {
+      try { await api("pico-settings/clear-faults", { method: "POST" }); toast("Asked the control box to clear faults. Any that are still there will come back.", "good"); }
+      catch (e) { toast(`Couldn't clear: ${e.message}`, "bad"); }
+      setTimeout(() => this.open("faults"), 1500);
+    };
+    body.appendChild(head);
     if (!active.length) body.appendChild(el(`<div class="ok" style="font-weight:800;padding:12px 0">No active faults</div>`));
     active.forEach((f) => body.appendChild(el(`<div class="fault-row"><span class="pill ${f.sev}">${f.src.toUpperCase()}</span><span class="grow">${f.text}</span><span class="code">${f.code}</span></div>`)));
     this.title(body, "Recent (since the dash started)");
@@ -189,7 +195,7 @@ export class SettingsScreen {
       const busy = u.state === "checking" || u.state === "downloading" || u.state === "installing" || u.state === "flashing";
       box.innerHTML = "";
       box.appendChild(row("Dash software", `This version: <b>${u.dash?.current || "?"}</b>${u.dash?.available ? `<br>New version: <b>${u.dash.available}</b>${u.dash.notes ? `. ${u.dash.notes}` : ""}` : ""}`, null));
-      box.appendChild(row("Control box firmware", `This version: <b>${u.pico?.current || "?"}</b>${u.pico?.available ? `<br>New version: <b>${u.pico.available}</b>` : ""}`, null));
+      box.appendChild(row("Control box firmware", `This version: <b>${u.pico?.current || "?"}</b>${u.pico?.available ? `<br>New version: <b>${u.pico.available}</b>${this.ctx.store.get("pico.parked") === false ? " (park to install)" : ""}` : ""}`, null));
       box.appendChild(row("Channel", "Stable is tested. Beta gets new things first.", seg([["stable", "Stable"], ["beta", "Beta"]], this.ctx.settings.get("updates.channel"), (v) => this.ctx.settings.set("updates.channel", v))));
       if (busy || u.progress != null) {
         const p = el(`<div style="padding:14px 0"><div class="lbl" style="font-weight:800;margin-bottom:8px">${u.message || u.state}</div><div class="progress"><div style="width:${u.progress ?? 0}%"></div></div></div>`);
@@ -199,7 +205,7 @@ export class SettingsScreen {
       const b = (label, fn, cls = "") => { const x = el(`<button class="btn sm ${cls}" ${busy ? "disabled" : ""}>${label}</button>`); x.onclick = fn; btns.appendChild(x); };
       b("Check for updates", () => this.ota("check", render));
       if (u.dash?.available) b(`Install dash ${u.dash.available}`, () => this.ota("install", render, { target: "dash" }), "on");
-      if (u.pico?.available) b(`Update control box to ${u.pico.available}`, () => this.ota("install", render, { target: "pico" }), "on");
+      if (u.pico?.available && this.ctx.store.get("pico.parked") !== false) b(`Update control box to ${u.pico.available}`, () => this.ota("install", render, { target: "pico" }), "on");
       if (u.dash?.previous) b(`Roll back to ${u.dash.previous}`, () => this.ota("rollback", render));
       box.appendChild(btns);
     };

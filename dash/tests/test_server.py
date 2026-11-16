@@ -190,3 +190,15 @@ async def test_manual_rollback(ota_env):
     o.install(); await wait_idle(o)
     o.rollback(); await wait_idle(o)
     assert ota_mod.current_version(ota_env) == "v1.0.0"
+
+
+async def test_parked_flag_from_control_box_wins(gw):
+    gw.state["pico.parked"] = False
+    assert routes.is_stopped(gw) is False
+    gw.state["pico.parked"] = True
+    assert routes.is_stopped(gw) is True
+
+
+async def test_clear_faults_sends_key(client, gw):
+    assert (await client.post("/api/pico-settings/clear-faults")).status == 200
+    assert gw.sent[-1] == (0xF2, 1)

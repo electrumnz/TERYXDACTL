@@ -13,7 +13,7 @@ git -C "$ROOT/repo" fetch --tags
 ln -sfn "$ROOT/releases/$TAG" "$ROOT/current"
 [ -d "$ROOT/venv" ] || python3 -m venv "$ROOT/venv"
 (cd "$ROOT/current" && bash dash/deploy/post-install.sh)
-apt-get install -y ffmpeg can-utils >/dev/null
+apt-get install -y ffmpeg can-utils picotool >/dev/null
 chown -R teryx:teryx "$ROOT"
 install -m 0440 "$ROOT/current/dash/deploy/sudoers-teryx" /etc/sudoers.d/teryx
 cp "$ROOT/current/dash/deploy/teryx-dash.service" /etc/systemd/system/

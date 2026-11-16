@@ -23,6 +23,7 @@ STARTED = time.time()
 MAX_SETTINGS_BYTES = 64 * 1024
 OTA_KEY = web.AppKey("teryx_dash_ota", Ota)
 CONFIRM_KEY = web.AppKey("teryx_dash_confirm", asyncio.Future)
+KEYOFF_KEY = web.AppKey("teryx_dash_keyoff", asyncio.Future)
 
 
 async def maybe_await(v):
@@ -38,7 +39,9 @@ def snapshot(gateway: Any) -> dict:
 
 def is_stopped(gateway: Any) -> bool:
     s = snapshot(gateway)
-    if s.get("mc.online") is False:
+    if "pico.parked" in s:  # the control box's own view wins when it's there
+        return bool(s["pico.parked"])
+    if s.get("mc.online") is False or s.get("pico.speed_valid") is False:
         return False  # speed unknown counts as moving
     return float(s.get("mc.speed") or 0) < 0.5
 
@@ -124,6 +127,9 @@ def setup_routes(app: web.Application, gateway: Any) -> None:
 
     async def pico_reset(_):
         return await pico_cmd(pico_settings.RESET_KEY)
+
+    async def pico_clear(_):
+        return await pico_cmd(pico_settings.CLEAR_FAULTS_KEY)
 
     async def diff_cal(req):
         try:
@@ -245,6 +251,7 @@ def setup_routes(app: web.Application, gateway: Any) -> None:
     r.add_put("/api/pico-settings", put_pico)
     r.add_post("/api/pico-settings/save", pico_save)
     r.add_post("/api/pico-settings/reset", pico_reset)
+    r.add_post("/api/pico-settings/clear-faults", pico_clear)
     r.add_post("/api/diff-calibrate", diff_cal)
     r.add_get("/api/ota/status", ota_status)
     r.add_post("/api/ota/{action}", ota_action)
@@ -255,9 +262,18 @@ def setup_routes(app: web.Application, gateway: Any) -> None:
     r.add_post("/api/system/shutdown", sys_shutdown)
     r.add_get("/api/camera.mjpg", camera)
 
+    async def watch_key_off():
+        """Key off: the control box asks the Pi to shut down, then cuts power after its wait."""
+        while True:
+            await asyncio.sleep(1)
+            if snapshot(gateway).get("pico.shutdown_request") and os.environ.get("TERYX_NO_SHUTDOWN") != "1":
+                await _run("sudo", "-n", "systemctl", "poweroff")
+                return
+
     async def on_start(_app):
         _app[CONFIRM_KEY] = asyncio.ensure_future(
             ota.confirm_when_healthy(lambda: bool(snapshot(gateway))))
+        _app[KEYOFF_KEY] = asyncio.ensure_future(watch_key_off())
 
     app.on_startup.append(on_start)
 

@@ -15,6 +15,8 @@ export const PICO_FAULTS = {
   low_12v:            { sev: "warn", text: "12V battery is low." },
   pico_hot:           { sev: "warn", text: "Control box is running hot." },
   watchdog_reset:     { sev: "warn", text: "Control box restarted itself after a hang. Everything started off." },
+  diff_overcurrent:   { sev: "bad",  text: "Diff lock actuator pulled too much current and was stopped." },
+  io_bus:             { sev: "bad",  text: "Control box can't talk to its relay or sensor boards. Check the I2C wiring." },
 };
 
 export const MC_FAULTS = {
@@ -38,6 +40,12 @@ export const REJECTS = {
   interlock:      "Blocked by a safety interlock.",
   actuator_fault: "That actuator has a fault. See Faults in Settings.",
   low_12v:        "12V battery too low for that.",
+  dash_link:      "The control box lost the dash for a moment. Try again.",
+  ignition_off:   "Key is off.",
+  at_limit:       "Already at the end of its travel.",
+  not_parked:     "Put it in park first.",
+  winch_remote:   "The handheld winch remote is in use.",
+  bad_frame:      "The control box didn't understand that request.",
 };
 
 export function faultText(code, table) {

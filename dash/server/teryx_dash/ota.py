@@ -13,8 +13,9 @@ The new version must stay up for HEALTHY_AFTER_S seconds to be marked good. If i
 start twice, `python -m teryx_dash.ota boot-check` (run by systemd before each start) flips
 back to the previous version. So a bad update can't leave the Teryx without a dash.
 
-Control box firmware: the release's UF2 file is flashed over USB with picotool (or the
-command in TERYX_PICO_FLASH_CMD). The Pico keeps every output off while in its bootloader.
+Control box firmware: the release's UF2 is flashed with tools/pi/flash-control-box.sh (from the
+firmware work, or the command in TERYX_PICO_FLASH_CMD). It only runs when the Pico says it's
+parked, and asks the Pico over CAN to make its outputs safe before it reboots to flash.
 
 Updates only install with the Teryx stopped. Checking is always allowed.
 """
@@ -56,7 +57,9 @@ class OtaConfig:
     root: Path = Path(os.environ.get("TERYX_OTA_ROOT", "/opt/teryx"))
     remote: str = os.environ.get("TERYX_OTA_REMOTE", "origin")
     restart_cmd: str = os.environ.get("TERYX_RESTART_CMD", "sudo -n systemctl restart teryx-dash")
-    pico_flash_cmd: str = os.environ.get("TERYX_PICO_FLASH_CMD", "picotool load -x -f {uf2}")
+    # The control box thread's script checks "parked", asks the Pico to make outputs safe over CAN (0x71F),
+    # flashes, waits for the new version on 0x713, and keeps the old UF2 for rollback.
+    pico_flash_cmd: str = os.environ.get("TERYX_PICO_FLASH_CMD", "bash tools/pi/flash-control-box.sh {uf2} can0")
     uf2_glob: str = os.environ.get("TERYX_PICO_UF2", "firmware/**/*.uf2")
 
     @property
@@ -244,7 +247,7 @@ class Ota:
             raise RuntimeError("no control box firmware (.uf2) in this release")
         self.state, self.message, self.progress = "flashing", "Updating the control box. Everything it runs is off until it's back…", 30
         cmd = [a.replace("{uf2}", str(uf2s[-1])) for a in shlex.split(self.cfg.pico_flash_cmd)]
-        await run(*cmd, timeout=180)
+        await run(*cmd, cwd=here, timeout=240)
         self.state, self.message, self.progress = "idle", "Control box updated.", None
         self.pico_available = None
 

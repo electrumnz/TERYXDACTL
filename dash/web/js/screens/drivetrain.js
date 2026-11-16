@@ -69,7 +69,7 @@ export class DrivetrainScreen {
   update(st) {
     const q = (s) => $(this.root, s);
     const fw = st.get("act.4wd", "2wd");
-    const words = { "2wd": "2WD, at end stop", "4wd": "4WD, at end stop", to_4wd: "Moving to 4WD…", to_2wd: "Moving to 2WD…", fault: "Fault" };
+    const words = { "2wd": "2WD, at end stop", "4wd": "4WD, at end stop", to_4wd: "Moving to 4WD…", to_2wd: "Moving to 2WD…", fault: "Fault", unknown: "Not known yet (tap 2WD or 4WD)" };
     q("#t-state").textContent = words[fw] || fw;
     q("#t-state").className = `v ${fw === "fault" ? "bad" : fw.startsWith("to_") ? "info" : ""}`;
     q("#t-cur").textContent = `${st.get("an.4wd_current", 0).toFixed(1)} A`;
@@ -81,7 +81,7 @@ export class DrivetrainScreen {
     const spd = st.get("mc.speed", 0);
     const fl = this.lim("fourwd_max_kmh", 5), dl = this.lim("diff_max_kmh", 15);
     q("#t-lim").textContent = fl; q("#d-lim").textContent = dl;
-    const unknown = st.get("mc.online") === false;
+    const unknown = st.get("mc.online") === false || st.get("pico.speed_valid") === false;
     const l4 = q("#t-lock");
     l4.textContent = unknown ? "Speed unknown: locked out" : spd >= fl ? `Locked out above ${fl} km/h` : "Ready";
     l4.className = `lockout ${unknown || spd >= fl ? "warn" : ""}`;

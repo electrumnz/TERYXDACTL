@@ -5,6 +5,7 @@ import { vehicleDiagram } from "../ui/vehicle.js";
 
 // Effect names match the control box (LIGHT_EFFECT in teryx/canbus/messages.py). "none" is steady.
 const EFFECTS = [["none", "Steady"], ["breathe", "Breathe"], ["strobe", "Strobe"], ["chase", "Chase"], ["outside_only", "Outside pair"], ["inside_only", "Inside pair"]];
+// "sos" is also supported by the control box but kept off the main grid so it isn't hit by accident.
 
 export class LightsScreen {
   constructor(ctx) {
