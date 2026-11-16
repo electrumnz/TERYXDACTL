@@ -44,7 +44,6 @@ still drives, lights stay as they were, and anything moving stops.
 ### On hand
 | Part | Used for |
 |---|---|
-| Raspberry Pi 5 | Dash, UI, logging, OTA (built-in Wi-Fi) |
 | 10.1" waterproof touch screen (HDMI + USB) | Display and touch |
 | 8-channel relay board | On/off loads (see section 4) |
 | ~26-way GPIO breakout | Pi side wiring |
@@ -62,8 +61,11 @@ still drives, lights stay as they were, and anything moving stops.
 | 5V buck converter | Pi power (must be 5V **5A** for the Pi 5, **TBC**) |
 
 ### To buy
+Prices and links checked live: [`shopping-list.md`](shopping-list.md).
+
 | Part | Why | Approx |
 |---|---|---|
+| Raspberry Pi 5 **4GB** | Dash, UI, logging, OTA (built-in Wi-Fi). 4GB is plenty, see the shopping list | $233 |
 | Raspberry Pi Pico 2 | Control box | $10 |
 | 2x MCP2515 CAN module (TJA1050/SN65HVD230) or 1x module + Pi CAN HAT | CAN for Pico and Pi | $10–40 |
 | 2x more BTS7960 | Each actuator needs its own driver | $20 |
