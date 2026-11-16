@@ -329,22 +329,25 @@ for s in (-1, 1):
     arch_liner(FX, f"linerF{s}", s * 0.36, s * 0.72, a0=0.95, a1=0.5)
     flare(FX, s * 0.72, f"flareF{s}", r=0.53, a0=0.95, a1=0.55, width=0.05, thick=0.02)
 
-# front grille block and lower bumper (black), headlights in the bonnet nose
-add_box("grilleBlock", 0.16, 0.3, 0.82, "Plastic", (1.25, 0.53, 0), r=0.035)
-add_box("grilleMesh", 0.02, 0.16, 0.6, "Glass", (1.333, 0.56, 0), r=0.004, seg=1)
-for i in range(5):
-    add_box(f"slat{i}", 0.03, 0.012, 0.58, "PlasticGrey", (1.34, 0.5 + i * 0.03, 0), r=0.004, seg=1)
-add_box("chinSpoiler", 0.12, 0.08, 0.7, "Plastic", (1.3, 0.41, 0), rot=(0, 0, 0.3), r=0.025)
+# Front, checked against a head-on photo: a grey lower fascia with a dark
+# opening, a black slatted grille under the bonnet nose, and the headlights
+# up high in the outer corners of the bonnet, under the guard tops.
+add_box("fascia", 0.16, 0.36, 0.86, "PlasticGrey", (1.25, 0.53, 0), r=0.04)
+add_box("fasciaHole", 0.03, 0.15, 0.4, "Plastic", (1.322, 0.5, 0), r=0.02)
+add_box("grilleBlock", 0.12, 0.15, 0.68, "Plastic", (1.27, 0.76, 0), r=0.03)
+for i in range(3):
+    add_box(f"slat{i}", 0.03, 0.016, 0.64, "PlasticGrey", (1.325, 0.72 + i * 0.04, 0), r=0.006, seg=1)
+add_box("chinSpoiler", 0.12, 0.06, 0.7, "Plastic", (1.3, 0.37, 0), rot=(0, 0, 0.3), r=0.02)
 for s in (-1, 1):
     add_box(f"vent{s}", 0.2, 0.018, 0.12, "Plastic", (0.9, 1.047, s * 0.24), rot=(0, 0, -0.2), r=0.008)
 for s in (-1, 1):
-    # headlights sit in the nose face either side of the bonnet ridge, in black surrounds
-    rot = (0, s * -0.2, -0.55)
-    add_box(f"headHousing{s}", 0.07, 0.15, 0.22, "Plastic", (1.3, 0.76, s * 0.24), rot=rot, r=0.03, order="YXZ")
-    add_box(f"headLens{s}", 0.05, 0.11, 0.18, "HeadLens", (1.318, 0.764, s * 0.24), rot=rot, r=0.025, order="YXZ")
+    # headlights tucked into the bonnet's outer corners, tilted back with the bonnet
+    rot = (0, s * -0.25, -0.75)
+    add_box(f"headHousing{s}", 0.07, 0.13, 0.2, "Plastic", (1.215, 0.89, s * 0.4), rot=rot, r=0.03, order="YXZ")
+    add_box(f"headLens{s}", 0.05, 0.1, 0.16, "HeadLens", (1.232, 0.895, s * 0.4), rot=rot, r=0.025, order="YXZ")
     bm = bmesh.new()
-    bmesh.ops.create_uvsphere(bm, u_segments=16, v_segments=8, radius=0.035)
-    bm_xform(bm, (1.335, 0.765, s * 0.24), scale=(0.45, 1, 1))
+    bmesh.ops.create_uvsphere(bm, u_segments=16, v_segments=8, radius=0.03)
+    bm_xform(bm, (1.25, 0.895, s * 0.4), scale=(0.45, 1, 1))
     link(f"reflector{s}", bm, "Chrome")
 
 # low front bash bar
@@ -448,7 +451,8 @@ for i in range(-3, 4):
 # ------------------------------------------------------------------ rear fenders, rear panel, bumper
 for s in (-1, 1):
     arch_liner(RX, f"linerR{s}", s * 0.5, s * 0.72, r=0.55, a0=0.75)
-add_box("rearPanel", 0.05, 0.16, 0.98, "Plastic", (-1.465, 0.62, 0), r=0.015)
+# black "Kawasaki" panel across the back, between the tail light pods
+add_box("rearPanel", 0.06, 0.2, 0.9, "Plastic", (-1.47, 0.66, 0), r=0.02)
 tube("rearBumper", [(-1.3, 0.42, -0.5), (-1.53, 0.42, -0.5), (-1.53, 0.42, 0.5), (-1.3, 0.42, 0.5)], 0.022, bend=0.08)
 for s in (-1, 1):
     rod(f"rbUp{s}", (-1.52, 0.42, s * 0.3), (-1.45, 0.62, s * 0.3), 0.016)
@@ -470,8 +474,11 @@ for s in (-1, 1):
     tb(f"bedRail{s}", BL + 0.06, 0.05, 0.17, "Paint", BL / 2 + 0.01, BH + 0.005, s * 0.635, r=0.02)
     for x in (0.12, BL / 2, BL - 0.1):
         tb(f"tie{s}{x:.2f}", 0.05, 0.03, 0.05, "PlasticGrey", x, BH + 0.035, s * 0.6, r=0.008)
-    tb(f"tailLens{s}", 0.02, 0.15, 0.06, "TailLens", -0.052, -0.02, s * 0.635, r=0.008)
-    tb(f"tailBezel{s}", 0.02, 0.17, 0.08, "Plastic", -0.046, -0.02, s * 0.635, r=0.008)
+    # Rear, checked against a straight-on photo: body-colour pods wrap the back
+    # corners and carry round tail lights, low down beside the black panel.
+    tb(f"tailPod{s}", 0.08, 0.46, 0.2, "Paint", -0.03, -0.07, s * 0.61, r=0.03)
+    tb(f"tailBezel{s}", 0.02, 0.15, 0.15, "Plastic", -0.072, -0.16, s * 0.58, r=0.07, seg=4)
+    tb(f"tailLens{s}", 0.02, 0.12, 0.12, "TailLens", -0.08, -0.16, s * 0.58, r=0.055, seg=4)
 
 
 def bed_skin(z0, z1, name):
@@ -493,7 +500,11 @@ def bed_skin(z0, z1, name):
 for s in (-1, 1):
     bed_skin(s * 0.585, s * 0.715, f"bedSkin{s}")
     flare(RX, s * 0.705, f"flareR{s}", r=0.55, a0=0.75, width=0.04, thick=0.018, group="Tray", material="Paint")
-tb("tailSkin", 0.04, 0.38, 1.18, "Paint", -0.04, 0.12, 0, r=0.02)
+tb("tailSkin", 0.04, 0.08, 1.18, "Paint", -0.04, 0.27, 0, r=0.02)
+# the tailgate's outer face is ribbed black plastic
+tb("tailFace", 0.03, 0.26, 1.0, "Plastic", -0.05, 0.1, 0, r=0.012)
+for i in range(13):
+    tb(f"tailRib{i}", 0.012, 0.22, 0.02, "Plastic", -0.068, 0.1, -0.45 + i * 0.075, r=0.004, seg=1)
 tb("bedFront", 0.05, BH + 0.04, BW, "Bed", BL - 0.025, BH / 2 + 0.015, 0)
 tb("tailgate", 0.05, BH - 0.02, BW - 0.14, "Bed", 0.03, BH / 2, 0)
 tb("tailgateHandle", 0.025, 0.045, 0.24, "Plastic", -0.07, BH - 0.08, 0, r=0.01)

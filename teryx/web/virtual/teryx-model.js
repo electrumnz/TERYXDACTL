@@ -562,7 +562,7 @@ export function buildTeryx() {
   const rearPods = [-0.55, 0.55].map(z => makeLight(-0.6, 2.01, z, 0.1, [-10, -3, z * 3], 0xffffff, 0.6, 18, true));
   // stock headlights get a real beam at night
   const headSpot = new THREE.SpotLight(0xfff2d6, 0, 30, 0.45, 0.5, 1);
-  headSpot.position.set(1.45, 0.78, 0); headSpot.target.position.set(10, -0.6, 0);
+  headSpot.position.set(1.35, 0.9, 0); headSpot.target.position.set(10, -0.6, 0);
   ute.add(headSpot, headSpot.target);
 
   const bodyMats = [M.paint, M.plastic, M.plasticGrey, M.cage, M.seat, M.seatPanel, M.bed, M.frame];

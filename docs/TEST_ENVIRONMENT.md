@@ -115,9 +115,10 @@ or the real bus.
 The bodywork (shell, cage, seats, dash, bed and wheels) is `teryx.glb`, built
 in Blender by `teryx/web/virtual/blender/build_teryx.py`. No free Teryx model
 with an MIT-friendly licence exists, so it's modelled from scratch to the
-2013 spec sheet and checked against side-on photos of a 2012-13 Teryx 750
-with `blender/overlay.py` (it lays a render over the photo, scaled by the
-wheelbase). Keep reference photos out of the repo. To rebuild:
+2013 spec sheet and checked against side-on, head-on and straight-behind
+photos of a 2012-13 Teryx 750 with `blender/overlay.py` (it lays a render
+over the photo, scaled by the wheelbase from the side or the track width from
+the front and back, `--view front|rear`). Keep reference photos out of the repo. To rebuild:
 
     pip install bpy==5.2.4          # Blender as a Python module, Python 3.13
     python teryx/web/virtual/blender/build_teryx.py

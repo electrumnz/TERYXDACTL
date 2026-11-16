@@ -2,12 +2,15 @@
 
     python teryx/web/virtual/blender/overlay.py photo.png out.png \\
         --rear-axle 166,373 --front-axle 594,368 [--side right]
+    python teryx/web/virtual/blender/overlay.py photo.png out.png \\
+        --view front --left-wheel 240,512 --right-wheel 690,512
 
-The photo should be a side-on shot. Give the pixel centres of the rear and
-front wheels: the model is scaled so its 1930 mm wheelbase spans them, then
-rendered with an orthographic camera and drawn over the photo (outline in
-red, plus a 50/50 blend). Reference photos are other people's pictures, so
-keep them and the overlays out of the repo.
+Side view: give the pixel centres of the rear and front wheels, and the model
+is scaled so its 1930 mm wheelbase spans them. Front or rear view: give the
+centres of the two tyres as they sit in the photo (left, right), and the model
+is scaled by the track width. It is then rendered with an orthographic
+camera and drawn over the photo (outline in red, plus a 50/50 blend).
+Reference photos are other people's pictures, so keep them and the overlays out of the repo.
 """
 import argparse
 import math
@@ -20,8 +23,11 @@ from mathutils import Vector
 ap = argparse.ArgumentParser()
 ap.add_argument("photo")
 ap.add_argument("out")
-ap.add_argument("--rear-axle", required=True)
-ap.add_argument("--front-axle", required=True)
+ap.add_argument("--view", default="side", choices=["side", "front", "rear"])
+ap.add_argument("--rear-axle")
+ap.add_argument("--front-axle")
+ap.add_argument("--left-wheel")
+ap.add_argument("--right-wheel")
 ap.add_argument("--side", default="right", choices=["right", "left"])
 ap.add_argument("--glb", default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "teryx.glb"))
 args = ap.parse_args(sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else sys.argv[1:])
@@ -31,9 +37,15 @@ from PIL import Image, ImageChops, ImageFilter  # noqa: E402
 FX, RX, WHEEL_R, TRACK_F, TRACK_R = 0.965, -0.965, 0.33, 1.22, 1.24
 photo = Image.open(args.photo).convert("RGB")
 W, H = photo.size
-(rx, ry), (fx, fy) = [tuple(map(float, a.split(","))) for a in (args.rear_axle, args.front_axle)]
-ppm = math.hypot(fx - rx, fy - ry) / (FX - RX)          # pixels per metre
-axle_px = (rx + fx) / 2, (ry + fy) / 2
+if args.view == "side":
+    pts, span = (args.rear_axle, args.front_axle), FX - RX
+else:
+    pts, span = (args.left_wheel, args.right_wheel), TRACK_F if args.view == "front" else TRACK_R
+if None in pts:
+    ap.error("give the two wheel centres for this view")
+(ax, ay), (bx, by) = [tuple(map(float, a.split(","))) for a in pts]
+ppm = math.hypot(bx - ax, by - ay) / span                # pixels per metre
+axle_px = (ax + bx) / 2, (ay + by) / 2
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
 bpy.ops.import_scene.gltf(filepath=os.path.abspath(args.glb))
@@ -54,10 +66,17 @@ cam_data.type = "ORTHO"
 cam_data.ortho_scale = max(W, H) / ppm
 cam = bpy.data.objects.new("cam", cam_data)
 bpy.context.scene.collection.objects.link(cam)
-# image centre in metres (front of the ute to the right of the photo)
-cx = (FX + RX) / 2 + (W / 2 - axle_px[0]) / ppm
+# image centre in metres, from the midpoint of the two wheels
+off = (W / 2 - axle_px[0]) / ppm
 cy = WHEEL_R + (axle_px[1] - H / 2) / ppm
-if args.side == "right":          # camera on the ute's right (+z sim = -y Blender) looking across
+cx = (FX + RX) / 2 + off           # side view: front of the ute to the right of the photo
+if args.view == "front":           # camera ahead looking back; the ute's left is on the photo's right
+    cam.location = (20, off, cy)
+    cam.rotation_euler = (math.pi / 2, 0, math.pi / 2)
+elif args.view == "rear":          # camera behind looking forward
+    cam.location = (-20, -off, cy)
+    cam.rotation_euler = (math.pi / 2, 0, -math.pi / 2)
+elif args.side == "right":          # camera on the ute's right (+z sim = -y Blender) looking across
     cam.location = (cx, -20, cy)
     cam.rotation_euler = (math.pi / 2, 0, 0)
 else:
