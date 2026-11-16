@@ -89,8 +89,9 @@ either CAN link, and run the sim up to 5x faster.
 
 ## Virtual Teryx
 
-`/virtual` (also shown at the top of the sim panel) is a simple low-poly 3D
-UTV that shows what the CAN bus is saying, live:
+`/virtual` (also shown at the top of the sim panel) is a 3D 2013 Teryx 750
+two seater, built in code to the real spec-sheet sizes, that shows what the
+CAN bus is saying, live:
 
 - wheels turn and the ground scrolls with speed, the body pitches on hills
 - the four front bars, interior bar and rear pods light up at their actual
@@ -103,10 +104,17 @@ UTV that shows what the CAN bus is saying, live:
 - brake and tail lights, and the trailer plug's tail and brake pins
 - **See-through** shows the drivetrain under the body, **Night** turns the
   sun off so the lights stand out (keys `x` and `n`)
+- **Paint** cycles the body colour (key `p`), and the dash screen shows a
+  tiny live version of the dash
+- on a Pi (or with `?lite`) it drops the pixel ratio and shadow size to keep
+  the frame rate up. `?night`, `?xray` and `?cam=x,y,z` set the view on load
 
 It only reads the dash feed, so it works the same on the sim, a replayed log
-or the real bus. The shape is our own, not a copy of the Kawasaki. three.js
-(MIT) is bundled in `teryx/web/vendor/` so it works with no internet.
+or the real bus. No free Teryx model with an MIT-friendly licence
+exists, so the model is drawn in code in `teryx/web/virtual/teryx-model.js`
+(no third-party mesh or artwork). three.js (MIT) is bundled in `teryx/web/vendor/` so it works with no internet.
+
+![Virtual Teryx](img/virtual-teryx-day.png)
 
 ![Virtual Teryx at night](img/virtual-teryx-night.png)
 
