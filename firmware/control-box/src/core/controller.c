@@ -187,7 +187,15 @@ void ctl_on_frame(controller_t *c, const can_frame_t *f, uint32_t now,
         if (f->dlc < 2) { reject(c, REJ_BAD_FRAME); return; }
         bool first = !c->drive_seen;
         c->drive_seen = true;
-        if ((first || f->data[0] != c->last_drive[0]) && (f->data[0] == REQ_2WD || f->data[0] == REQ_4WD)) {
+        bool fwd_valid = f->data[0] == REQ_2WD || f->data[0] == REQ_4WD;
+        if ((first || f->data[0] != c->last_drive[0]) && fwd_valid) {
+            c->fwd.target = f->data[0];
+            try_start_4wd(c, now);
+        } else if (fwd_valid && c->fwd.state == FWD_UNKNOWN && !c->fwd.moving &&
+                   motion_check(c, now, false, S(c, SET_4WD_MAX_KMH)) == REJ_NONE) {
+            // Position unknown (after boot, or the first request was refused
+            // before the Shinegle was heard): a resend quietly homes it to the
+            // end the dash wants, once it's safe. No reject if it isn't.
             c->fwd.target = f->data[0];
             try_start_4wd(c, now);
         }

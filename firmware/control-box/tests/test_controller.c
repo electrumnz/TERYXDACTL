@@ -120,6 +120,10 @@ static void test_boot_all_off(void) {
 
 static void test_4wd_speed_rule_and_change_only(void) {
     rig_init();
+    run(300);
+    drive(REQ_2WD, 0);  // known position first (unknown homes on resend, see below)
+    run(3500);
+    CHECK(R.c.fwd.state == FWD_2WD);
     R.speed_x10 = 200;  // 20 km/h
     run(300);
     drive(REQ_4WD, 0);
@@ -141,6 +145,26 @@ static void test_4wd_speed_rule_and_change_only(void) {
     CHECK(R.c.fwd.state == FWD_4WD);
     CHECK(!fault(FAULT_4WD_TIMEOUT));
     CHECK(R.p.pos[ACT_4WD] > 0.99);
+}
+
+static void test_4wd_homes_when_unknown(void) {
+    rig_init();
+    R.shinegle = false;  // dash asks before the Shinegle is heard
+    run(300);
+    drive(REQ_4WD, 0);
+    run(50);
+    CHECK(reject_reason() == REJ_SPEED_UNKNOWN);
+    CHECK(R.c.fwd.state == FWD_UNKNOWN);
+    uint8_t rc = R.c.reject_count;
+    drive(REQ_4WD, 0);   // resend while still unsafe: no new reject
+    run(50);
+    CHECK(R.c.reject_count == rc);
+    R.shinegle = true;
+    run(300);
+    drive(REQ_4WD, 0);   // resend once speed is known: homes to 4WD
+    run(2500);
+    CHECK(R.c.fwd.state == FWD_4WD);
+    CHECK(R.c.reject_count == rc);
 }
 
 static void test_4wd_stall(void) {
@@ -542,6 +566,7 @@ int main(void) {
     struct { const char *name; void (*fn)(void); } tests[] = {
         {"boot: all outputs off", test_boot_all_off},
         {"4WD: speed rule, change-only requests", test_4wd_speed_rule_and_change_only},
+        {"4WD: unknown position homes on resend", test_4wd_homes_when_unknown},
         {"4WD: stall gives overcurrent fault", test_4wd_stall},
         {"diff: closed loop and speed rule", test_diff_closed_loop},
         {"diff: jam detected", test_diff_jam},

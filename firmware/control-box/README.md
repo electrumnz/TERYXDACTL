@@ -82,7 +82,7 @@ If CAN is down it falls back to `picotool reboot -f -u` over USB. Needs
 |---|---|
 | 1 Lost dash | No `0x700` for 500 ms: stop tray, 4WD and diff actuators, winch off and disarmed, isolator off. Lights stay. 3 s grace after boot |
 | 2 Lost speed | No Shinegle speed for 500 ms: speed unknown, so anything that needs "stopped" or a speed check is refused |
-| 3 2WD/4WD | Starts only under 5 km/h. Full power to the end. Done when the current drops away (actuator's own limit switch), fault on over 6 A, gives up after 3 s |
+| 3 2WD/4WD | Starts only under 5 km/h. Requests act on a change only, except that while the position is unknown (after boot) a resend homes it once it is safe. Full power to the end. Done when the current drops away (actuator's own limit switch), fault on over 6 A, gives up after 3 s |
 | 4 Diff % | Starts only under 15 km/h, and stops where it is if speed goes over. Closed loop on the pot with a 2 % deadband. Fault if the pot doesn't move for 1 s while driving, over 8 A, or after 4 s. Pot reading outside its calibrated range = wire fault |
 | 5 Tray | Stopped only, hold-to-run (stops 300 ms after the last `0x703`). Stops at limit switches, over 10 A, after 20 s, or if the Teryx moves. Both limits showing at once = wiring fault, tray locked out |
 | 6 Winch | Arm only when stopped. Hold-to-run. In and out never together, with 100 ms of both-off between them. Disarms on lost dash, key off, any speed, or 2 min idle. Tray and winch can't run at the same time. If the handheld remote is in use, the dash can't drive the winch |
