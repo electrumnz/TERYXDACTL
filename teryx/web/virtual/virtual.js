@@ -5,6 +5,7 @@ import * as THREE from "three";
 import { OrbitControls } from "/vendor/three/OrbitControls.js";
 import { RoomEnvironment } from "/vendor/three/RoomEnvironment.js";
 import { mergeGeometries } from "/vendor/three/BufferGeometryUtils.js";
+import { GLTFLoader } from "/vendor/three/GLTFLoader.js";
 import { buildTeryx, DIMS, PAINTS } from "/virtual-static/teryx-model.js";
 
 const $ = id => document.getElementById(id);
@@ -229,6 +230,12 @@ const sceneryTiles = [];
 const T = buildTeryx();
 const { rig, ute, wheels, lightBars, interior, rearPods, drive, tray, winch } = T;
 scene.add(rig);
+// the Blender-built bodywork; the code-drawn version shows until it loads (or if it can't)
+if (!params.has("nomodel")) {
+  new GLTFLoader().load("/virtual-static/teryx.glb", g => {
+    try { T.useGlb(g); } catch (e) { console.warn("virtual Teryx: keeping the code model,", e.message); }
+  }, undefined, e => console.warn("virtual Teryx: teryx.glb didn't load,", e.message || e));
+}
 const { WHEEL_R, FX } = DIMS;
 
 // paint colour, remembered per browser
@@ -381,9 +388,10 @@ function frame(now) {
   winch.drum.rotation.z = drumAngle;
   const hx = winch.x + cableLen, hy = winch.y - Math.min(0.4, cableLen * 0.05);
   winch.hook.position.set(hx + 0.02, hy - 0.03, 0);
-  const cl = Math.hypot(hx - 1.5, hy - 0.46);
-  winch.cable.scale.y = cl; winch.cable.position.set((hx + 1.5) / 2, (hy + 0.46) / 2, 0);
-  winch.cable.rotation.z = Math.PI / 2 + Math.atan2(hy - 0.46, hx - 1.5);
+  const dx0 = winch.drum.position.x, dy0 = winch.drum.position.y;
+  const cl = Math.hypot(hx - dx0, hy - dy0);
+  winch.cable.scale.y = cl; winch.cable.position.set((hx + dx0) / 2, (hy + dy0) / 2, 0);
+  winch.cable.rotation.z = Math.PI / 2 + Math.atan2(hy - dy0, hx - dx0);
   winch.glow.intensity = S["winch.armed"] ? (wIn || wOut ? 1.5 + Math.sin(now / 60) * 0.5 : 0.4) : 0;
 
   // lights (levels are what the control box is actually outputting, effects included)

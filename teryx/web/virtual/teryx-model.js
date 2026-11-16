@@ -167,7 +167,9 @@ export function buildTeryx() {
   const rig = new THREE.Group();     // follows terrain pitch: wheels, axles
   const ute = new THREE.Group();     // sprung body (bounces a little)
   rig.add(ute);
-  const B = new Batch();             // everything static on the body
+  const B = new Batch();             // static mechanical bits (frame, suspension, hitch...)
+  const BB = new Batch();            // bodywork: replaced by the Blender model (teryx.glb) when it loads
+  const bodyGroup = new THREE.Group(); ute.add(bodyGroup);
 
   // ---------------- frame, floor, skid plate
   for (const z of [-0.3, 0.3]) {
@@ -175,83 +177,83 @@ export function buildTeryx() {
   }
   for (const x of [1.05, 0.45, -0.25, -0.75, -1.3]) rod(B, [x, 0.4, -0.3], [x, 0.4, 0.3], 0.022, M.frame);
   B.add(rbox(1.9, 0.03, 0.9, 0.08, 0.01), M.darkAlloy, { p: [0.15, 0.33, 0] });            // skid plate
-  B.add(rbox(1.16, 0.035, 1.22, 0.04, 0.01), M.plastic, { p: [0.0, 0.445, 0] });           // floor pan
+  BB.add(rbox(1.16, 0.035, 1.22, 0.04, 0.01), M.plastic, { p: [0.0, 0.445, 0] });           // floor pan
   // ribbed floor mat
-  for (let i = 0; i < 9; i++) B.add(new THREE.BoxGeometry(0.4, 0.012, 0.02), M.plasticGrey, { p: [0.22, 0.47, -0.52 + i * 0.03 + (i > 4 ? 0.55 : 0)] });
+  for (let i = 0; i < 9; i++) BB.add(new THREE.BoxGeometry(0.4, 0.012, 0.02), M.plasticGrey, { p: [0.22, 0.47, -0.52 + i * 0.03 + (i > 4 ? 0.55 : 0)] });
   // rocker / sill panels under the door openings
   for (const s of [-1, 1]) {
-    B.add(profile([[-0.62, 0.36], [0.5, 0.36], [0.56, 0.42], [0.52, 0.56], [-0.6, 0.56]], 0.09, 0.02), M.plastic, { p: [0, 0, s * 0.62] });
+    BB.add(profile([[-0.62, 0.36], [0.5, 0.36], [0.56, 0.42], [0.52, 0.56], [-0.6, 0.56]], 0.09, 0.02), M.plastic, { p: [0, 0, s * 0.62] });
   }
 
   // ---------------- front end: bonnet, nose, grille, headlights
   // bonnet + nose in one side profile, extruded across the middle
   const hood = [[0.5, 0.48], [1.28, 0.48], [1.46, 0.56], [1.48, 0.66], [1.43, 0.78], [1.32, 0.86],
     [1.0, 0.93], [0.72, 0.99], [0.56, 1.0], [0.5, 0.96]];
-  B.add(profile(hood, 0.94, 0.045), M.paint);
+  BB.add(profile(hood, 0.94, 0.045), M.paint);
   // centre bonnet ridge and vents
-  B.add(profile([[0.62, 0.99], [1.0, 0.94], [1.28, 0.87], [1.0, 0.955], [0.62, 1.01]], 0.32, 0.012), M.paint);
-  for (const s of [-1, 1]) B.add(rbox(0.18, 0.012, 0.12, 0.02, 0.004), M.plastic, { p: [0.88, 0.968, s * 0.3], r: [0, 0, -0.17] });
+  BB.add(profile([[0.62, 0.99], [1.0, 0.94], [1.28, 0.87], [1.0, 0.955], [0.62, 1.01]], 0.32, 0.012), M.paint);
+  for (const s of [-1, 1]) BB.add(rbox(0.18, 0.012, 0.12, 0.02, 0.004), M.plastic, { p: [0.88, 0.968, s * 0.3], r: [0, 0, -0.17] });
   // front fenders with arches and black flares
   const fFender = fenderShape(0.46, 1.46, 0.5,
     [[0.48, 0.92], [0.56, 0.97], [0.8, 0.95], [1.05, 0.9], [1.3, 0.83], [1.42, 0.74], [1.47, 0.62]],
     FX, 0.36, 0.41);
   for (const s of [-1, 1]) {
-    B.add(extrudeShape(fFender, 0.27, 0.035), M.paint, { p: [0, 0, s * 0.585] });
+    BB.add(extrudeShape(fFender, 0.27, 0.035), M.paint, { p: [0, 0, s * 0.585] });
     const flare = new THREE.TorusGeometry(0.43, 0.035, 6, 28, Math.PI - 0.5);
-    B.add(flare, M.plastic, { p: [FX, 0.36, s * 0.68], r: [0, 0, 0.25], s: [1, 1, 2.6] });
-    B.add(rbox(0.5, 0.05, 0.3, 0.02, 0.01), M.plastic, { p: [FX - 0.05, 0.5, s * 0.5] });   // inner guard
+    BB.add(flare, M.plastic, { p: [FX, 0.36, s * 0.68], r: [0, 0, 0.25], s: [1, 1, 2.6] });
+    BB.add(rbox(0.5, 0.05, 0.3, 0.02, 0.01), M.plastic, { p: [FX - 0.05, 0.5, s * 0.5] });   // inner guard
   }
   // grille surround and grille
-  B.add(profile([[1.44, 0.5], [1.5, 0.52], [1.52, 0.68], [1.47, 0.72], [1.44, 0.68]], 0.78, 0.02), M.plastic);
-  for (let i = 0; i < 6; i++) B.add(new THREE.BoxGeometry(0.02, 0.014, 0.62), M.plasticGrey, { p: [1.515, 0.55 + i * 0.025, 0] });
-  B.add(new THREE.BoxGeometry(0.01, 0.16, 0.66), M.glass, { p: [1.5, 0.61, 0] });
+  BB.add(profile([[1.44, 0.5], [1.5, 0.52], [1.52, 0.68], [1.47, 0.72], [1.44, 0.68]], 0.78, 0.02), M.plastic);
+  for (let i = 0; i < 6; i++) BB.add(new THREE.BoxGeometry(0.02, 0.014, 0.62), M.plasticGrey, { p: [1.515, 0.55 + i * 0.025, 0] });
+  BB.add(new THREE.BoxGeometry(0.01, 0.16, 0.66), M.glass, { p: [1.5, 0.61, 0] });
   // headlight housings in the nose corners (lens lights up separately)
   const headMat = new THREE.MeshStandardMaterial({ color: 0x2a2c2e, emissive: 0xfff2d6, emissiveIntensity: 0.2, roughness: 0.1, metalness: 0.4 });
-  const headLens = new THREE.Group(); ute.add(headLens);
+  const headLens = new THREE.Group(); bodyGroup.add(headLens);
   for (const s of [-1, 1]) {
     // swept housing following the nose slope, lens and reflector inside it
     const hq = new THREE.Quaternion().setFromEuler(new THREE.Euler(0, s * -0.28, -0.42, "YXZ"));
-    B.add(rbox(0.05, 0.1, 0.25, 0.03, 0.012), M.plastic, { p: [1.475, 0.755, s * 0.31], q: hq });
+    BB.add(rbox(0.05, 0.1, 0.25, 0.03, 0.012), M.plastic, { p: [1.475, 0.755, s * 0.31], q: hq });
     const lens = new THREE.Mesh(rbox(0.02, 0.075, 0.22, 0.025, 0.006), headMat);
     lens.position.set(1.497, 0.765, s * 0.31); lens.quaternion.copy(hq);
     headLens.add(lens);
-    B.add(new THREE.SphereGeometry(0.03, 12, 8), M.chrome, { p: [1.5, 0.77, s * 0.27], s: [0.4, 1, 1] });
+    BB.add(new THREE.SphereGeometry(0.03, 12, 8), M.chrome, { p: [1.5, 0.77, s * 0.27], s: [0.4, 1, 1] });
   }
 
   // ---------------- front brush guard, winch plate
-  B.add(bentTube([[1.36, 0.46, -0.42], [1.56, 0.46, -0.42], [1.6, 0.76, -0.34], [1.6, 0.76, 0.34], [1.56, 0.46, 0.42], [1.36, 0.46, 0.42]], 0.022, 0.1), M.cage);
-  rod(B, [1.59, 0.62, -0.38], [1.59, 0.62, 0.38], 0.018, M.cage);
-  for (const s of [-1, 1]) rod(B, [1.6, 0.76, s * 0.16], [1.585, 0.47, s * 0.16], 0.016, M.cage);
-  B.add(rbox(0.26, 0.02, 0.5, 0.02, 0.006), M.darkAlloy, { p: [1.48, 0.41, 0] });         // winch plate
-  B.add(rbox(0.04, 0.09, 0.18, 0.01, 0.005), M.alloy, { p: [1.63, 0.45, 0] });            // hawse fairlead
-  B.add(new THREE.BoxGeometry(0.05, 0.02, 0.1), M.glass, { p: [1.645, 0.45, 0] });
+  BB.add(bentTube([[1.36, 0.46, -0.42], [1.56, 0.46, -0.42], [1.6, 0.76, -0.34], [1.6, 0.76, 0.34], [1.56, 0.46, 0.42], [1.36, 0.46, 0.42]], 0.022, 0.1), M.cage);
+  rod(BB, [1.59, 0.62, -0.38], [1.59, 0.62, 0.38], 0.018, M.cage);
+  for (const s of [-1, 1]) rod(BB, [1.6, 0.76, s * 0.16], [1.585, 0.47, s * 0.16], 0.016, M.cage);
+  B.add(rbox(0.26, 0.02, 0.5, 0.02, 0.006), M.darkAlloy, { p: [1.34, 0.41, 0] });         // winch plate
+  B.add(rbox(0.04, 0.09, 0.18, 0.01, 0.005), M.alloy, { p: [1.49, 0.45, 0] });            // hawse fairlead
+  B.add(new THREE.BoxGeometry(0.05, 0.02, 0.1), M.glass, { p: [1.505, 0.45, 0] });
 
   // ---------------- dash, steering, our 10.1" screen
-  B.add(profile([[0.36, 0.86], [0.44, 1.0], [0.56, 1.03], [0.6, 0.98], [0.56, 0.46], [0.5, 0.46], [0.46, 0.72]], 1.26, 0.03), M.plastic);
-  B.add(rbox(0.06, 0.12, 0.32, 0.02, 0.01), M.plasticGrey, { p: [0.4, 0.84, 0.32], r: [0, 0, -0.5] });  // glovebox lid
-  rod(B, [0.38, 1.04, 0.42], [0.38, 1.04, 0.18], 0.014, M.cage);                                        // passenger grab bar
-  for (const z of [0.42, 0.18]) rod(B, [0.38, 1.04, z], [0.46, 0.97, z], 0.014, M.cage);
+  BB.add(profile([[0.36, 0.86], [0.44, 1.0], [0.56, 1.03], [0.6, 0.98], [0.56, 0.46], [0.5, 0.46], [0.46, 0.72]], 1.26, 0.03), M.plastic);
+  BB.add(rbox(0.06, 0.12, 0.32, 0.02, 0.01), M.plasticGrey, { p: [0.4, 0.84, 0.32], r: [0, 0, -0.5] });  // glovebox lid
+  rod(BB, [0.38, 1.04, 0.42], [0.38, 1.04, 0.18], 0.014, M.cage);                                        // passenger grab bar
+  for (const z of [0.42, 0.18]) rod(BB, [0.38, 1.04, z], [0.46, 0.97, z], 0.014, M.cage);
   // steering wheel (driver on -z)
   const SW = { x: 0.3, y: 1.02, z: -0.3 };
   const swq = new THREE.Quaternion().setFromEuler(new THREE.Euler(0, Math.PI / 2, 0.55, "YXZ"));
   const swg = new THREE.TorusGeometry(0.17, 0.022, 8, 28);
-  B.add(swg, M.rubber, { p: [SW.x, SW.y, SW.z], q: swq });
+  BB.add(swg, M.rubber, { p: [SW.x, SW.y, SW.z], q: swq });
   for (const a of [0, 2.2, -2.2]) {
     const sp = new THREE.BoxGeometry(0.16, 0.03, 0.012); sp.translate(0.08, 0, 0);
     const q = swq.clone().multiply(new THREE.Quaternion().setFromAxisAngle(V(0, 0, 1), a - Math.PI / 2));
-    B.add(sp, M.plasticGrey, { p: [SW.x, SW.y, SW.z], q });
+    BB.add(sp, M.plasticGrey, { p: [SW.x, SW.y, SW.z], q });
   }
-  B.add(new THREE.CylinderGeometry(0.05, 0.05, 0.05, 16), M.plasticGrey, { p: [SW.x, SW.y, SW.z], q: swq.clone().multiply(new THREE.Quaternion().setFromAxisAngle(V(1, 0, 0), Math.PI / 2)) });
-  rod(B, [SW.x + 0.02, SW.y - 0.02, SW.z], [0.52, 0.86, SW.z], 0.022, M.plastic);
+  BB.add(new THREE.CylinderGeometry(0.05, 0.05, 0.05, 16), M.plasticGrey, { p: [SW.x, SW.y, SW.z], q: swq.clone().multiply(new THREE.Quaternion().setFromAxisAngle(V(1, 0, 0), Math.PI / 2)) });
+  rod(BB, [SW.x + 0.02, SW.y - 0.02, SW.z], [0.52, 0.86, SW.z], 0.022, M.plastic);
   // pedals
-  for (const [z, w] of [[-0.36, 0.06], [-0.24, 0.09]]) B.add(rbox(0.02, 0.1, w, 0.01, 0.004), M.darkAlloy, { p: [0.47, 0.56, z], r: [0, 0, 0.5] });
+  for (const [z, w] of [[-0.36, 0.06], [-0.24, 0.09]]) BB.add(rbox(0.02, 0.1, w, 0.01, 0.004), M.darkAlloy, { p: [0.47, 0.56, z], r: [0, 0, 0.5] });
   // screen in a printed bezel, with sun hood
   const screenCanvas = document.createElement("canvas");
   screenCanvas.width = 320; screenCanvas.height = 200;
   const screenTex = new THREE.CanvasTexture(screenCanvas);
   screenTex.colorSpace = THREE.SRGBColorSpace;
   const screenMat = new THREE.MeshStandardMaterial({ color: 0x000000, emissive: 0xffffff, emissiveMap: screenTex, emissiveIntensity: 0.9, roughness: 0.2 });
-  const SC = { x: 0.54, y: 1.13, z: -0.26 };
+  const SC = { x: 0.42, y: 1.29, z: -0.28 };
   const scq = new THREE.Quaternion().setFromEuler(new THREE.Euler(0, -Math.PI / 2, 0.25, "YXZ"));
   B.add(rbox(0.29, 0.21, 0.045, 0.02, 0.01), M.plastic, { p: [SC.x + 0.025, SC.y, SC.z], q: scq.clone().multiply(new THREE.Quaternion().setFromAxisAngle(V(0, 1, 0), 0)) });
   B.add(profile([[-0.15, 0.1], [0.15, 0.1], [0.15, 0.11], [-0.15, 0.11]], 0.12, 0.004), M.plastic, { p: [SC.x - 0.03, SC.y + 0.0, SC.z], q: scq.clone().multiply(new THREE.Quaternion().setFromAxisAngle(V(1, 0, 0), Math.PI / 2)).multiply(new THREE.Quaternion().setFromAxisAngle(V(1, 0, 0), -Math.PI / 2)) });
@@ -264,18 +266,18 @@ export function buildTeryx() {
 
   // ---------------- seats (bucket seats with integrated headrests)
   for (const z of [-0.3, 0.3]) {
-    B.add(rbox(0.36, 0.26, 0.42, 0.02, 0.01), M.plastic, { p: [-0.18, 0.59, z] });                   // seat box
-    B.add(rbox(0.48, 0.1, 0.46, 0.06, 0.03), M.seat, { p: [-0.16, 0.77, z], r: [0, 0, 0.05] });      // cushion
-    B.add(rbox(0.36, 0.03, 0.26, 0.05, 0.01), M.seatPanel, { p: [-0.14, 0.825, z], r: [0, 0, 0.05] });
-    for (const s of [-1, 1]) B.add(rbox(0.42, 0.08, 0.07, 0.03, 0.025), M.seat, { p: [-0.16, 0.83, z + s * 0.2], r: [0, 0, 0.05] });
+    BB.add(rbox(0.36, 0.26, 0.42, 0.02, 0.01), M.plastic, { p: [-0.18, 0.59, z] });                   // seat box
+    BB.add(rbox(0.48, 0.1, 0.46, 0.06, 0.03), M.seat, { p: [-0.16, 0.77, z], r: [0, 0, 0.05] });      // cushion
+    BB.add(rbox(0.36, 0.03, 0.26, 0.05, 0.01), M.seatPanel, { p: [-0.14, 0.825, z], r: [0, 0, 0.05] });
+    for (const s of [-1, 1]) BB.add(rbox(0.42, 0.08, 0.07, 0.03, 0.025), M.seat, { p: [-0.16, 0.83, z + s * 0.2], r: [0, 0, 0.05] });
     const back = { p: [-0.42, 1.08, z], r: [0, 0, 0.16] };
-    B.add(rbox(0.1, 0.56, 0.46, 0.05, 0.03), M.seat, back);
-    B.add(rbox(0.03, 0.4, 0.26, 0.05, 0.01), M.seatPanel, { p: [-0.37, 1.04, z], r: [0, 0, 0.16] });
-    for (const s of [-1, 1]) B.add(rbox(0.13, 0.42, 0.07, 0.03, 0.025), M.seat, { p: [-0.39, 1.0, z + s * 0.21], r: [0, 0, 0.16] });
-    B.add(rbox(0.1, 0.17, 0.3, 0.05, 0.03), M.seat, { p: [-0.49, 1.43, z], r: [0, 0, 0.16] });       // headrest
+    BB.add(rbox(0.1, 0.56, 0.46, 0.05, 0.03), M.seat, back);
+    BB.add(rbox(0.03, 0.4, 0.26, 0.05, 0.01), M.seatPanel, { p: [-0.37, 1.04, z], r: [0, 0, 0.16] });
+    for (const s of [-1, 1]) BB.add(rbox(0.13, 0.42, 0.07, 0.03, 0.025), M.seat, { p: [-0.39, 1.0, z + s * 0.21], r: [0, 0, 0.16] });
+    BB.add(rbox(0.1, 0.17, 0.3, 0.05, 0.03), M.seat, { p: [-0.49, 1.43, z], r: [0, 0, 0.16] });       // headrest
   }
   // centre console between the seats
-  B.add(rbox(0.5, 0.2, 0.12, 0.03, 0.015), M.plasticGrey, { p: [-0.12, 0.62, 0] });
+  BB.add(rbox(0.5, 0.2, 0.12, 0.03, 0.015), M.plasticGrey, { p: [-0.12, 0.62, 0] });
   // battery pack hidden under the seats (EV conversion)
   const pack = new Batch();
 
@@ -283,37 +285,37 @@ export function buildTeryx() {
   const C = 0.023;
   for (const s of [-1, 1]) {
     // A-pillar sweeping up into the roof rail and down the B-pillar
-    B.add(bentTube([[0.5, 0.96, s * 0.66], [0.38, 1.5, s * 0.645], [0.18, 1.86, s * 0.63], [-0.52, 1.87, s * 0.63],
+    BB.add(bentTube([[0.5, 0.96, s * 0.66], [0.38, 1.5, s * 0.645], [0.18, 1.86, s * 0.63], [-0.52, 1.87, s * 0.63],
       [-0.6, 1.74, s * 0.64], [-0.63, 0.58, s * 0.66]], C, 0.16), M.cage);
     // hip bolster / door bar
-    B.add(bentTube([[0.46, 0.8, s * 0.66], [0.3, 0.96, s * 0.7], [-0.1, 0.98, s * 0.71], [-0.6, 0.96, s * 0.67]], 0.016, 0.12), M.cage);
+    BB.add(bentTube([[0.46, 0.8, s * 0.66], [0.3, 0.96, s * 0.7], [-0.1, 0.98, s * 0.71], [-0.6, 0.96, s * 0.67]], 0.016, 0.12), M.cage);
     // rear braces down to the frame behind the seats
-    B.add(bentTube([[-0.6, 1.62, s * 0.64], [-0.7, 1.2, s * 0.6], [-0.66, 0.6, s * 0.42]], 0.018, 0.2), M.cage);
+    BB.add(bentTube([[-0.6, 1.62, s * 0.64], [-0.7, 1.2, s * 0.6], [-0.66, 0.6, s * 0.42]], 0.018, 0.2), M.cage);
     // feet of the cage
-    B.add(rbox(0.08, 0.04, 0.08, 0.01, 0.006), M.frame, { p: [-0.63, 0.57, s * 0.66] });
+    BB.add(rbox(0.08, 0.04, 0.08, 0.01, 0.006), M.frame, { p: [-0.63, 0.57, s * 0.66] });
   }
-  rod(B, [0.2, 1.855, -0.63], [0.2, 1.855, 0.63], C, M.cage);          // front roof bar
-  rod(B, [-0.53, 1.87, -0.63], [-0.53, 1.87, 0.63], C, M.cage);        // rear roof bar
-  rod(B, [-0.63, 1.2, -0.66], [-0.63, 1.2, 0.66], 0.02, M.cage);       // shoulder bar
-  rod(B, [-0.15, 1.875, -0.63], [-0.15, 1.875, 0.63], 0.016, M.cage);  // roof mid bar
+  rod(BB, [0.2, 1.855, -0.63], [0.2, 1.855, 0.63], C, M.cage);          // front roof bar
+  rod(BB, [-0.53, 1.87, -0.63], [-0.53, 1.87, 0.63], C, M.cage);        // rear roof bar
+  rod(BB, [-0.63, 1.2, -0.66], [-0.63, 1.2, 0.66], 0.02, M.cage);       // shoulder bar
+  rod(BB, [-0.15, 1.875, -0.63], [-0.15, 1.875, 0.63], 0.016, M.cage);  // roof mid bar
   // moulded roof
-  B.add(rbox(0.86, 0.035, 1.34, 0.12, 0.015), M.plastic, { p: [-0.17, 1.91, 0] });
-  for (let i = -3; i <= 3; i++) B.add(new THREE.BoxGeometry(0.7, 0.012, 0.03), M.plastic, { p: [-0.17, 1.93, i * 0.16] });
+  BB.add(rbox(0.86, 0.035, 1.34, 0.12, 0.015), M.plastic, { p: [-0.17, 1.91, 0] });
+  for (let i = -3; i <= 3; i++) BB.add(new THREE.BoxGeometry(0.7, 0.012, 0.03), M.plastic, { p: [-0.17, 1.93, i * 0.16] });
   // light bar bracket on the front roof bar
-  rod(B, [0.24, 1.9, -0.66], [0.24, 1.9, 0.66], 0.012, M.frame);
-  for (const s of [-1, 1]) rod(B, [0.2, 1.855, s * 0.6], [0.24, 1.9, s * 0.6], 0.012, M.frame);
+  rod(B, [0.14, 1.94, -0.66], [0.14, 1.94, 0.66], 0.012, M.frame);
+  for (const s of [-1, 1]) rod(B, [0.1, 1.88, s * 0.6], [0.14, 1.94, s * 0.6], 0.012, M.frame);
 
   // ---------------- rear fenders (body colour), rear panel, hitch, plug
   const rFender = fenderShape(-1.48, -0.62, 0.48,
     [[-1.46, 0.8], [-1.3, 0.83], [-0.7, 0.83], [-0.62, 0.78]], RX, 0.36, 0.42);
   for (const s of [-1, 1]) {
-    B.add(extrudeShape(rFender, 0.24, 0.03), M.paint, { p: [0, 0, s * 0.62] });
-    B.add(new THREE.TorusGeometry(0.44, 0.032, 6, 28, Math.PI - 0.4), M.plastic, { p: [RX, 0.36, s * 0.72], r: [0, 0, 0.2], s: [1, 1, 2.6] });
-    B.add(rbox(0.6, 0.05, 0.36, 0.02, 0.01), M.plastic, { p: [RX, 0.78, s * 0.48] });
+    BB.add(extrudeShape(rFender, 0.24, 0.03), M.paint, { p: [0, 0, s * 0.62] });
+    BB.add(new THREE.TorusGeometry(0.44, 0.032, 6, 28, Math.PI - 0.4), M.plastic, { p: [RX, 0.36, s * 0.72], r: [0, 0, 0.2], s: [1, 1, 2.6] });
+    BB.add(rbox(0.6, 0.05, 0.36, 0.02, 0.01), M.plastic, { p: [RX, 0.78, s * 0.48] });
   }
-  B.add(profile([[-1.49, 0.62], [-1.44, 0.6], [-1.44, 0.8], [-1.49, 0.79]], 0.98, 0.015), M.plastic);  // rear panel under the bed
-  B.add(bentTube([[-1.3, 0.42, -0.5], [-1.52, 0.42, -0.5], [-1.52, 0.42, 0.5], [-1.3, 0.42, 0.5]], 0.022, 0.08), M.cage);  // rear bumper
-  for (const s of [-1, 1]) rod(B, [-1.5, 0.42, s * 0.3], [-1.44, 0.62, s * 0.3], 0.016, M.cage);
+  BB.add(profile([[-1.49, 0.62], [-1.44, 0.6], [-1.44, 0.8], [-1.49, 0.79]], 0.98, 0.015), M.plastic);  // rear panel under the bed
+  BB.add(bentTube([[-1.3, 0.42, -0.5], [-1.52, 0.42, -0.5], [-1.52, 0.42, 0.5], [-1.3, 0.42, 0.5]], 0.022, 0.08), M.cage);  // rear bumper
+  for (const s of [-1, 1]) rod(BB, [-1.5, 0.42, s * 0.3], [-1.44, 0.62, s * 0.3], 0.016, M.cage);
   B.add(rbox(0.26, 0.06, 0.06, 0.01, 0.006), M.frame, { p: [-1.56, 0.43, 0] });     // receiver
   B.add(rbox(0.1, 0.05, 0.05, 0.01, 0.006), M.alloy, { p: [-1.68, 0.43, 0] });      // ball mount
   B.add(new THREE.SphereGeometry(0.03, 12, 8), M.chrome, { p: [-1.7, 0.48, 0] });
@@ -348,6 +350,7 @@ export function buildTeryx() {
   arms(FX, TRACK_F, 0.2);
   arms(RX, TRACK_R, 0.2);
   B.build(ute);
+  BB.build(bodyGroup);
 
   // ---------------- drivetrain (stands out in See-through)
   const shaftOff = new THREE.MeshStandardMaterial({ color: 0x5a6066, metalness: 0.7, roughness: 0.35 });
@@ -460,7 +463,7 @@ export function buildTeryx() {
     wheelGeo(width).build(mirror);
     w.add(mirror);
     rig.add(w);
-    wheels.push({ g: w, front });
+    wheels.push({ g: w, front, mirror });
   }
 
   // ---------------- cargo bed (dumps about its rear edge)
@@ -479,11 +482,12 @@ export function buildTeryx() {
   T.add(rbox(0.05, BH - 0.02, BW - 0.12, 0.02, 0.015), M.bed, { p: [0.03, BH / 2, 0] });     // tailgate
   T.add(rbox(0.02, 0.04, 0.3, 0.01, 0.006), M.plasticGrey, { p: [0.0, BH - 0.06, 0] });     // tailgate handle
   for (const s of [-1, 1]) T.add(rbox(0.04, 0.12, 0.04, 0.01, 0.006), M.plastic, { p: [0.03, 0.08, s * 0.57] });  // taillight housings
-  T.build(trayPivot);
+  const trayBody = new THREE.Group(); trayPivot.add(trayBody);
+  T.build(trayBody);
   const tailMat = new THREE.MeshStandardMaterial({ color: 0x400000, emissive: 0xff0000, emissiveIntensity: 0, roughness: 0.2 });
   for (const s of [-1, 1]) {
     const l = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.1, 0.05), tailMat);
-    l.position.set(0.005, 0.08, s * 0.57); trayPivot.add(l);
+    l.position.set(0.005, 0.08, s * 0.57); trayBody.add(l);
   }
   // tray actuator: barrel on the frame, rod to the bed floor (updated each frame)
   const actBarrel = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.3, 12), M.plastic); ute.add(actBarrel);
@@ -491,23 +495,23 @@ export function buildTeryx() {
   const tray = { pivot: trayPivot, actBarrel, actRod, base: V(-0.72, 0.5, 0.42), tipLocal: V(0.62, -0.02, 0.42) };
 
   // ---------------- winch (drum spins, cable pays out)
-  const drum = new THREE.Group(); drum.position.set(1.5, 0.46, 0); ute.add(drum);
+  const drum = new THREE.Group(); drum.position.set(1.36, 0.46, 0); ute.add(drum);
   const db = new Batch();
   db.add(new THREE.CylinderGeometry(0.055, 0.055, 0.26, 16), M.rubber, { r: [Math.PI / 2, 0, 0] });
   db.add(new THREE.BoxGeometry(0.02, 0.112, 0.262), M.orange);
   db.add(new THREE.TorusGeometry(0.06, 0.01, 6, 16), M.darkAlloy, { p: [0, 0, 0.12] });
   db.build(drum);
   const wb = new Batch();
-  wb.add(new THREE.CylinderGeometry(0.065, 0.065, 0.16, 16), M.plastic, { p: [1.5, 0.46, -0.22], r: [Math.PI / 2, 0, 0] });  // motor
-  wb.add(rbox(0.13, 0.13, 0.12, 0.02, 0.01), M.plastic, { p: [1.5, 0.46, 0.2] });                                              // gearbox
-  wb.add(rbox(0.1, 0.06, 0.12, 0.01, 0.006), M.hook, { p: [1.5, 0.555, 0.2] });                                                // clutch lever
-  for (const z of [-0.14, 0.14]) wb.add(rbox(0.14, 0.14, 0.012, 0.01, 0.004), M.darkAlloy, { p: [1.5, 0.46, z] });
+  wb.add(new THREE.CylinderGeometry(0.065, 0.065, 0.16, 16), M.plastic, { p: [1.36, 0.46, -0.22], r: [Math.PI / 2, 0, 0] });  // motor
+  wb.add(rbox(0.13, 0.13, 0.12, 0.02, 0.01), M.plastic, { p: [1.36, 0.46, 0.2] });                                              // gearbox
+  wb.add(rbox(0.1, 0.06, 0.12, 0.01, 0.006), M.hook, { p: [1.36, 0.555, 0.2] });                                                // clutch lever
+  for (const z of [-0.14, 0.14]) wb.add(rbox(0.14, 0.14, 0.012, 0.01, 0.004), M.darkAlloy, { p: [1.36, 0.46, z] });
   wb.build(ute);
   const cable = new THREE.Mesh(new THREE.CylinderGeometry(0.005, 0.005, 1, 5), M.chrome); ute.add(cable);
   const hook = new THREE.Mesh(new THREE.TorusGeometry(0.03, 0.01, 6, 12, Math.PI * 1.5), M.hook);
   hook.rotation.y = Math.PI / 2; ute.add(hook);
-  const winchGlow = new THREE.PointLight(0xff7a1a, 0, 1.4); winchGlow.position.set(1.65, 0.65, 0); ute.add(winchGlow);
-  const winch = { drum, cable, hook, glow: winchGlow, x: 1.66, y: 0.45 };
+  const winchGlow = new THREE.PointLight(0xff7a1a, 0, 1.4); winchGlow.position.set(1.51, 0.65, 0); ute.add(winchGlow);
+  const winch = { drum, cable, hook, glow: winchGlow, x: 1.52, y: 0.45 };
 
   // ---------------- lights: 4 roof bars, interior bar, 2 rear pods
   let fadeTex = null;
@@ -552,10 +556,10 @@ export function buildTeryx() {
     return { mat, spot, mesh: g, beamMat };
   }
   const FRONT_Z = [-0.47, -0.157, 0.157, 0.47];
-  const lightBars = FRONT_Z.map(z => makeLight(0.27, 1.95, z, 0.3, [10, -2.2, z * 4], 0xfff2d6, 0.32, 45));
+  const lightBars = FRONT_Z.map(z => makeLight(0.15, 1.99, z, 0.3, [10, -2.2, z * 4], 0xfff2d6, 0.32, 45));
   const interior = makeLight(-0.15, 1.85, 0, 0.18, [0, -1, 0], 0xffe1b0, 1.1, 4);
   interior.mesh.rotation.z = Math.PI / 2;
-  const rearPods = [-0.55, 0.55].map(z => makeLight(-0.6, 1.98, z, 0.1, [-10, -3, z * 3], 0xffffff, 0.6, 18, true));
+  const rearPods = [-0.55, 0.55].map(z => makeLight(-0.6, 2.01, z, 0.1, [-10, -3, z * 3], 0xffffff, 0.6, 18, true));
   // stock headlights get a real beam at night
   const headSpot = new THREE.SpotLight(0xfff2d6, 0, 30, 0.45, 0.5, 1);
   headSpot.position.set(1.45, 0.78, 0); headSpot.target.position.set(10, -0.6, 0);
@@ -563,12 +567,45 @@ export function buildTeryx() {
 
   const bodyMats = [M.paint, M.plastic, M.plasticGrey, M.cage, M.seat, M.seatPanel, M.bed, M.frame];
 
+  // Swap the code-drawn bodywork for the Blender model (teryx.glb). Its
+  // materials are matched by name to ours, so paint, see-through and the
+  // lamps all keep working. If the GLB never loads, the code version stays.
+  function useGlb(gltf) {
+    const byName = {
+      Paint: M.paint, Plastic: M.plastic, PlasticGrey: M.plasticGrey, Cage: M.cage, Frame: M.frame,
+      Seat: M.seat, SeatPanel: M.seatPanel, Bed: M.bed, Rubber: M.rubber, Alloy: M.alloy,
+      DarkAlloy: M.darkAlloy, Chrome: M.chrome, Glass: M.glass, HeadLens: headMat, TailLens: tailMat,
+    };
+    const prep = obj => {
+      obj.traverse(o => {
+        if (!o.isMesh) return;
+        o.material = byName[o.material.name] || o.material;
+        o.castShadow = true; o.receiveShadow = true;
+      });
+      return obj;
+    };
+    const get = name => gltf.scene.getObjectByName(name);
+    const body = get("Body"), trayG = get("Tray"), wf = get("WheelF"), wr = get("WheelR");
+    if (!body || !trayG || !wf || !wr) throw new Error("teryx.glb is missing a part");
+    bodyGroup.visible = false;
+    ute.add(prep(body));
+    trayBody.visible = false;
+    prep(trayG).position.set(0, 0, 0);          // origin is already on the hinge
+    trayPivot.add(trayG);
+    for (const w of wheels) {
+      w.mirror.children.forEach(c => { c.visible = false; });
+      const m = prep((w.front ? wf : wr).clone());
+      m.position.set(0, 0, 0);
+      w.mirror.add(m);
+    }
+  }
+
   return {
     rig, ute, M, bodyMats, wheels, lightBars, interior, rearPods,
     head: { mat: headMat, spot: headSpot }, tailMat, pinMats,
     screen: { mat: screenMat, canvas: screenCanvas, tex: screenTex },
     drive: { rearShaft, frontShaft, halfF, halfR, motorShaft, diffRing, fwRod, diffRod, shaftOn, shaftOff, driveMeshes },
-    tray, winch,
+    tray, winch, useGlb,
     setPaint(hex) { M.paint.color.setHex(hex); },
   };
 }
