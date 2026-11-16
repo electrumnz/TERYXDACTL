@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Teryx test screen</title>
+<link rel="stylesheet" href="test.css">
+</head>
+<body>
+<!-- Basic test screen to prove the data pipeline works. The real dash UI is built separately. -->
+<header>
+  <div class="brand">TERYX <span>TEST BENCH</span></div>
+  <div class="links">
+    <span id="l-ws" class="pill">DASH</span>
+    <span id="l-mc" class="pill">MOTOR</span>
+    <span id="l-pico" class="pill">CONTROL BOX</span>
+    <span id="scenario" class="pill dim"></span>
+  </div>
+  <div id="clock"></div>
+</header>
+
+<main>
+  <section class="drive card">
+    <div class="dir" id="dir">N</div>
+    <div class="speed"><span id="speed">0</span><small>km/h</small></div>
+    <div class="row"><span id="mode" class="tag">ECO</span><span id="ready" class="tag">READY</span><span id="limp" class="tag warn hidden">LIMP</span></div>
+    <div class="power">
+      <div class="bar"><div id="powbar"></div><div class="zero"></div></div>
+      <div class="row small"><span>REGEN</span><span id="power">0.0 kW</span><span>POWER</span></div>
+    </div>
+  </section>
+
+  <section class="battery card">
+    <h3>Battery</h3>
+    <div class="soc"><span id="soc">--</span><small>%</small></div>
+    <div class="bar soc-bar"><div id="socbar"></div></div>
+    <dl>
+      <dt>Pack</dt><dd id="volt">-- V</dd>
+      <dt>Current</dt><dd id="amps">-- A</dd>
+      <dt>12V aux</dt><dd id="aux">-- V</dd>
+      <dt>Odometer</dt><dd id="odo">-- km</dd>
+    </dl>
+  </section>
+
+  <section class="temps card">
+    <h3>Temps</h3>
+    <div class="temp"><span>Motor</span><div class="bar"><div id="tmotor-bar"></div></div><b id="tmotor">--</b></div>
+    <div class="temp"><span>Controller</span><div class="bar"><div id="tctrl-bar"></div></div><b id="tctrl">--</b></div>
+    <div class="temp"><span>Battery</span><div class="bar"><div id="tbatt-bar"></div></div><b id="tbatt">--</b></div>
+    <h3>Faults</h3>
+    <ul id="faults" class="faults"><li class="ok">All good</li></ul>
+  </section>
+
+  <section class="drivetrain card">
+    <h3>Drivetrain</h3>
+    <div class="seg" id="fourwd">
+      <button data-v="0">2WD</button><button data-v="1">4WD</button>
+    </div>
+    <div class="small" id="fourwd-state">--</div>
+    <h3>Front diff lock <b id="diff-val">0%</b></h3>
+    <input type="range" id="diff" min="0" max="100" step="5" value="0">
+    <div class="bar"><div id="diff-bar"></div><div id="diff-target" class="marker"></div></div>
+  </section>
+
+  <section class="tray card">
+    <h3>Tray <b id="tray-state">--</b></h3>
+    <div class="tray-vis"><div id="tray-fill"></div></div>
+    <div class="row">
+      <button class="hold" id="tray-up">▲ UP</button>
+      <button class="hold" id="tray-down">▼ DOWN</button>
+    </div>
+    <h3>Winch <b id="winch-state">--</b></h3>
+    <div class="row">
+      <button id="winch-arm" class="toggle">ARM</button>
+      <button class="hold" id="winch-in">IN</button>
+      <button class="hold" id="winch-out">OUT</button>
+    </div>
+  </section>
+
+  <section class="lights card">
+    <h3>Lights</h3>
+    <div class="bars" id="bars"></div>
+    <div class="row">
+      <label>Effect <select id="effect">
+        <option>none</option><option>strobe</option><option>chase</option>
+        <option>outside_only</option><option>inside_only</option><option>breathe</option>
+      </select></label>
+      <div class="seg small-seg" id="rear"><button data-v="off">REAR OFF</button><button data-v="auto">AUTO</button><button data-v="on">ON</button></div>
+    </div>
+    <div class="row relays" id="relays"></div>
+  </section>
+
+  <section class="camera card hidden" id="camera">
+    <h3>Reverse camera</h3>
+    <video id="cam-video" autoplay muted playsinline class="hidden"></video>
+    <canvas id="cam-canvas" width="480" height="270"></canvas>
+  </section>
+</main>
+
+<div id="toast" class="toast hidden"></div>
+<footer>
+  <a href="/sim" target="_blank">Sim panel</a> ·
+  <a href="#" id="raw-toggle">Raw state</a> ·
+  <span id="bus"></span>
+</footer>
+<pre id="raw" class="hidden"></pre>
+
+<script src="/common/teryx.js"></script>
+<script src="test.js"></script>
+</body>
+</html>

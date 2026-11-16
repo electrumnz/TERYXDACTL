@@ -30,6 +30,9 @@ from dataclasses import dataclass, field
 
 from ..canbus import messages as M
 from ..canbus import shinegle as SG
+from ..config import safety_defaults
+
+FW_VERSION = (0, 1)  # what the fake box reports as its firmware version
 
 
 @dataclass
@@ -71,7 +74,7 @@ class Actuator:
 
 @dataclass
 class ControlBox:
-    settings: dict = field(default_factory=M.default_settings)
+    settings: dict = field(default_factory=safety_defaults)
     on_defaults: bool = True
     t: float = 0.0
     # actuators
@@ -468,6 +471,12 @@ class ControlBox:
                 "tray_pct": self.tray.pos * 100,
                 "diff_target": self.diff.target * 100,
             }),
-            ("PICO_POWER", {"aux_12v": self.aux_12v, "pico_temp": self.temp}),
+            ("PICO_POWER", {
+                "aux_12v": self.aux_12v, "pico_temp": self.temp,
+                "diff_pot_raw": self.s("diff_pot_min_raw")
+                + self.diff.pos * (self.s("diff_pot_max_raw") - self.s("diff_pot_min_raw")),
+                "fw_major": FW_VERSION[0], "fw_minor": FW_VERSION[1],
+                "winch_idle_s": min(255, self.winch_idle) if self.winch_armed else 0,
+            }),
         ]
         return out

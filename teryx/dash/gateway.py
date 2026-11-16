@@ -223,6 +223,9 @@ class Gateway:
             elif msg.name == "PICO_POWER":
                 st["an.aux_12v"] = v["aux_12v"]
                 st["pico.temp"] = v["pico_temp"]
+                st["an.diff_pos_raw"] = v["diff_pot_raw"]
+                st["pico.version"] = f'{v["fw_major"]}.{v["fw_minor"]}'
+                st["winch.idle_s"] = v["winch_idle_s"]
             elif msg.name == "PICO_SETTINGS_ACK":
                 key = int(v["key"])
                 if key in M.SETTINGS:

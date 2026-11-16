@@ -5,7 +5,7 @@
     python -m teryx dash --bus udp      just the dash (use socketcan:can0 for the real Teryx)
     python -m teryx monitor --bus udp   print decoded CAN frames
     python -m teryx replay FILE         play a candump/.asc/.blf log onto the bus
-    python -m teryx canmap              write docs/CAN_PROTOCOL.md
+    python -m teryx canmap              write docs/CAN_PROTOCOL.md and docs/teryx.dbc
 """
 
 from __future__ import annotations
@@ -27,7 +27,7 @@ def _serve(gateway, sim, args) -> None:
     if sim is not None:
         print(f"  Sim panel:   http://localhost:{args.port}/sim")
     print(f"  CAN bus:     {gateway.bus_spec}\n  Ctrl+C to stop\n")
-    web.run_app(app, host=host, port=args.port, print=None)
+    web.run_app(app, host=host, port=args.port, print=None, access_log=None)
 
 
 def cmd_run(args) -> None:
@@ -63,7 +63,7 @@ def cmd_sim(args) -> None:
     app = build_app(_ListenOnly(gw), sim)
     print(f"\n  Sim panel:   http://localhost:{args.port}/sim\n  CAN bus:     {args.bus}\n")
     try:
-        web.run_app(app, host=args.host, port=args.port, print=None)
+        web.run_app(app, host=args.host, port=args.port, print=None, access_log=None)
     finally:
         sim.stop()
         gw.node.close()
@@ -108,9 +108,10 @@ def cmd_monitor(args) -> None:
                     continue
                 if only and msg.name not in only:
                     continue
-                vals = " ".join(f"{k}={v[k]}" for k in v if k != "counter")
+                vals = " ".join(f"{s.name}={s.choices.get(v[s.name], v[s.name]) if s.choices else v[s.name]}"
+                                for s in msg.signals if s.name != "counter")
                 print(f"{raw.timestamp:.3f}  {raw.arbitration_id:>8X}  {msg.name:<18} {vals}")
-    except KeyboardInterrupt:
+    except (KeyboardInterrupt, BrokenPipeError):
         pass
     finally:
         node.close()
@@ -139,8 +140,9 @@ def cmd_replay(args) -> None:
 
 def cmd_canmap(args) -> None:
     from .canbus.docs import write_protocol_doc
-    path = write_protocol_doc(args.out)
-    print(f"wrote {path}")
+    from .canbus.dbc import write_dbc
+    print(f"wrote {write_protocol_doc(args.out)}")
+    print(f"wrote {write_dbc(args.dbc)}")
 
 
 def main(argv=None) -> None:
@@ -187,8 +189,9 @@ def main(argv=None) -> None:
     sp.add_argument("--loop", action="store_true")
     sp.set_defaults(fn=cmd_replay)
 
-    sp = sub.add_parser("canmap", help="write the CAN protocol doc")
+    sp = sub.add_parser("canmap", help="write the CAN protocol doc and .dbc file")
     sp.add_argument("--out", default="docs/CAN_PROTOCOL.md")
+    sp.add_argument("--dbc", default="docs/teryx.dbc")
     sp.set_defaults(fn=cmd_canmap)
 
     args = p.parse_args(argv)

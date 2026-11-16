@@ -1,0 +1,156 @@
+VERSION "teryx"
+
+NS_ :
+
+BS_:
+
+BU_: PI_DASH PICO_BOX SHINEGLE BENCH
+
+BO_ 384 SG_MOTOR: 8 SHINEGLE
+ SG_ speed : 0|16@1+ (0.1,0) [0|6553.5] "km/h" Vector__XXX
+ SG_ direction : 16|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ mode : 24|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ ready : 26|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ limp : 27|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ brake : 28|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ throttle : 32|8@1+ (1,0) [0|255] "%" Vector__XXX
+ SG_ motor_rpm : 40|16@1- (1,0) [-32768|32767] "rpm" Vector__XXX
+ SG_ counter : 56|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 385 SG_BATTERY: 8 SHINEGLE
+ SG_ batt_v : 0|16@1+ (0.1,0) [0|6553.5] "V" Vector__XXX
+ SG_ batt_a : 16|16@1- (0.1,0) [-3276.8|3276.7] "A" Vector__XXX
+ SG_ soc : 32|8@1+ (1,0) [0|255] "%" Vector__XXX
+ SG_ counter : 56|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 386 SG_TEMPS: 8 SHINEGLE
+ SG_ motor_temp : 0|8@1+ (1,-40) [-40|215] "C" Vector__XXX
+ SG_ ctrl_temp : 8|8@1+ (1,-40) [-40|215] "C" Vector__XXX
+ SG_ batt_temp : 16|8@1+ (1,-40) [-40|215] "C" Vector__XXX
+ SG_ counter : 56|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 387 SG_FAULTS: 8 SHINEGLE
+ SG_ faults : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ odometer : 16|32@1+ (0.1,0) [0|4.29497e+08] "km" Vector__XXX
+ SG_ counter : 56|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 1792 PI_HEARTBEAT: 8 PI_DASH
+ SG_ counter : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ dash_state : 8|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 1793 PI_LIGHTS: 8 PI_DASH
+ SG_ front_1 : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ front_2 : 8|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ front_3 : 16|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ front_4 : 24|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ interior : 32|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ effect : 40|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rear_on : 48|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ rear_auto : 49|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ counter : 56|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 1794 PI_DRIVE: 8 PI_DASH
+ SG_ fourwd_req : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ diff_target : 8|8@1+ (1,0) [0|255] "%" Vector__XXX
+ SG_ counter : 56|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 1795 PI_HOLD: 8 PI_DASH
+ SG_ tray : 0|8@1- (1,0) [-128|127] "" Vector__XXX
+ SG_ winch : 8|8@1- (1,0) [-128|127] "" Vector__XXX
+ SG_ winch_armed : 16|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ counter : 56|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 1796 PI_SETTINGS: 8 PI_DASH
+ SG_ key : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ value : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 1823 PI_FW_UPDATE: 8 PI_DASH
+ SG_ magic : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 1808 PICO_STATUS: 8 PICO_BOX
+ SG_ counter : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ fault_bits : 8|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ inputs : 24|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ state : 32|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ on_defaults : 35|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ reject_reason : 40|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ reject_count : 44|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ winch_armed : 48|1@1+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 1809 PICO_OUTPUTS: 8 PICO_BOX
+ SG_ relays : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ front_1 : 8|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ front_2 : 16|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ front_3 : 24|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ front_4 : 32|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ interior : 40|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ effect : 48|8@1+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 1810 PICO_ACTUATORS: 8 PICO_BOX
+ SG_ diff_pct : 0|8@1+ (1,0) [0|255] "%" Vector__XXX
+ SG_ fourwd : 8|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ tray : 16|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ diff_current : 24|8@1+ (0.1,0) [0|25.5] "A" Vector__XXX
+ SG_ fourwd_current : 32|8@1+ (0.1,0) [0|25.5] "A" Vector__XXX
+ SG_ tray_current : 40|8@1+ (0.1,0) [0|25.5] "A" Vector__XXX
+ SG_ tray_pct : 48|8@1+ (1,0) [0|255] "%" Vector__XXX
+ SG_ diff_target : 56|8@1+ (1,0) [0|255] "%" Vector__XXX
+
+BO_ 1811 PICO_POWER: 8 PICO_BOX
+ SG_ aux_12v : 0|16@1+ (0.001,0) [0|65.535] "V" Vector__XXX
+ SG_ pico_temp : 16|8@1- (1,0) [-128|127] "C" Vector__XXX
+ SG_ diff_pot_raw : 24|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ fw_major : 40|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ fw_minor : 48|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ winch_idle_s : 56|8@1+ (1,0) [0|255] "s" Vector__XXX
+
+BO_ 1812 PICO_SETTINGS_ACK: 8 PICO_BOX
+ SG_ key : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ value : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
+
+BO_ 2016 BENCH_INPUTS: 8 BENCH
+ SG_ inputs : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ force_mask : 8|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ fault_inject : 16|8@1+ (1,0) [0|255] "" Vector__XXX
+
+CM_ BO_ 384 "PLACEHOLDER layout. Bytes 0-2 are what the Pico reads for its speed interlocks.";
+CM_ SG_ 385 batt_a "+ = draw, - = regen";
+CM_ BO_ 385 "PLACEHOLDER layout.";
+CM_ BO_ 386 "PLACEHOLDER layout.";
+CM_ BO_ 387 "PLACEHOLDER layout.";
+CM_ BO_ 1792 "Pico stops tray, winch and actuators if this goes quiet for 500 ms.";
+CM_ SG_ 1793 rear_auto "Rear pods on automatically in reverse";
+CM_ BO_ 1793 "On change, plus a resend every 1 s. Brightness 0-255 (0 = off). On/off-only bars treat anything above 0 as on.";
+CM_ SG_ 1794 fourwd_req "0 = 2WD, 1 = 4WD";
+CM_ BO_ 1794 "On change, plus a resend every 1 s.";
+CM_ SG_ 1795 tray "-1 down, 0 stop, +1 up";
+CM_ SG_ 1795 winch "-1 out, 0 stop, +1 in";
+CM_ BO_ 1795 "Hold-to-run, sent at 10 Hz only while a button is held. Pico stops if it goes quiet for 300 ms.";
+CM_ BO_ 1796 "On change, one key per frame. The Pico echoes it on 0x714 as an ack. Keys are in SETTINGS below. 0xF0 = save to flash, 0xF1 = reset defaults.";
+CM_ BO_ 1823 "Pico reboots to its bootloader when magic = 0x5445 ('TE') and parked.";
+CM_ SG_ 1808 fault_bits "See FAULT_BITS";
+CM_ SG_ 1808 inputs "MCP23017 B0-B7, see INPUT_BITS";
+CM_ SG_ 1808 on_defaults "Pico is running on default settings, please resend";
+CM_ SG_ 1808 reject_reason "Why the last request was refused";
+CM_ SG_ 1808 reject_count "Goes up by one each time a request is refused";
+CM_ SG_ 1809 relays "See RELAY_BITS";
+CM_ BO_ 1809 "What the outputs are actually doing (after effects and safety).";
+CM_ SG_ 1810 diff_pct "From the actuator pot";
+CM_ SG_ 1810 tray_pct "Estimate from run time, no pot on the tray";
+CM_ SG_ 1811 diff_pot_raw "Raw ADS1115 reading, for calibrating keys 14/15";
+CM_ SG_ 1811 winch_idle_s "Seconds since the winch last ran while armed (caps at 255)";
+CM_ BO_ 1812 "Echo of each 0x704 frame once the Pico has applied it (value is what it actually used).";
+CM_ SG_ 2016 inputs "Bits as INPUT_BITS";
+CM_ SG_ 2016 force_mask "Which input bits to force";
+CM_ SG_ 2016 fault_inject "See BENCH_FAULTS";
+CM_ BO_ 2016 "HOST/BENCH BUILD ONLY. Lets the simulator drive the Pico's wired inputs and inject faults. The real Pico firmware ignores it.";
+
+VAL_ 384 direction 0 "neutral" 1 "forward" 2 "reverse" ;
+VAL_ 384 mode 0 "eco" 1 "normal" 2 "sport" ;
+VAL_ 1792 dash_state 0 "boot" 1 "ok" 2 "shutting_down" ;
+VAL_ 1793 effect 0 "none" 1 "strobe" 2 "chase" 3 "outside_only" 4 "inside_only" 5 "breathe" ;
+VAL_ 1808 state 0 "boot" 1 "ok" 2 "degraded" 3 "failsafe" ;
+VAL_ 1808 reject_reason 0 "none" 1 "too_fast" 2 "not_stopped" 3 "speed_unknown" 4 "not_armed" 5 "interlock" 6 "actuator_fault" 7 "low_12v" ;
+VAL_ 1809 effect 0 "none" 1 "strobe" 2 "chase" 3 "outside_only" 4 "inside_only" 5 "breathe" ;
+VAL_ 1810 fourwd 0 "2wd" 1 "4wd" 2 "to_4wd" 3 "to_2wd" 4 "fault" ;
+VAL_ 1810 tray 0 "down" 1 "up" 2 "mid" 3 "raising" 4 "lowering" 5 "fault" ;

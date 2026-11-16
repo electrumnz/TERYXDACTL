@@ -32,6 +32,11 @@ log = logging.getLogger("teryx.server")
 WEB = Path(__file__).resolve().parent.parent / "web"
 PUSH_HZ = 20
 
+GATEWAY = web.AppKey("gateway", Gateway)
+SIM = web.AppKey("sim", object)
+SOCKETS = web.AppKey("sockets", set)
+PUSHER = web.AppKey("pusher", asyncio.Task)
+
 
 def _json(obj) -> str:
     return json.dumps(obj, separators=(",", ":"), default=str)
@@ -40,8 +45,8 @@ def _json(obj) -> str:
 def build_app(gateway: Gateway, sim=None, ui_dir: str | Path | None = None,
               plugins: tuple[str, ...] = ()) -> web.Application:
     app = web.Application()
-    app["gateway"], app["sim"] = gateway, sim
-    app["sockets"] = set()
+    app[GATEWAY], app[SIM] = gateway, sim
+    app[SOCKETS] = set()
     ui = Path(ui_dir).resolve() if ui_dir else WEB / "test"
 
     async def index(_req):
@@ -96,7 +101,7 @@ def build_app(gateway: Gateway, sim=None, ui_dir: str | Path | None = None,
     async def ws_handler(req):
         ws = web.WebSocketResponse(heartbeat=10)
         await ws.prepare(req)
-        app["sockets"].add(ws)
+        app[SOCKETS].add(ws)
         try:
             async for m in ws:
                 if m.type != WSMsgType.TEXT:
@@ -118,29 +123,29 @@ def build_app(gateway: Gateway, sim=None, ui_dir: str | Path | None = None,
                 except Exception as e:  # tell the UI, keep the socket open
                     await ws.send_str(_json({"type": "error", "error": str(e)}))
         finally:
-            app["sockets"].discard(ws)
+            app[SOCKETS].discard(ws)
         return ws
 
     async def pusher(app_):
         period = 1 / PUSH_HZ
         while True:
             await asyncio.sleep(period)
-            if not app_["sockets"]:
+            if not app_[SOCKETS]:
                 continue
             msg = _json({"type": "state", "t": round(time.time(), 3),
                          "state": _with_sim(gateway.snapshot(), sim)})
-            for ws in list(app_["sockets"]):
+            for ws in list(app_[SOCKETS]):
                 try:
                     await ws.send_str(msg)
                 except (ConnectionResetError, RuntimeError):
-                    app_["sockets"].discard(ws)
+                    app_[SOCKETS].discard(ws)
 
     async def on_startup(app_):
-        app_["pusher"] = asyncio.create_task(pusher(app_))
+        app_[PUSHER] = asyncio.create_task(pusher(app_))
 
     async def on_cleanup(app_):
-        app_["pusher"].cancel()
-        for ws in list(app_["sockets"]):
+        app_[PUSHER].cancel()
+        for ws in list(app_[SOCKETS]):
             await ws.close()
 
     app.on_startup.append(on_startup)

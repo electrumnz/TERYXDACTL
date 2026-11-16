@@ -175,6 +175,10 @@ PICO_POWER = Message(
     signals=(
         S("aux_12v", 0, 16, scale=0.001, unit="V"),
         S("pico_temp", 16, 8, signed=True, unit="C"),
+        S("diff_pot_raw", 24, 16, comment="Raw ADS1115 reading, for calibrating keys 14/15"),
+        S("fw_major", 40, 8),
+        S("fw_minor", 48, 8),
+        S("winch_idle_s", 56, 8, unit="s", comment="Seconds since the winch last ran while armed (caps at 255)"),
     ),
 )
 

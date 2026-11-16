@@ -138,6 +138,10 @@ From **controlbox**, every 1000 ms.
 |---|---|---|---|---|
 | `aux_12v` | bytes 0-1 | u16 x0.001 | V |  |
 | `pico_temp` | byte 2 | i8 | C |  |
+| `diff_pot_raw` | bytes 3-4 | u16 |  | Raw ADS1115 reading, for calibrating keys 14/15 |
+| `fw_major` | byte 5 | u8 |  |  |
+| `fw_minor` | byte 6 | u8 |  |  |
+| `winch_idle_s` | byte 7 | u8 | s | Seconds since the winch last ran while armed (caps at 255) |
 
 ### 0x714 PICO_SETTINGS_ACK
 
