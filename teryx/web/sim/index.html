@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teryx sim panel</title>
+<link rel="stylesheet" href="/sim-static/sim.css">
+</head>
+<body>
+<header><b>TERYX</b> <span>SIM PANEL</span> <em id="bus"></em></header>
+<main>
+  <section>
+    <h2>Scenario</h2>
+    <div id="scenarios" class="grid"></div>
+    <p id="scenario-help" class="help"></p>
+    <label class="inline">Sim speed <input type="range" id="speed_factor" min="0.5" max="5" step="0.5" value="1"> <b id="sf">1x</b></label>
+  </section>
+
+  <section>
+    <h2>Driver (switches to Manual)</h2>
+    <label>Throttle <b id="thr-v">0%</b><input type="range" id="throttle" min="0" max="1" step="0.01" value="0"></label>
+    <label>Brake <b id="brk-v">0%</b><input type="range" id="brake" min="0" max="1" step="0.01" value="0"></label>
+    <label>Hill <b id="grd-v">0%</b><input type="range" id="grade_pct" min="-40" max="40" step="1" value="0"></label>
+    <div class="seg" id="direction"><button data-v="reverse">R</button><button data-v="neutral">N</button><button data-v="forward">D</button></div>
+    <div class="seg" id="mode"><button data-v="eco">ECO</button><button data-v="normal">NORMAL</button><button data-v="sport">SPORT</button></div>
+    <div class="readout" id="readout"></div>
+  </section>
+
+  <section>
+    <h2>Battery and heat</h2>
+    <label>Set SOC <input type="range" id="soc" min="0" max="100" step="1" value="85"></label>
+    <label>Ambient <b id="amb-v">18°</b><input type="range" id="ambient" min="-5" max="45" step="1" value="18"></label>
+    <button id="cool">Cool everything down</button>
+
+    <h2>Motor controller faults</h2>
+    <div id="sg-faults" class="checks"></div>
+  </section>
+
+  <section>
+    <h2>Control box inputs (wired switches)</h2>
+    <p class="help">Auto = let the sim work it out (e.g. reverse from the gear, tray limits from position).</p>
+    <div id="inputs"></div>
+    <h2>Control box faults</h2>
+    <div id="bench-faults" class="checks"></div>
+    <h2>CAN links</h2>
+    <div id="links" class="checks"></div>
+  </section>
+
+  <section class="wide">
+    <h2>Bus <a href="/api/bus" target="_blank">frame counts</a> · <a href="/api/canmap" target="_blank">CAN map</a> · <a href="/" target="_blank">dash</a></h2>
+    <pre id="state"></pre>
+  </section>
+</main>
+<script src="/sim-static/sim.js"></script>
+</body>
+</html>

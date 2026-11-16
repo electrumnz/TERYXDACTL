@@ -1,0 +1,138 @@
+# Test environment
+
+The bench lets us build and test the dash with no Teryx attached. Every fake
+device talks real CAN frames, so swapping in the real hardware later is a
+change of one command-line option, not a rewrite.
+
+```
+ ┌──────────────── one laptop or the Pi ─────────────────┐
+ │                                                       │
+ │  Fake Shinegle ──┐                                    │
+ │  (sim/vehicle)   │                                    │
+ │                  ├──── CAN bus ────┐                  │
+ │  Fake Pico box ──┘   (virtual,     │                  │
+ │  (sim/controlbox)     UDP, vcan    ▼                  │
+ │        ▲              or can0)  Dash gateway ── /ws ──┼──► Test screen or real dash UI
+ │        │                        (dash/gateway)        │
+ │   Sim panel (/sim): scenarios, throttle, faults       │
+ └───────────────────────────────────────────────────────┘
+```
+
+The rule from the IO list holds here too: **the dash asks, the control box
+decides.** The fake control box applies the same safety rules the real Pico
+firmware will, and refuses requests with a reason the dash can show.
+
+![Test screen in reverse](img/test-screen.png)
+
+![Sim panel](img/sim-panel.png)
+
+## Run modes
+
+| Command | What runs | Use it for |
+|---|---|---|
+| `python -m teryx run` | Sim + dash in one program, in-process bus | Everyday UI work. Works anywhere |
+| `python -m teryx sim --bus udp` and `python -m teryx dash --bus udp` | Separate programs on a UDP "bus" | Restarting the dash without resetting the sim, or running the Pico firmware's host build alongside (`run --bus udp --no-controlbox`) |
+| `python -m teryx run --bus socketcan:vcan0` | Linux virtual CAN | Using `candump`, `cansniffer`, SavvyCAN on the fake bus. Run `sudo scripts/setup_vcan.sh` first |
+| `python -m teryx dash --bus socketcan:can0` | Dash only, on the real bus | The Pi in the Teryx. Run `sudo scripts/setup_can_pi.sh` first |
+
+Other useful bits:
+
+- `python -m teryx monitor --bus udp` prints every frame, decoded. Add
+  `--only SG_MOTOR,PICO_STATUS` to cut the noise.
+- `python -m teryx replay capture.log --bus udp --loop` plays a recorded CAN
+  log (candump `.log`, `.asc`, `.blf`) back onto the bus.
+- `python -m teryx run --ui path/to/dash` serves another UI folder (the real
+  dash) against the same live feed.
+- `python -m teryx canmap` rebuilds `docs/CAN_PROTOCOL.md` and `docs/teryx.dbc`
+  after a message change. The tests fail if you forget.
+- `/api/state`, `/api/bus` (frame counts, unknown CAN ids) and `/api/canmap`
+  are handy from a browser or `curl`.
+
+Bus specs: `virtual`, `udp` (239.0.7.0:47000 on loopback, shared with the
+firmware host build), `socketcan:<name>`, or any python-can interface such as
+`slcan:/dev/ttyACM0@250000` for a USB CAN adapter.
+
+## Scenarios
+
+Pick them on the sim panel or with `--scenario`.
+
+| Name | What happens | Good for testing |
+|---|---|---|
+| `idle` | Parked, key on, neutral | 4WD, diff, tray, winch, lights |
+| `trail` | 2 minute loop: climbs, descents, stops, a quick blast | Speed, power, battery, temps |
+| `reversing` | Backs up, stops, drives off, repeats | Reverse camera, rear pods |
+| `low_battery` | Starts at 15 % and drains fast, limp under 10 % | Low battery warnings, limp mode |
+| `hill_climb` | Steep climb in sport, heats up until limp mode | Temp warnings, derating |
+| `faults` | Steps through every Shinegle fault | Fault messages |
+| `actuator_faults` | Jammed diff and tray, 4WD over current | Control box faults, refused requests |
+| `comms_loss` | Shinegle then control box go quiet for 4 s | Offline / stale display |
+| `key_off` | Key off after 3 s | Shutdown and power hold |
+| `manual` | You drive with the sim panel sliders | Anything |
+
+The sim panel also lets you set SOC and ambient temperature, tick any fault,
+force any wired input (ignition, brake, tray limits, winch remote...), cut
+either CAN link, and run the sim up to 5x faster.
+
+## The fake control box
+
+`teryx/sim/controlbox.py` behaves like the Pico frame for frame, and doubles
+as a readable spec for the firmware. Rules (defaults from `config/io-map.yaml`,
+all changeable over 0x704):
+
+1. Dash heartbeat lost for 500 ms: stop winch, tray and actuators, disarm the
+   winch. Lights stay. Driving is never touched.
+2. No Shinegle speed for 500 ms: speed unknown, block anything that needs
+   "stopped".
+3. 2WD/4WD only under 5 km/h. Runs to the end stop, max 3 s, stops over 6 A.
+4. Diff lock only under 15 km/h. Max 4 s. Pot not moving: fault.
+5. Tray only when stopped, hold-to-run, limit switches, over current, max 20 s.
+6. Winch: armed, stopped and hold-to-run. 100 ms dead time between in and out.
+   Disarms after 2 min idle.
+7. Reverse turns on the rear pods (if set to auto).
+8. Key off: hold power for 30 s, then drop it.
+
+Requests act on a **change** of value. The dash resends lights and drive
+requests every second so a rebooted Pico catches up, but a refused 4WD
+request is never quietly done later when the speed drops. When the box
+refuses something, `pico.reject` says why and the dash snaps its request back.
+
+Light bars can be set dimmable or on/off only (setting 16, bit per light), so
+both kinds of bar can be tested.
+
+## Swapping in the real Shinegle
+
+The Shinegle's CAN layout isn't published, so `teryx/canbus/shinegle.py` is a
+**placeholder**. It is the only file that knows the Shinegle frame layout.
+Everything else uses the io-map names (`mc.speed`, `mc.batt_v`...).
+
+1. Wire the Pi's CAN HAT onto the Shinegle bus. **Listen only** to start with.
+2. `sudo scripts/setup_can_pi.sh can0 250000` (try 500000 if nothing decodes).
+3. Record a few minutes with the Shinegle dash and programmer plugged in, doing
+   one thing at a time (sit idle, roll forward, reverse, rev, brake, charge):
+   `candump -l can0`. Keep captures out of git (they're gitignored).
+4. `python -m teryx dash --bus socketcan:can0` and open `/api/bus` to see which
+   CAN ids are unknown, or use `cansniffer can0` to watch bytes change.
+5. Rewrite the Message definitions and the `decode`/`encode` functions in
+   `shinegle.py` to match. As long as `decode` returns the same `mc.*` names,
+   the dash and sim don't change.
+6. `python -m teryx replay your_capture.log --bus udp --loop` with
+   `python -m teryx dash --bus udp` lets you check the decoding on the laptop.
+
+## On the Pi
+
+Same commands. For the in-Teryx setup the dash runs as a service and Chromium
+opens it full screen:
+
+```bash
+python -m teryx dash --bus socketcan:can0 --ui /path/to/dash/web
+chromium-browser --kiosk --noerrdialogs --disable-infobars http://localhost:8080/
+```
+
+(Service files and auto-start come with the real dash UI.)
+
+## Cameras
+
+The rear camera may be USB or AHD through a USB capture stick. Both show up as
+a normal video device, so the dash uses the browser's camera API. On the test
+screen add `?camera=1` to the URL to use a real camera, otherwise it shows a
+moving test pattern when the Teryx is in reverse.
