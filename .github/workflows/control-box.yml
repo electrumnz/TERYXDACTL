@@ -1,0 +1,36 @@
+name: Control box firmware
+
+on:
+  push:
+    paths: ["firmware/control-box/**", ".github/workflows/control-box.yml"]
+  pull_request:
+    paths: ["firmware/control-box/**", ".github/workflows/control-box.yml"]
+
+jobs:
+  host-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build host version
+        run: cmake -S firmware/control-box -B build-host -DTERYX_HOST=ON && cmake --build build-host
+      - name: Run tests
+        run: ctest --test-dir build-host --output-on-failure
+
+  pico2:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Arm compiler
+        run: sudo apt-get update && sudo apt-get install -y gcc-arm-none-eabi libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib
+      - name: Get Pico SDK
+        run: |
+          git clone --depth 1 -b 2.1.1 https://github.com/raspberrypi/pico-sdk.git "$RUNNER_TEMP/pico-sdk"
+          git -C "$RUNNER_TEMP/pico-sdk" submodule update --init --depth 1 lib/tinyusb
+      - name: Build for Pico 2
+        run: |
+          cmake -S firmware/control-box -B build -DPICO_BOARD=pico2 -DPICO_SDK_PATH="$RUNNER_TEMP/pico-sdk"
+          cmake --build build -j4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: teryx_control_box-uf2
+          path: build/teryx_control_box.uf2
