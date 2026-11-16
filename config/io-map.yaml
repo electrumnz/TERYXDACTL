@@ -1,0 +1,101 @@
+# Teryx dash OS: machine-readable IO map (draft v0.1)
+# Human version: docs/io-list.md. Keep both in step.
+# Used by the simulator, the dash UI and the Pico firmware.
+
+version: 0.1
+
+can:
+  bitrate: 250000          # TBC: match the Shinegle
+  ids:
+    pi_heartbeat:   0x700  # Pi -> Pico, 10 Hz
+    pi_lights:      0x701  # Pi -> Pico, on change
+    pi_drive:       0x702  # Pi -> Pico, on change
+    pi_hold_to_run: 0x703  # Pi -> Pico, 10 Hz while held
+    pi_settings:    0x704  # Pi -> Pico, on change
+    pico_status:    0x710  # Pico -> Pi, 10 Hz
+    pico_outputs:   0x711  # Pico -> Pi, 10 Hz
+    pico_actuators: 0x712  # Pico -> Pi, 10 Hz
+    pico_power:     0x713  # Pico -> Pi, 1 Hz
+    pi_fw_update:   0x71F  # Pi -> Pico, on demand
+
+outputs:
+  light.front_1:   {driver: mosfet, pin: GP16, pwm: true, fuse_a: 10, label: "Front bar 1 (far left)"}
+  light.front_2:   {driver: mosfet, pin: GP17, pwm: true, fuse_a: 10, label: "Front bar 2 (inner left)"}
+  light.front_3:   {driver: mosfet, pin: GP18, pwm: true, fuse_a: 10, label: "Front bar 3 (inner right)"}
+  light.front_4:   {driver: mosfet, pin: GP19, pwm: true, fuse_a: 10, label: "Front bar 4 (far right)"}
+  light.interior:  {driver: mosfet, pin: GP20, pwm: true, fuse_a: 5,  label: "Interior bar"}
+  light.rear:      {driver: relay, relay: 1, expander_pin: A0, fuse_a: 10, label: "Rear / reverse pods"}
+  trailer.tail:    {driver: relay, relay: 2, expander_pin: A1, fuse_a: 5,  label: "Trailer tail"}
+  trailer.brake:   {driver: relay, relay: 3, expander_pin: A2, fuse_a: 5,  label: "Trailer brake"}
+  winch.in:        {driver: relay, relay: 4, expander_pin: A3, fuse_a: 3,  label: "Winch in (solenoid coil)"}
+  winch.out:       {driver: relay, relay: 5, expander_pin: A4, fuse_a: 3,  label: "Winch out (solenoid coil)"}
+  winch.isolator:  {driver: relay, relay: 6, expander_pin: A5, fuse_a: 3,  label: "Winch power enable"}
+  aux.accessory:   {driver: relay, relay: 7, expander_pin: A6, fuse_a: 10, label: "Accessory 12V"}
+  power.hold:      {driver: relay, relay: 8, expander_pin: A7, fuse_a: 7.5, label: "Power hold"}
+  act.diff:        {driver: bts7960, unit: 1, pins: {rpwm: GP7,  lpwm: GP8,  en: GP9},  feedback: an.diff_pos, current: an.diff_current, fuse_a: 10, label: "Front diff lock"}
+  act.4wd:         {driver: bts7960, unit: 2, pins: {rpwm: GP10, lpwm: GP11, en: GP12}, feedback: none, current: an.4wd_current, fuse_a: 10, label: "2WD / 4WD"}
+  act.tray:        {driver: bts7960, unit: 3, pins: {rpwm: GP13, lpwm: GP14, en: GP15}, feedback: [in.tray_down, in.tray_up], current: an.tray_current, fuse_a: 15, label: "Tray lift"}
+
+inputs:
+  digital:
+    in.ignition:     {expander_pin: B0, label: "Key on"}
+    in.brake:        {expander_pin: B1, label: "Brake"}
+    in.reverse:      {expander_pin: B2, label: "Reverse"}
+    in.tray_down:    {expander_pin: B3, normally_closed: true, label: "Tray down limit"}
+    in.tray_up:      {expander_pin: B4, normally_closed: true, label: "Tray up limit"}
+    in.winch_remote: {expander_pin: B5, label: "Winch remote in use"}
+    in.park:         {expander_pin: B6, label: "Park / handbrake"}
+    in.spare:        {expander_pin: B7, label: "Spare"}
+  analogue:
+    an.diff_pos:       {adc: ads1115, channel: 0, units: "%", calibrate: true}
+    an.aux_12v:        {adc: ads1115, channel: 1, units: V, divider: [10000, 2200]}
+    an.4wd_current:    {adc: ads1115, channel: 2, units: A}
+    an.tray_current:   {adc: ads1115, channel: 3, units: A}
+    an.diff_current:   {adc: pico, pin: GP28, units: A}
+  motor_controller:    # Shinegle over CAN, IDs and scaling TBC after sniffing
+    mc.speed:      {units: km/h, range: [0, 80]}
+    mc.batt_v:     {units: V, range: [60, 84]}
+    mc.batt_a:     {units: A, range: [-100, 400]}
+    mc.soc:        {units: "%", range: [0, 100]}
+    mc.motor_temp: {units: C, range: [-10, 150]}
+    mc.ctrl_temp:  {units: C, range: [-10, 100]}
+    mc.throttle:   {units: "%", range: [0, 100]}
+    mc.direction:  {enum: [forward, neutral, reverse]}
+    mc.mode:       {enum: [eco, normal, sport]}
+    mc.faults:     {bitfield: 16}
+
+can_layout:
+  resend_state_s: 1          # 0x701/0x702 also resent every 1 s
+  pico_state: [boot, ok, degraded, failsafe]   # 0x710 b4
+  fault_bits:                # 0x710 b1-2 (u16)
+    0: dash_link
+    1: speed_unknown
+    2: fourwd_timeout
+    3: fourwd_overcurrent
+    4: diff_timeout
+    5: diff_pot_stuck
+    6: tray_timeout
+    7: tray_overcurrent
+    8: tray_limit_switch
+    9: winch_interlock
+    10: low_12v
+    11: pico_hot
+    12: watchdog_reset
+
+safety:                      # defaults, adjustable in settings
+  heartbeat_timeout_ms: 500
+  speed_timeout_ms: 500
+  hold_to_run_timeout_ms: 300
+  fourwd_max_kmh: 5
+  fourwd_max_run_s: 3
+  fourwd_overcurrent_a: 6
+  diff_max_kmh: 15
+  diff_max_run_s: 4
+  tray_requires_stopped: true
+  tray_max_run_s: 20
+  tray_overcurrent_a: 10
+  winch_requires_stopped: true
+  winch_requires_armed: true
+  winch_dead_time_ms: 100
+  winch_auto_disarm_s: 120
+  shutdown_wait_s: 30
