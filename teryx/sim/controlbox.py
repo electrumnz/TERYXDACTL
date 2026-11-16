@@ -11,10 +11,13 @@ Safety rules (IO list section 7, values from SETTINGS):
     Lights stay as they are. Driving is never touched.
  2. No Shinegle speed for 500 ms -> speed unknown, block anything needing "stopped".
  3. 2WD/4WD only below 5 km/h. Runs to end stop, max 3 s, stops on current > 6 A.
+    Position is "unknown" after boot until the first move to an end stop.
  4. Diff lock % only below 15 km/h. Max run 4 s. Pot not moving -> fault.
  5. Tray only when stopped, hold-to-run. Limit switches, current > 10 A, max 20 s.
- 6. Winch: armed + stopped + hold-to-run. 100 ms dead time between in and out.
-    Auto-disarm after 2 min idle.
+    A latched tray fault is cleared by the next accepted press.
+ 6. Winch: arming needs stopped + known speed. Running needs armed + stopped +
+    hold-to-run. 100 ms dead time between in and out. Auto-disarm after 2 min idle.
+    Refused while the handheld remote is in use.
  7. Reverse -> rear pods on (if auto). Camera is handled on the Pi.
  8. Key-off -> hold power for shutdown_wait_s, then drop power.hold.
 
@@ -78,7 +81,8 @@ class ControlBox:
     on_defaults: bool = True
     t: float = 0.0
     # actuators
-    fourwd: Actuator = field(default_factory=lambda: Actuator(rate=0.5))     # 2 s end to end
+    fourwd: Actuator = field(default_factory=lambda: Actuator(rate=0.5, pos=0.5, target=0.5))  # 2 s end to end
+    fourwd_known: bool = False     # unknown after boot until the first move to an end stop
     diff: Actuator = field(default_factory=lambda: Actuator(rate=0.3))       # 3.3 s 0-100 %
     tray: Actuator = field(default_factory=lambda: Actuator(rate=1 / 16))    # 400 mm at 25 mm/s
     fourwd_fault: bool = False
@@ -109,6 +113,7 @@ class ControlBox:
     bench_faults: set = field(default_factory=set)
     ignition_off_at: float | None = None
     aux_12v: float = 13.6
+    bench_aux_mv: int = 0
     temp: float = 32.0
     # faults / rejects
     latched: set = field(default_factory=set)
@@ -163,30 +168,47 @@ class ControlBox:
             self.forced = {n: bool(int(v["inputs"]) & (1 << b))
                            for b, n in M.INPUT_BITS.items() if mask & (1 << b)}
             self.bench_faults = set(M.bits_to_names(v["fault_inject"], M.BENCH_FAULTS))
+            self.bench_aux_mv = int(v.get("aux_mv", 0))
 
     def _setting(self, key: int, value: int) -> None:
+        status = 0
         if key == M.SETTING_RESET:
-            self.settings = M.default_settings()
+            self.settings = safety_defaults()
             self.on_defaults = True
         elif key == M.SETTING_SAVE:
             pass
+        elif key == M.SETTING_CLEAR_FAULTS:
+            self.latched.clear()
+            self.fourwd_fault = False
+            for act in (self.fourwd, self.diff, self.tray):
+                act.faulted = False
         elif key in M.SETTINGS:
             name, _u, _d, lo, hi = M.SETTINGS[key]
-            value = max(lo, min(hi, value))
+            if not lo <= value <= hi:
+                status = 2
+                value = max(lo, min(hi, value))
             self.settings[name] = value
             self.on_defaults = False
         else:
-            return
-        self.acks.append({"key": key, "value": value})
+            status = 1
+        self.acks.append({"key": key, "status": status, "value": value})
 
     def _drive_request(self, v: dict) -> None:
         prev = self._last_drive_req
         self._last_drive_req = dict(v)
         speed_ok = self.speed_known()
+        resend_while_unknown = (prev is not None and v["fourwd_req"] == prev["fourwd_req"]
+                                and not self.fourwd_known and not self.fourwd.moving)
+        if resend_while_unknown and speed_ok and self.speed <= self.s("fourwd_max_kmh") \
+                and self.inp("in.ignition") and not self.fourwd_fault:
+            # Position unknown after boot: a resend may home it (quietly, no reject spam)
+            self.fourwd.target = 1.0 if v["fourwd_req"] else 0.0
         if prev is None or v["fourwd_req"] != prev["fourwd_req"]:
             want = 1.0 if v["fourwd_req"] else 0.0
-            if want != self.fourwd.target or self.fourwd_fault:
-                if not speed_ok:
+            if want != self.fourwd.target or self.fourwd_fault or not self.fourwd_known:
+                if not self.inp("in.ignition"):
+                    self.reject("ignition_off")
+                elif not speed_ok:
                     self.reject("speed_unknown")
                 elif self.speed > self.s("fourwd_max_kmh"):
                     self.reject("too_fast")
@@ -212,8 +234,13 @@ class ControlBox:
         tray, winch = int(v["tray"]), int(v["winch"])
         armed = bool(v["winch_armed"])
         if armed and not self.winch_armed:
-            self.winch_armed = True
-            self.winch_idle = 0.0
+            if not self.speed_known():
+                self.reject("speed_unknown")
+            elif not self.stopped():
+                self.reject("not_stopped")
+            else:
+                self.winch_armed = True
+                self.winch_idle = 0.0
         elif not armed and self.winch_armed and winch == 0 and tray == 0:
             self.winch_armed = False
         new_tray = tray != self._last_hold_vals[0]
@@ -222,22 +249,29 @@ class ControlBox:
 
         if tray:
             reason = None
-            if not self.speed_known():
+            if not self.inp("in.ignition"):
+                reason = "ignition_off"
+            elif not self.speed_known():
                 reason = "speed_unknown"
             elif not self.stopped():
                 reason = "not_stopped"
             elif self.winch_dir:
                 reason = "interlock"
-            elif "tray_timeout" in self.latched or "tray_overcurrent" in self.latched:
-                reason = "actuator_fault"
+            elif (tray > 0 and self.inp("in.tray_up")) or (tray < 0 and self.inp("in.tray_down")):
+                reason = "at_limit"
             if reason:
                 tray = 0
                 if new_tray:
                     self.reject(reason)
+            elif new_tray:
+                # The next accepted press clears a latched tray fault (matches the firmware)
+                self.latched -= {"tray_overcurrent", "tray_timeout"}
         if winch:
             reason = None
             if not self.winch_armed:
                 reason = "not_armed"
+            elif self.inp("in.winch_remote"):
+                reason = "winch_remote"
             elif not self.speed_known():
                 reason = "speed_unknown"
             elif not self.stopped():
@@ -256,9 +290,9 @@ class ControlBox:
         dash_ok = self.dash_ok()
         hold_ok = dash_ok and now - self.last_hold < self.s("hold_to_run_timeout_ms") / 1000
         if not hold_ok:
+            # Frames stopped: treat it as a release, so the next press counts as new
             self.hold_tray = self.hold_winch = 0
-            if not dash_ok:
-                self._last_hold_vals = (0, 0)
+            self._last_hold_vals = (0, 0)
         if not dash_ok:
             # Rule 1: stop everything that moves, disarm the winch
             self.fourwd.stop()
@@ -275,7 +309,10 @@ class ControlBox:
 
         # --- 4WD: runs to end stop, max run time, current limit
         self.fourwd.jammed = False
+        was_moving = self.fourwd.moving
         self.fourwd.drive(dt, run_current=2.5)
+        if was_moving and not self.fourwd.moving and not self.fourwd.faulted:
+            self.fourwd_known = True
         if "fourwd_overcurrent" in self.bench_faults and self.fourwd.moving:
             self.fourwd.current = 7.5
         if self.fourwd.moving:
@@ -289,8 +326,15 @@ class ControlBox:
                 self.fourwd_fault = True
 
         # --- diff: closed loop on the pot
+        pot_gone = "pot_disconnected" in self.bench_faults
         self.diff.jammed = "jam_diff" in self.bench_faults
+        if pot_gone and self.diff.moving:
+            self.latched.add("diff_pot_stuck")
+            self._fault_actuator(self.diff)
         self.diff.drive(dt, run_current=3.0)
+        if self.diff.current * 10 > self.s("diff_overcurrent_da"):
+            self.latched.add("diff_overcurrent")
+            self._fault_actuator(self.diff)
         if self.diff.moving and self.diff.running_for * 1000 > self.s("diff_max_run_ms"):
             self.latched.add("diff_timeout")
             if self.diff.jammed:
@@ -318,11 +362,6 @@ class ControlBox:
             self.latched.add("tray_limit_switch")   # both limits at once = broken wire
         else:
             self.latched.discard("tray_limit_switch")
-        if not self.hold_tray and not self.tray.moving:
-            # a fresh press clears tray faults
-            if self._last_hold_vals[0] == 0:
-                self.latched -= {"tray_overcurrent", "tray_timeout"}
-            self.tray.jammed = False
 
         # --- winch with dead time between directions
         want = self.hold_winch if self.winch_armed else 0
@@ -347,6 +386,8 @@ class ControlBox:
         # --- 12 V and temperature
         winch_a = {0: 0, 1: 180, -1: 60}[self.winch_dir]
         self.aux_12v += ((13.6 - winch_a * 0.006) - self.aux_12v) * min(1, dt * 5)
+        if self.bench_aux_mv:
+            self.aux_12v = self.bench_aux_mv / 1000
         self.temp += ((32 + winch_a * 0.03) - self.temp) * dt * 0.02
 
         # --- key-off and power hold
@@ -377,6 +418,11 @@ class ControlBox:
             fronts = [fronts[0], 0, 0, fronts[3]]
         elif eff == "inside_only":
             fronts = [0, fronts[1], fronts[2], 0]
+        elif eff == "sos":
+            # ... --- ... in 100 ms units
+            pattern = "1010100011101110111000101010000000"
+            on = pattern[int(t * 10) % len(pattern)] == "1"
+            fronts = [b if on else 0 for b in fronts]
         elif eff == "breathe":
             k = 0.5 + 0.5 * math.sin(t * 2)
             if mask & 0b1111:
@@ -414,8 +460,10 @@ class ControlBox:
             f.add("dash_link")
         if not self.speed_known():
             f.add("speed_unknown")
-        if self.aux_12v < 11.0:
+        if self.aux_12v * 1000 < self.s("low_12v_mv"):
             f.add("low_12v")
+        if "io_bus_dead" in self.bench_faults:
+            f.add("io_bus")
         if self.temp > 70:
             f.add("pico_hot")
         return f
@@ -430,7 +478,12 @@ class ControlBox:
             return "fault"
         if self.fourwd.moving:
             return "to_4wd" if self.fourwd.target > self.fourwd.pos else "to_2wd"
+        if not self.fourwd_known:
+            return "unknown"
         return "4wd" if self.fourwd.pos > 0.5 else "2wd"
+
+    def parked(self) -> bool:
+        return self.stopped() and (self.direction == "neutral" or self.inp("in.park"))
 
     def tray_state(self) -> str:
         if {"tray_overcurrent", "tray_timeout", "tray_limit_switch"} & self.latched:
@@ -455,6 +508,11 @@ class ControlBox:
                 "reject_reason": M.enum_value(M.REJECT_REASON, self.reject_reason),
                 "reject_count": self.reject_count,
                 "winch_armed": int(self.winch_armed),
+                "speed_valid": int(self.speed_known()),
+                "reverse_active": int(self.inp("in.reverse")),
+                "shutdown_request": int(not self.inp("in.ignition")),
+                "parked": int(self.parked()),
+                "speed": min(254, round(self.speed)) if self.speed_known() else 255,
             }),
             ("PICO_OUTPUTS", {
                 "relays": M.names_to_bits([n for n, on in self.relays().items() if on], M.RELAY_BITS),

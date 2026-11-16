@@ -31,7 +31,7 @@ On change, plus a resend every 1 s. Brightness 0-255 (0 = off). On/off-only bars
 | `front_3` | byte 2 | u8 |  |  |
 | `front_4` | byte 3 | u8 |  |  |
 | `interior` | byte 4 | u8 |  |  |
-| `effect` | byte 5 | u8 |  | 0=none, 1=strobe, 2=chase, 3=outside_only, 4=inside_only, 5=breathe |
+| `effect` | byte 5 | u8 |  | 0=none, 1=strobe, 2=chase, 3=outside_only, 4=inside_only, 5=breathe, 6=sos |
 | `rear_on` | byte 6 bit 0 | u1 |  |  |
 | `rear_auto` | byte 6 bit 1 | u1 |  | Rear pods on automatically in reverse |
 | `counter` | byte 7 | u8 |  |  |
@@ -95,9 +95,14 @@ From **controlbox**, every 100 ms.
 | `inputs` | byte 3 | u8 |  | MCP23017 B0-B7, see INPUT_BITS |
 | `state` | byte 4 bit 0 (+2 bits) | u2 |  | 0=boot, 1=ok, 2=degraded, 3=failsafe |
 | `on_defaults` | byte 4 bit 3 | u1 |  | Pico is running on default settings, please resend |
-| `reject_reason` | byte 5 bit 0 (+4 bits) | u4 |  | Why the last request was refused 0=none, 1=too_fast, 2=not_stopped, 3=speed_unknown, 4=not_armed, 5=interlock, 6=actuator_fault, 7=low_12v |
+| `reject_reason` | byte 5 bit 0 (+4 bits) | u4 |  | Why the last request was refused 0=none, 1=too_fast, 2=not_stopped, 3=speed_unknown, 4=not_armed, 5=interlock, 6=actuator_fault, 7=low_12v, 8=dash_link, 9=ignition_off, 10=at_limit, 11=not_parked, 12=winch_remote, 13=bad_frame |
 | `reject_count` | byte 5 bit 4 (+4 bits) | u4 |  | Goes up by one each time a request is refused |
 | `winch_armed` | byte 6 bit 0 | u1 |  |  |
+| `speed_valid` | byte 6 bit 1 | u1 |  |  |
+| `reverse_active` | byte 6 bit 2 | u1 |  |  |
+| `shutdown_request` | byte 6 bit 3 | u1 |  | Key off: Pi should shut down |
+| `parked` | byte 6 bit 4 | u1 |  | Stopped and safe for OTA updates |
+| `speed` | byte 7 | u8 | km/h | Speed as the Pico sees it, 255 = unknown |
 
 ### 0x711 PICO_OUTPUTS
 
@@ -113,7 +118,7 @@ What the outputs are actually doing (after effects and safety).
 | `front_3` | byte 3 | u8 |  |  |
 | `front_4` | byte 4 | u8 |  |  |
 | `interior` | byte 5 | u8 |  |  |
-| `effect` | byte 6 | u8 |  | 0=none, 1=strobe, 2=chase, 3=outside_only, 4=inside_only, 5=breathe |
+| `effect` | byte 6 | u8 |  | 0=none, 1=strobe, 2=chase, 3=outside_only, 4=inside_only, 5=breathe, 6=sos |
 
 ### 0x712 PICO_ACTUATORS
 
@@ -122,7 +127,7 @@ From **controlbox**, every 100 ms.
 | Signal | Where | Type | Unit | Notes |
 |---|---|---|---|---|
 | `diff_pct` | byte 0 | u8 | % | From the actuator pot |
-| `fourwd` | byte 1 | u8 |  | 0=2wd, 1=4wd, 2=to_4wd, 3=to_2wd, 4=fault |
+| `fourwd` | byte 1 | u8 |  | 0=2wd, 1=4wd, 2=to_4wd, 3=to_2wd, 4=fault, 5=unknown |
 | `tray` | byte 2 | u8 |  | 0=down, 1=up, 2=mid, 3=raising, 4=lowering, 5=fault |
 | `diff_current` | byte 3 | u8 x0.1 | A |  |
 | `fourwd_current` | byte 4 | u8 x0.1 | A |  |
@@ -152,6 +157,7 @@ Echo of each 0x704 frame once the Pico has applied it (value is what it actually
 | Signal | Where | Type | Unit | Notes |
 |---|---|---|---|---|
 | `key` | byte 0 | u8 |  |  |
+| `status` | byte 1 | u8 |  | 0=ok, 1=unknown_key, 2=out_of_range |
 | `value` | bytes 2-3 | u16 |  |  |
 
 ## Bench only
@@ -167,6 +173,7 @@ HOST/BENCH BUILD ONLY. Lets the simulator drive the Pico's wired inputs and inje
 | `inputs` | byte 0 | u8 |  | Bits as INPUT_BITS |
 | `force_mask` | byte 1 | u8 |  | Which input bits to force |
 | `fault_inject` | byte 2 | u8 |  | See BENCH_FAULTS |
+| `aux_mv` | bytes 3-4 | u16 | mV | Fake 12V reading, 0 = leave alone |
 
 **Bench fault inject bits (0x7E0 byte 2)**
 
@@ -175,6 +182,8 @@ HOST/BENCH BUILD ONLY. Lets the simulator drive the Pico's wired inputs and inje
 | 0 | `jam_diff` |
 | 1 | `jam_tray` |
 | 2 | `fourwd_overcurrent` |
+| 3 | `pot_disconnected` |
+| 4 | `io_bus_dead` |
 
 ## Lookup tables
 
@@ -195,6 +204,8 @@ HOST/BENCH BUILD ONLY. Lets the simulator drive the Pico's wired inputs and inje
 | 10 | `low_12v` |
 | 11 | `pico_hot` |
 | 12 | `watchdog_reset` |
+| 13 | `diff_overcurrent` |
+| 14 | `io_bus` |
 
 **Input bits (0x710 byte 3, MCP23017 B0-B7)**
 
@@ -234,6 +245,12 @@ HOST/BENCH BUILD ONLY. Lets the simulator drive the Pico's wired inputs and inje
 | 5 | `interlock` |
 | 6 | `actuator_fault` |
 | 7 | `low_12v` |
+| 8 | `dash_link` |
+| 9 | `ignition_off` |
+| 10 | `at_limit` |
+| 11 | `not_parked` |
+| 12 | `winch_remote` |
+| 13 | `bad_frame` |
 
 **Settings keys (0x704 / 0x714)**
 
@@ -256,8 +273,12 @@ HOST/BENCH BUILD ONLY. Lets the simulator drive the Pico's wired inputs and inje
 | 15 (0x0F) | `diff_pot_max_raw` | raw | 25000 | 0-32767 |
 | 16 (0x10) | `light_dimmable_mask` | bits | 31 | 0-31 |
 | 17 (0x11) | `hold_to_run_timeout_ms` | ms | 300 | 100-2000 |
+| 18 (0x12) | `relay_active_low` | bool | 0 | 0-1 |
+| 19 (0x13) | `tray_full_travel_ms` | ms | 16000 | 1000-60000 |
+| 20 (0x14) | `low_12v_mv` | mV | 11000 | 9000-13000 |
 | 240 (0xF0) | save to flash | | | |
 | 241 (0xF1) | reset to defaults | | | |
+| 242 (0xF2) | clear latched faults | | | |
 
 ## Shinegle SG1202 (PLACEHOLDER)
 

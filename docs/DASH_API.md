@@ -39,8 +39,11 @@ Keys follow the io-map ids in `config/io-map.yaml`.
 | `pico.online` | bool | 0x710 seen in the last 1 s |
 | `pico.state` | `boot` / `ok` / `degraded` / `failsafe` | |
 | `pico.on_defaults` | bool | Box is on default settings (the gateway resends ours) |
-| `pico.faults` | list of strings | `dash_link`, `speed_unknown`, `fourwd_timeout`, `fourwd_overcurrent`, `diff_timeout`, `diff_pot_stuck`, `tray_timeout`, `tray_overcurrent`, `tray_limit_switch`, `winch_interlock`, `low_12v`, `pico_hot`, `watchdog_reset` |
-| `pico.reject` | string | Why the last request was refused: `none`, `too_fast`, `not_stopped`, `speed_unknown`, `not_armed`, `interlock`, `actuator_fault`, `low_12v` |
+| `pico.speed`, `pico.speed_valid` | km/h, bool | Speed as the Pico sees it (`null` when unknown) |
+| `pico.parked` | bool | Stopped and safe for an OTA update |
+| `pico.shutdown_request` | bool | Key is off: the Pi should shut down cleanly |
+| `pico.faults` | list of strings | `dash_link`, `speed_unknown`, `fourwd_timeout`, `fourwd_overcurrent`, `diff_timeout`, `diff_pot_stuck`, `tray_timeout`, `tray_overcurrent`, `tray_limit_switch`, `winch_interlock`, `low_12v`, `pico_hot`, `watchdog_reset`, `diff_overcurrent`, `io_bus` |
+| `pico.reject` | string | Why the last request was refused: `none`, `too_fast`, `not_stopped`, `speed_unknown`, `not_armed`, `interlock`, `actuator_fault`, `low_12v`, `dash_link`, `ignition_off`, `at_limit`, `not_parked`, `winch_remote`, `bad_frame` |
 | `pico.reject_text` | string | Plain-English version |
 | `pico.reject_count` | 0-15 | Goes up by one per refusal, so you can tell a new one from an old one |
 | `pico.temp` | °C | |
@@ -51,7 +54,7 @@ Keys follow the io-map ids in `config/io-map.yaml`.
 | `an.diff_pos` | % | Diff actuator actual position |
 | `an.aux_12v` | V | |
 | `an.diff_current`, `an.4wd_current`, `an.tray_current` | A | |
-| `act.4wd` | `2wd` / `4wd` / `to_4wd` / `to_2wd` / `fault` | |
+| `act.4wd` | `2wd` / `4wd` / `to_4wd` / `to_2wd` / `fault` / `unknown` | Unknown after the Pico boots, until its first move |
 | `act.diff_target` | % | What the box is aiming for |
 | `act.tray` | `down` / `up` / `mid` / `raising` / `lowering` / `fault` | |
 | `act.tray_pct` | % | Estimate (no pot on the tray) |
@@ -79,7 +82,7 @@ Keys follow the io-map ids in `config/io-map.yaml`.
 | id | value |
 |---|---|
 | `light.front_1` to `light.front_4`, `light.interior` | 0-255 |
-| `light.effect` | `none`, `strobe`, `chase`, `outside_only`, `inside_only`, `breathe` |
+| `light.effect` | `none`, `strobe`, `chase`, `outside_only`, `inside_only`, `breathe`, `sos` |
 | `light.rear` | `off`, `on`, `auto` (on in reverse) |
 | `act.4wd` | 0 = 2WD, 1 = 4WD |
 | `act.diff` | 0-100 % |

@@ -58,6 +58,7 @@ class Gateway:
         self.settings: dict[str, int] = {}
         self._acks: dict[int, threading.Event] = {}
         self._last_settings_push = -1e9
+        self.last_ack: dict | None = None
         self.listeners: list = []   # callables(frame_name, values) for plugins / logging
 
     # ------------------------------------------------------------ public API
@@ -199,6 +200,10 @@ class Gateway:
                 st["pico.reject_text"] = M.REJECT_TEXT.get(st["pico.reject"], "")
                 st["pico.reject_count"] = v["reject_count"]
                 st["winch.armed"] = bool(v["winch_armed"])
+                st["pico.speed"] = None if v["speed"] == 255 else v["speed"]
+                st["pico.speed_valid"] = bool(v["speed_valid"])
+                st["pico.parked"] = bool(v["parked"])
+                st["pico.shutdown_request"] = bool(v["shutdown_request"])
                 if self._last_reject_count is not None and v["reject_count"] != self._last_reject_count:
                     self._resync_requests()
                 self._last_reject_count = v["reject_count"]
@@ -228,7 +233,8 @@ class Gateway:
                 st["winch.idle_s"] = v["winch_idle_s"]
             elif msg.name == "PICO_SETTINGS_ACK":
                 key = int(v["key"])
-                if key in M.SETTINGS:
+                self.last_ack = {"key": key, "status": v["status"], "value": int(v["value"])}
+                if key in M.SETTINGS and v["status"] != 1:
                     self.settings[M.SETTINGS[key][0]] = int(v["value"])
                 ev = self._acks.pop(key, None)
                 if ev:

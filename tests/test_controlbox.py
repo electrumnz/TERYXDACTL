@@ -38,8 +38,9 @@ class Bench:
 @pytest.fixture
 def b():
     bench = Bench()
-    bench.drive_req(0, 0)   # dash's first frame after boot
-    bench.run(1.0)
+    bench.run(0.2)          # Shinegle speed arrives
+    bench.drive_req(0, 0)   # dash's first frame after boot drives 4WD to a known end stop
+    bench.run(1.5)
     return bench
 
 
@@ -74,7 +75,7 @@ def test_4wd_refused_when_too_fast_and_not_done_later(b):
 
 def test_4wd_limit_follows_settings(b):
     b.cb.on_frame("PI_SETTINGS", {"key": 3, "value": 25}, b.t)
-    assert b.cb.acks[-1] == {"key": 3, "value": 25}
+    assert b.cb.acks[-1] == {"key": 3, "status": 0, "value": 25}
     b.speed = 20
     b.run(0.2)
     b.drive_req(1)
@@ -85,7 +86,7 @@ def test_4wd_limit_follows_settings(b):
 def test_setting_values_are_clamped(b):
     b.cb.on_frame("PI_SETTINGS", {"key": 3, "value": 500}, b.t)
     assert b.cb.settings["fourwd_max_kmh"] == 40
-    assert b.cb.acks[-1]["value"] == 40
+    assert b.cb.acks[-1]["value"] == 40 and b.cb.acks[-1]["status"] == 2
     assert not b.cb.on_defaults
     b.cb.on_frame("PI_SETTINGS", {"key": M.SETTING_RESET, "value": 0}, b.t)
     assert b.cb.on_defaults and b.cb.settings["fourwd_max_kmh"] == 5
@@ -213,11 +214,25 @@ def test_on_off_only_lights(b):
     assert b.cb.lights_out["interior"] == 10
 
 
-def test_jammed_diff_flags_faults(b):
+def test_jammed_diff_trips_on_current(b):
     b.cb.on_frame("BENCH_INPUTS", {"inputs": 0, "force_mask": 0, "fault_inject": 0b001}, b.t)
     b.drive_req(0, 100)
     b.run(5)
-    assert {"diff_timeout", "diff_pot_stuck"} <= b.cb.faults()
+    assert "diff_overcurrent" in b.cb.faults()
+    assert not b.cb.diff.moving
+
+
+def test_diff_pot_disconnected(b):
+    b.cb.on_frame("BENCH_INPUTS", {"inputs": 0, "force_mask": 0, "fault_inject": 0b01000}, b.t)
+    b.drive_req(0, 100)
+    b.run(0.5)
+    assert "diff_pot_stuck" in b.cb.faults()
+
+
+def test_io_bus_and_low_12v(b):
+    b.cb.on_frame("BENCH_INPUTS", {"inputs": 0, "force_mask": 0, "fault_inject": 0b10000, "aux_mv": 10500}, b.t)
+    b.run(0.2)
+    assert {"io_bus", "low_12v"} <= b.cb.faults()
 
 
 def test_4wd_overcurrent(b):
@@ -260,3 +275,83 @@ def test_built_in_defaults_match_the_io_list():
     if not io_map.exists():
         pytest.skip("io-map.yaml not on this branch yet")
     assert safety_defaults(io_map) == M.default_settings()
+
+
+def test_4wd_unknown_until_first_move():
+    bench = Bench()
+    bench.run(1)
+    assert bench.cb.fourwd_state() == "unknown"
+    bench.drive_req(0)
+    bench.run(1.5)
+    assert bench.cb.fourwd_state() == "2wd"
+
+
+def test_unknown_setting_key(b):
+    b.cb.on_frame("PI_SETTINGS", {"key": 99, "value": 1}, b.t)
+    assert b.cb.acks[-1]["status"] == 1
+
+
+def test_tray_fault_cleared_by_next_press(b):
+    b.cb.on_frame("BENCH_INPUTS", {"inputs": 0, "force_mask": 0, "fault_inject": 0b010}, b.t)
+    b.hold = (1, 0, 0)
+    b.run(2)
+    assert b.cb.tray_state() == "fault"
+    b.hold = None
+    b.cb.on_frame("BENCH_INPUTS", {"inputs": 0, "force_mask": 0, "fault_inject": 0}, b.t)
+    b.run(0.5)
+    b.hold = (1, 0, 0)
+    b.run(1)
+    assert b.cb.tray_state() == "raising"
+
+
+def test_tray_at_limit_is_refused(b):
+    b.hold = (-1, 0, 0)
+    b.run(0.3)
+    assert b.cb.reject_reason == "at_limit"
+
+
+def test_winch_arming_needs_stopped(b):
+    b.speed = 5
+    b.hold = (0, 0, 1)
+    b.run(0.3)
+    assert not b.cb.winch_armed and b.cb.reject_reason == "not_stopped"
+
+
+def test_winch_refused_with_remote_in_use(b):
+    b.cb.on_frame("BENCH_INPUTS", {"inputs": 1 << 5, "force_mask": 1 << 5, "fault_inject": 0}, b.t)
+    b.hold = (0, 1, 1)
+    b.run(0.3)
+    assert b.cb.reject_reason == "winch_remote"
+
+
+def test_status_extras(b):
+    st = dict(b.cb.frames())["PICO_STATUS"]
+    assert st["speed_valid"] == 1 and st["speed"] == 0 and st["parked"] == 0  # in drive
+    b.direction = 0
+    b.run(0.1)
+    assert dict(b.cb.frames())["PICO_STATUS"]["parked"] == 1
+    b.shinegle_alive = False
+    b.run(1)
+    assert dict(b.cb.frames())["PICO_STATUS"]["speed"] == 255
+
+
+def test_clear_faults_setting(b):
+    b.cb.on_frame("BENCH_INPUTS", {"inputs": 0, "force_mask": 0, "fault_inject": 0b100}, b.t)
+    b.drive_req(1)
+    b.run(1)
+    assert b.cb.fourwd_state() == "fault"
+    b.cb.on_frame("PI_SETTINGS", {"key": M.SETTING_CLEAR_FAULTS, "value": 0}, b.t)
+    assert "fourwd_overcurrent" not in b.cb.faults()
+
+
+def test_unknown_4wd_homes_on_resend_once_speed_is_known():
+    bench = Bench()
+    bench.shinegle_alive = False
+    bench.drive_req(0)          # first frame, no speed yet: refused
+    bench.run(0.5)
+    assert bench.cb.reject_reason == "speed_unknown"
+    bench.shinegle_alive = True
+    bench.run(0.5)
+    bench.drive_req(0)          # the 1 s resend
+    bench.run(1.5)
+    assert bench.cb.fourwd_state() == "2wd"

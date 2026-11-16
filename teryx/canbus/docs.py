@@ -72,7 +72,8 @@ def render() -> str:
     parts += ["**Settings keys (0x704 / 0x714)**", "",
               "| key | name | unit | default | range |", "|---|---|---|---|---|", rows,
               f"| {M.SETTING_SAVE} (0xF0) | save to flash | | | |",
-              f"| {M.SETTING_RESET} (0xF1) | reset to defaults | | | |", ""]
+              f"| {M.SETTING_RESET} (0xF1) | reset to defaults | | | |",
+              f"| {M.SETTING_CLEAR_FAULTS} (0xF2) | clear latched faults | | | |", ""]
     parts += ["## Shinegle SG1202 (PLACEHOLDER)", "",
               "Made-up layout so we can build now. Replace in `teryx/canbus/shinegle.py` "
               "once the real bus has been recorded.", ""]

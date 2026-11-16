@@ -15,10 +15,10 @@ from .codec import Message, Signal as S
 # ---------------------------------------------------------------- enums
 PICO_STATE = {0: "boot", 1: "ok", 2: "degraded", 3: "failsafe"}
 DASH_STATE = {0: "boot", 1: "ok", 2: "shutting_down"}
-FOURWD_STATE = {0: "2wd", 1: "4wd", 2: "to_4wd", 3: "to_2wd", 4: "fault"}
+FOURWD_STATE = {0: "2wd", 1: "4wd", 2: "to_4wd", 3: "to_2wd", 4: "fault", 5: "unknown"}  # unknown = after boot, before the first move
 TRAY_STATE = {0: "down", 1: "up", 2: "mid", 3: "raising", 4: "lowering", 5: "fault"}
 DIFF_STATE = {0: "idle", 1: "moving", 2: "fault"}
-LIGHT_EFFECT = {0: "none", 1: "strobe", 2: "chase", 3: "outside_only", 4: "inside_only", 5: "breathe"}
+LIGHT_EFFECT = {0: "none", 1: "strobe", 2: "chase", 3: "outside_only", 4: "inside_only", 5: "breathe", 6: "sos"}
 REJECT_REASON = {
     0: "none",
     1: "too_fast",        # speed above the limit for that action
@@ -28,6 +28,12 @@ REJECT_REASON = {
     5: "interlock",       # e.g. tray while winching
     6: "actuator_fault",
     7: "low_12v",
+    8: "dash_link",       # request arrived while the dash link was down
+    9: "ignition_off",
+    10: "at_limit",       # e.g. tray up when already fully up
+    11: "not_parked",     # firmware update needs the Teryx parked
+    12: "winch_remote",   # handheld winch remote in use
+    13: "bad_frame",
 }
 REJECT_TEXT = {
     "too_fast": "Slow down first",
@@ -37,6 +43,12 @@ REJECT_TEXT = {
     "interlock": "Blocked by another action",
     "actuator_fault": "Actuator fault, check it",
     "low_12v": "12V supply too low",
+    "dash_link": "Dash link was down",
+    "ignition_off": "Key is off",
+    "at_limit": "Already at the end of travel",
+    "not_parked": "Park the Teryx first",
+    "winch_remote": "Winch remote is in use",
+    "bad_frame": "Request not understood",
 }
 FAULT_BITS = {   # 0x710 bytes 1-2
     0: "dash_link",
@@ -52,6 +64,8 @@ FAULT_BITS = {   # 0x710 bytes 1-2
     10: "low_12v",
     11: "pico_hot",
     12: "watchdog_reset",
+    13: "diff_overcurrent",
+    14: "io_bus",          # MCP23017 or ADS1115 not answering
 }
 RELAY_BITS = {   # 0x711 byte 0, relay 1 = bit 0
     0: "light.rear",
@@ -145,6 +159,11 @@ PICO_STATUS = Message(
         S("reject_reason", 40, 4, choices=REJECT_REASON, comment="Why the last request was refused"),
         S("reject_count", 44, 4, comment="Goes up by one each time a request is refused"),
         S("winch_armed", 48, 1),
+        S("speed_valid", 49, 1),
+        S("reverse_active", 50, 1),
+        S("shutdown_request", 51, 1, comment="Key off: Pi should shut down"),
+        S("parked", 52, 1, comment="Stopped and safe for OTA updates"),
+        S("speed", 56, 8, unit="km/h", comment="Speed as the Pico sees it, 255 = unknown"),
     ),
 )
 PICO_OUTPUTS = Message(
@@ -187,6 +206,7 @@ PICO_SETTINGS_ACK = Message(
     comment="Echo of each 0x704 frame once the Pico has applied it (value is what it actually used).",
     signals=(
         S("key", 0, 8),
+        S("status", 8, 8, choices={0: "ok", 1: "unknown_key", 2: "out_of_range"}),
         S("value", 16, 16),
     ),
 )
@@ -200,9 +220,10 @@ BENCH_INPUTS = Message(
         S("inputs", 0, 8, comment="Bits as INPUT_BITS"),
         S("force_mask", 8, 8, comment="Which input bits to force"),
         S("fault_inject", 16, 8, comment="See BENCH_FAULTS"),
+        S("aux_mv", 24, 16, unit="mV", comment="Fake 12V reading, 0 = leave alone"),
     ),
 )
-BENCH_FAULTS = {0: "jam_diff", 1: "jam_tray", 2: "fourwd_overcurrent"}
+BENCH_FAULTS = {0: "jam_diff", 1: "jam_tray", 2: "fourwd_overcurrent", 3: "pot_disconnected", 4: "io_bus_dead"}
 
 TERYX_MESSAGES: tuple[Message, ...] = (
     PI_HEARTBEAT, PI_LIGHTS, PI_DRIVE, PI_HOLD, PI_SETTINGS, PI_FW_UPDATE,
@@ -230,9 +251,13 @@ SETTINGS: dict[int, tuple[str, str, int, int, int]] = {
     15: ("diff_pot_max_raw", "raw", 25000, 0, 32767),
     16: ("light_dimmable_mask", "bits", 0b11111, 0, 31),
     17: ("hold_to_run_timeout_ms", "ms", 300, 100, 2000),
+    18: ("relay_active_low", "bool", 0, 0, 1),
+    19: ("tray_full_travel_ms", "ms", 16000, 1000, 60000),
+    20: ("low_12v_mv", "mV", 11000, 9000, 13000),
 }
 SETTING_SAVE = 0xF0
 SETTING_RESET = 0xF1
+SETTING_CLEAR_FAULTS = 0xF2
 SETTING_KEYS = {v[0]: k for k, v in SETTINGS.items()}
 
 
