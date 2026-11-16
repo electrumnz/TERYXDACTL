@@ -1,0 +1,21 @@
+name: Printed parts
+
+on:
+  push:
+    paths: ["cad/**", ".github/workflows/cad.yml"]
+  pull_request:
+    paths: ["cad/**", ".github/workflows/cad.yml"]
+
+jobs:
+  stl:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install OpenSCAD
+        run: sudo apt-get update && sudo apt-get install -y openscad
+      - name: Build every STL (stops on any OpenSCAD warning)
+        run: ./cad/build.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: teryx-stl
+          path: cad/stl/
