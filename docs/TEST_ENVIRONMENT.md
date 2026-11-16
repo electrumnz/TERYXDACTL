@@ -110,9 +110,23 @@ CAN bus is saying, live:
   the frame rate up. `?night`, `?xray` and `?cam=x,y,z` set the view on load
 
 It only reads the dash feed, so it works the same on the sim, a replayed log
-or the real bus. No free Teryx model with an MIT-friendly licence
-exists, so the model is drawn in code in `teryx/web/virtual/teryx-model.js`
-(no third-party mesh or artwork). three.js (MIT) is bundled in `teryx/web/vendor/` so it works with no internet.
+or the real bus.
+
+The bodywork (shell, cage, seats, dash, bed and wheels) is `teryx.glb`, built
+in Blender by `teryx/web/virtual/blender/build_teryx.py`. No free Teryx model
+with an MIT-friendly licence exists, so it's modelled from scratch to the
+2013 spec sheet and checked against side-on photos of a 2012-13 Teryx 750
+with `blender/overlay.py` (it lays a render over the photo, scaled by the
+wheelbase). Keep reference photos out of the repo. To rebuild:
+
+    pip install bpy==5.2.4          # Blender as a Python module, Python 3.13
+    python teryx/web/virtual/blender/build_teryx.py
+
+The moving parts (drivetrain, suspension, winch, light bars) are drawn in
+`teryx-model.js`, which also swaps the GLB's materials for its own by name so
+paint, see-through and the lamps keep working. If the GLB can't load, the
+older code-drawn body shows instead (`?nomodel` forces that). three.js (MIT)
+is bundled in `teryx/web/vendor/` so it works with no internet.
 
 ![Virtual Teryx](img/virtual-teryx-day.png)
 
