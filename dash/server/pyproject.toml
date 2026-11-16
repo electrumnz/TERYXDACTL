@@ -1,0 +1,14 @@
+[project]
+name = "teryx-dash"
+version = "0.1.0"
+description = "Server-side extras for the Teryx dash UI (settings, OTA updates, Wi-Fi, camera)"
+license = { text = "MIT" }
+requires-python = ">=3.11"
+dependencies = ["aiohttp>=3.9"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["teryx_dash"]

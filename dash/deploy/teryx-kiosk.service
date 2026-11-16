@@ -1,0 +1,15 @@
+# Full-screen Chromium on the 10.1" touch screen, showing the dash.
+# Install as a user service for the desktop user:
+#   mkdir -p ~/.config/systemd/user && cp teryx-kiosk.service ~/.config/systemd/user/
+#   systemctl --user enable --now teryx-kiosk
+[Unit]
+Description=Teryx dash kiosk
+After=graphical-session.target
+
+[Service]
+ExecStart=/opt/teryx/current/dash/deploy/kiosk.sh
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=graphical-session.target

@@ -1,0 +1,22 @@
+# Runs the dash server (gateway + UI + settings/OTA routes) on the Pi.
+# Install: sudo cp teryx-dash.service /etc/systemd/system/ && sudo systemctl enable --now teryx-dash
+[Unit]
+Description=Teryx dash server
+After=network.target
+# CAN interface must be up first (see README: can0 via the CAN HAT overlay)
+Wants=sys-subsystem-net-devices-can0.device
+
+[Service]
+User=teryx
+WorkingDirectory=/opt/teryx/current
+Environment=TERYX_OTA_ROOT=/opt/teryx
+Environment=PYTHONPATH=/opt/teryx/current:/opt/teryx/current/dash/server
+# Rolls back an update that keeps failing to start. Uses a copy kept outside the releases,
+# so a broken release can't break its own rollback.
+ExecStartPre=/opt/teryx/venv/bin/python /opt/teryx/bin/teryx-ota-boot.py boot-check
+ExecStart=/opt/teryx/venv/bin/python -m teryx dash --bus socketcan:can0 --ui /opt/teryx/current/dash/web --port 8080
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target
