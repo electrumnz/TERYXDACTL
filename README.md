@@ -31,6 +31,7 @@ Then open:
 
 - **http://localhost:8080/** for the test screen (live data, tap things)
 - **http://localhost:8080/sim** for the sim panel (scenarios, throttle, faults)
+- **http://localhost:8080/virtual** for the 3D virtual Teryx
 
 A phone or tablet on the same wifi can open them too, using the laptop's IP
 address instead of `localhost`.

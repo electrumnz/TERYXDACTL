@@ -13,6 +13,10 @@ async def test_websocket_streams_state_and_takes_requests(aiohttp_client, bus_sp
         client = await aiohttp_client(build_app(gw, sim))
         assert (await client.get("/")).status == 200
         assert (await client.get("/sim")).status == 200
+        assert (await client.get("/virtual")).status == 200
+        assert (await client.get("/virtual-static/virtual.js")).status == 200
+        assert (await client.get("/vendor/three/three.module.min.js")).status == 200
+        assert (await client.get("/vendor/three/OrbitControls.js")).status == 200
         canmap = await (await client.get("/api/canmap")).json()
         assert any(m["id"] == "0x710" for m in canmap["messages"])
 
