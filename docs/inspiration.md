@@ -56,7 +56,7 @@ Shinegle: plug in, record, change one thing at a time, spot which bytes move.
 | [evcollector/kajo-dash](https://github.com/evcollector/kajo-dash) | GPL-3.0, **Ideas only** | pushed 2026-10 | Small VESC/Fardriver dash. Good list of which values riders actually want on screen. |
 
 **What this means for step 4 (decode Shinegle):**
-1. Sniffer = spare Pico + MCP2515 flashed with the gs_usb firmware above, or the Pi's own CAN HAT.
+1. Sniffer = spare Pico + MCP2515. We wrote our own firmware for it (`firmware/can-sniffer`, slcan + GVRET, listen-only by default) rather than use the unlicensed gs_usb one. Guide: [shinegle-decode.md](shinegle-decode.md).
 2. Find the bitrate first: try 250k and 500k, then 125k and 1M, in listen-only mode so we never ACK or disturb the bus.
 3. Record with the Shinegle dash on, then off. If frames stop without the dash, the controller is request/response (Kelly style) and we need to copy what the dash sends.
 4. Use the Shinegle programmer while recording. Each setting it reads tells us an ID and a value we already know.

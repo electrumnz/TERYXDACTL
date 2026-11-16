@@ -37,10 +37,16 @@ def test_layouts_match_the_io_list():
     assert data[:3] == bytes([0xFF, 0x01, 0x01])
     # 0x713: 12V as u16 mV
     assert M.PICO_POWER.encode({"aux_12v": 13.6, "pico_temp": -5})[:3] == (13600).to_bytes(2, "little") + bytes([251])
-    # Shinegle speed frame the Pico reads: u16 0.1 km/h, direction byte 2
+
+
+def test_pico_firmware_reads_the_installed_shinegle_speed_frame():
+    """If this fails after installing a decoded shinegle.dbc, the Pico firmware's
+    speed reading (CAN_ID_MC_SPEED in controller.c / protocol.h) must be updated
+    to match before the control box goes on the real bus."""
     from teryx.canbus import shinegle as SG
-    assert SG.SG_MOTOR.can_id == 0x180
-    assert SG.SG_MOTOR.encode({"speed": 12.3, "direction": 2})[:3] == (123).to_bytes(2, "little") + b"\x02"
+    from teryx.decode.check import firmware_matches
+    ok, why = firmware_matches(SG.LAYOUT)
+    assert ok, why
 
 
 def test_protocol_doc_is_up_to_date():

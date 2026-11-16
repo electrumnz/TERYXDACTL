@@ -3,7 +3,17 @@
 import pytest
 
 from teryx.canbus import messages as M
+from teryx.canbus import shinegle as SG
 from teryx.sim.controlbox import ControlBox
+
+DIRECTIONS = {0: "neutral", 1: "forward", 2: "reverse"}
+
+
+def shinegle_frames(speed, direction):
+    """What the Shinegle sends for this speed and direction, whatever the installed layout."""
+    mc = {**SG.MC_DEFAULTS, "mc.speed": speed, "mc.direction": DIRECTIONS[direction]}
+    for msg, raw in SG.encode(mc):
+        yield msg.name, msg.decode(msg.encode(raw))
 
 
 class Bench:
@@ -23,7 +33,8 @@ class Bench:
         for _ in range(steps):
             self.t += dt
             if self.shinegle_alive:
-                self.cb.on_frame("SG_MOTOR", {"speed": self.speed, "direction": self.direction, "brake": 0}, self.t)
+                for name, values in shinegle_frames(self.speed, self.direction):
+                    self.cb.on_frame(name, values, self.t)
             if self.dash_alive:
                 self.cb.on_frame("PI_HEARTBEAT", {"dash_state": 1}, self.t)
                 if self.hold:

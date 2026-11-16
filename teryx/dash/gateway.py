@@ -39,7 +39,10 @@ class Gateway:
         self._stop = threading.Event()
         self._thread: threading.Thread | None = None
         self.started = time.monotonic()
-        self.state: dict = {}
+        # Start from defaults so the UI never sees a missing mc.* value, even if
+        # the real Shinegle turns out not to send some of them.
+        self.state: dict = dict(SG.MC_DEFAULTS)
+        self.last_shinegle = -1e9
         self.seen: dict[str, float] = {}        # message name -> monotonic time
         self.frame_counts: dict[str, int] = {}
         self.unknown_ids: dict[int, int] = {}   # handy when sniffing the real Shinegle
@@ -66,7 +69,7 @@ class Gateway:
         now = time.monotonic()
         with self._lock:
             s = dict(self.state)
-            s["mc.online"] = now - self.seen.get("SG_MOTOR", -1e9) < ONLINE_TIMEOUT_S
+            s["mc.online"] = now - self.last_shinegle < ONLINE_TIMEOUT_S
             s["pico.online"] = now - self.seen.get("PICO_STATUS", -1e9) < ONLINE_TIMEOUT_S
             for k, v in self.req.items():
                 s[f"req.{k}"] = v
@@ -189,7 +192,8 @@ class Gateway:
             self.frame_counts[msg.name] = self.frame_counts.get(msg.name, 0) + 1
             st = self.state
             if msg.sender == "shinegle":
-                st.update(SG.decode(msg, v))
+                self.last_shinegle = now
+                SG.merge(st, msg, v)
             elif msg.name == "PICO_STATUS":
                 st["pico.faults"] = M.bits_to_names(v["fault_bits"], M.FAULT_BITS)
                 for bit, name in M.INPUT_BITS.items():

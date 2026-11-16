@@ -282,7 +282,7 @@ HOST/BENCH BUILD ONLY. Lets the simulator drive the Pico's wired inputs and inje
 
 ## Shinegle SG1202 (PLACEHOLDER)
 
-Made-up layout so we can build now. Replace in `teryx/canbus/shinegle.py` once the real bus has been recorded.
+Made-up layout so we can build now. It lives in `teryx/canbus/shinegle.dbc`; replace that file once the real bus has been decoded (docs/shinegle-decode.md).
 
 ### 0x180 SG_MOTOR
 
@@ -299,7 +299,7 @@ Bytes 0-2 are what the Pico reads for its speed interlocks.
 | `limp` | byte 3 bit 3 | u1 |  |  |
 | `brake` | byte 3 bit 4 | u1 |  |  |
 | `throttle` | byte 4 | u8 | % |  |
-| `motor_rpm` | bytes 5-6 | i16 | rpm |  |
+| `rpm` | bytes 5-6 | i16 | rpm |  |
 | `counter` | byte 7 | u8 |  |  |
 
 ### 0x181 SG_BATTERY
@@ -330,7 +330,16 @@ From **shinegle**, every 200 ms. **PLACEHOLDER.**
 
 | Signal | Where | Type | Unit | Notes |
 |---|---|---|---|---|
-| `faults` | bytes 0-1 | u16 |  |  |
+| `fault_over_current` | byte 0 bit 0 | u1 |  | Motor over current |
+| `fault_over_voltage` | byte 0 bit 1 | u1 |  | Battery voltage too high |
+| `fault_under_voltage` | byte 0 bit 2 | u1 |  | Battery voltage too low |
+| `fault_motor_over_temp` | byte 0 bit 3 | u1 |  | Motor too hot |
+| `fault_controller_over_temp` | byte 0 bit 4 | u1 |  | Controller too hot |
+| `fault_hall_sensor` | byte 0 bit 5 | u1 |  | Motor position sensor fault |
+| `fault_throttle` | byte 0 bit 6 | u1 |  | Throttle fault |
+| `fault_comms` | byte 0 bit 7 | u1 |  | Controller comms fault |
+| `fault_battery_over_temp` | byte 1 bit 0 | u1 |  | Battery too hot |
+| `fault_precharge` | byte 1 bit 1 | u1 |  | Precharge fault |
 | `odometer` | bytes 2-5 | u32 x0.1 | km |  |
 | `counter` | byte 7 | u8 |  |  |
 
