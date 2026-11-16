@@ -16,6 +16,7 @@ from aiohttp import web
 
 from . import pico_settings
 from .ota import Ota, OtaConfig
+from .trips import DEFAULT_PACK_KWH, TripLog
 
 CONFIG_DIR = Path(os.environ.get("TERYX_CONFIG_DIR", Path.home() / ".config" / "teryx"))
 SETTINGS_FILE = CONFIG_DIR / "dash-settings.json"
@@ -24,6 +25,8 @@ MAX_SETTINGS_BYTES = 64 * 1024
 OTA_KEY = web.AppKey("teryx_dash_ota", Ota)
 CONFIRM_KEY = web.AppKey("teryx_dash_confirm", asyncio.Future)
 KEYOFF_KEY = web.AppKey("teryx_dash_keyoff", asyncio.Future)
+TRIPS_KEY = web.AppKey("teryx_dash_trips", TripLog)
+TRIPS_TASK_KEY = web.AppKey("teryx_dash_trips_task", asyncio.Future)
 
 
 async def maybe_await(v):
@@ -66,6 +69,8 @@ def setup_routes(app: web.Application, gateway: Any) -> None:
     ota = Ota(cfg=OtaConfig(), is_stopped=lambda: is_stopped(gateway),
               pico_version=lambda: snapshot(gateway).get("pico.version"))
     app[OTA_KEY] = ota
+    trips = TripLog(CONFIG_DIR / "trips.json")
+    app[TRIPS_KEY] = trips
     r = app.router
 
     # ---------- dash settings ----------
@@ -214,6 +219,88 @@ def setup_routes(app: web.Application, gateway: Any) -> None:
         asyncio.ensure_future(_run("nmcli", "con", "up", "id", ssid))
         return web.json_response({"ok": True})
 
+    async def wifi_scan(_):
+        if not shutil.which("nmcli"):
+            return err("nmcli not found (NetworkManager)", 503)
+        out = await _run("nmcli", "-t", "-f", "SSID,SIGNAL,SECURITY", "dev", "wifi", "list", "--rescan", "auto")
+        nets: dict[str, dict] = {}
+        for line in out.splitlines():
+            parts = _split_nmcli(line)
+            if len(parts) < 3 or not parts[0]:
+                continue
+            ssid, sig, sec = parts[0], int(parts[1] or 0), parts[2]
+            if ssid not in nets or nets[ssid]["signal"] < sig:
+                nets[ssid] = {"ssid": ssid, "signal": sig, "secure": bool(sec and sec != "--")}
+        return web.json_response({"networks": sorted(nets.values(), key=lambda n: -n["signal"])})
+
+    async def wifi_add(req):
+        """Join a new network, typed on the on-screen keyboard. Never goes through a shell."""
+        try:
+            body = await req.json()
+            ssid, password = str(body["ssid"]), str(body.get("password") or "")
+        except Exception:
+            return err("need ssid")
+        if not 1 <= len(ssid.encode()) <= 32 or "\n" in ssid or "\0" in ssid:
+            return err("network name must be 1 to 32 characters")
+        if password and not 8 <= len(password) <= 63:
+            return err("Wi-Fi passwords are 8 to 63 characters")
+        if not shutil.which("nmcli"):
+            return err("nmcli not found (NetworkManager)", 503)
+        args = ["nmcli", "dev", "wifi", "connect", ssid]
+        if password:
+            args += ["password", password]
+        if body.get("hidden"):
+            args += ["hidden", "yes"]
+        try:
+            out = await _run(*args, timeout=45, stderr=True)
+        except asyncio.TimeoutError:
+            return err("timed out joining the network", 504)
+        if "successfully" not in out.lower():
+            return err("couldn't join. Check the name and password", 502)
+        return web.json_response({"ok": True})
+
+    async def wifi_forget(req):
+        try:
+            ssid = (await req.json())["ssid"]
+        except Exception:
+            return err("need ssid")
+        saved = (await _run("nmcli", "-t", "-f", "NAME", "con", "show")).splitlines()
+        if ssid not in [x.replace("\\:", ":") for x in saved]:
+            return err("not a saved network")
+        await _run("nmcli", "con", "delete", "id", ssid)
+        return web.json_response({"ok": True})
+
+    # ---------- trips ----------
+    def _pack_kwh() -> float:
+        try:
+            v = float(json.loads(SETTINGS_FILE.read_text()).get("packKwh") or DEFAULT_PACK_KWH)
+            return v if 0.5 <= v <= 100 else DEFAULT_PACK_KWH
+        except Exception:
+            return DEFAULT_PACK_KWH
+
+    async def trips_get(_):
+        return web.json_response(trips.summary(snapshot(gateway), _pack_kwh()))
+
+    async def trips_reset(req):
+        what = req.match_info["what"]
+        if what == "trip-a":
+            trips.reset_trip_a()
+        elif what == "history":
+            trips.clear_history()
+        else:
+            return err("unknown", 404)
+        return web.json_response(trips.summary(snapshot(gateway), _pack_kwh()))
+
+    async def log_trips():
+        while True:
+            try:
+                s = snapshot(gateway)
+                if s:
+                    trips.sample(s)
+            except Exception:
+                pass
+            await asyncio.sleep(1)
+
     # ---------- system ----------
     async def system(_):
         temp = None
@@ -257,6 +344,11 @@ def setup_routes(app: web.Application, gateway: Any) -> None:
     r.add_post("/api/ota/{action}", ota_action)
     r.add_get("/api/wifi", wifi)
     r.add_post("/api/wifi/connect", wifi_connect)
+    r.add_get("/api/wifi/scan", wifi_scan)
+    r.add_post("/api/wifi/add", wifi_add)
+    r.add_post("/api/wifi/forget", wifi_forget)
+    r.add_get("/api/trips", trips_get)
+    r.add_post("/api/trips/reset/{what}", trips_reset)
     r.add_get("/api/system", system)
     r.add_post("/api/system/restart", sys_restart)
     r.add_post("/api/system/shutdown", sys_shutdown)
@@ -274,11 +366,40 @@ def setup_routes(app: web.Application, gateway: Any) -> None:
         _app[CONFIRM_KEY] = asyncio.ensure_future(
             ota.confirm_when_healthy(lambda: bool(snapshot(gateway))))
         _app[KEYOFF_KEY] = asyncio.ensure_future(watch_key_off())
+        _app[TRIPS_TASK_KEY] = asyncio.ensure_future(log_trips())
+
+    async def on_stop(_app):
+        _app[TRIPS_TASK_KEY].cancel()
+        try:
+            trips.save()
+        except OSError:
+            pass
 
     app.on_startup.append(on_start)
+    app.on_cleanup.append(on_stop)
 
 
-async def _run(*args: str) -> str:
-    proc = await asyncio.create_subprocess_exec(*args, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.DEVNULL)
-    out, _ = await asyncio.wait_for(proc.communicate(), 20)
+async def _run(*args: str, timeout: float = 20, stderr: bool = False) -> str:
+    proc = await asyncio.create_subprocess_exec(
+        *args, stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.STDOUT if stderr else asyncio.subprocess.DEVNULL)
+    out, _ = await asyncio.wait_for(proc.communicate(), timeout)
     return out.decode(errors="replace")
+
+
+def _split_nmcli(line: str) -> list[str]:
+    """Split nmcli -t output on ':' but not on escaped '\\:'."""
+    parts, cur, esc = [], "", False
+    for ch in line:
+        if esc:
+            cur += ch
+            esc = False
+        elif ch == "\\":
+            esc = True
+        elif ch == ":":
+            parts.append(cur)
+            cur = ""
+        else:
+            cur += ch
+    parts.append(cur)
+    return parts

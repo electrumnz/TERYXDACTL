@@ -2,7 +2,9 @@
 import { el, $, stepper, toggle, toast } from "../ui/controls.js";
 import { LIGHTS } from "../settings.js";
 import { listCameras } from "./camera.js";
-import { PICO_FAULTS, MC_FAULTS, faultText, asList } from "../text.js";
+import { keyboard } from "../ui/keyboard.js";
+import { REGIONS } from "../theme.js";
+import { Sound } from "../sound.js";
 
 async function api(path, opts = {}) {
   const r = await fetch(`/api/${path}`, { cache: "no-store", headers: { "content-type": "application/json" }, ...opts, body: opts.body ? JSON.stringify(opts.body) : undefined });
@@ -11,7 +13,7 @@ async function api(path, opts = {}) {
 }
 
 const SECTIONS = [
-  ["display", "Display"], ["lights", "Lights setup"], ["camera", "Camera"], ["limits", "Safety limits"],
+  ["display", "Display"], ["sounds", "Sounds and alerts"], ["lights", "Lights setup"], ["camera", "Camera"], ["limits", "Safety limits"],
   ["diff", "Diff calibration"], ["faults", "Faults"], ["updates", "Updates"], ["wifi", "Wi-Fi"], ["about", "About"],
 ];
 
@@ -66,10 +68,38 @@ export class SettingsScreen {
   sec_display(body) {
     const s = this.ctx.settings;
     this.title(body, "Display");
-    body.appendChild(row("Theme", "Day is brighter and easier to read in full sun. Auto switches at 7am and 7pm.", seg([["night", "Night"], ["day", "Day"], ["auto", "Auto"]], s.get("theme"), (v) => { s.set("theme", v); this.ctx.applyTheme(); })));
+    const now = el(`<span class="muted"></span>`);
+    const showNow = () => { const i = this.ctx.themeInfo(); now.textContent = s.get("theme") === "auto" ? `Now: ${i.theme} (${i.why})` : ""; };
+    const themeRow = row("Theme", "Day is brighter for full sun. Auto goes by the sun: GPS when there's a fix, otherwise the area below.", seg([["night", "Night"], ["day", "Day"], ["auto", "Auto"]], s.get("theme"), (v) => { s.set("theme", v); this.ctx.applyTheme(); showNow(); }));
+    themeRow.querySelector(".desc").appendChild(el(`<div style="margin-top:6px"></div>`)).appendChild(now);
+    body.appendChild(themeRow);
+    const reg = el(`<select class="big">${Object.entries(REGIONS).map(([k, r]) => `<option value="${k}" ${k === s.get("themeRegion") ? "selected" : ""}>${r.name}</option>`).join("")}</select>`);
+    reg.onchange = () => { s.set("themeRegion", reg.value); this.ctx.applyTheme(); showNow(); };
+    body.appendChild(row("Area for Auto", "Only used when there's no GPS fix. Just a rough area, no exact spot is saved.", reg));
+    showNow();
     body.appendChild(row("Speed units", "", seg([["kmh", "km/h"], ["mph", "mph"]], s.get("units"), (v) => s.set("units", v))));
     body.appendChild(row("Power bar scale", "Full scale of the power bar on the drive screen.", stepper(s.get("powerMaxKw"), { step: 1, min: 5, max: 30, fmt: (v) => `${v} kW`, onChange: (v) => s.set("powerMaxKw", v) })));
+    body.appendChild(row("Battery pack size", "Usable energy in the traction pack, for the range estimate. 72 V x 105 Ah is about 7.5 kWh.", stepper(s.get("packKwh"), { step: 0.5, min: 1, max: 40, fmt: (v) => `${v.toFixed(1)} kWh`, onChange: (v) => s.set("packKwh", v) })));
     body.appendChild(row("Battery cells in series", "Only used to estimate battery % from voltage if the motor controller doesn't send one.", stepper(s.get("cells"), { step: 1, min: 10, max: 40, onChange: (v) => s.set("cells", v) })));
+  }
+
+  // ---------- Sounds and alerts ----------
+  sec_sounds(body) {
+    const s = this.ctx.settings;
+    this.title(body, "Sounds and alerts", "Warnings beep twice. Serious ones beep three times and keep beeping every few seconds until you tap OK on the banner.");
+    const apply = () => this.ctx.applySound();
+    body.appendChild(row("Alert sounds", "", toggle(s.get("sound.enabled"), (v) => { s.set("sound.enabled", v); apply(); })));
+    body.appendChild(row("Volume", "", stepper(Math.round(s.get("sound.volume") * 10), { step: 1, min: 1, max: 10, fmt: (v) => `${v * 10}%`, onChange: (v) => { s.set("sound.volume", v / 10); apply(); Sound.play("warn"); } })));
+    body.appendChild(row("Tap clicks", "A small tick on every press, so you know a gloved tap landed.", toggle(s.get("sound.clicks"), (v) => { s.set("sound.clicks", v); apply(); })));
+    const test = el(`<div class="row" style="gap:10px;flex-wrap:wrap"></div>`);
+    [["warn", "Warning"], ["bad", "Serious"], ["info", "Info"]].forEach(([k, l]) => { const b = el(`<button class="btn sm">${l}</button>`); b.onclick = () => Sound.play(k); test.appendChild(b); });
+    body.appendChild(row("Try the sounds", "", test));
+    this.title(body, "Tilt alerts", "Only used once a tilt sensor is fitted. Side to side is the one that rolls you, so it warns earlier.");
+    const deg = (path, label, desc) => body.appendChild(row(label, desc, stepper(s.get(path), { step: 1, min: 10, max: 45, fmt: (v) => `${v}°`, onChange: (v) => s.set(path, v) })));
+    deg("tilt.rollWarn", "Side slope warning", "");
+    deg("tilt.rollBad", "Side slope alarm", "Rollover risk.");
+    deg("tilt.pitchWarn", "Up/down warning", "");
+    deg("tilt.pitchBad", "Up/down alarm", "");
   }
 
   // ---------- Lights ----------
@@ -79,8 +109,14 @@ export class SettingsScreen {
     LIGHTS.forEach((l) => {
       const cfg = s.light(l.id);
       const names = ["Bar 1", "Bar 2", "Bar 3", "Bar 4", "Interior", "Left spot", "Right spot", "Centre", "Wide", "Flood", "Cab"];
-      const nameSel = el(`<select class="big">${[...new Set([cfg.name, ...names])].map((n) => `<option ${n === cfg.name ? "selected" : ""}>${n}</option>`).join("")}</select>`);
-      nameSel.onchange = () => s.set(`lights.${l.id}.name`, nameSel.value);
+      const esc = (t) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+      const nameSel = el(`<select class="big">${[...new Set([cfg.name, ...names])].map((n) => `<option value="${esc(n)}" ${n === cfg.name ? "selected" : ""}>${esc(n)}</option>`).join("")}<option value="__type">Type a name…</option></select>`);
+      nameSel.onchange = async () => {
+        if (nameSel.value !== "__type") return s.set(`lights.${l.id}.name`, nameSel.value);
+        const t = await keyboard({ title: `Name for ${l.where.toLowerCase()}`, value: s.light(l.id).name, maxLength: 16 });
+        if (t && t.trim()) s.set(`lights.${l.id}.name`, t.trim());
+        this.open("lights");
+      };
       const r = row(`${l.where}`, "", null);
       const ctl = r.querySelector(".ctl");
       ctl.style.display = "flex"; ctl.style.gap = "16px"; ctl.style.alignItems = "center";
@@ -167,12 +203,9 @@ export class SettingsScreen {
   }
 
   sec_faults(body) {
-    const st = this.ctx.store;
-    const active = [
-      ...asList(st.get("pico.faults")).map((c) => ({ src: "Control box", code: c, text: faultText(c, PICO_FAULTS), sev: (PICO_FAULTS[c] || {}).sev || "bad" })),
-      ...asList(st.get("mc.faults")).map((c) => ({ src: "Motor controller", code: c, text: faultText(c, MC_FAULTS), sev: (MC_FAULTS[c] || {}).sev || "bad" })),
-    ];
-    const head = el(`<div class="row" style="justify-content:space-between;align-items:center"><h3 style="margin:0">Active faults</h3><button class="btn sm">Clear latched faults</button></div>`);
+    const SRC = { p: "Control box", m: "Motor controller", a: "Dash" };
+    const active = this.ctx.alerts.active.map((a) => ({ src: SRC[a.key[0]] || "Dash", code: a.code, text: a.text, sev: a.sev }));
+    const head = el(`<div class="row" style="justify-content:space-between;align-items:center"><h3 style="margin:0">Active alerts and faults</h3><button class="btn sm">Clear latched faults</button></div>`);
     head.querySelector("button").onclick = async () => {
       try { await api("pico-settings/clear-faults", { method: "POST" }); toast("Asked the control box to clear faults. Any that are still there will come back.", "good"); }
       catch (e) { toast(`Couldn't clear: ${e.message}`, "bad"); }
@@ -225,19 +258,68 @@ export class SettingsScreen {
 
   // ---------- Wi-Fi ----------
   async sec_wifi(body) {
-    this.title(body, "Wi-Fi", "Used for updates. Add new networks from a laptop or phone (see the dash README); here you can see the link and switch between saved networks.");
+    this.title(body, "Wi-Fi", "Used for updates. Tap a network to join it, and type the password on the on-screen keyboard. Passwords stay on the Pi.");
     const box = el(`<div class="muted">Checking…</div>`);
     body.appendChild(box);
-    const render = (w) => {
-      box.className = ""; box.innerHTML = "";
-      box.appendChild(row("Connected to", w.connected ? `${w.ssid} · signal ${w.signal}% · ${w.ip || ""}` : "Not connected", null));
-      (w.saved || []).forEach((n) => {
-        const b = el(`<button class="btn sm ${n === w.ssid ? "on" : ""}">${n === w.ssid ? "Connected" : "Connect"}</button>`);
-        b.onclick = async () => { try { await api("wifi/connect", { method: "POST", body: { ssid: n } }); toast(`Connecting to ${n}…`); setTimeout(() => this.open("wifi"), 4000); } catch (e) { toast(`Couldn't connect: ${e.message}`, "bad"); } };
-        box.appendChild(row(n, "Saved network", b));
-      });
+    if (this.ctx.store.get("link.demo")) {
+      box.textContent = "Not available in demo mode. You can still try the keyboard:";
+      const b = el(`<button class="btn sm" style="margin-top:12px">Try the keyboard</button>`);
+      b.onclick = async () => { const t = await keyboard({ title: "Wi-Fi password", password: true, minLength: 8, hint: "8 to 63 characters", doneLabel: "Join" }); if (t != null) toast(`Typed ${t.length} characters.`, "good"); };
+      body.appendChild(b);
+      return;
+    }
+    let w;
+    try { w = await api("wifi"); } catch (e) { box.textContent = `Can't read Wi-Fi status (${e.message}).`; return; }
+    box.className = ""; box.innerHTML = "";
+    box.appendChild(row("Connected to", w.connected ? `${w.ssid} · signal ${w.signal}% · ${w.ip || ""}` : "Not connected", null));
+    const saved = new Set(w.saved || []);
+    this.title(body, "Saved networks");
+    (w.saved || []).forEach((n) => {
+      const c = el(`<div class="row" style="gap:10px"></div>`);
+      const b = el(`<button class="btn sm ${n === w.ssid ? "on" : ""}">${n === w.ssid ? "Connected" : "Connect"}</button>`);
+      b.onclick = async () => { try { await api("wifi/connect", { method: "POST", body: { ssid: n } }); toast(`Connecting to ${n}…`); setTimeout(() => this.open("wifi"), 4000); } catch (e) { toast(`Couldn't connect: ${e.message}`, "bad"); } };
+      const f = el(`<button class="btn sm danger">Forget</button>`);
+      f.onclick = async () => {
+        if (f.dataset.armed !== "1") { f.dataset.armed = "1"; f.textContent = "Tap again"; setTimeout(() => { f.dataset.armed = ""; f.textContent = "Forget"; }, 3000); return; }
+        try { await api("wifi/forget", { method: "POST", body: { ssid: n } }); toast(`Forgot ${n}.`, "good"); this.open("wifi"); } catch (e) { toast(`Couldn't forget: ${e.message}`, "bad"); }
+      };
+      c.appendChild(b); c.appendChild(f);
+      box.appendChild(row(this.escape(n), "", c));
+    });
+    if (!saved.size) box.appendChild(el(`<div class="muted" style="padding:8px 0">None yet.</div>`));
+    this.title(body, "Networks nearby");
+    const near = el(`<div class="muted" style="padding:8px 0">Looking…</div>`);
+    body.appendChild(near);
+    const other = el(`<button class="btn sm" style="margin-top:12px">Other network (type the name)</button>`);
+    other.onclick = async () => {
+      const ssid = await keyboard({ title: "Network name", maxLength: 32, hint: "Exactly as it shows on your phone or router", doneLabel: "Next" });
+      if (ssid) this.join(ssid, true, true);
     };
-    try { render(await api("wifi")); } catch (e) { box.textContent = this.ctx.store.get("link.demo") ? "Not available in demo mode." : `Can't read Wi-Fi status (${e.message}).`; }
+    body.appendChild(other);
+    try {
+      const { networks } = await api("wifi/scan");
+      near.className = ""; near.innerHTML = "";
+      networks.filter((n) => !saved.has(n.ssid)).slice(0, 12).forEach((n) => {
+        const b = el(`<button class="btn sm">Join</button>`);
+        b.onclick = () => this.join(n.ssid, n.secure);
+        near.appendChild(row(this.escape(n.ssid), `${n.secure ? "Password" : "Open"} · signal ${n.signal}%`, b));
+      });
+      if (!near.children.length) near.innerHTML = `<div class="muted">No new networks found.</div>`;
+    } catch (e) { near.textContent = `Couldn't scan (${e.message}).`; }
+  }
+
+  escape(t) { return String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+
+  async join(ssid, secure, hidden = false) {
+    let password = "";
+    if (secure) {
+      password = await keyboard({ title: `Password for ${ssid}`, password: true, minLength: 8, maxLength: 63, hint: hidden ? "Leave empty if it's an open network" : "8 to 63 characters", doneLabel: "Join" });
+      if (password == null) return;
+    }
+    toast(`Joining ${ssid}…`);
+    try { await api("wifi/add", { method: "POST", body: { ssid, password, hidden } }); toast(`Connected to ${ssid}.`, "good"); }
+    catch (e) { toast(`Couldn't join ${ssid}: ${e.message}`, "bad"); }
+    if (this.section === "wifi") this.open("wifi");
   }
 
   // ---------- About ----------

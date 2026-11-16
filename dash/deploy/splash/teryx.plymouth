@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=Teryx
+Description=Teryx dash boot splash: the logo on black, no text scrolling
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/teryx
+ScriptFile=/usr/share/plymouth/themes/teryx/teryx.script
