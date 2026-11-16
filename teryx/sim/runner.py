@@ -18,6 +18,7 @@ from ..canbus.node import Node
 from ..canbus.registry import BY_NAME
 from .controlbox import ControlBox
 from .scenarios import SCENARIOS
+from .sensors import FakeSensors
 from .vehicle import Vehicle
 
 log = logging.getLogger("teryx.sim")
@@ -41,6 +42,7 @@ class Simulator:
         self.scenario = None
         self.scenario_t = 0.0
         self.speed_factor = 1.0
+        self.sensors = FakeSensors()               # tilt + GPS, not fitted yet
         self._lock = threading.RLock()
         self._stop = threading.Event()
         self._thread: threading.Thread | None = None
@@ -102,6 +104,12 @@ class Simulator:
             if "link" in cmd:
                 name, on = cmd["link"]
                 self.links[name] = bool(on)
+            if "sensor" in cmd:                     # {"sensor": ["gps", false]}
+                name, on = cmd["sensor"]
+                if name in self.sensors.enabled:
+                    self.sensors.enabled[name] = bool(on)
+            if "tilt" in cmd:                       # {"tilt": {"roll": 28}} holds a tilt, {"tilt": null} lets go
+                self.sensors.hold = dict(cmd["tilt"]) if cmd["tilt"] else None
             if "speed_factor" in cmd:
                 self.speed_factor = max(0.1, min(10.0, float(cmd["speed_factor"])))
 
@@ -119,6 +127,7 @@ class Simulator:
                 "bench_faults": sorted(self.bench_faults),
                 "manual_faults": sorted(self.manual_faults),
                 "speed_factor": self.speed_factor,
+                "sensors": dict(self.sensors.enabled),
                 "driver": {"throttle": v.inp.throttle, "brake": v.inp.brake,
                            "direction": v.inp.direction, "mode": v.inp.mode,
                            "grade_pct": v.inp.grade_pct},
@@ -139,6 +148,7 @@ class Simulator:
             # Fake Shinegle
             self.sg_node.enabled = self.links["shinegle"]
             mc = self.vehicle.mc()
+            self.sensors.step(sdt, mc.get("mc.speed", 0.0), self.vehicle.inp.grade_pct, mc.get("mc.direction", "forward"))
             for msg, values in SG.encode(mc):
                 self.sg_node.send_due(msg, lambda values=values: values, now)
 

@@ -62,7 +62,9 @@ export class LightsScreen {
       fx.appendChild(b);
     });
     this.paintFx();
-    this.ctx.settings.subscribe((path) => { if (path.startsWith("lights.")) this.rebuild(); });
+    // Subscribe once only: rebuild() calls mount() again, and adding a subscriber while the
+    // settings are telling subscribers about a change used to loop forever (renaming a bar hung the dash).
+    if (!this._subbed) { this._subbed = true; this.ctx.settings.subscribe((path) => { if (path.startsWith("lights.")) this.rebuild(); }); }
   }
 
   rebuild() { const r = this.root; r.innerHTML = ""; this.mount(r); }

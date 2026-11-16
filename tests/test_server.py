@@ -44,3 +44,17 @@ async def test_websocket_streams_state_and_takes_requests(aiohttp_client, bus_sp
         gw.stop()
         sim.stop()
         await asyncio.sleep(0)
+
+
+def test_fake_sensors_follow_the_sim():
+    from teryx.sim.sensors import FakeSensors
+    f = FakeSensors()
+    for _ in range(100):
+        f.step(0.1, 36.0, 20.0)
+    s = f.state()
+    assert abs(s["pi.imu.pitch"] - 11.3) < 0.2         # 20 % grade
+    assert s["pi.gps.fix"] and s["pi.gps.alt_m"] > 120  # climbed
+    f.hold = {"roll": 31}
+    assert f.state()["pi.imu.roll"] == 31
+    f.enabled["gps"] = False
+    assert "pi.gps.lat" not in f.state()

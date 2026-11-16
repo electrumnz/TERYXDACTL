@@ -1,0 +1,13 @@
+// Lets the dash server (user "teryx") join, switch and forget Wi-Fi networks
+// from the on-screen keyboard. Nothing else in NetworkManager.
+// Install: sudo install -m 0644 50-teryx-wifi.rules /etc/polkit-1/rules.d/
+polkit.addRule(function (action, subject) {
+  if (subject.user !== "teryx") return polkit.Result.NOT_HANDLED;
+  if (action.id === "org.freedesktop.NetworkManager.settings.modify.system" ||
+      action.id === "org.freedesktop.NetworkManager.network-control" ||
+      action.id === "org.freedesktop.NetworkManager.wifi.scan" ||
+      action.id === "org.freedesktop.NetworkManager.enable-disable-wifi") {
+    return polkit.Result.YES;
+  }
+  return polkit.Result.NOT_HANDLED;
+});

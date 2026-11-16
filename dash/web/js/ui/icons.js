@@ -21,6 +21,16 @@ const P = {
   power: '<path d="M12 3v9"/><path d="M6.3 7a8 8 0 1011.4 0"/>',
   download: '<path d="M12 4v11M7 10l5 5 5-5"/><path d="M4 20h16"/>',
   bolt: '<path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/>',
+  trips: '<path d="M4 20c0-6 4-6 8-8s8-2 8-8"/><circle cx="4" cy="20" r="1.5"/><circle cx="20" cy="4" r="1.5"/>',
+  bell: '<path d="M6 16V11a6 6 0 0112 0v5l2 2H4l2-2z"/><path d="M10 21h4"/>',
+  belloff: '<path d="M6 16V11a6 6 0 0112 0v5l2 2H4l2-2z" opacity=".35"/><path d="M10 21h4" opacity=".35"/><path d="M3 3l18 18"/>',
+  eye: '<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  eyeoff: '<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z" opacity=".35"/><path d="M3 3l18 18"/>',
+  backspace: '<path d="M8 5h12a1 1 0 011 1v12a1 1 0 01-1 1H8l-6-7 6-7z"/><path d="M11 9l6 6M17 9l-6 6"/>',
+  shift: '<path d="M12 3l8 9h-4v8H8v-8H4l8-9z"/>',
+  compass: '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5 5-2z"/>',
+  keyboard: '<rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h0M10 10h0M14 10h0M18 10h0M7 14h10"/>',
+  reset: '<path d="M4 12a8 8 0 108-8H8"/><path d="M8 1L5 4l3 3"/>',
 };
 
 export function icon(name, cls = "") {

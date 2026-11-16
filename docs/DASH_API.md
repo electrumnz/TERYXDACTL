@@ -71,6 +71,20 @@ Keys follow the io-map ids in `config/io-map.yaml`.
 | `dash.bus`, `dash.uptime_s`, `dash.settings` | Bus in use, uptime, last settings the Pico acked |
 | `sim.scenario`, `sim.links` | Only when the sim runs in the same program |
 
+**Pi sensors (not fitted yet)**
+
+The dash's tilt/GPS widget, tilt alarms and day/night Auto read these when they're there. A
+sensor service on the Pi will publish them later; the simulator fakes them now.
+
+| Key | Type | Notes |
+|---|---|---|
+| `pi.imu.roll` | ° | + = right side down |
+| `pi.imu.pitch` | ° | + = nose up |
+| `pi.gps.fix` | bool | `false` = GPS fitted but no fix yet. Missing = no GPS |
+| `pi.gps.lat`, `pi.gps.lon` | ° | Only used on the Pi (day/night). Never saved or sent anywhere |
+| `pi.gps.alt_m`, `pi.gps.heading`, `pi.gps.speed_kmh`, `pi.gps.sats` | m, °, km/h, count | |
+| `pi.light_lux` | lux | Light sensor, if one is ever fitted. Wins over the sun for day/night |
+
 ### UI to server
 
 **Requests** (on/off things and levels):
@@ -116,7 +130,10 @@ Pico has acked it.
 | `GET /api/state` | One snapshot of the state above |
 | `GET /api/canmap` | Every message, signal, setting and fault list as JSON (handy for building settings screens) |
 | `GET /api/bus` | Frame counts and unknown CAN ids |
-| `GET/POST /api/sim` | Sim status and controls (when the sim is running here) |
+| `GET/POST /api/sim` | Sim status and controls (when the sim is running here). Fake sensors: `{"tilt": {"roll": 30}}` holds a tilt, `{"tilt": null}` lets go, `{"sensor": ["gps", false]}` turns one off |
+| `GET /api/trips` | This trip, trip A, lifetime, past trips, Wh/km and range (dash plugin) |
+| `POST /api/trips/reset/trip-a`, `/api/trips/reset/history` | |
+| `GET /api/wifi/scan`, `POST /api/wifi/add {ssid, password, hidden}`, `POST /api/wifi/forget {ssid}` | Wi-Fi from the on-screen keyboard |
 
 ## Server-side plugins
 

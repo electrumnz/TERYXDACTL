@@ -12,6 +12,8 @@ settings screens need:
     GET      /api/ota/status            update state
     POST     /api/ota/check|install|rollback
     GET      /api/wifi, POST /api/wifi/connect
+    GET      /api/wifi/scan, POST /api/wifi/add|forget   join new networks from the on-screen keyboard
+    GET      /api/trips, POST /api/trips/reset/trip-a|history   trip log and range estimate
     GET      /api/system, POST /api/system/restart|shutdown
     GET      /api/camera.mjpg           camera as an MJPEG stream (fallback for the camera screen)
 
