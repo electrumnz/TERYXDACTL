@@ -26,6 +26,8 @@ export function vehicleDiagram() {
     <rect class="wheel rr" x="160" y="202" width="26" height="48" rx="7"/>
     <rect class="lamp rearlamp" x="54" y="266" width="22" height="8" rx="3"/>
     <rect class="lamp rearlamp" x="124" y="266" width="22" height="8" rx="3"/>
+    <rect class="lamp taillamp" x="42" y="252" width="12" height="14" rx="3"/>
+    <rect class="lamp taillamp" x="146" y="252" width="12" height="14" rx="3"/>
   </svg></div>`);
   const q = (s) => root.querySelector(s);
   const qa = (s) => [...root.querySelectorAll(s)];
@@ -46,6 +48,8 @@ export function vehicleDiagram() {
       }
       q(".lamp.cabin").classList.toggle("on", st.get("light.interior", 0) > 0);
       qa(".rearlamp").forEach((e) => e.classList.toggle("on", !!st.get("light.rear")));
+      const brake = !!(st.get("in.brake") || st.get("mc.brake"));
+      qa(".taillamp").forEach((e) => { e.classList.toggle("brake", brake); e.classList.toggle("on", !brake && !!st.get("trailer.tail")); });
     },
   };
 }

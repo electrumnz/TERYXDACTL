@@ -42,6 +42,7 @@ class Simulator:
         self.scenario = None
         self.scenario_t = 0.0
         self.speed_factor = 1.0
+        self.paused = False                        # freezes the scenario and the physics
         self.sensors = FakeSensors()               # tilt + GPS, not fitted yet
         self._lock = threading.RLock()
         self._stop = threading.Event()
@@ -60,6 +61,8 @@ class Simulator:
             v.throttle = v.brake = 0.0
             v.grade_pct = 0.0
             v.mode = "eco"
+            v.handbrake = False
+            self.paused = False
             self.vehicle.forced_faults = set(self.manual_faults)
             self.scenario = SCENARIOS[name]()
             self.scenario_t = 0.0
@@ -72,6 +75,18 @@ class Simulator:
             v, i = self.vehicle, self.vehicle.inp
             if "scenario" in cmd:
                 self.set_scenario(cmd["scenario"])
+            if cmd.get("restart"):                  # start the current scenario again
+                self.set_scenario(self.scenario.name)
+            if "paused" in cmd:
+                self.paused = bool(cmd["paused"])
+            if "demo_step" in cmd:                  # jump to a step of a scripted scenario
+                if not hasattr(self.scenario, "seek_step"):
+                    raise ValueError(f"scenario '{self.scenario.name}' has no steps")
+                k = int(cmd["demo_step"])
+                if not 0 <= k < len(self.scenario.STEPS):
+                    k = 0
+                self.scenario_t = self.scenario.seek_step(k)
+                self.scenario.update(self, self.scenario_t, 0.0)
             for key in ("throttle", "brake", "grade_pct"):
                 if key in cmd:
                     setattr(i, key, float(cmd[key]))
@@ -127,6 +142,8 @@ class Simulator:
                 "bench_faults": sorted(self.bench_faults),
                 "manual_faults": sorted(self.manual_faults),
                 "speed_factor": self.speed_factor,
+                "paused": self.paused,
+                "demo": self.demo_info(),
                 "sensors": dict(self.sensors.enabled),
                 "driver": {"throttle": v.inp.throttle, "brake": v.inp.brake,
                            "direction": v.inp.direction, "mode": v.inp.mode,
@@ -137,13 +154,21 @@ class Simulator:
                 "input_names": list(M.INPUT_BITS.values()),
             }
 
+    def demo_info(self) -> dict | None:
+        """Where a scripted scenario is up to (caption, step, progress), or None."""
+        with self._lock:
+            if not hasattr(self.scenario, "info"):
+                return None
+            return {**self.scenario.info(self.scenario_t), "paused": self.paused}
+
     # ------------------------------------------------------------ loop
     def tick(self, dt: float, now: float) -> None:
         with self._lock:
-            sdt = dt * self.speed_factor
+            sdt = 0.0 if self.paused else dt * self.speed_factor
             self.scenario_t += sdt
-            self.scenario.update(self, self.scenario_t, sdt)
-            self.vehicle.step(sdt)
+            if sdt:
+                self.scenario.update(self, self.scenario_t, sdt)
+                self.vehicle.step(sdt)
 
             # Fake Shinegle
             self.sg_node.enabled = self.links["shinegle"]

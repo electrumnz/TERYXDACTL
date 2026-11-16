@@ -179,6 +179,10 @@ def _with_sim(state: dict, sim) -> dict:
         state["sim.scenario"] = sim.scenario.name
         state["sim.links"] = dict(sim.links)
         state["sim.grade_pct"] = round(sim.vehicle.inp.grade_pct, 1)
+        state["sim.paused"] = sim.paused
+        demo = sim.demo_info()
+        if demo:
+            state["sim.demo"] = demo
         # The fake tilt sensor and GPS stand in for the Pi's own sensor service (not fitted yet).
         for k, v in sim.sensors.state().items():
             state.setdefault(k, v)

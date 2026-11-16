@@ -21,6 +21,7 @@ import { CameraScreen } from "./screens/camera.js";
 import { SettingsScreen } from "./screens/settings.js";
 import { MediaScreen } from "./screens/media.js";
 import { MediaHub } from "./media/hub.js";
+import { demoPlayer } from "./ui/demoplayer.js";
 
 // Fallback limits if the control box settings can't be read (match config/io-map.yaml safety defaults).
 const LIMIT_DEFAULTS = { fourwd_max_kmh: 5, diff_max_kmh: 15, tray_overcurrent_da: 10, winch_auto_disarm_s: 120 };
@@ -99,6 +100,7 @@ function topbar(st) {
   const dir = st.get("mc.direction", "neutral");
   g.textContent = dir === "forward" ? "D" : dir === "reverse" ? "R" : "N";
   g.className = `gear-chip ${dir === "forward" ? "d" : dir === "reverse" ? "r" : ""}`;
+  document.getElementById("tb-hb").hidden = !st.get("in.park");
   document.getElementById("tb-mode").textContent = String(st.get("mc.mode", "normal")).toUpperCase();
   const fw = st.get("act.4wd", "2wd"), c4 = document.getElementById("tb-4wd");
   c4.textContent = fw === "4wd" || fw === "to_4wd" ? "4WD" : "2WD";
@@ -225,6 +227,8 @@ async function main() {
   setInterval(() => ctx.applyTheme(), 30000);
   buildNav();
   soundButton();
+  const player = demoPlayer();
+  document.getElementById("app").appendChild(player.root);
   let first = "drive";
   try { first = new URLSearchParams(location.search).get("screen") || localStorage.getItem("teryx.screen") || "drive"; } catch {}
   show(byId[first] ? first : "drive");
@@ -236,7 +240,7 @@ async function main() {
   let firstState = true;
   store.subscribe((st) => {
     if (firstState && (st.get("pico.online") || st.get("link.demo"))) { firstState = false; hideSplash(); }
-    topbar(st); alertBanner(st); reverseCamera(st);
+    topbar(st); alertBanner(st); reverseCamera(st); player.update(st);
     // Only the screen on show is redrawn, to keep the Pi cool.
     if (ctx.current) ctx.current.update(st);
     // Anything moving stops if we navigate away (each screen's hide() also does this).

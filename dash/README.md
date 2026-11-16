@@ -95,8 +95,25 @@ PYTHONPATH=dash/server python -m teryx run --scenario trail --ui dash/web
 # open http://localhost:8080   (sim controls at http://localhost:8080/sim)
 ```
 
-Scenarios: `idle`, `trail`, `reversing`, `low_battery`, `hill_climb`, `faults`,
+Scenarios: `idle`, `drive_demo`, `trail`, `reversing`, `low_battery`, `hill_climb`, `faults`,
 `actuator_faults`, `comms_loss`, `key_off`, `manual`.
+
+**Drive demo:** `--scenario drive_demo` plays a scripted drive (handbrake, pull away,
+cruise, regen, hard braking, reverse, a hill, park) with a player bar at the top of the dash
+to pause, restart or skip a step. Good for watching everything react. Bench only: the bar
+never shows on the real Teryx because there's no simulator there.
+
+What the dash does on its own along the way:
+
+- **Handbrake:** red (P) in the top bar and a HANDBRAKE chip on the Drive screen. Try to
+  drive with it on and you get a warning with a beep.
+- **Brakes:** the tail lights on the Drive screen's Teryx drawing glow red, plus the BRAKE chip.
+- **Reverse:** the camera pops up (a fake track on the bench if no camera is plugged in) with
+  a big REAR LIGHT BAR button bottom left, sized for a glove. A tap flips the rear lights for
+  this reverse only. Out of reverse they go back to what the Lights screen is set to.
+
+![Drive demo: throttle with the handbrake on](docs/screens/demo-handbrake.png)
+![Drive demo: reversing](docs/screens/demo-reverse.png)
 
 ### Demo mode (just a browser)
 

@@ -83,7 +83,8 @@ def test_shinegle_drop_out(rig):
 
 
 @pytest.mark.parametrize("name", ["trail", "reversing", "low_battery", "hill_climb", "faults",
-                                  "actuator_faults", "comms_loss", "key_off", "manual", "idle"])
+                                  "actuator_faults", "comms_loss", "key_off", "manual", "idle",
+                                  "drive_demo"])
 def test_every_scenario_runs(bus_spec, name):
     sim = Simulator(bus_spec, name)
     now = time.monotonic()
