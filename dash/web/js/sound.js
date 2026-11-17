@@ -3,6 +3,8 @@
 //   warn   two softer beeps, once
 //   info   a short rising chirp
 //   reject a low buzz when the control box says no
+//   count  one short beep per second of the timed pull countdown, go when it starts
+//   done   a timed pull has finished
 //   click  a tiny tick on each press, so you know a gloved tap landed
 // The kiosk starts Chromium with --autoplay-policy=no-user-gesture-required so sound works
 // before the first touch. In a normal browser it starts after the first tap.
@@ -44,6 +46,9 @@ const PATTERNS = {
   warn:   (t) => { tone(784, t, 0.16, { vol: 0.8 }); tone(659, t + 0.22, 0.2, { vol: 0.8 }); },
   info:   (t) => { tone(587, t, 0.14, { vol: 0.6, slide: 300 }); },
   reject: (t) => { tone(196, t, 0.18, { type: "sawtooth", vol: 0.35 }); },
+  count:  (t) => { tone(880, t, 0.12, { type: "square", vol: 0.45 }); },
+  go:     (t) => { tone(1318, t, 0.35, { type: "square", vol: 0.5 }); },
+  done:   (t) => { tone(1046, t, 0.12, { vol: 0.7 }); tone(784, t + 0.15, 0.2, { vol: 0.7 }); },
   click:  (t) => { tone(1800, t, 0.025, { type: "triangle", vol: 0.25 }); },
 };
 

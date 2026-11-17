@@ -128,7 +128,10 @@ ground (0x48). RESET on the MCP23017 to 3.3V through 10kΩ.
   (active-low) first, then try a level shifter.
 - The winch motor current **never** goes through this board. Relays 4 and 5
   only drive the solenoid box's coil wires, in parallel with the handheld
-  remote.
+  remote and the two hidden momentary hand switches (winch and cab). Each
+  source feeds the coil wires through its own 3 A diode so they can't
+  back-feed each other. See the hand switch notes at the end of
+  [`io-list.md`](io-list.md).
 
 ### Opto board (12V signals in)
 | Opto input (12V side) | Signal | MCP23017 out (3.3V side) |
@@ -138,7 +141,7 @@ ground (0x48). RESET on the MCP23017 to 3.3V through 10kΩ.
 | 3 | Shinegle reverse wire | B2 `in.reverse` |
 | 4 | Tray down limit (NC to ground) | B3 `in.tray_down` |
 | 5 | Tray up limit (NC to ground) | B4 `in.tray_up` |
-| 6 | Winch remote "in" or "out" pressed (via 2 diodes) | B5 `in.winch_remote` |
+| 6 | Winch remote or either hand switch, "in" or "out" pressed (each through its own diode) | B5 `in.winch_remote` |
 | 7 | Handbrake / park switch | B6 `in.park` |
 | 8 | Spare | B7 |
 

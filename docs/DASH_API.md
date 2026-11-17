@@ -108,9 +108,12 @@ Pico stops 300 ms after that, so a crashed UI can't leave the tray running.
 
 ```json
 {"type": "hold", "id": "act.tray", "value": 1}
+{"type": "hold", "id": "winch", "value": 1, "secs": 5}
 ```
 
-`act.tray`: 1 up, -1 down. `winch`: 1 in, -1 out.
+`act.tray`: 1 up, -1 down. `winch`: 1 in, -1 out. `secs` (winch only) makes it a timed
+pull: keep sending it every 100 ms as usual, and the control box stops the winch after
+that many seconds by itself (capped at its setting 21).
 
 **Settings** (0x704, see the key list in `docs/CAN_PROTOCOL.md`):
 

@@ -66,6 +66,7 @@ await page.mouse.move(ab.x + ab.width - 20, kb.y + kb.height / 2, { steps: 10 })
 await page.mouse.up();
 s = await waitFor((s) => s["winch.armed"] === true);
 check(s["winch.armed"] === true, "winch arms by sliding");
+await sleep(300);   // let the page's own copy of the state catch up
 const wb = await (await page.$("#w-in")).boundingBox();
 await page.mouse.move(wb.x + wb.width / 2, wb.y + wb.height / 2);
 await page.mouse.down();
@@ -75,6 +76,45 @@ await shot("live-winch-running");
 await page.mouse.up();
 s = await waitFor((s) => s["winch.in"] === false, 1500);
 check(s["winch.in"] === false, "winch stops when released");
+
+// Timed pull: tucked behind a button, pick 5 s, 3-2-1, pulls, stops by itself
+await page.click("#w-timed");
+check(await page.$eval("#wt", (e) => !e.hidden), "timed pull popup opens");
+await page.click('.wt-preset[data-s="5"]');
+await shot("live-winch-timed-pick");
+await page.click("#wt-go");
+await sleep(1200);
+check((await state())["winch.in"] === false, "nothing moves during the 3-2-1 countdown");
+await shot("live-winch-timed-count");
+s = await waitFor((s) => s["winch.in"] === true, 3500);
+check(s["winch.in"] === true, "winch pulls once the countdown ends");
+const pullAt = Date.now();
+await sleep(2000);
+await shot("live-winch-timed-pull");
+s = await waitFor((s) => s["winch.in"] === false, 5000);
+const took = (Date.now() - pullAt) / 1000;
+check(s["winch.in"] === false && took > 4 && took < 6.5, `timed pull stops by itself after about 5 s (${took.toFixed(1)} s)`);
+await sleep(300);
+check(await page.$eval("#wt", (e) => e.dataset.phase) === "done", "popup shows the pull is done");
+await shot("live-winch-timed-done");
+// STOP part way through
+await page.click("#wt-go");
+s = await waitFor((s) => s["winch.in"] === true, 5000);
+await sleep(500);
+await page.click("#wt-x");
+s = await waitFor((s) => s["winch.in"] === false, 400);
+check(s["winch.in"] === false, "STOP cuts a timed pull straight away");
+// Cancel during the countdown
+await page.click("#wt-go");
+await sleep(800);
+await page.click("#wt-x");
+await sleep(3000);
+check((await state())["winch.in"] === false, "cancel in the countdown means it never starts");
+await page.click("#wt-x");   // close
+check(await page.$eval("#wt", (e) => e.hidden), "popup closes");
+const heat = await page.evaluate(() => teryx.winchHeat.pct);
+check(heat > 3, `motor heat counted the pulls (${heat.toFixed(1)}%)`);
+await shot("live-winch-after");
 await page.click("#w-arm");
 s = await waitFor((s) => s["winch.armed"] === false);
 check(s["winch.armed"] === false, "tap disarms the winch");

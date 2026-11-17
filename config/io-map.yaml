@@ -98,4 +98,5 @@ safety:                      # defaults, adjustable in settings
   winch_requires_armed: true
   winch_dead_time_ms: 100
   winch_auto_disarm_s: 120
+  winch_timed_max_s: 30
   shutdown_wait_s: 30

@@ -43,6 +43,8 @@ const P = {
   bluetooth: '<path d="M7 7l10 10-5 4V3l5 4L7 17"/>',
   plus: '<path d="M12 5v14M5 12h14"/>',
   close: '<path d="M6 6l12 12M18 6L6 18"/>',
+  stop: '<rect x="6" y="6" width="12" height="12" rx="2"/>',
+  timer: '<circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/>',
   volume: '<path d="M4 9h4l5-4v14l-5-4H4V9z"/><path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12"/>',
   usb: '<path d="M12 2v15"/><circle cx="12" cy="19" r="2.5"/><path d="M12 13l-5-3V7M12 11l5-3V5"/><rect x="5.5" y="5" width="3" height="2"/><circle cx="17" cy="4" r="1.3"/>',
   back: '<path d="M15 5l-7 7 7 7"/>',
