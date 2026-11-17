@@ -243,6 +243,12 @@ class Gateway:
                 st["an.diff_pos_raw"] = v["diff_pot_raw"]
                 st["pico.version"] = f'{v["fw_major"]}.{v["fw_minor"]}'
                 st["winch.idle_s"] = v["winch_idle_s"]
+            elif msg.name == "PICO_REGEN":
+                st["regen.pedal_pct"] = v["pedal_pct"]
+                st["regen.request_pct"] = v["request_pct"]
+                st["regen.state"] = M.REGEN_STATE.get(v["state"], "off")
+                st["regen.limit"] = M.REGEN_LIMIT.get(v["limit"], "none")
+                st["an.brake_pedal_raw"] = v["pedal_raw"]
             elif msg.name == "PICO_SETTINGS_ACK":
                 key = int(v["key"])
                 self.last_ack = {"key": key, "status": v["status"], "value": int(v["value"])}

@@ -50,6 +50,11 @@ Keys follow the io-map ids in `config/io-map.yaml`.
 | `pico.version` | string | Pico firmware version, e.g. `0.1` (1 Hz) |
 | `an.diff_pos_raw` | 0-32767 | Raw diff pot reading, for calibrating settings 14/15 (1 Hz) |
 | `winch.idle_s` | s | Seconds since the winch last ran while armed, for the auto-disarm countdown (1 Hz) |
+| `regen.pedal_pct` | % | Brake pedal travel from the pedal sensor (brake regen, 10 Hz) |
+| `regen.request_pct` | % | Regen the control box is asking the Shinegle for |
+| `regen.state` | off / ready / active / limited / sensor_fault | Brake regen state |
+| `regen.limit` | none / low_speed / speed_unknown / not_forward / battery_full / two_wd / sensor / throttle | What is holding regen back |
+| `an.brake_pedal_raw` | 0-32767 | Raw pedal sensor reading, for calibrating settings 28/29 |
 | `in.ignition`, `in.brake`, `in.reverse`, `in.tray_down`, `in.tray_up`, `in.winch_remote`, `in.park`, `in.spare` | bool | Wired inputs |
 | `an.diff_pos` | % | Diff actuator actual position |
 | `an.aux_12v` | V | |

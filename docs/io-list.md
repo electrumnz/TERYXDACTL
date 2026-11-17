@@ -78,6 +78,7 @@ Prices and links checked live: [`shopping-list.md`](shopping-list.md).
 | Power-hold relay (or use relay 8) | Lets the Pi shut down cleanly after key-off | – |
 | Spare Pico + MCP2515 module | USB CAN adaptor for sniffing the Shinegle in step 4 (`firmware/can-sniffer`, slcan + SavvyCAN GVRET) | $20 |
 | IMU (ICM-20948 or MPU-6050), optional | Roll / pitch gauge | $10 |
+| Brake regen parts, optional, **only once the Shinegle check passes**: Hall angle sensor for the pedal pivot, 2nd ADS1115, divider resistors, opto + RC filter if the Shinegle wants an analogue signal | Brake pedal regen ([`brake-regen.md`](brake-regen.md)) | $150–250 |
 | Carlinkit CPC200-CCPA (or Autokit) USB adapter, optional | CarPlay and Android Auto on the dash ([`audio.md`](audio.md)) | $80–150 |
 | USB DAC or I2S DAC HAT, 12V marine amp, marine speakers, optional | Sound: the Pi feeds the amp, no head unit ([`audio.md`](audio.md)) | $350–1500 |
 
@@ -167,6 +168,8 @@ shifter. **TBC** on the bench.
 | `an.4wd_current` | BTS7960 #2 current | ADS1115 A2 | IS pins diode-OR'd, 1k to ground |
 | `an.tray_current` | BTS7960 #3 current | ADS1115 A3 | Same as above |
 | `an.diff_current` | BTS7960 #1 current | Pico GP28 | Same as above |
+| `an.brake_pedal` | Brake pedal position (Hall angle sensor, 0.5–4.5 V) | 2nd ADS1115 (addr 0x49) A0 | Divider 10k/20k so 4.5 V reads 3.0 V. Calibrate up/floor points (settings 28/29). Only needed for brake regen, see [`brake-regen.md`](brake-regen.md) |
+| `an.brake_pressure` | Brake line pressure, optional | 2nd ADS1115 A1 | 0.5–4.5 V transducer, same divider. Optional cross-check for the pedal sensor |
 
 ### From the Shinegle controller (CAN, to be decoded)
 Expected values, all **TBC** once we record the bus with the Shinegle dash
@@ -214,12 +217,14 @@ and programmer plugged in.
 | 0x711 | Pico → Pi | 10 Hz | Outputs: b0 relay bits, b1–5 light levels (u8 ×5), b6 active light effect |
 | 0x712 | Pico → Pi | 10 Hz | Actuators: b0 diff %, b1 4WD state, b2 tray state, b3–5 currents (u8 ×3, 0.1A), b6 tray estimated % (from run time), b7 diff target % |
 | 0x713 | Pico → Pi | 1 Hz | 12V aux (u16, mV), Pico temp (i8) |
+| 0x715 | Pico → Pi | 10 Hz | Brake regen: pedal % (u8), regen request % (u8), state + limit (nibbles), pedal raw (u16), brake light bit. See [`brake-regen.md`](brake-regen.md) |
 | 0x71F | Pi → Pico | on demand | Firmware update request (Pico reboots to bootloader) |
 
 **Fault flag bits (0x710 b1–2):** 0 dash link lost, 1 speed unknown,
 2 4WD timeout, 3 4WD overcurrent, 4 diff timeout, 5 diff pot stuck,
 6 tray timeout, 7 tray overcurrent, 8 tray limit switch, 9 winch interlock,
-10 low 12V, 11 Pico hot, 12 watchdog reset, 13–15 spare.
+10 low 12V, 11 Pico hot, 12 watchdog reset, 13 diff overcurrent, 14 IO bus,
+15 brake pedal sensor (only while brake regen is on).
 
 The Shinegle's own messages are read by **both** the Pi (for the screen) and
 the Pico (for speed interlocks).
@@ -258,6 +263,13 @@ All limits are adjustable in settings, with these defaults:
    On boot every output starts **off**.
 10. **Every output fused.** Winch motor cable gets its own breaker at the
     battery, sized to the winch (usually 250–300A for a 5000lb).
+11. **Brake pedal regen (test feature, off by default):** the first part of
+    the brake pedal asks the Shinegle for regen. The hydraulic brakes are
+    never touched. No regen if the pedal sensor is out of range or disagrees
+    with the brake switch (latched fault), if speed is unknown, out of
+    forward, throttle on, or the battery is nearly full. Fades out under
+    5 km/h, cut to 60% when not in 4WD. Full rules and what still has to be
+    checked on the Shinegle: [`brake-regen.md`](brake-regen.md).
 
 ---
 
@@ -286,6 +298,7 @@ Wiring detail: [`docs/wiring.md`](wiring.md).
 - [ ] 5V buck converter rating (needs 5A)
 - [ ] Relay board works off 3.3V logic?
 - [ ] Trailer indicators wanted? (Teryx has none stock; would need 2 more outputs)
+- [ ] Brake pedal regen: does the Shinegle take a brake/regen input (analogue, switch or CAN)? Checklist in [`brake-regen.md`](brake-regen.md)
 
 
 ## Winch hand switches and motor heat

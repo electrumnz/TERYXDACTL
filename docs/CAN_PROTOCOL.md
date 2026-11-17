@@ -161,6 +161,21 @@ Echo of each 0x704 frame once the Pico has applied it (value is what it actually
 | `status` | byte 1 | u8 |  | 0=ok, 1=unknown_key, 2=out_of_range |
 | `value` | bytes 2-3 | u16 |  |  |
 
+### 0x715 PICO_REGEN
+
+From **controlbox**, every 100 ms.
+
+Brake pedal regen (docs/brake-regen.md). All zero with state off while the feature is off.
+
+| Signal | Where | Type | Unit | Notes |
+|---|---|---|---|---|
+| `pedal_pct` | byte 0 | u8 | % | Brake pedal travel from the pedal sensor |
+| `request_pct` | byte 1 | u8 | % | Regen asked of the Shinegle, after every limit |
+| `state` | byte 2 bit 0 (+4 bits) | u4 |  | 0=off, 1=ready, 2=active, 3=limited, 4=sensor_fault |
+| `limit` | byte 2 bit 4 (+4 bits) | u4 |  | What is holding regen back, if anything 0=none, 1=low_speed, 2=speed_unknown, 3=not_forward, 4=battery_full, 5=two_wd, 6=sensor, 7=throttle |
+| `pedal_raw` | bytes 3-4 | u16 |  | Raw ADS1115 reading, for calibrating keys 28/29 |
+| `brake_light` | byte 5 bit 0 | u1 |  | Regen is strong enough to light the brake lights |
+
 ## Bench only
 
 ### 0x7E0 BENCH_INPUTS
@@ -207,6 +222,7 @@ HOST/BENCH BUILD ONLY. Lets the simulator drive the Pico's wired inputs and inje
 | 12 | `watchdog_reset` |
 | 13 | `diff_overcurrent` |
 | 14 | `io_bus` |
+| 15 | `brake_pedal` |
 
 **Input bits (0x710 byte 3, MCP23017 B0-B7)**
 
@@ -278,6 +294,14 @@ HOST/BENCH BUILD ONLY. Lets the simulator drive the Pico's wired inputs and inje
 | 19 (0x13) | `tray_full_travel_ms` | ms | 16000 | 1000-60000 |
 | 20 (0x14) | `low_12v_mv` | mV | 11000 | 9000-13000 |
 | 21 (0x15) | `winch_timed_max_s` | s | 30 | 1-120 |
+| 22 (0x16) | `brake_regen_on` | bool | 0 | 0-1 |
+| 23 (0x17) | `brake_regen_pct` | % | 50 | 0-100 |
+| 24 (0x18) | `brake_regen_start_pct` | % | 5 | 0-50 |
+| 25 (0x19) | `brake_regen_full_pct` | % | 30 | 5-100 |
+| 26 (0x1A) | `brake_regen_fade_kmh` | km/h | 5 | 0-20 |
+| 27 (0x1B) | `brake_regen_2wd_pct` | % | 60 | 0-100 |
+| 28 (0x1C) | `brake_pedal_min_raw` | raw | 2000 | 0-32767 |
+| 29 (0x1D) | `brake_pedal_max_raw` | raw | 22000 | 0-32767 |
 | 240 (0xF0) | save to flash | | | |
 | 241 (0xF1) | reset to defaults | | | |
 | 242 (0xF2) | clear latched faults | | | |

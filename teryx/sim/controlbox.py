@@ -20,6 +20,8 @@ Safety rules (IO list section 7, values from SETTINGS):
     Refused while the handheld remote is in use.
  7. Reverse -> rear pods on (if auto). Camera is handled on the Pi.
  8. Key-off -> hold power for shutdown_wait_s, then drop power.hold.
+ 9. Brake pedal regen (off by default, setting brake_regen_on): see teryx/regen.py.
+    Regen strong enough also lights the trailer brake lights.
 
 Requests act on a *change* of value. The dash resends 0x701/0x702 every second
 so a rebooted Pico picks them up, but a refused 4WD request is not quietly
@@ -34,6 +36,7 @@ from dataclasses import dataclass, field
 from ..canbus import messages as M
 from ..canbus import shinegle as SG
 from ..config import safety_defaults
+from ..regen import BrakeRegen
 
 FW_VERSION = (0, 1)  # what the fake box reports as its firmware version
 
@@ -110,6 +113,11 @@ class ControlBox:
     speed: float = 0.0
     direction: str = "neutral"
     brake: bool = False
+    soc: float | None = None
+    throttle: float = 0.0
+    # brake pedal regen: pedal sensor raw reading (wired to the second ADS1115), None = no sensor
+    pedal_raw: int | None = None
+    regen: BrakeRegen = field(default_factory=BrakeRegen)
     # inputs
     inputs: dict = field(default_factory=lambda: {n: False for n in M.INPUT_BITS.values()})
     forced: dict = field(default_factory=dict)
@@ -158,6 +166,8 @@ class ControlBox:
                 self.speed = mc["mc.speed"]
             self.direction = mc.get("mc.direction", self.direction)
             self.brake = mc.get("mc.brake", self.brake)
+            self.soc = mc.get("mc.soc", self.soc)
+            self.throttle = mc.get("mc.throttle", self.throttle)
         elif name == "PI_HEARTBEAT":
             self.last_dash = now
         elif name == "PI_LIGHTS":
@@ -187,6 +197,7 @@ class ControlBox:
             self.fourwd_fault = False
             for act in (self.fourwd, self.diff, self.tray):
                 act.faulted = False
+            self.regen.clear_fault()
         elif key in M.SETTINGS:
             name, _u, _d, lo, hi = M.SETTINGS[key]
             if not lo <= value <= hi:
@@ -317,6 +328,12 @@ class ControlBox:
         self.inputs["in.brake"] = self.brake
         self.inputs["in.tray_down"] = self.tray.pos <= 0.001
         self.inputs["in.tray_up"] = self.tray.pos >= 0.999
+
+        # --- brake pedal regen (rule 9)
+        self.regen.step(dt, self.settings, pedal_raw=self.pedal_raw, brake_switch=self.inp("in.brake"),
+                        speed_kmh=self.speed if self.speed_known() else None,
+                        direction=self.direction, soc=self.soc, fourwd=self.fourwd_state(),
+                        throttle_pct=self.throttle)
 
         # --- 4WD: runs to end stop, max run time, current limit
         self.fourwd.jammed = False
@@ -471,7 +488,7 @@ class ControlBox:
         return {
             "light.rear": bool(lo.get("rear")),
             "trailer.tail": any_front,
-            "trailer.brake": self.inp("in.brake"),
+            "trailer.brake": self.inp("in.brake") or self.regen.out.brake_light,
             "winch.in": self.winch_dir == 1,
             "winch.out": self.winch_dir == -1,
             "winch.isolator": self.winch_armed,
@@ -491,6 +508,8 @@ class ControlBox:
             f.add("io_bus")
         if self.temp > 70:
             f.add("pico_hot")
+        if self.regen.fault and self.s("brake_regen_on"):
+            f.add("brake_pedal")
         return f
 
     def state(self) -> str:
@@ -524,6 +543,7 @@ class ControlBox:
     def frames(self) -> list[tuple[str, dict]]:
         inputs = {**self.inputs, **self.forced}
         lo = self.lights_out
+        rg = self.regen.out
         out = [
             ("PICO_STATUS", {
                 "fault_bits": M.names_to_bits(self.faults(), M.FAULT_BITS),
@@ -560,6 +580,12 @@ class ControlBox:
                 + self.diff.pos * (self.s("diff_pot_max_raw") - self.s("diff_pot_min_raw")),
                 "fw_major": FW_VERSION[0], "fw_minor": FW_VERSION[1],
                 "winch_idle_s": min(255, self.winch_idle) if self.winch_armed else 0,
+            }),
+            ("PICO_REGEN", {
+                "pedal_pct": rg.pedal_pct, "request_pct": rg.request_pct,
+                "state": M.enum_value(M.REGEN_STATE, rg.state),
+                "limit": M.enum_value(M.REGEN_LIMIT, rg.limit),
+                "pedal_raw": self.pedal_raw or 0, "brake_light": int(rg.brake_light),
             }),
         ]
         return out

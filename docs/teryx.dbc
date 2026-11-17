@@ -124,6 +124,14 @@ BO_ 1812 PICO_SETTINGS_ACK: 8 PICO_BOX
  SG_ status : 8|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ value : 16|16@1+ (1,0) [0|65535] "" Vector__XXX
 
+BO_ 1813 PICO_REGEN: 8 PICO_BOX
+ SG_ pedal_pct : 0|8@1+ (1,0) [0|255] "%" Vector__XXX
+ SG_ request_pct : 8|8@1+ (1,0) [0|255] "%" Vector__XXX
+ SG_ state : 16|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ limit : 20|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ pedal_raw : 24|16@1+ (1,0) [0|65535] "" Vector__XXX
+ SG_ brake_light : 40|1@1+ (1,0) [0|1] "" Vector__XXX
+
 BO_ 2016 BENCH_INPUTS: 8 BENCH
  SG_ inputs : 0|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ force_mask : 8|8@1+ (1,0) [0|255] "" Vector__XXX
@@ -171,6 +179,12 @@ CM_ SG_ 1810 tray_pct "Estimate from run time, no pot on the tray";
 CM_ SG_ 1811 diff_pot_raw "Raw ADS1115 reading, for calibrating keys 14/15";
 CM_ SG_ 1811 winch_idle_s "Seconds since the winch last ran while armed (caps at 255)";
 CM_ BO_ 1812 "Echo of each 0x704 frame once the Pico has applied it (value is what it actually used).";
+CM_ SG_ 1813 pedal_pct "Brake pedal travel from the pedal sensor";
+CM_ SG_ 1813 request_pct "Regen asked of the Shinegle, after every limit";
+CM_ SG_ 1813 limit "What is holding regen back, if anything";
+CM_ SG_ 1813 pedal_raw "Raw ADS1115 reading, for calibrating keys 28/29";
+CM_ SG_ 1813 brake_light "Regen is strong enough to light the brake lights";
+CM_ BO_ 1813 "Brake pedal regen (docs/brake-regen.md). All zero with state off while the feature is off.";
 CM_ SG_ 2016 inputs "Bits as INPUT_BITS";
 CM_ SG_ 2016 force_mask "Which input bits to force";
 CM_ SG_ 2016 fault_inject "See BENCH_FAULTS";
@@ -191,6 +205,7 @@ BA_ "GenMsgCycleTime" BO_ 1808 100;
 BA_ "GenMsgCycleTime" BO_ 1809 100;
 BA_ "GenMsgCycleTime" BO_ 1810 100;
 BA_ "GenMsgCycleTime" BO_ 1811 1000;
+BA_ "GenMsgCycleTime" BO_ 1813 100;
 BA_ "GenMsgCycleTime" BO_ 2016 100;
 
 VAL_ 384 direction 0 "neutral" 1 "forward" 2 "reverse" ;
@@ -203,3 +218,5 @@ VAL_ 1809 effect 0 "none" 1 "strobe" 2 "chase" 3 "outside_only" 4 "inside_only" 
 VAL_ 1810 fourwd 0 "2wd" 1 "4wd" 2 "to_4wd" 3 "to_2wd" 4 "fault" 5 "unknown" ;
 VAL_ 1810 tray 0 "down" 1 "up" 2 "mid" 3 "raising" 4 "lowering" 5 "fault" ;
 VAL_ 1812 status 0 "ok" 1 "unknown_key" 2 "out_of_range" ;
+VAL_ 1813 state 0 "off" 1 "ready" 2 "active" 3 "limited" 4 "sensor_fault" ;
+VAL_ 1813 limit 0 "none" 1 "low_speed" 2 "speed_unknown" 3 "not_forward" 4 "battery_full" 5 "two_wd" 6 "sensor" 7 "throttle" ;
