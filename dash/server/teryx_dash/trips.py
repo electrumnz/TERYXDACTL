@@ -6,8 +6,13 @@ restarts. Samples the live state once a second.
 - The current trip runs from key on to key off. A trip shorter than 50 m isn't kept.
   If the Pi was off for more than 30 minutes (no samples), that also starts a new trip.
 - Trip A is a trip meter you reset yourself.
-- Range = energy left in the pack / recent use per km (the last 10 km driven), falling back
-  to the lifetime average, then a starting guess.
+- Range = energy left in the pack / how many Wh per km you've been using. That figure
+  learns from real driving: every 0.25 km we note the distance and the energy that went
+  out of (or back into) the pack, measured from pack volts x amps. The newest km count
+  most (a km driven 5 km ago counts half as much as the one you just drove), and the
+  figure is pulled gently toward your lifetime average so one steep hill doesn't swing
+  it wildly. A fresh pack starts from a 180 Wh/km guess until there's real driving.
+  It's saved to disk, so it carries on learning across restarts.
 
 Saved to ~/.config/teryx/trips.json on the Pi (never in the repo).
 """
@@ -24,8 +29,12 @@ from typing import Any
 HISTORY_MAX = 100
 MIN_TRIP_KM = 0.05
 NEW_TRIP_GAP_S = 30 * 60
-RECENT_KM = 10.0
+RECENT_KM = 20.0              # how much recent driving we keep to learn from
 CHUNK_KM = 0.25
+HALF_LIFE_KM = 5.0            # driving this far back counts half as much
+PRIOR_KM = 1.5                # how hard the lifetime average (or first guess) pulls, as km
+LEARNT_KM = 5.0               # past this much recent driving the figure counts as learnt
+MIN_WH_PER_KM = 30.0
 DEFAULT_WH_PER_KM = 180.0     # first guess for a 700 kg UTV on gravel, replaced once driven
 DEFAULT_PACK_KWH = 7.5        # 72 V x 105 Ah, TBC: set the real figure in Settings > Display
 SAVE_EVERY_S = 30
@@ -156,14 +165,12 @@ class TripLog:
         self.save()
 
     # ------------------------------------------------------------ figures
+    def recent_km(self) -> float:
+        return sum(c[0] for c in self.chunks)
+
     def wh_per_km(self) -> tuple[float, str]:
-        km = sum(c[0] for c in self.chunks)
-        if km >= 1.0:
-            return max(30.0, sum(c[1] for c in self.chunks) / km), "recent"
-        if self.lifetime["km"] >= 2.0:
-            net = self.lifetime["used_wh"] - self.lifetime["regen_wh"]
-            return max(30.0, net / self.lifetime["km"]), "average"
-        return DEFAULT_WH_PER_KM, "guess"
+        """Learnt use per km, and how much to trust it: guess, learning or learnt."""
+        return learn_wh_per_km(list(self.chunks), self.lifetime)
 
     def summary(self, state: dict, pack_kwh: float = DEFAULT_PACK_KWH) -> dict[str, Any]:
         whk, basis = self.wh_per_km()
@@ -173,10 +180,38 @@ class TripLog:
         return {
             "current": _figures(self.current), "trip_a": _figures(self.trip_a),
             "lifetime": _figures(self.lifetime), "history": [_figures(t) for t in self.history],
-            "wh_per_km": round(whk, 1), "basis": basis, "pack_kwh": pack_kwh,
+            "wh_per_km": round(whk, 1), "basis": basis, "learnt_km": round(self.recent_km(), 1),
+            "pack_kwh": pack_kwh,
             "kwh_left": None if left_kwh is None else round(left_kwh, 2),
             "range_km": None if rng is None else round(rng, 1),
         }
+
+
+def learn_wh_per_km(chunks: list, lifetime: dict) -> tuple[float, str]:
+    """Distance-weighted average of recent use, pulled toward a starting point.
+
+    chunks: (km, net Wh) oldest first. Each chunk's weight halves every HALF_LIFE_KM of
+    driving since it. The starting point (lifetime average once there's 2 km of it,
+    else the first guess) counts as PRIOR_KM of driving, so a single short climb or
+    downhill can't swing the range much, but a few km of real driving takes over.
+    The web page's demo mode has a copy of this in dash/web/js/tripdata.js.
+    """
+    has_avg = lifetime.get("km", 0) >= 2.0
+    if has_avg:
+        prior = max(MIN_WH_PER_KM, (lifetime["used_wh"] - lifetime["regen_wh"]) / lifetime["km"])
+    else:
+        prior = DEFAULT_WH_PER_KM
+    w_km = w_wh = back = total = 0.0
+    for km, wh in reversed(chunks):
+        w = 0.5 ** (back / HALF_LIFE_KM)
+        w_km += w * km
+        w_wh += w * wh
+        back += km
+        total += km
+    if total < CHUNK_KM:
+        return prior, ("average" if has_avg else "guess")
+    est = (prior * PRIOR_KM + w_wh) / (PRIOR_KM + w_km)
+    return max(MIN_WH_PER_KM, est), ("learnt" if total >= LEARNT_KM else "learning")
 
 
 def _figures(t: dict | None) -> dict | None:
