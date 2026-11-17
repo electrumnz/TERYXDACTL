@@ -29,15 +29,20 @@ converted to electric with a Shinegle 7.5 kW kit.
   (27010-0068). Aftermarket "manual 4WD actuator" kits are sold to replace it. [6] [7] [8]
 
 ### Front diff lock
-- **On the owner's own 2013 Teryx 750 two-seater the front diff control is a
-  variable lever (a slider), checked by hand when they removed it.** That
-  first-hand check wins, so Teryx OS keeps the 0 to 100% control.
-- The 2011 and 2012 manuals we could read describe a two-position
-  "dual-mode" diff (LOCK / UN-LOCK) on a lever with a push button [1] [4] [9].
-  That doesn't match this Teryx, so either the 2013 two-seater differs or
-  those manuals cover a different version. We couldn't get the 2013 diff page
-  online to check. The parts of those pages that are about how a front diff
-  lock behaves still apply:
+- It's **variable**. Kawasaki's spec for the 2013 Teryx 750 FI 4x4 lists
+  "Selectable four-wheel drive with Variable Front Differential Control", and
+  says it "permits the rider to distribute torque equally to left and right
+  front wheels for maximum traction via a hand lever located between the
+  seats". [15] Reviews of the same platform describe it as letting you
+  "progressively increase front differential lock". [16] The owner confirmed
+  the lever on this Teryx has multiple positions.
+- Normally the front diff is **limited-slip**, which "reduces steering effort
+  under normal four-wheel drive operation". The lever adds lock on top. [15]
+- The owner's manual names the two ends of the lever's travel: "Differential
+  Mode (Unlocked-Axle)" with the lever fully forward, and "Locked-Axle Mode"
+  with it "all the way rearward". [1] [9] It doesn't describe the positions in
+  between, but that's the variable range. (Our first read wrongly took the two
+  named ends to mean it only had two positions.)
 - **Only works in 4WD**: "The differential control is effective only when 4WD
   is engaged." [9]
 - To unlock it just says "after crossing the obstacle, move the shift lever
@@ -45,6 +50,8 @@ converted to electric with a Shinegle 7.5 kW kit.
 - **Don't lock in a turn**: "Do not shift to Locked-Axle Mode while turning or
   before entering a turn", because steering gets heavy and the Teryx can go
   where you didn't expect. [1] [4]
+- Kawasaki gives no speed limit for using the lever, so Teryx OS keeps its
+  15 km/h default for adding lock.
 
 ### Handbrake (parking brake)
 - It's a **foot pedal** to the left of the brake pedal. Push it right down to
@@ -52,6 +59,8 @@ converted to electric with a Shinegle 7.5 kW kit.
 - The meter has a **red parking brake light** that comes on "when the parking
   brake is applied with the ignition switch in the ON position". [11] [12]
   So there's a parking brake switch on the stock loom we can tap into.
+- From 2011 the Teryx 750 also has an ignition cutout tied to the parking
+  brake [16], another sign the switch is wired into the stock loom.
 - The rear brakes are an enclosed wet multi-plate type. [13]
 
 ### Stock gearbox (for reference)
@@ -77,7 +86,7 @@ converted to electric with a Shinegle 7.5 kW kit.
 | 2WD/4WD | changes under 5 km/h | changes only when **stopped** (under 1 km/h) | Kawasaki: stop first, shifting while moving can damage the front drive train [1] |
 | Diff lock (adding lock) | under 15 km/h | under 15 km/h (unchanged) | Variable diff, so the old default stays |
 | Diff lock (unlocking) | under 15 km/h | **any speed** | Kawasaki unlocks "after crossing the obstacle", and a locked diff makes steering heavy, so you want to be able to drop it before a turn [1] [9] |
-| Diff lock on the dash | 0 to 100% slider with presets | same (Open, 25, 50, 75, Lock) | This Teryx has a variable diff (checked by hand) |
+| Diff lock on the dash | 0 to 100% slider with presets | same (Open, 25, 50, 75, Lock) | Kawasaki fits Variable Front Differential Control [15], and the owner confirmed it |
 | Diff lock in 2WD | no hint | dash says it does nothing in 2WD | Kawasaki: diff control only works in 4WD [9] |
 | Handbrake input `in.park` | optional, "TBC if fitted" | expected, from the **stock parking brake switch** | The stock meter has a parking brake light, so the switch is there [11] |
 
@@ -127,6 +136,8 @@ All the limits are still adjustable in Settings.
 12. [2011 Teryx 750 FI 4x4 LE owner's manual, p37: multifunction meter](https://manualowl.com/am/Kawasaki/2011-Teryx%20750%20FI%204x4%20LE/Manual/10846?page=39)
 13. [2011 Teryx 750 FI 4x4 LE owner's manual, p136: brakes](https://manualowl.com/am/Kawasaki/2011-Teryx%20750%20FI%204x4%20LE/Manual/10846?page=138)
 14. [Shinegle 7.5 kW conversion kit for UTV/ATV (made-in-china listing)](https://www.made-in-china.com/showroom/1a6d66f17f5919e6/product-detailtvfnapzZTlYA/China-Shinegle-7-5kw-Conversion-Kit-for-UTV-ATV.html)
+15. [2013 Kawasaki Teryx 750 FI 4x4, Kawasaki features and spec (totalmotorcycle)](https://www.totalmotorcycle.com/ATV-Quad/2013ATVmodels/2013-Kawasaki-Teryx750FI4x4)
+16. [2011 Kawasaki Teryx 750 FI 4x4 Sport review and specs (UTV Guide)](https://utvguide.net/2011-kawasaki-teryx-750-fi-4x4-sport/)
 
 The 2011 and 2012 manuals are used where the 2013 pages aren't online. The
 Teryx 750 2WD/4WD switch, diff and parking brake are the same across these
