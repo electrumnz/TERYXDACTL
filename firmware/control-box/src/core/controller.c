@@ -216,6 +216,7 @@ void ctl_on_frame(controller_t *c, const can_frame_t *f, uint32_t now,
         int8_t winch = (int8_t)f->data[1];
         c->hold_tray = tray > 0 ? 1 : tray < 0 ? -1 : 0;
         c->hold_winch = winch > 0 ? 1 : winch < 0 ? -1 : 0;
+        c->hold_winch_timed_s = f->dlc >= 4 ? f->data[3] : 0;
         bool arm = (f->data[2] & HOLD_FLAG_WINCH_ARMED) != 0;
         if (arm && !c->winch.armed) try_arm_winch(c, now);
         else if (!arm && c->winch.armed) winch_disarm(c);
@@ -268,6 +269,7 @@ static void stop_all_motion(controller_t *c) {
     c->tray.dir = 0;
     c->hold_tray = 0;
     c->hold_winch = 0;
+    c->hold_winch_timed_s = 0;
     winch_disarm(c);
 }
 
@@ -468,6 +470,13 @@ static void run_winch(controller_t *c, uint32_t now, cb_out_t *o, bool dash_ok) 
         if (req != w->prev_req) reject(c, REJ_REMOTE_IN_USE);
         req = 0;
     }
+    // Timed pull. A new press (or a release) starts the timer over.
+    bool timed = c->hold_winch_timed_s != 0;
+    if (c->hold_winch != w->prev_req || !timed) {
+        w->timed_running = false;
+        w->timed_done = false;
+    }
+    if (timed && w->timed_done) req = 0;
     w->prev_req = c->hold_winch;
 
     if (req != w->active) {
@@ -477,6 +486,21 @@ static void run_winch(controller_t *c, uint32_t now, cb_out_t *o, bool dash_ok) 
         }
         if (req != 0 && since(now, w->off_since_ms) >= S(c, SET_WINCH_DEAD_TIME_MS)) {
             w->active = req;
+        }
+    }
+    if (timed && !w->timed_done) {
+        if (w->active != 0 && !w->timed_running) {
+            w->timed_running = true;
+            w->timed_start_ms = now;
+        } else if (w->active == 0 && w->timed_running) {
+            w->timed_done = true;   // cut short (remote, interlock...): don't restart by itself
+        }
+        uint32_t secs = c->hold_winch_timed_s;
+        if (secs > S(c, SET_WINCH_TIMED_MAX_S)) secs = S(c, SET_WINCH_TIMED_MAX_S);
+        if (w->timed_running && since(now, w->timed_start_ms) >= secs * 1000u) {
+            w->timed_done = true;
+            w->active = 0;
+            w->off_since_ms = now;
         }
     }
     if (w->active != 0) w->last_activity_ms = now;
@@ -639,6 +663,7 @@ void ctl_tick(controller_t *c, const cb_in_t *in, cb_out_t *out, cb_send_fn send
     if (since(now, c->last_hold_ms) > S(c, SET_HOLD_TIMEOUT_MS)) {
         c->hold_tray = 0;
         c->hold_winch = 0;
+    c->hold_winch_timed_s = 0;
     }
 
     // Rule 8: key-off. Keep power on until the Pi has shut down, or time's up.

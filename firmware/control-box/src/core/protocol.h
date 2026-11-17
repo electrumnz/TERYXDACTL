@@ -57,6 +57,10 @@ enum { REQ_2WD = 0, REQ_4WD = 1 };
 
 // ---- 0x703 hold-to-run ----------------------------------------------------------
 #define HOLD_FLAG_WINCH_ARMED 0x01u
+// Byte 3 (optional): timed pull length in whole seconds. 0 = plain hold-to-run.
+// The dash still sends 0x703 every 100 ms for the whole pull, so the 300 ms
+// hold timeout still stops it if the dash dies. The Pico stops it on time by
+// itself (capped at SET_WINCH_TIMED_MAX_S) even if the frames keep coming.
 
 // ---- 0x704 settings keys ---------------------------------------------------------
 // Frame: [0] key, [1] 0, [2-3] u16 value. Pico echoes the stored value on 0x714:
@@ -82,6 +86,7 @@ enum {
     SET_RELAY_ACTIVE_LOW = 18,    // 1 = relay board switches on a low input
     SET_TRAY_FULL_TRAVEL_MS = 19, // used for the tray % estimate
     SET_LOW_12V_MV = 20,
+    SET_WINCH_TIMED_MAX_S = 21,   // longest timed pull the Pico will run
     SET_COUNT,
     SET_CMD_SAVE = 0xF0,          // write current settings to flash
     SET_CMD_DEFAULTS = 0xF1,      // go back to defaults (not saved until 0xF0)

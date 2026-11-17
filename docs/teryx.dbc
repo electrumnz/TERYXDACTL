@@ -67,6 +67,7 @@ BO_ 1795 PI_HOLD: 8 PI_DASH
  SG_ tray : 0|8@1- (1,0) [-128|127] "" Vector__XXX
  SG_ winch : 8|8@1- (1,0) [-128|127] "" Vector__XXX
  SG_ winch_armed : 16|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ winch_timed_s : 24|8@1+ (1,0) [0|255] "s" Vector__XXX
  SG_ counter : 56|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 1796 PI_SETTINGS: 8 PI_DASH
@@ -151,6 +152,7 @@ CM_ SG_ 1794 fourwd_req "0 = 2WD, 1 = 4WD";
 CM_ BO_ 1794 "On change, plus a resend every 1 s.";
 CM_ SG_ 1795 tray "-1 down, 0 stop, +1 up";
 CM_ SG_ 1795 winch "-1 out, 0 stop, +1 in";
+CM_ SG_ 1795 winch_timed_s "Timed pull length, 0 = plain hold. Pico stops it on time by itself, capped at setting 21";
 CM_ BO_ 1795 "Hold-to-run, sent at 10 Hz only while a button is held. Pico stops if it goes quiet for 300 ms.";
 CM_ BO_ 1796 "On change, one key per frame. The Pico echoes it on 0x714 as an ack. Keys are in SETTINGS below. 0xF0 = save to flash, 0xF1 = reset defaults.";
 CM_ BO_ 1823 "Pico reboots to its bootloader when magic = 0x5445 ('TE') and parked.";

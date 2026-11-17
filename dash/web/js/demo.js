@@ -63,6 +63,11 @@ export class DemoVehicle {
         if (spd > 0.5) { if (h.v === 0) this.reject("not_stopped"); h.v = 0; return; }
         if (msg.id === "winch" && !this.req.armed) { if (h.v === 0) this.reject("not_armed"); return; }
       }
+      // Timed winch pull: like the control box, stop on time even if the holds keep coming.
+      if (msg.id === "winch") {
+        const secs = msg.value ? (msg.secs || 0) : 0;
+        if (msg.value !== h.v || !secs) { h.secs = secs; h.from = null; h.done = false; }
+      }
       h.v = msg.value; h.at = performance.now();
     }
   }
@@ -163,11 +168,22 @@ export class DemoVehicle {
 
     // Winch
     if (r.armed && moving) { r.armed = false; this.reject("not_stopped"); }
-    const wv = this.holds.winch.v;
+    const wh = this.holds.winch;
+    if (wh.secs && wh.v && !wh.done) {
+      if (wh.from == null) wh.from = now;
+      if (now - wh.from >= Math.min(wh.secs, 30) * 1000) wh.done = true;
+    }
+    const wv = wh.secs && wh.done ? 0 : wh.v;
     if (r.armed) { this.armedIdle = wv ? 0 : this.armedIdle + dt; if (this.armedIdle > 120) r.armed = false; }
     s["winch.armed"] = r.armed; s["winch.isolator"] = r.armed;
     s["winch.in"] = r.armed && wv > 0; s["winch.out"] = r.armed && wv < 0;
     s["winch.idle_s"] = this.armedIdle;
+    // The 12V battery sags while the winch pulls (roughly what the sim does)
+    const wa = s["winch.in"] ? 180 : s["winch.out"] ? 60 : 0;
+    if (wa || this.scenario === "park") {
+      const v12 = s["an.aux_12v"] ?? 12.9;
+      s["an.aux_12v"] = v12 + ((12.9 - wa * 0.006) - v12) * Math.min(1, dt * 5);
+    }
 
     this.onState && this.onState({ ...s });
   }

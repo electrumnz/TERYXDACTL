@@ -22,6 +22,7 @@ import { SettingsScreen } from "./screens/settings.js";
 import { MediaScreen } from "./screens/media.js";
 import { MediaHub } from "./media/hub.js";
 import { demoPlayer } from "./ui/demoplayer.js";
+import { WinchHeat } from "./winchheat.js";
 
 // Fallback limits if the control box settings can't be read (match config/io-map.yaml safety defaults).
 const LIMIT_DEFAULTS = { fourwd_max_kmh: 5, diff_max_kmh: 15, tray_overcurrent_da: 10, winch_auto_disarm_s: 120 };
@@ -60,6 +61,7 @@ const ctx = {
 };
 
 ctx.alerts = new Alerts(store, settings);
+ctx.winchHeat = new WinchHeat();
 ctx.trips = new TripData(ctx);
 ctx.media = new MediaHub(ctx);
 // Music dips under every alert sound. Alerts themselves always play at their own volume.
@@ -240,11 +242,15 @@ async function main() {
   let firstState = true;
   store.subscribe((st) => {
     if (firstState && (st.get("pico.online") || st.get("link.demo"))) { firstState = false; hideSplash(); }
+    const wh = ctx.winchHeat.tick(st);
+    st.s["dash.winch_heat"] = { pct: wh.pct, state: wh.state, restS: wh.restLeftS() };  // read by the alerts
     topbar(st); alertBanner(st); reverseCamera(st); player.update(st);
     // Only the screen on show is redrawn, to keep the Pi cool.
     if (ctx.current) ctx.current.update(st);
     // Anything moving stops if we navigate away (each screen's hide() also does this).
   });
+  // Keep the winch cooling (and its alerts clearing) even when nothing else changes.
+  setInterval(() => { store._dirty = true; }, 1000);
   setInterval(() => {
     const d = new Date();
     document.getElementById("tb-clock").textContent = d.toLocaleTimeString("en-NZ", { hour: "2-digit", minute: "2-digit", hour12: false });
