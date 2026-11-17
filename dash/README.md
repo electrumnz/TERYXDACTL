@@ -1,6 +1,7 @@
 # Teryx dash UI
 
-The touch screen dash for the Teryx: a rugged, high-contrast take on a Tesla-style screen,
+The touch screen dash for the Teryx, with a T. rex look: armour plates over T. rex hide, a
+head that opens its jaw as you put the power down, claw marks for power and fangs for the battery,
 built for a 10.1" 1280x800 touch screen on a Raspberry Pi 5, used with gloves on a bumpy track.
 
 **The Pi only asks. The control box (Pico) decides.** Every button sends a request; what the
@@ -11,18 +12,47 @@ not stopped, not armed), the dash says why in plain words.
 
 | Screen | What it does |
 |---|---|
-| Drive | Speed, gear (R/N/D), power and regen bar, battery % and range left, pack volts/amps/temp, 12V, motor and controller temps, throttle, mode, odometer, a top-down view showing 2WD/4WD, diff lock and lights, and the tilt and GPS widget |
+| Drive | Speed, gear (R/N/D), claw mark power and regen meter, fang battery meter with % and range left (tap it to swap which is big), pack volts/amps/temp, 12V, motor and controller temps, throttle, mode, odometer, a top-down view showing 2WD/4WD, diff lock and lights, and the tilt and GPS widget |
 | Trips | This trip (key on to key off), trip A (reset with two taps), range left, energy used and put back, Wh/km, and past trips |
 | 4WD | 2WD/4WD switch and diff lock 0-100% (slider plus Open/25/50/75/Lock). Shows the target and where the actuator actually is, and locks out above the speed limits |
 | Lights | 4 front bars, interior bar, rear pods (Off / Auto in reverse / On), trailer status. Each bar is dimmable or on/off only (set in Settings). Presets (All on/off, Trail, Work, Spot) and effects (Steady, Breathe, Strobe, Chase, Outside pair, Inside pair) |
 | Winch | Slide to arm (so a knee can't arm it), then hold IN or OUT. Lifting your finger stops it. Shows checks and the auto-disarm countdown |
 | Tray | Hold UP or DOWN. Only when stopped. Shows limit switches, current and position |
-| Camera | Reverse camera with guide lines and mirror. Pops up on its own in reverse and goes back 3 s after |
+| Cameras | Reverse camera with guide lines and mirror. Pops up on its own in reverse and goes back 3 s after |
 | Media | Bluetooth audio from a phone, music on the Pi or a USB stick, internet radio, and CarPlay / Android Auto through a Carlinkit USB adapter. One volume; music dips under alerts and in reverse. See [`docs/audio.md`](../docs/audio.md) |
 | Settings | Display (night/day/auto, units, pack size), sounds and alerts, lights setup, camera, control box safety limits, diff pot calibration, faults, updates (OTA), Wi-Fi, about |
 
 Faults from the control box or motor controller show as a banner along the bottom with plain
 English text, and are listed under Settings > Faults.
+
+## Three looks
+
+![Predator](docs/screens/drive-predator.png)
+
+| Look | When (in Auto) | What it's like |
+|---|---|---|
+| **Predator** | Everyday driving | Dark T. rex hide, lava orange, the T. rex head |
+| **Fossil** | 4WD on, or the diff lock above 0% | A T. rex skull in rock, stone plates, amber. Darker after sunset |
+| **Night Hunt** | Light bars on, or after sunset | Almost black, dim ember orange, the head in shadow |
+
+Off-road wins over night. Fossil stays on for 8 s after 4WD and the diff lock come off, so a
+quick flick doesn't flash the screen. The looks cross-fade over about a second. Settings >
+Display can lock one look instead of Auto. The logic is in `web/js/look.js`, colours in
+`web/css/theme.css`, the look itself in `web/css/dino.css`, art in `web/img/dino`.
+
+![Fossil](docs/screens/drive-fossil.png)
+![Night Hunt](docs/screens/drive-night-hunt.png)
+
+**What's on, up front.** Anything on or running (4WD, diff lock, light bars, rear lights, winch,
+tray, music, handbrake, limp mode) shows as a big button over the bottom of the T. rex. Tap one
+to jump to its screen.
+
+**Volume** is always one tap away: the speaker button in the top bar opens big - / + keys, a
+slider and mute.
+
+**Not wired up yet = greyed out.** Winch, Tray and Media start greyed out with a SOON tag, and
+tapping one just says so. Switch each on in Settings > Features once it's fitted. Any other
+control can be greyed the same way with `soon(element)` from `web/js/features.js`.
 
 ## Built for the real screen
 
@@ -54,15 +84,14 @@ there are no sound files. Settings > Sounds and alerts has volume, clicks and th
 
 ![Tilt alarm](docs/screens/alert-tilt.png)
 
-**Day/night Auto** goes by the sun: the GPS position when there's a fix, otherwise a rough
+**After dark** (for Night Hunt, and darker Fossil) goes by the sun: the GPS position when there's a fix, otherwise a rough
 area picked in Settings > Display (no exact location is saved). Night starts a little after
-sunset. A light sensor (`pi.light_lux`) wins if one is ever fitted. Day is the high contrast
-theme for full sun.
+sunset. A light sensor (`pi.light_lux`) wins if one is ever fitted.
 
 **Trips and range.** The Pi logs trips (not the browser), so they survive a screen restart.
 Range = energy left in the pack / your use per km over the last 10 km, falling back to your
 average, then a first guess of 180 Wh/km. Set the real pack size in Settings > Display
-(default 7.5 kWh, for 72 V x 105 Ah). Trips are saved to `~/.config/teryx/trips.json` on the Pi.
+(default 7.5 kWh, for 72 V x 105 Ah). Settings > Display picks whether % or km shows big on the drive screen. Trips are saved to `~/.config/teryx/trips.json` on the Pi.
 
 **Tilt and GPS widget**, ready for sensors that aren't fitted yet. It reads the `pi.imu.*` and
 `pi.gps.*` keys (see `docs/DASH_API.md`) and says "not fitted yet" until they show up. The
@@ -211,12 +240,13 @@ and the virtual Teryx running off the same feed.
 
 ## Look and feel: where it lives
 
-Every colour, size and font is a token in [`web/css/theme.css`](web/css/theme.css) (night is the
-default, `body.theme-day` overrides the colours). `dash.css` only uses those tokens, so a new
-look starts in `theme.css`. The Inter font is bundled in `web/fonts` (SIL Open Font Licence,
-see `Inter-OFL.txt`) because the Pi doesn't ship it and would fall back to a plainer font.
+Every colour, size and font is a token in [`web/css/theme.css`](web/css/theme.css), one set per
+look (`body.look-std`, `look-offroad`, `look-night`, plus `theme-night` after dark). `dash.css`
+lays things out, `dino.css` gives them the T. rex look. Fonts are bundled in `web/fonts`
+(Inter and Barlow Condensed, SIL Open Font Licence) because the Pi doesn't ship them. Icons are
+Tabler Icons (MIT), pasted into `web/js/ui/icons.js`.
 
-To screenshot every screen in night and day at 1280x800:
+To screenshot every screen in each look at 1280x800:
 
 ```
 node tools/dash-shots.mjs dash/docs/screens/all        # add --scale 2 for sharp shots

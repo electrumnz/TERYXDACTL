@@ -11,7 +11,7 @@ import { $, toast } from "../ui/controls.js";
 import { icon } from "../ui/icons.js";
 
 export class CameraScreen {
-  constructor(ctx) { this.ctx = ctx; this.id = "camera"; this.label = "Camera"; this.icon = "camera"; this.stream = null; }
+  constructor(ctx) { this.ctx = ctx; this.id = "camera"; this.label = "Cameras"; this.icon = "camera"; this.stream = null; }
 
   mount(root) {
     root.style.padding = "0";

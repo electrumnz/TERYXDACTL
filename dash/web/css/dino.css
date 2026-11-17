@@ -1,0 +1,366 @@
+/* Teryx dash: the T. rex look (Predator, Fossil, Night Hunt). Loaded after dash.css.
+   dash.css says where things go; this file says what they look like.
+   Colours come from theme.css. Art is in img/dino (see its README). */
+
+/* ---------- shapes ---------- */
+:root {
+  /* plate: top-left and bottom-right corners cut off */
+  --clip-plate: polygon(var(--cut) 0, 100% 0, 100% calc(100% - var(--cut)), calc(100% - var(--cut)) 100%, 0 100%, 0 var(--cut));
+  --clip-key: polygon(var(--cut-sm) 0, 100% 0, 100% calc(100% - var(--cut-sm)), calc(100% - var(--cut-sm)) 100%, 0 100%, 0 var(--cut-sm));
+  --bot-h: 100px;
+  --nav-w: 0px;
+}
+
+/* ---------- frame: top bar, screens, bottom bar, background art ---------- */
+html, body { background: var(--bg); }
+#app {
+  grid-template-columns: 1fr;
+  grid-template-rows: var(--top-h) 1fr var(--bot-h);
+  grid-template-areas: "top" "main" "nav";
+  background: var(--bg);
+  isolation: isolate;
+}
+#app > * { position: relative; z-index: 1; }
+#app > #bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+#app > .toast, #app > .fault-banner, #app > .kb-overlay, #app > .demo-player, #app > .vol-pop { position: absolute; z-index: 40; }
+#app > .vol-pop { z-index: 60; }
+#app > .kb-overlay { z-index: 80; inset: 0; }
+
+/* Three stacked backgrounds; the look picks one and they cross-fade. */
+#bg i { position: absolute; inset: 0; opacity: 0; transition: opacity 1.4s ease; background-size: cover; background-position: center; }
+#bg .bg-std { background-image: radial-gradient(ellipse at 70% 40%, rgba(0,0,0,0) 0, rgba(0,0,0,.55) 70%), url("../img/dino/hide-night.webp"); }
+#bg .bg-offroad { background-image: radial-gradient(ellipse at 60% 40%, rgba(0,0,0,0) 0, rgba(0,0,0,.45) 75%), url("../img/dino/stone.webp"); }
+#bg .bg-night { background-image: linear-gradient(rgba(3,2,1,.72), rgba(3,2,1,.82)), url("../img/dino/hide-night.webp"); }
+body.look-offroad.theme-night #bg .bg-offroad { filter: brightness(.6); }
+body.look-std #bg .bg-std, body.look-offroad #bg .bg-offroad, body.look-night #bg .bg-night { opacity: 1; }
+/* Plates and keys fade between looks too, so a mode change feels like one smooth move. */
+.panel, .btn, .seg button, .nav-btn, .hold-btn, .light-tile, #topbar, #nav { transition: color .8s, background-color .8s, border-color .8s; }
+
+/* ---------- top bar ---------- */
+#topbar {
+  border-bottom: 0; padding: 0 16px 0 12px; gap: 10px;
+  background: linear-gradient(180deg, rgba(0,0,0,.65), rgba(0,0,0,.25));
+  box-shadow: inset 0 -1px 0 var(--line);
+}
+.tb-brand { display: flex; align-items: center; gap: 8px; margin-right: 6px; flex: none; }
+.tb-brand img { width: 44px; height: 44px; border-radius: 50%; filter: brightness(var(--art-dim)); }
+.tb-brand b { font: italic 800 30px/1 var(--display); letter-spacing: .04em; color: var(--text); }
+.tb-brand b i { font-style: italic; color: var(--accent); }
+.tb-look { font: 700 15px/1 var(--display); letter-spacing: .18em; text-transform: uppercase; color: var(--accent); padding-left: 10px; border-left: 2px solid var(--line); white-space: nowrap; }
+.tb-text { font-family: var(--display); font-weight: 700; font-size: 22px; letter-spacing: .06em; }
+.tb-clock { font: italic 800 30px/1 var(--display); color: var(--text); }
+.gear-chip {
+  min-width: 46px; height: 44px; font: italic 800 30px/1 var(--display);
+  background: var(--key); border: 2px solid var(--key-edge); border-radius: 0; clip-path: var(--clip-key);
+}
+.gear-chip.d { color: var(--accent); border-color: var(--accent); box-shadow: inset 0 0 12px rgba(255,122,26,.25); }
+.gear-chip.r { color: var(--bad); border-color: var(--bad); }
+.tb-chip {
+  font: 700 17px/1 var(--display); letter-spacing: .1em; padding: 8px 12px; border-radius: 0;
+  background: rgba(0,0,0,.35); border: 2px solid var(--key-edge); clip-path: var(--clip-key);
+}
+.tb-chip.on { color: var(--accent); border-color: var(--accent); background: rgba(255,122,26,.08); }
+.tb-btn, .tb-media { background: var(--key); border: 2px solid var(--key-edge); border-radius: 0; clip-path: var(--clip-key); }
+.tb-centre { font-family: var(--display); font-size: 20px; letter-spacing: .1em; }
+
+/* ---------- bottom bar (main nav) ---------- */
+#nav {
+  flex-direction: row; gap: 8px; padding: 10px 12px 12px;
+  background: linear-gradient(0deg, rgba(0,0,0,.75), rgba(0,0,0,.35));
+  border-right: 0; box-shadow: inset 0 1px 0 var(--line);
+}
+.nav-btn {
+  flex: 1; height: auto; min-height: 76px; border-radius: 0; clip-path: var(--clip-key);
+  background: var(--key); box-shadow: inset 0 0 0 2px var(--key-edge);
+  color: var(--muted); font: 700 15px/1 var(--display); letter-spacing: .1em; gap: 6px;
+}
+.nav-btn svg { width: 32px; height: 32px; }
+.nav-btn.active {
+  background: linear-gradient(175deg, rgba(255,122,26,.22), rgba(255,122,26,.06)), var(--key);
+  color: var(--text); box-shadow: inset 0 0 0 2px var(--accent), inset 0 0 22px rgba(255,122,26,.35);
+}
+.nav-btn.active svg { color: var(--accent); }
+.nav-btn.active::before { left: 18%; right: 18%; top: auto; bottom: 0; width: auto; height: 4px; border-radius: 0; background: var(--accent); }
+.nav-btn .badge { top: 8px; right: 14px; }
+
+/* ---------- plates ---------- */
+.screen { padding: 16px 20px; }
+.panel {
+  background: var(--plate); border: 0; border-radius: 0; clip-path: var(--clip-plate);
+  box-shadow: inset 0 0 0 1.5px var(--line), inset 0 1px 0 1.5px rgba(255,255,255,.05);
+  padding: 14px 16px;
+}
+/* the cut corners get a short bright edge, and two bolts sit in the other corners */
+.panel::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(135deg, var(--accent) 0 1.5px, transparent 2.5px) 0 0 / calc(var(--cut) + 3px) calc(var(--cut) + 3px) no-repeat,
+    linear-gradient(-45deg, var(--accent) 0 1.5px, transparent 2.5px) 100% 100% / calc(var(--cut) + 3px) calc(var(--cut) + 3px) no-repeat,
+    radial-gradient(circle, var(--bolt) 0 2.5px, rgba(0,0,0,.6) 3px, transparent 4px) calc(100% - 6px) 6px / 12px 12px no-repeat,
+    radial-gradient(circle, var(--bolt) 0 2.5px, rgba(0,0,0,.6) 3px, transparent 4px) 6px calc(100% - 6px) / 12px 12px no-repeat;
+  opacity: .9;
+}
+.panel h3, .screen-title {
+  font: italic 700 18px/1 var(--display); letter-spacing: .16em; color: var(--muted); text-transform: uppercase;
+}
+.panel h3 { margin: 2px 0 10px; }
+.big-val { font-family: var(--display); font-style: italic; font-weight: 800; letter-spacing: -.01em; }
+.unit { font-family: var(--display); font-weight: 700; font-size: 18px; }
+.kv { border-bottom-color: rgba(255,255,255,.06); }
+.kv .k { font-family: var(--display); font-weight: 700; font-size: 17px; letter-spacing: .1em; }
+.kv .v { font-family: var(--display); font-weight: 700; font-size: 22px; letter-spacing: .02em; }
+
+/* ---------- keys (buttons) ---------- */
+.btn, .seg button, .stepper button, .light-tile .lt-big, .kb-key, .set-nav button, select.big, .hold-btn {
+  border-radius: 0; clip-path: var(--clip-key);
+}
+.btn {
+  background: var(--key); border: 0; box-shadow: inset 0 0 0 2px var(--key-edge), inset 0 1px 0 2px rgba(255,255,255,.06);
+  font: 700 21px/1.1 var(--display); letter-spacing: .08em; text-transform: uppercase;
+}
+.btn.on, .seg button.on, .light-tile.on .lt-big, .hold-btn.held, .kb-key.down, .kb-key.done {
+  background: var(--key-on); color: var(--accent-ink); box-shadow: inset 0 0 0 2px var(--accent-2), inset 0 0 18px rgba(255,255,255,.25);
+  border-color: var(--accent);
+}
+.btn.danger { box-shadow: inset 0 0 0 2px var(--bad); }
+.btn.danger.on { background: linear-gradient(175deg, #ff5a45, #c81e10); box-shadow: inset 0 0 0 2px #ff8a7a; }
+.btn.busy { box-shadow: inset 0 0 0 2px var(--info); }
+.seg { border: 0; border-radius: 0; gap: 6px; overflow: visible; }
+.seg button { background: var(--key); border: 0; box-shadow: inset 0 0 0 2px var(--key-edge); font: 700 20px/1.1 var(--display); letter-spacing: .08em; text-transform: uppercase; }
+.stepper button { background: var(--key); border: 0; box-shadow: inset 0 0 0 2px var(--key-edge); }
+.stepper .sv { font: italic 800 26px/1 var(--display); }
+.switch { background: var(--key); border-color: var(--key-edge); }
+.switch.on { background: var(--key-on); border-color: var(--accent-2); }
+.slider { background: var(--key); border: 2px solid var(--key-edge); border-radius: 0; clip-path: var(--clip-key); }
+.slider .fill { background: var(--key-on); opacity: 1; }
+.slider .label { font: 700 22px/1 var(--display); letter-spacing: .06em; }
+.progress, .temp-bar, .batt-bar, .hist-bar { border-radius: 0; background: rgba(0,0,0,.45); border-color: var(--key-edge); }
+.progress > div { background: var(--key-on); }
+select.big { background: var(--key); border-color: var(--key-edge); }
+.pill { border-radius: 0; clip-path: var(--clip-key); font-family: var(--display); font-size: 15px; }
+
+/* settings menu */
+.set-nav button { font: 700 20px/1 var(--display); letter-spacing: .06em; background: transparent; }
+.set-nav button.on { background: var(--key); color: var(--accent); box-shadow: inset 3px 0 0 var(--accent), inset 0 0 0 1.5px var(--key-edge); }
+.set-row { border-bottom-color: rgba(255,255,255,.07); }
+.set-row .lbl { font: 700 22px/1.1 var(--display); letter-spacing: .04em; }
+
+/* hold buttons (winch, tray) */
+.hold-btn { background: var(--key); border: 0; box-shadow: inset 0 0 0 3px var(--key-edge); font: italic 800 36px/1 var(--display); letter-spacing: .1em; }
+.hold-btn .hint { font-family: var(--font); }
+.arm-slide { background: rgba(0,0,0,.45); border-color: var(--key-edge); }
+.arm-slide .knob { background: var(--key-on); }
+.arm-slide .txt { font: italic 700 24px/1 var(--display); letter-spacing: .16em; }
+
+/* lights */
+.light-tile { background: var(--plate); border: 0; border-radius: 0; clip-path: var(--clip-plate); box-shadow: inset 0 0 0 1.5px var(--line); }
+.light-tile.on { box-shadow: inset 0 0 0 2px var(--accent), inset 0 0 26px rgba(255,122,26,.18); }
+.light-tile .lt-name { font: 700 21px/1.05 var(--display); letter-spacing: .04em; }
+.light-tile .lt-big { border: 0; background: var(--key); box-shadow: inset 0 0 0 2px var(--key-edge); font: italic 800 26px/1 var(--display); letter-spacing: .06em; }
+
+/* keyboard */
+.kb { background: var(--panel); }
+.kb-key { border: 0; background: var(--key); box-shadow: inset 0 0 0 2px var(--key-edge); }
+.kb-field { border-radius: 0; clip-path: var(--clip-key); background: rgba(0,0,0,.4); }
+
+/* toast + alerts */
+.toast { border-radius: 0; clip-path: var(--clip-key); background: var(--panel); bottom: calc(var(--bot-h) + 16px); font-family: var(--font); }
+.fault-banner { left: 20px; right: 20px; bottom: calc(var(--bot-h) + 10px); border-radius: 0; clip-path: var(--clip-key); font-family: var(--font); }
+.fault-banner .fb-btn { border-radius: 0; clip-path: var(--clip-key); font-family: var(--display); font-size: 22px; }
+
+/* readouts in other screens use the display face */
+.trip-grid .v, .range-card .big-val, .gps-head, .tilt-v, .power-kw, .stepper .sv { font-family: var(--display); font-style: italic; font-weight: 800; }
+.trip-grid .k, .tilt-l { font-family: var(--display); font-size: 15px; font-weight: 700; letter-spacing: .12em; }
+.trip-grid .v { font-size: 30px; }
+.hist-bar div { background: var(--key-on); }
+
+/* vehicle drawing */
+.veh .body { fill: rgba(0,0,0,.35); stroke: var(--key-edge); }
+.veh .wheel { fill: #2e261e; stroke: var(--key-edge); stroke-width: 2; }
+.veh .wheel.pwr { fill: var(--accent); stroke: var(--accent-2); filter: drop-shadow(0 0 6px var(--accent)); }
+.veh .axle.pwr { stroke: var(--accent); }
+.veh .diff { fill: #120e0a; }
+.veh .diff.locked { stroke: var(--accent); fill: rgba(255,122,26,.18); }
+.tilt .tb { fill: rgba(0,0,0,.35); }
+.compass .ring { fill: rgba(0,0,0,.35); stroke: var(--key-edge); }
+
+/* camera stays a plain picture, just with the new keys */
+.cam .cam-hud span { border-radius: 0; clip-path: var(--clip-key); font-family: var(--display); font-size: 22px; letter-spacing: .06em; }
+
+/* =====================================================================
+   Drive screen
+   ===================================================================== */
+.drive2 {
+  display: grid; height: 100%; gap: 12px;
+  grid-template-columns: 480px 1fr;
+  grid-template-rows: 1fr 214px;
+  grid-template-areas: "left hero" "stats stats";
+}
+.d-left { grid-area: left; display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+.d-stats { grid-area: stats; display: grid; grid-template-columns: 1fr 1fr 230px 1.15fr; gap: 12px; min-height: 0; }
+.d-stats .panel { padding: 10px 14px; overflow: hidden; }
+.d-stats .panel h3 { margin-bottom: 4px; font-size: 16px; }
+.d-stats .kv { padding: 3px 0; }
+.d-stats .kv .k { font-size: 16px; }
+.d-stats .kv .v { font-size: 21px; }
+.d-stats .temp-bar { height: 5px; margin: 1px 0 3px; }
+
+/* speed */
+.d-speed { flex: 1; display: grid; grid-template-columns: 1fr 64px; align-items: center; padding: 6px 12px 6px 22px; min-height: 0; }
+.d-speed .lbl { position: absolute; left: 22px; top: 12px; font: italic 700 18px/1 var(--display); letter-spacing: .2em; color: var(--muted); }
+.d-speed .spd { display: flex; align-items: baseline; gap: 10px; margin-top: 12px; }
+.d-speed .speed { font: italic 800 168px/.82 var(--display); letter-spacing: -.02em; color: var(--text); text-shadow: 0 4px 18px rgba(0,0,0,.6); font-variant-numeric: tabular-nums; }
+.d-speed .speed-unit { font: italic 700 30px/1 var(--display); letter-spacing: .02em; color: var(--text); text-transform: none; }
+.d-speed .gear-row { flex-direction: column; gap: 4px; margin: 0; }
+.d-speed .gear-row span { font: italic 800 34px/1.2 var(--display); width: 56px; color: var(--dim); text-align: center; }
+.d-speed .gear-row span.on { color: var(--text); }
+.d-speed .gear-row span.on.d { color: var(--accent); text-shadow: var(--glow); }
+.d-speed .gear-row span.on.r { color: var(--bad); }
+
+/* power: three claw gouges that fill with power (orange) or regen (teal) */
+.d-power { height: 84px; display: grid; grid-template-columns: 96px 1fr 120px; align-items: center; padding: 0 16px 0 22px; flex: none; }
+.d-power .lbl, .d-batt .lbl { font: italic 700 18px/1 var(--display); letter-spacing: .2em; color: var(--muted); }
+.d-power .claws { height: 64px; width: 100%; overflow: visible; }
+.claws .gouge { fill: rgba(0,0,0,.6); stroke: var(--key-edge); stroke-width: 1.2; }
+.claws .lava { fill: url(#lava); filter: drop-shadow(0 0 5px rgba(255,110,20,.8)); transition: opacity .25s; }
+.claws.regen .lava { fill: url(#cool); filter: drop-shadow(0 0 5px rgba(60,220,170,.7)); }
+.d-power .power-kw { margin: 0; text-align: right; font: italic 800 34px/1 var(--display); color: var(--text); }
+.d-power .power-kw.ok { color: var(--regen); }
+
+/* battery: a row of fangs, lit up to the charge level. Tap to swap % and km. */
+.d-batt { height: 108px; display: grid; grid-template-columns: 96px 1fr 132px; align-items: center; padding: 0 16px 0 22px; flex: none; cursor: pointer; }
+.d-batt .fangs { position: relative; height: 82px; }
+.d-batt .fangs img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: fill; }
+.d-batt .fangs .dead { filter: grayscale(1) brightness(.35); }
+.d-batt .fangs .lit { clip-path: inset(0 calc(100% - var(--soc, 0%)) 0 0); filter: sepia(.55) saturate(1.8) brightness(1.08) drop-shadow(0 0 7px rgba(255,120,20,.75)); transition: clip-path .6s; }
+.d-batt.low .fangs .lit { filter: sepia(1) saturate(4) hue-rotate(-30deg) brightness(.9) drop-shadow(0 0 7px rgba(255,40,20,.8)); }
+.d-batt .bnum { text-align: right; }
+.d-batt .bmain { font: italic 800 46px/1 var(--display); color: var(--text); white-space: nowrap; }
+.d-batt .bsub { font: 700 19px/1.2 var(--display); color: var(--muted); letter-spacing: .04em; white-space: nowrap; }
+.d-batt .bmain.warn, .d-batt .bsub.warn { color: var(--warn); }
+.d-batt .bmain.bad, .d-batt .bsub.bad { color: var(--bad); }
+
+/* hero art: the T. rex (or the fossil, off-road) */
+.d-hero { grid-area: hero; position: relative; min-height: 0; margin: -16px -20px 0 -40px; pointer-events: none; }
+.d-hero .art { position: absolute; inset: 0; opacity: 0; transition: opacity 1.4s; }
+body.look-std .d-hero .rex, body.look-night .d-hero .rex, body.look-offroad .d-hero .fossil { opacity: 1; }
+.d-hero .rex img {
+  position: absolute; right: -40px; top: -10px; width: 820px; height: auto;
+  filter: brightness(var(--art-dim)); transition: opacity .35s;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 22%); mask-image: linear-gradient(90deg, transparent 0, #000 22%);
+}
+.d-hero .rex .breathe { position: absolute; inset: 0; animation: breathe 7s ease-in-out infinite; transform-origin: 85% 60%; will-change: transform; }
+@keyframes breathe { 50% { transform: scale(1.012) translateY(-2px); } }
+body.look-night .d-hero .rex img { filter: brightness(.5) contrast(1.15) sepia(.35); }
+.d-hero .rex::after { /* warm light where the readouts meet the head */
+  content: ""; position: absolute; left: 0; top: 10%; width: 60%; height: 80%;
+  background: radial-gradient(ellipse at 30% 50%, var(--hero-glow), transparent 65%); opacity: .45;
+}
+.d-hero .fossil img {
+  position: absolute; right: -10px; top: -24%; height: 145%; width: auto; max-width: none;
+  filter: brightness(var(--art-dim));
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 30%), linear-gradient(0deg, transparent 0, #000 16%);
+  -webkit-mask-composite: source-in; mask-composite: intersect;
+  mask-image: linear-gradient(90deg, transparent 0, #000 30%), linear-gradient(0deg, transparent 0, #000 16%);
+}
+.d-chips { position: absolute; left: 56px; right: 24px; bottom: 6px; display: flex; flex-wrap: wrap-reverse; gap: 8px; pointer-events: auto; }
+
+/* drivetrain and tilt, squeezed into the bottom row */
+.d-stats .veh svg { height: 168px; width: 100%; }
+.d-stats .sens { gap: 4px; }
+.d-stats .tilt svg { height: 56px; }
+.d-stats .tilt-v { font-size: 26px; }
+.d-stats .gps { padding-top: 4px; gap: 10px; }
+.d-stats .compass svg { width: 48px; height: 48px; }
+.d-stats .gps-head { font-size: 24px; }
+.d-stats .gps-sub { font-size: 13px; }
+
+/* "what's on" shortcuts over the bottom of the hero art */
+.act-chip {
+  min-height: var(--touch); padding: 0 16px; display: inline-flex; align-items: center; gap: 8px;
+  border: 0; clip-path: var(--clip-key); background: rgba(8,6,4,.78); color: var(--text);
+  box-shadow: inset 0 0 0 2px var(--key-edge); font: 700 20px/1 var(--display); letter-spacing: .06em; text-transform: uppercase;
+}
+.act-chip svg { width: 26px; height: 26px; }
+.act-chip.on { box-shadow: inset 0 0 0 2px var(--accent), inset 0 0 16px rgba(255,122,26,.25); }
+.act-chip.on svg { color: var(--accent); }
+.act-chip.busy { box-shadow: inset 0 0 0 2px var(--info); animation: pulse 1s infinite; }
+.act-chip.alert { box-shadow: inset 0 0 0 2px var(--bad); color: var(--bad); }
+.act-chip.warnc { box-shadow: inset 0 0 0 2px var(--warn); color: var(--warn); }
+.act-chip:active { transform: scale(.97); }
+
+/* ---------- not wired up yet: greyed out with a SOON tag (features.js) ---------- */
+.soon { opacity: .38; filter: grayscale(1); }
+.soon:not(.nav-btn) { pointer-events: none; }
+.soon-tag { display: none; }
+.soon .soon-tag {
+  display: block; position: absolute; top: 6px; right: 8px; font: italic 800 12px/1 var(--display); letter-spacing: .1em;
+  padding: 3px 6px; background: var(--muted); color: var(--bg); clip-path: var(--clip-key);
+}
+
+/* ---------- volume: top bar button and its panel ---------- */
+.tb-vol { width: auto; min-width: 92px; padding: 0 12px; display: inline-flex; gap: 6px; align-items: center; justify-content: center; color: var(--text); }
+.tb-vol svg { width: 28px; height: 28px; color: var(--accent); }
+.tb-vol span { font: italic 800 24px/1 var(--display); }
+.tb-vol.muted svg, .tb-vol.muted span { color: var(--dim); }
+.vol-pop {
+  position: absolute; z-index: 60; top: calc(var(--top-h) + 6px); right: 92px; width: 520px; padding: 18px 20px 16px;
+  background: var(--panel); clip-path: var(--clip-plate); box-shadow: inset 0 0 0 2px var(--accent), var(--shadow-lg);
+  display: flex; flex-direction: column; gap: 14px;
+}
+.vol-head { display: flex; justify-content: space-between; align-items: baseline; font: italic 700 22px/1 var(--display); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.vol-head .vol-pct { font: italic 800 40px/1 var(--display); color: var(--text); letter-spacing: 0; }
+.vol-row { display: grid; grid-template-columns: 84px 1fr 84px; gap: 10px; align-items: center; }
+.vol-row .btn { min-height: 84px; padding: 0; }
+.vol-row .btn svg { width: 36px; height: 36px; }
+.vol-row .slider { height: 84px; }
+.vol-mute { min-height: 72px; }
+
+/* ---------- screens squeezed into the new height (bottom bar) ---------- */
+.lights { grid-template-columns: 1fr 400px; gap: 12px; }
+.lights .col { gap: 12px; min-height: 0; }
+.lights .fx-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.lights .fx-grid .btn { min-height: var(--touch); font-size: 18px; padding: 0 6px; letter-spacing: .04em; }
+.light-grid { gap: 12px; }
+.light-tile { padding: 10px 12px; gap: 8px; }
+.light-tile .lt-big, .light-tile .slider { height: 72px; }
+.dt #t-veh { display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.dt #t-veh .veh svg { height: 100%; max-height: 200px; width: auto; }
+.dt #t-veh { flex: 1 1 0; min-height: 90px; }
+.dt #t-veh .veh { height: 100%; display: flex; justify-content: center; }
+.dt .lockout { margin-top: 0; }
+.dt .panel.col { gap: 10px !important; }
+
+/* camera: the big rear light key */
+.cam .cam-rear { border-radius: 0; clip-path: var(--clip-plate); border: 0; background: rgba(8,6,4,.8); box-shadow: inset 0 0 0 3px var(--key-edge); font-family: var(--display); }
+.cam .cam-rear.on { background: var(--key-on); box-shadow: inset 0 0 0 3px var(--accent-2); }
+.cam .cam-rear .cr-name { font-family: var(--display); font-weight: 700; }
+.cam .cam-rear .cr-state { font-family: var(--display); font-style: italic; font-weight: 800; }
+.tray-pic { min-height: 0; }
+.tray-pic svg { max-height: 220px; }
+#screen-tray .col { gap: 12px; min-height: 0; }
+#screen-tray .lockout { min-height: 0; }
+.arm-slide { border-radius: 0; clip-path: var(--clip-key); }
+.arm-slide .knob { border-radius: 0; clip-path: var(--clip-key); }
+
+/* winch timed pull popup (wt-*): same plates and keys as everywhere else */
+.wt-card { border-radius: 0; clip-path: var(--clip-plate); border: 0; background: var(--panel); box-shadow: inset 0 0 0 3px var(--accent), var(--shadow-lg); }
+.wt-card h3, .wt-card .wt-title { font-family: var(--display); font-style: italic; letter-spacing: .16em; }
+.wt-btns .wt-stop { background: linear-gradient(175deg, #ff5a45, #c81e10); box-shadow: inset 0 0 0 3px #ff8a7a; color: var(--on-bad); font-family: var(--display); font-style: italic; }
+.wt-head { font-family: var(--display); font-style: italic; font-size: 20px; }
+.wt-msg { font-family: var(--display); font-size: 32px; letter-spacing: .08em; text-transform: uppercase; }
+.wt-count { font-family: var(--display); font-style: italic; font-weight: 800; color: var(--accent); text-shadow: var(--glow); }
+.wt-preset { border-radius: 0; clip-path: var(--clip-key); border: 0; background: var(--key); box-shadow: inset 0 0 0 3px var(--key-edge); font-family: var(--display); font-style: italic; font-weight: 800; }
+.wt-prog { border-radius: 0; }
+
+/* drive demo player */
+.demo-player { border-radius: 0 !important; clip-path: var(--clip-plate); border-color: var(--accent) !important; }
+.demo-player .dp-btn { border-radius: 0 !important; clip-path: var(--clip-key); }
+.demo-player .dp-btn.main { background: var(--key-on) !important; border-color: var(--accent-2) !important; color: var(--accent-ink) !important; }
+
+/* safe 4WD / diff changes (js/ui/shift.js): keep the state rings over the key edges */
+.seg button.sh-asked, .seg button.sh-waiting, .seg button.sh-moving, .btn.sh-asked, .btn.sh-waiting, .btn.sh-moving { box-shadow: inset 0 0 0 3px var(--info); color: var(--info); }
+.seg button.sh-done, .btn.sh-done { box-shadow: inset 0 0 0 3px var(--good); }
+.seg button.sh-timeout, .btn.sh-timeout { box-shadow: inset 0 0 0 3px var(--warn); color: var(--warn); }
+.seg button.sh-failed, .btn.sh-failed { box-shadow: inset 0 0 0 3px var(--bad); }
+.shift-wait { border-radius: 0; clip-path: var(--clip-key); background: rgba(0,0,0,.4); font-family: var(--display); font-size: 21px; letter-spacing: .04em; }

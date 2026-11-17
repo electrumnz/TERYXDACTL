@@ -4,6 +4,8 @@ import { LIGHTS } from "../settings.js";
 import { listCameras } from "./camera.js";
 import { keyboard } from "../ui/keyboard.js";
 import { REGIONS } from "../theme.js";
+import { LOOKS } from "../look.js";
+import { FEATURES, featureOn } from "../features.js";
 import { Sound } from "../sound.js";
 
 async function api(path, opts = {}) {
@@ -14,7 +16,7 @@ async function api(path, opts = {}) {
 
 const SECTIONS = [
   ["display", "Display"], ["sounds", "Sounds and alerts"], ["audio", "Audio and media"], ["lights", "Lights setup"], ["camera", "Camera"], ["limits", "Safety limits"],
-  ["diff", "Diff calibration"], ["faults", "Faults"], ["updates", "Updates"], ["wifi", "Wi-Fi"], ["about", "About"],
+  ["diff", "Diff calibration"], ["features", "Features"], ["faults", "Faults"], ["updates", "Updates"], ["wifi", "Wi-Fi"], ["about", "About"],
 ];
 
 function row(label, desc, control) {
@@ -69,14 +71,19 @@ export class SettingsScreen {
     const s = this.ctx.settings;
     this.title(body, "Display");
     const now = el(`<span class="muted"></span>`);
-    const showNow = () => { const i = this.ctx.themeInfo(); now.textContent = s.get("theme") === "auto" ? `Now: ${i.theme} (${i.why})` : ""; };
-    const themeRow = row("Theme", "Day is brighter for full sun. Auto goes by the sun: GPS when there's a fix, otherwise the area below.", seg([["night", "Night"], ["day", "Day"], ["auto", "Auto"]], s.get("theme"), (v) => { s.set("theme", v); this.ctx.applyTheme(); showNow(); }));
-    themeRow.querySelector(".desc").appendChild(el(`<div style="margin-top:6px"></div>`)).appendChild(now);
-    body.appendChild(themeRow);
+    const showNow = () => {
+      const i = this.ctx.lookInfo();
+      now.textContent = `Now: ${LOOKS[i.look]}${i.dark ? ", night colours" : ""} (${i.why})`;
+    };
+    const lookRow = row("Look", "Auto picks it for you: Fossil when 4WD or the diff lock is on, Night Hunt when the light bars are on or after sunset, Predator the rest of the time. Off-road wins at night, with darker colours. Or lock one here.",
+      seg([["auto", "Auto"], ["std", "Predator"], ["offroad", "Fossil"], ["night", "Night Hunt"]], s.get("look") || "auto", (v) => { s.set("look", v); this.ctx.looks.refresh(); this.ctx.applyTheme(); showNow(); }));
+    lookRow.querySelector(".desc").appendChild(el(`<div style="margin-top:6px"></div>`)).appendChild(now);
+    body.appendChild(lookRow);
     const reg = el(`<select class="big">${Object.entries(REGIONS).map(([k, r]) => `<option value="${k}" ${k === s.get("themeRegion") ? "selected" : ""}>${r.name}</option>`).join("")}</select>`);
-    reg.onchange = () => { s.set("themeRegion", reg.value); this.ctx.applyTheme(); showNow(); };
-    body.appendChild(row("Area for Auto", "Only used when there's no GPS fix. Just a rough area, no exact spot is saved.", reg));
+    reg.onchange = () => { s.set("themeRegion", reg.value); this.ctx.looks.refresh(); this.ctx.applyTheme(); showNow(); };
+    body.appendChild(row("Area for sunset", "For when it gets dark in Auto. Only used when there's no GPS fix. Just a rough area, no exact spot is saved.", reg));
     showNow();
+    body.appendChild(row("Battery on the drive screen", "Which one shows big. The other shows small underneath. You can also tap the battery to swap.", seg([["pct", "Percent"], ["km", "Range (km)"]], s.get("batteryShow") || "pct", (v) => s.set("batteryShow", v))));
     body.appendChild(row("Speed units", "", seg([["kmh", "km/h"], ["mph", "mph"]], s.get("units"), (v) => s.set("units", v))));
     body.appendChild(row("Power bar scale", "Full scale of the power bar on the drive screen.", stepper(s.get("powerMaxKw"), { step: 1, min: 5, max: 30, fmt: (v) => `${v} kW`, onChange: (v) => s.set("powerMaxKw", v) })));
     body.appendChild(row("Battery pack size", "Usable energy in the traction pack, for the range estimate. 72 V x 105 Ah is about 7.5 kWh.", stepper(s.get("packKwh"), { step: 0.5, min: 1, max: 40, fmt: (v) => `${v.toFixed(1)} kWh`, onChange: (v) => s.set("packKwh", v) })));
@@ -100,6 +107,13 @@ export class SettingsScreen {
     deg("tilt.rollBad", "Side slope alarm", "Rollover risk.");
     deg("tilt.pitchWarn", "Up/down warning", "");
     deg("tilt.pitchBad", "Up/down alarm", "");
+  }
+
+  // ---------- Features: what's wired up yet ----------
+  sec_features(body) {
+    const s = this.ctx.settings;
+    this.title(body, "Features", "Anything not wired up on the Teryx yet shows greyed out with a SOON tag. Switch it on here once it's fitted.");
+    FEATURES.forEach((f) => body.appendChild(row(f.name, f.desc, toggle(featureOn(s, f.id), (v) => s.set(`features.${f.id}`, v)))));
   }
 
   // ---------- Audio and media ----------

@@ -8,6 +8,7 @@ import { REJECTS } from "./text.js";
 import { Alerts } from "./alerts.js";
 import { Sound } from "./sound.js";
 import { autoTheme } from "./theme.js";
+import { LookPicker, LOOKS } from "./look.js";
 import { TripData } from "./tripdata.js";
 import { fitToScreen } from "./fit.js";
 import { keyboardOpen } from "./ui/keyboard.js";
@@ -22,6 +23,8 @@ import { SettingsScreen } from "./screens/settings.js";
 import { MediaScreen } from "./screens/media.js";
 import { MediaHub } from "./media/hub.js";
 import { demoPlayer } from "./ui/demoplayer.js";
+import { featureOn, featureName } from "./features.js";
+import { volumeControl } from "./ui/volume.js";
 import { WinchHeat } from "./winchheat.js";
 import { ShiftWatch } from "./ui/shift.js";
 
@@ -47,11 +50,15 @@ const ctx = {
     const prev = document.body.classList.contains("theme-day") ? "day" : "night";
     return autoTheme(store, settings, new Date(), prev);
   },
+  // The look (Predator, Fossil or Night Hunt) follows 4WD, lights and the sun. See look.js.
+  lookInfo() { return ctx.looks.pick(new Date()); },
   applyTheme() {
-    let t = settings.get("theme");
-    if (t === "auto") t = this.themeInfo().theme;
-    const cls = `theme-${t}`;
-    if (document.body.className !== cls) document.body.className = cls;
+    const { look, dark } = ctx.looks.pick(new Date());
+    const cls = `look-${look} theme-${dark ? "night" : "day"}`;
+    if (document.body.className !== cls) {
+      document.body.className = cls;
+      document.getElementById("tb-look").textContent = LOOKS[look];
+    }
   },
   applySound() {
     Sound.enabled = settings.get("sound.enabled") !== false;
@@ -61,6 +68,7 @@ const ctx = {
   show(id) { show(id); },
 };
 
+ctx.looks = new LookPicker(store, settings);
 ctx.alerts = new Alerts(store, settings);
 ctx.winchHeat = new WinchHeat();
 ctx.shift = new ShiftWatch(ctx);   // safe 4WD / diff changes: spinner, wait, cancel, done
@@ -77,6 +85,7 @@ function buildNav() {
   screens.forEach((s) => {
     const b = el(`<button class="nav-btn" data-id="${s.id}">${icon(s.icon)}<span>${s.label}</span></button>`);
     b.onclick = () => show(s.id);
+    if (s.id !== "drive" && s.id !== "settings") b.appendChild(el(`<i class="soon-tag">SOON</i>`));
     nav.appendChild(b);
     const root = el(`<section class="screen" id="screen-${s.id}"></section>`);
     main.appendChild(root);
@@ -85,8 +94,17 @@ function buildNav() {
   });
 }
 
+// Grey out the nav buttons for features that aren't wired up yet (Settings > Features).
+function markFeatures() {
+  document.querySelectorAll(".nav-btn").forEach((b) => b.classList.toggle("soon", !featureOn(settings, b.dataset.id)));
+}
+
 function show(id) {
   const next = byId[id]; if (!next || next === ctx.current) return;
+  if (!featureOn(settings, id)) {
+    toast(`${featureName(id)} isn't wired up yet. Switch it on in Settings > Features once it's fitted.`);
+    return;
+  }
   if (ctx.current) { ctx.current.el.classList.remove("active"); ctx.current.hide && ctx.current.hide(); }
   ctx.current = next;
   next.el.classList.add("active");
@@ -228,9 +246,12 @@ async function main() {
   ctx.applySound();
   ctx.media.applySettings();
   ctx.applyTheme();
-  setInterval(() => ctx.applyTheme(), 30000);
+  setInterval(() => ctx.applyTheme(), 2000);
   buildNav();
+  markFeatures();
+  settings.subscribe((path) => { if (path.startsWith("features")) markFeatures(); });
   soundButton();
+  volumeControl(ctx, document.getElementById("tb-vol"));
   const player = demoPlayer();
   document.getElementById("app").appendChild(player.root);
   let first = "drive";
@@ -246,6 +267,7 @@ async function main() {
     if (firstState && (st.get("pico.online") || st.get("link.demo"))) { firstState = false; hideSplash(); }
     const wh = ctx.winchHeat.tick(st);
     st.s["dash.winch_heat"] = { pct: wh.pct, state: wh.state, restS: wh.restLeftS() };  // read by the alerts
+    ctx.applyTheme();
     ctx.shift.update(st);
     topbar(st); alertBanner(st); reverseCamera(st); player.update(st);
     // Only the screen on show is redrawn, to keep the Pi cool.

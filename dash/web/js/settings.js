@@ -2,6 +2,8 @@
 // Safety limits live on the control box and are edited through /api/pico-settings.
 // Saved on the Pi via /api/settings, with localStorage as a fallback (demo mode, no server).
 
+import { FEATURE_DEFAULTS } from "./features.js";
+
 export const LIGHTS = [
   { id: "light.front_1", name: "Bar 1", where: "Front far left", dimmable: true },
   { id: "light.front_2", name: "Bar 2", where: "Front inner left", dimmable: true },
@@ -12,7 +14,9 @@ export const LIGHTS = [
 
 export const DEFAULTS = {
   units: "kmh",            // kmh | mph
-  theme: "auto",           // night | day | auto (by the sun: GPS position, else themeRegion)
+  batteryShow: "pct",      // drive screen battery: pct (78% big, km small) or km (46 km big, % small). Tap it to swap
+  look: "auto",            // auto | std (Predator) | offroad (Fossil) | night (Night Hunt). See look.js
+  theme: "auto",           // old day/night setting, no longer used (kept so old settings files load)
   themeRegion: "wellington", // rough area for Auto when there's no GPS fix (see theme.js REGIONS)
   packKwh: 7.5,            // traction pack size for the range estimate (72 V x 105 Ah, TBC)
   sound: { enabled: true, volume: 0.7, clicks: true },
@@ -35,6 +39,7 @@ export const DEFAULTS = {
     guideOffset: 0,        // nudge guide lines left/right (px)
     autoOnReverse: true,
   },
+  features: { ...FEATURE_DEFAULTS },   // what's wired up yet; the rest shows greyed out (see features.js)
   updates: { channel: "stable", auto_check: true },
   media: {
     volume: 0.6,           // music level (alerts have their own, under sound.volume)
