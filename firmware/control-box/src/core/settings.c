@@ -28,6 +28,14 @@ static const range_t k_ranges[SET_COUNT] = {
     [SET_TRAY_FULL_TRAVEL_MS]  = {18000, 1000, 60000},
     [SET_LOW_12V_MV]           = {11500, 9000, 13500},
     [SET_WINCH_TIMED_MAX_S]    = {30, 1, 120},
+    [SET_BRAKE_REGEN_ON]       = {0, 0, 1},
+    [SET_BRAKE_REGEN_PCT]      = {50, 0, 100},
+    [SET_BRAKE_REGEN_START]    = {5, 0, 50},
+    [SET_BRAKE_REGEN_FULL]     = {30, 5, 100},
+    [SET_BRAKE_REGEN_FADE_KMH] = {5, 0, 20},
+    [SET_BRAKE_REGEN_2WD_PCT]  = {60, 0, 100},
+    [SET_BRAKE_PEDAL_MIN]      = {2000, 0, 32767},
+    [SET_BRAKE_PEDAL_MAX]      = {22000, 0, 32767},
 };
 
 void settings_defaults(settings_t *s) {

@@ -20,6 +20,13 @@ PACK_AH = 105.0
 PACK_R_OHM = 0.06
 DCDC_LOAD_W = 120.0          # lights, dash, Pi etc on the 12 V side
 AMBIENT_C = 18.0
+# Brake pedal regen (docs/brake-regen.md). Guesses until the Shinegle's real regen is measured.
+PEDAL_REGEN_MAX_W = 4_000.0      # matches the dash's regenMaxKw default
+PEDAL_REGEN_MAX_N = 2_600.0      # same as the normal drive force cap
+# The sim's pedal sensor: raw ADS1115 counts at pedal up / pedal on the floor.
+# Match the control box's default calibration (settings 28/29).
+PEDAL_RAW_UP = 2000
+PEDAL_RAW_DOWN = 22000
 
 
 def ocv(soc: float) -> float:
@@ -54,6 +61,7 @@ class Vehicle:
     power_w: float = 0.0
     torque_nm: float = 0.0
     forced_faults: set = field(default_factory=set)   # injected by scenarios / sim page
+    regen_request: float = 0.0     # 0..1 brake pedal regen asked for by the control box
     inp: DriverInput = field(default_factory=DriverInput)
 
     # ----------------------------------------------------------- derived
@@ -124,6 +132,10 @@ class Vehicle:
         f_regen = 0.0
         if direction and i.throttle == 0 and speed > 1.5:
             f_regen = 400.0 * sign
+        # Brake pedal regen from the control box, on top of the hydraulic brakes (which are
+        # left exactly as they were: the pedal sensor only watches)
+        if direction and self.ready and self.regen_request > 0 and speed > 0.3:
+            f_regen += min(PEDAL_REGEN_MAX_N, PEDAL_REGEN_MAX_W / speed) * min(1.0, self.regen_request) * sign
 
         f_total = f_drive - f_roll - f_aero - f_grade - f_brake - f_regen
         a = f_total / MASS_KG
@@ -159,6 +171,10 @@ class Vehicle:
         self.motor_temp += (heat * 0.00002 - (self.motor_temp - self.ambient) * 0.004) * dt
         self.controller_temp += (heat * 0.000021 - (self.controller_temp - self.ambient) * 0.006) * dt
         self.battery_temp += (heat * 0.000003 - (self.battery_temp - self.ambient) * 0.002) * dt
+
+    def pedal_raw(self) -> int:
+        """What the brake pedal sensor would read (raw ADS1115 counts)."""
+        return round(PEDAL_RAW_UP + max(0.0, min(1.0, self.inp.brake)) * (PEDAL_RAW_DOWN - PEDAL_RAW_UP))
 
     # ----------------------------------------------------------- io-map values
     def mc(self) -> dict:

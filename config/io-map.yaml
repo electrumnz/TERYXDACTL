@@ -52,6 +52,8 @@ inputs:
     an.4wd_current:    {adc: ads1115, channel: 2, units: A}
     an.tray_current:   {adc: ads1115, channel: 3, units: A}
     an.diff_current:   {adc: pico, pin: GP28, units: A}
+    an.brake_pedal:    {adc: ads1115_2, channel: 0, units: "%", calibrate: true, label: "Brake pedal position (Hall, 0.5-4.5 V via divider)"}
+    an.brake_pressure: {adc: ads1115_2, channel: 1, units: bar, optional: true, label: "Brake line pressure (optional second sensor)"}
   motor_controller:    # Shinegle over CAN, IDs and scaling TBC after sniffing
     mc.speed:      {units: km/h, range: [0, 80]}
     mc.batt_v:     {units: V, range: [60, 84]}
@@ -99,4 +101,11 @@ safety:                      # defaults, adjustable in settings
   winch_dead_time_ms: 100
   winch_auto_disarm_s: 120
   winch_timed_max_s: 30
+  # Brake pedal regen (docs/brake-regen.md). Feature flag: off until the Shinegle is checked.
+  brake_regen_on: false
+  brake_regen_pct: 50          # strength, % of the Shinegle's max regen
+  brake_regen_start_pct: 5     # pedal travel where regen starts
+  brake_regen_full_pct: 30     # pedal travel where regen is full (set near where the pads bite)
+  brake_regen_fade_kmh: 5      # fades to nothing below this, hydraulics finish the stop
+  brake_regen_2wd_pct: 60      # share of regen allowed when not in 4WD (rear wheels only)
   shutdown_wait_s: 30

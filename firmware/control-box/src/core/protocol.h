@@ -19,6 +19,7 @@
 #define CAN_ID_PICO_ACT       0x712u  // Pico -> Pi, 10 Hz
 #define CAN_ID_PICO_POWER     0x713u  // Pico -> Pi, 1 Hz
 #define CAN_ID_PICO_SET_ACK   0x714u  // Pico -> Pi, reply to every 0x704
+#define CAN_ID_PICO_REGEN     0x715u  // Pico -> Pi, 10 Hz, brake pedal regen (not sent yet)
 #define CAN_ID_PI_FW_UPDATE   0x71Fu  // Pi -> Pico, on demand (magic 0x5445)
 #define CAN_ID_BENCH          0x7E0u  // Simulator -> host build only
 
@@ -87,6 +88,16 @@ enum {
     SET_TRAY_FULL_TRAVEL_MS = 19, // used for the tray % estimate
     SET_LOW_12V_MV = 20,
     SET_WINCH_TIMED_MAX_S = 21,   // longest timed pull the Pico will run
+    // Brake pedal regen (docs/brake-regen.md). Stored and acked only for now:
+    // the rules live in teryx/regen.py and get ported once the Shinegle is checked.
+    SET_BRAKE_REGEN_ON = 22,      // feature flag, 0 = off (default)
+    SET_BRAKE_REGEN_PCT = 23,     // strength, % of the Shinegle's max regen
+    SET_BRAKE_REGEN_START = 24,   // pedal travel % where regen starts
+    SET_BRAKE_REGEN_FULL = 25,    // pedal travel % where regen is full
+    SET_BRAKE_REGEN_FADE_KMH = 26,// fades to 0 below this speed
+    SET_BRAKE_REGEN_2WD_PCT = 27, // share allowed when not in 4WD
+    SET_BRAKE_PEDAL_MIN = 28,     // raw ADS1115 counts, pedal up
+    SET_BRAKE_PEDAL_MAX = 29,     // raw ADS1115 counts, pedal on the floor
     SET_COUNT,
     SET_CMD_SAVE = 0xF0,          // write current settings to flash
     SET_CMD_DEFAULTS = 0xF1,      // go back to defaults (not saved until 0xF0)
