@@ -55,6 +55,11 @@ export function evaluate(st, settings, prev = new Set(), now = Date.now(), linkL
   if (!asList(st.get("pico.faults")).includes("low_12v") && st.get("pico.online") !== false && under(was("a:12v"), v12, 11.8, 0.3))
     add("a:12v", "warn", `12V battery low (${v12.toFixed(1)} V). Check the DC-DC.`);
 
+  // Winch motor heat: the dash's own guess (winchheat.js), as there's no sensor on the winch.
+  const wh = st.get("dash.winch_heat");
+  if (wh && wh.state === "rest") add("a:winch_rest", "bad", `Winch motor needs a rest. Leave it about ${Math.ceil(wh.restS / 60)} min to cool.`);
+  else if (wh && wh.state === "warm") add("a:winch_warm", "warn", "Winch motor getting hot. Give it a rest soon.");
+
   const roll = st.get("pi.imu.roll"), pitch = st.get("pi.imu.pitch");
   const rw = settings.get("tilt.rollWarn"), rb = settings.get("tilt.rollBad");
   const pw = settings.get("tilt.pitchWarn"), pb = settings.get("tilt.pitchBad");

@@ -46,6 +46,7 @@ FALLBACK: list[Setting] = [
     Setting(18, "relay_active_low", "Relay board is active low", 1, "", None, 1, 0, 1, "Set by the relay board type. Only change on the bench.", editable=False),
     Setting(19, "tray_full_travel_ms", "Tray full travel time", 15000, "ms", None, 500, 1000, 60000, "How long the tray takes end to end, for the position estimate."),
     Setting(20, "low_12v_mv", "Low 12V warning", 11800, "V", 0.001, 100, 10000, 13000),
+    Setting(21, "winch_timed_max_s", "Longest timed winch pull", 30, "s", None, 5, 1, 120, "The control box stops a timed pull after this, whatever the dash asks for."),
     Setting(17, "hold_to_run_timeout_ms", "Hold-to-run stop after", 300, "ms", None, 50, 100, 2000, "Stop the tray or winch if the dash's repeats stop this long."),
 ]
 

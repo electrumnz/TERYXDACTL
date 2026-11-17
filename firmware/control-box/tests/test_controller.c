@@ -24,6 +24,7 @@ typedef struct {
     uint16_t speed_x10;
     uint8_t dir;
     int8_t hold_tray, hold_winch;
+    uint8_t timed_s;        // 0x703 byte 3, 0 = plain hold
     bool armed;
     bool holding;           // send 0x703
     can_frame_t sent[64];
@@ -61,8 +62,8 @@ static void run(uint32_t ms) {
             if (R.dash) { uint8_t d[2] = {(uint8_t)(R.t / 100), DASH_RUNNING}; frame(CAN_ID_PI_HEARTBEAT, 2, d); }
             if (R.shinegle) { uint8_t d[4] = {(uint8_t)R.speed_x10, (uint8_t)(R.speed_x10 >> 8), R.dir, 0}; frame(CAN_ID_MC_SPEED, 4, d); }
             if (R.holding) {
-                uint8_t d[3] = {(uint8_t)R.hold_tray, (uint8_t)R.hold_winch, R.armed ? HOLD_FLAG_WINCH_ARMED : 0};
-                frame(CAN_ID_PI_HOLD, 3, d);
+                uint8_t d[4] = {(uint8_t)R.hold_tray, (uint8_t)R.hold_winch, R.armed ? HOLD_FLAG_WINCH_ARMED : 0, R.timed_s};
+                frame(CAN_ID_PI_HOLD, R.timed_s ? 4 : 3, d);
             }
         }
         plant_step(&R.p, &R.out, TICK_MS / 1000.0);
@@ -398,6 +399,70 @@ static void test_winch_remote_has_priority(void) {
     CHECK(reject_reason() == REJ_REMOTE_IN_USE);
 }
 
+static bool winch_in(void) { return (R.out.relays & BIT(R_WINCH_IN)) != 0; }
+
+static void test_winch_timed_pull(void) {
+    rig_init();
+    run(300);
+    R.holding = true;
+    R.armed = true;
+    run(200);
+    CHECK(R.c.winch.armed);
+    // "Pull for 5 s": the dash keeps sending, the Pico stops it on time by itself
+    R.hold_winch = 1;
+    R.timed_s = 5;
+    run(4500);
+    CHECK(winch_in());
+    run(800);
+    CHECK(!winch_in());
+    run(3000);          // frames still coming: stays off, no restart
+    CHECK(!winch_in());
+    // Release and press again: a new pull
+    R.hold_winch = 0;
+    run(300);
+    R.hold_winch = 1;
+    run(1000);
+    CHECK(winch_in());
+    // STOP: the dash sends 0, it stops straight away
+    R.hold_winch = 0;
+    run(100);
+    CHECK(!winch_in());
+    // Too long a pull is capped at the Pico's own max (setting 21)
+    setting(SET_WINCH_TIMED_MAX_S, 3);
+    R.hold_winch = 1;
+    R.timed_s = 60;
+    run(2800);
+    CHECK(winch_in());
+    run(500);
+    CHECK(!winch_in());
+    // Dash dies mid pull: stops within the hold timeout, not at the end of the pull
+    R.hold_winch = 0;
+    run(300);
+    R.timed_s = 3;
+    R.hold_winch = 1;
+    run(1000);
+    CHECK(winch_in());
+    R.holding = false;
+    run(400);
+    CHECK(!winch_in());
+    // Handheld remote takes over mid pull: dash pull is over, needs a new press
+    R.holding = true;
+    R.hold_winch = 0;
+    run(300);
+    R.hold_winch = 1;
+    run(1000);
+    CHECK(winch_in());
+    R.p.force_mask = BIT(IN_WINCH_REMOTE);
+    R.p.force_bits = BIT(IN_WINCH_REMOTE);
+    run(300);
+    CHECK(!winch_in());
+    R.p.force_mask = 0;
+    R.p.force_bits = 0;
+    run(1000);
+    CHECK(!winch_in());
+    CHECK(R.max_relays_both_winch == 0);
+}
+
 static void test_lights_and_relays(void) {
     rig_init();
     run(300);
@@ -584,6 +649,7 @@ int main(void) {
         {"winch: arm, dead time, interlocks", test_winch_rules},
         {"winch: auto disarm", test_winch_auto_disarm},
         {"winch: handheld remote has priority", test_winch_remote_has_priority},
+        {"winch: timed pull stops by itself", test_winch_timed_pull},
         {"lights, reverse, trailer", test_lights_and_relays},
         {"settings and flash blob", test_settings},
         {"key-off shutdown", test_key_off_shutdown},

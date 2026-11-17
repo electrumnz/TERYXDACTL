@@ -54,6 +54,7 @@ class Gateway:
         }
         self.holds = {"act.tray": (0, 0.0), "winch": (0, 0.0)}
         self._hold_active = False
+        self.winch_timed_s = 0   # timed pull length for the current winch hold, 0 = plain hold
         self._dirty = {"lights": True, "drive": True}
         self._last_reject_count = None
         # Settings: what we want the Pico to use, and what it has acked
@@ -108,12 +109,18 @@ class Gateway:
             else:
                 raise ValueError(f"unknown request id {id}")
 
-    def hold(self, id: str, value: int) -> None:
-        """Hold-to-run. Call every ~100 ms while the button is down; 0 to release."""
+    def hold(self, id: str, value: int, secs: int = 0) -> None:
+        """Hold-to-run. Call every ~100 ms while the button is down; 0 to release.
+
+        For the winch, ``secs`` > 0 makes it a timed pull: the dash keeps calling this
+        for the whole pull and the control box stops the winch after ``secs`` by itself.
+        """
         if id not in self.holds:
             raise ValueError(f"unknown hold id {id}")
         value = max(-1, min(1, int(value)))
         with self._lock:
+            if id == "winch":
+                self.winch_timed_s = max(0, min(255, int(secs or 0))) if value else 0
             self.holds[id] = (value, time.monotonic())
             if value == 0:
                 self._send_hold(force=True)
@@ -153,7 +160,8 @@ class Gateway:
         if active or force or self._hold_active:
             # One last zero frame when released, then go quiet
             self.node.send(M.PI_HOLD, {"tray": tray, "winch": winch,
-                                       "winch_armed": int(self.req["winch.armed"])})
+                                       "winch_armed": int(self.req["winch.armed"]),
+                                       "winch_timed_s": self.winch_timed_s if winch else 0})
         self._hold_active = active
 
     def _send_periodic(self, now: float) -> None:

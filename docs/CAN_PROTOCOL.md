@@ -59,6 +59,7 @@ Hold-to-run, sent at 10 Hz only while a button is held. Pico stops if it goes qu
 | `tray` | byte 0 | i8 |  | -1 down, 0 stop, +1 up |
 | `winch` | byte 1 | i8 |  | -1 out, 0 stop, +1 in |
 | `winch_armed` | byte 2 bit 0 | u1 |  |  |
+| `winch_timed_s` | byte 3 | u8 | s | Timed pull length, 0 = plain hold. Pico stops it on time by itself, capped at setting 21 |
 | `counter` | byte 7 | u8 |  |  |
 
 ### 0x704 PI_SETTINGS
@@ -276,6 +277,7 @@ HOST/BENCH BUILD ONLY. Lets the simulator drive the Pico's wired inputs and inje
 | 18 (0x12) | `relay_active_low` | bool | 0 | 0-1 |
 | 19 (0x13) | `tray_full_travel_ms` | ms | 16000 | 1000-60000 |
 | 20 (0x14) | `low_12v_mv` | mV | 11000 | 9000-13000 |
+| 21 (0x15) | `winch_timed_max_s` | s | 30 | 1-120 |
 | 240 (0xF0) | save to flash | | | |
 | 241 (0xF1) | reset to defaults | | | |
 | 242 (0xF2) | clear latched faults | | | |

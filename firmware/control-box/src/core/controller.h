@@ -84,6 +84,10 @@ typedef struct {
     uint32_t last_activity_ms;
     int8_t prev_req;
     uint32_t interlock_ms;  // when an interlock last blocked a request
+    // Timed pull ("pull for 5 s"): the Pico times it, not just the dash.
+    bool timed_running;     // motor on as part of a timed pull
+    bool timed_done;        // pull finished or was cut short: needs a release first
+    uint32_t timed_start_ms;
 } winch_t;
 
 typedef struct {
@@ -117,6 +121,7 @@ typedef struct {
 
     // Hold-to-run
     int8_t hold_tray, hold_winch;
+    uint8_t hold_winch_timed_s;   // 0 = plain hold-to-run
     uint32_t last_hold_ms;
 
     fourwd_t fwd;

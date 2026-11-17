@@ -3,6 +3,8 @@
 //   server -> UI: {"type":"state","t":..,"state":{...}} at about 20 Hz
 //   UI -> server: {"type":"request","id":..,"value":..}
 //                 {"type":"hold","id":"act.tray"|"winch","value":1|-1|0} every 100 ms while held
+//                 winch only: add "secs":N for a timed pull. The control box stops it after N s
+//                 by itself, even if these keep coming.
 // The Pi only ASKS. The control box (Pico) decides and the state feed shows what really happened.
 
 import { DemoVehicle } from "./demo.js";
@@ -74,9 +76,10 @@ export class Link {
   }
 
   /** Start a hold-to-run. Repeats every 100 ms until holdStop(). The server stops it after 300 ms of silence. */
-  holdStart(id, value) {
+  holdStart(id, value, secs = 0) {
     this.holdStop(id, false);
-    const tick = () => this.send({ type: "hold", id, value });
+    const msg = secs ? { type: "hold", id, value, secs } : { type: "hold", id, value };
+    const tick = () => this.send(msg);
     tick();
     const timer = setInterval(tick, 100);
     this.holds.set(id, { value, timer });

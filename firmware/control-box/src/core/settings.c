@@ -27,6 +27,7 @@ static const range_t k_ranges[SET_COUNT] = {
     [SET_RELAY_ACTIVE_LOW]     = {1, 0, 1},
     [SET_TRAY_FULL_TRAVEL_MS]  = {18000, 1000, 60000},
     [SET_LOW_12V_MV]           = {11500, 9000, 13500},
+    [SET_WINCH_TIMED_MAX_S]    = {30, 1, 120},
 };
 
 void settings_defaults(settings_t *s) {

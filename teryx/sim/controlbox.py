@@ -91,6 +91,9 @@ class ControlBox:
     winch_dir: int = 0
     winch_idle: float = 0.0
     winch_dead_until: float = 0.0
+    winch_timed_s: int = 0             # 0x703 byte 3: timed pull length, 0 = plain hold
+    winch_timed_start: float | None = None
+    winch_timed_done: bool = False
     # requests
     lights_req: dict = field(default_factory=lambda: {
         "front_1": 0, "front_2": 0, "front_3": 0, "front_4": 0, "interior": 0,
@@ -284,6 +287,11 @@ class ControlBox:
                 winch = 0
                 if new_winch:
                     self.reject(reason)
+        timed = int(v.get("winch_timed_s", 0) or 0)
+        if new_winch or not timed:
+            self.winch_timed_start = None
+            self.winch_timed_done = False
+        self.winch_timed_s = timed
         self.hold_tray, self.hold_winch = tray, winch
 
     # ------------------------------------------------------------ tick
@@ -295,6 +303,7 @@ class ControlBox:
             # Frames stopped: treat it as a release, so the next press counts as new
             self.hold_tray = self.hold_winch = 0
             self._last_hold_vals = (0, 0)
+            self.winch_timed_s = 0
         if not dash_ok:
             # Rule 1: stop everything that moves, disarm the winch
             self.fourwd.stop()
@@ -367,6 +376,9 @@ class ControlBox:
 
         # --- winch with dead time between directions
         want = self.hold_winch if self.winch_armed else 0
+        timed = self.winch_timed_s
+        if timed and self.winch_timed_done:
+            want = 0
         if want != self.winch_dir:
             if self.winch_dir != 0 and want != 0:
                 want = 0  # never straight from in to out
@@ -375,6 +387,17 @@ class ControlBox:
             if want != 0 and now < self.winch_dead_until:
                 want = 0
             self.winch_dir = want
+        if timed and not self.winch_timed_done:
+            # Timed pull: the control box times it itself, capped at its own max
+            if self.winch_dir and self.winch_timed_start is None:
+                self.winch_timed_start = now
+            elif not self.winch_dir and self.winch_timed_start is not None:
+                self.winch_timed_done = True   # cut short: needs a new press
+            secs = min(timed, self.s("winch_timed_max_s"))
+            if self.winch_timed_start is not None and now - self.winch_timed_start >= secs:
+                self.winch_timed_done = True
+                self.winch_dir = 0
+                self.winch_dead_until = now + self.s("winch_dead_time_ms") / 1000
         if self.winch_armed:
             self.winch_idle = 0.0 if self.winch_dir else self.winch_idle + dt
             if self.winch_idle > self.s("winch_auto_disarm_s"):

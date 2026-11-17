@@ -116,7 +116,7 @@ def build_app(gateway: Gateway, sim=None, ui_dir: str | Path | None = None,
                     if kind == "request":
                         gateway.request(data["id"], data["value"])
                     elif kind == "hold":
-                        gateway.hold(data["id"], data["value"])
+                        gateway.hold(data["id"], data["value"], data.get("secs", 0))
                     elif kind == "setting":
                         ok = await asyncio.to_thread(gateway.set_setting, data["key"], data["value"])
                         await ws.send_str(_json({"type": "setting_ack", "key": data["key"], "ok": ok}))

@@ -38,8 +38,9 @@ class Bench:
             if self.dash_alive:
                 self.cb.on_frame("PI_HEARTBEAT", {"dash_state": 1}, self.t)
                 if self.hold:
-                    tray, winch, armed = self.hold
-                    self.cb.on_frame("PI_HOLD", {"tray": tray, "winch": winch, "winch_armed": armed}, self.t)
+                    tray, winch, armed, *timed = self.hold
+                    self.cb.on_frame("PI_HOLD", {"tray": tray, "winch": winch, "winch_armed": armed,
+                                                 "winch_timed_s": timed[0] if timed else 0}, self.t)
             self.cb.step(dt, self.t)
 
     def drive_req(self, fourwd=0, diff=0):
@@ -181,6 +182,48 @@ def test_winch_needs_arming(b):
     b.hold = (0, 1, 1)
     b.run(0.5)
     assert b.cb.relays()["winch.in"] and not b.cb.relays()["winch.out"]
+
+
+def test_winch_timed_pull_stops_by_itself(b):
+    b.hold = (0, 0, 1)
+    b.run(0.2)
+    b.hold = (0, 1, 1, 5)          # "pull for 5 s", dash keeps sending
+    b.run(4.5)
+    assert b.cb.relays()["winch.in"]
+    b.run(0.8)
+    assert not b.cb.relays()["winch.in"]
+    b.run(3)                       # frames still coming: no restart
+    assert not b.cb.relays()["winch.in"]
+    b.hold = (0, 0, 1)             # let go, press again: new pull
+    b.run(0.3)
+    b.hold = (0, 1, 1, 5)
+    b.run(1)
+    assert b.cb.relays()["winch.in"]
+    b.hold = (0, 0, 1)             # STOP
+    b.run(0.1)
+    assert not b.cb.relays()["winch.in"]
+
+
+def test_winch_timed_pull_capped_by_control_box(b):
+    b.cb.on_frame("PI_SETTINGS", {"key": M.SETTING_KEYS["winch_timed_max_s"], "value": 3}, b.t)
+    b.hold = (0, 0, 1)
+    b.run(0.2)
+    b.hold = (0, 1, 1, 60)
+    b.run(2.8)
+    assert b.cb.relays()["winch.in"]
+    b.run(0.5)
+    assert not b.cb.relays()["winch.in"]
+
+
+def test_winch_timed_pull_stops_if_dash_dies(b):
+    b.hold = (0, 0, 1)
+    b.run(0.2)
+    b.hold = (0, 1, 1, 10)
+    b.run(1)
+    assert b.cb.relays()["winch.in"]
+    b.hold = None                  # dash crashes mid pull
+    b.run(0.5)
+    assert not b.cb.relays()["winch.in"]
 
 
 def test_winch_never_in_and_out_together(b):

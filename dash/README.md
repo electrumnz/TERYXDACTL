@@ -208,3 +208,19 @@ and the virtual Teryx running off the same feed.
 - Lockouts shown on screen (speed limits, stopped, armed) are only hints. The control box
   enforces the real rules with the limits under Settings > Safety limits.
 - Updates and Pi shutdown are refused while moving.
+
+## Look and feel: where it lives
+
+Every colour, size and font is a token in [`web/css/theme.css`](web/css/theme.css) (night is the
+default, `body.theme-day` overrides the colours). `dash.css` only uses those tokens, so a new
+look starts in `theme.css`. The Inter font is bundled in `web/fonts` (SIL Open Font Licence,
+see `Inter-OFL.txt`) because the Pi doesn't ship it and would fall back to a plainer font.
+
+To screenshot every screen in night and day at 1280x800:
+
+```
+node tools/dash-shots.mjs dash/docs/screens/all        # add --scale 2 for sharp shots
+```
+
+It starts the simulator on port 8099 itself, puts it in a sensible state for each screen and
+pauses it so the numbers hold still.

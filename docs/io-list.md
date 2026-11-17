@@ -155,7 +155,7 @@ shifter. **TBC** on the bench.
 | `in.reverse` | Reverse selected | B2 | Use the Shinegle direction switch wire. Also expected on CAN, **TBC** |
 | `in.tray_down` | Tray down limit | B3 | Normally closed, so a broken wire reads as "at limit" |
 | `in.tray_up` | Tray up limit | B4 | Normally closed |
-| `in.winch_remote` | Winch remote in use | B5 | Optional, so the dash can show it |
+| `in.winch_remote` | Winch being run by hand: handheld remote, or either hidden hand switch | B5 | All of them diode-OR'd into this one input. The dash shows "by hand", counts it towards winch motor heat, and the Pico won't let the dash drive the winch while it's on |
 | `in.park` | Parking brake pedal switch | B6 | The stock Teryx has one (it lights the red parking brake light in the meter). Tap that wire. Ground or 12V switching **TBC** |
 | `in.spare` | Spare | B7 | |
 
@@ -208,7 +208,7 @@ and programmer plugged in.
 | 0x700 | Pi → Pico | 10 Hz | Heartbeat: counter (u8), dash state (u8) |
 | 0x701 | Pi → Pico | on change + every 1 s | Lights: front 1–4, interior brightness (u8 ×5, 0–255), effect id (u8), rear on (bit), auto-rear (bit) |
 | 0x702 | Pi → Pico | on change + every 1 s | Drive: 4WD request (u8: 0=2WD, 1=4WD), diff target % (u8) |
-| 0x703 | Pi → Pico | 10 Hz while held | Hold-to-run: tray (i8: −1 down, 0 stop, +1 up), winch (i8: −1 out, 0 stop, +1 in), winch armed (bit). Pico stops the motion if no 0x703 for 300 ms |
+| 0x703 | Pi → Pico | 10 Hz while held | Hold-to-run: tray (i8: −1 down, 0 stop, +1 up), winch (i8: −1 out, 0 stop, +1 in), winch armed (bit), timed pull seconds (u8, 0 = plain hold). Pico stops the motion if no 0x703 for 300 ms, and stops a timed pull on time by itself |
 | 0x704 | Pi → Pico | on change | Settings: speed limits, timeouts (see section 7) |
 | 0x710 | Pico → Pi | 10 Hz | Status: b0 counter, b1–2 fault flags (u16, see below), b3 digital inputs B0–B7 as bits, b4 Pico state (0 boot, 1 ok, 2 degraded, 3 failsafe), b5 reject reason (low nibble) + reject counter (high nibble), b6 bit 0 winch armed |
 | 0x711 | Pico → Pi | 10 Hz | Outputs: b0 relay bits, b1–5 light levels (u8 ×5), b6 active light effect |
@@ -249,7 +249,14 @@ All limits are adjustable in settings, with these defaults:
    switches, on current over 10A, or after 20 s.
 6. **Winch:** must be armed on the dash, speed 0, hold-to-run. In and out can
    never be on together (100 ms dead time). Auto-disarm after 2 min idle.
-   The XBull handheld remote stays wired in parallel as a backup.
+   The XBull handheld remote stays wired in parallel as a backup, and so do
+   two hidden hand switches (one at the winch, one in the cab, see below).
+   **Timed pull:** the dash can ask for a 3, 5 or 10 s pull in. The Pico
+   times it itself and stops it at the end even if the dash keeps asking,
+   never longer than its own limit (setting 21, default 30 s). The dash
+   still has to keep sending every 100 ms, so if the dash dies the winch
+   stops within 300 ms as usual. The dash also keeps a rough motor heat
+   guess and warns when the winch needs a rest (no sensor, see below).
 7. **Reverse:** rear pods and camera come on automatically in reverse.
 8. **Key-off:** Pico tells the Pi to shut down, waits up to 30 s, then drops
    `power.hold`.
@@ -285,3 +292,44 @@ Wiring detail: [`docs/wiring.md`](wiring.md).
 - [ ] 5V buck converter rating (needs 5A)
 - [ ] Relay board works off 3.3V logic?
 - [ ] Trailer indicators wanted? (Teryx has none stock; would need 2 more outputs)
+
+
+## Winch hand switches and motor heat
+
+**Hand switches (Sam, 2026-11-17).** Two hidden momentary (ON)-OFF-(ON)
+toggles: one near the winch, one in the cab. Spring return, so they can't
+be left on. They're wired like the XBull remote, straight to the solenoid
+box coil wires, so they work even if the dash or the Pico is down:
+
+- Each switch's "in" side feeds the solenoid "in" coil wire through its own
+  diode (3 A, e.g. 1N5408), same for "out". The diodes stop one source
+  back-feeding another (relay 4/5, remote, the other switch).
+- Tap each switch's in and out sides, before those diodes, through small
+  diodes (1N4148 is fine) onto opto input 6, so `in.winch_remote` goes high
+  when any hand control is pressed. See [`wiring.md`](wiring.md).
+- Fuse the switch feed at 3 A, like the relay coil feeds.
+- The winch isolator (relay 6) is only on while the winch is armed on the
+  dash. Whether the remote and hand switches should bypass the isolator (so
+  they work with the dash dead) is still a bench decision, same as the
+  existing "winch remote vs isolator wiring" check. If they need to work
+  with the dash down, give the isolator coil a second feed from a hidden
+  key switch.
+
+**Motor heat.** There's no current or temperature sensor on the winch (a
+500 A hall sensor on the motor cable could be added later). The dash guesses
+heat from run time instead (`dash/web/js/winchheat.js`): about 60 s of hard
+pulling in fills it, paying out counts about a third as much, hand pulls
+count as pulling in, and it cools from full in about 10 minutes. Warns at
+70%, says rest at 100% and blocks a new timed pull until it's back under
+40%. Hold-to-run still works when it's hot, because sometimes you have to
+finish the pull. Where the numbers come from:
+
+- Zeak 5500 lb ATV winch manual: duty cycle is time running within 15
+  minutes; at 5% and full load, rest 14 min 15 s after every 45 s of running
+  ([manual, p.12](https://www.manualslib.com/manual/2833574/Zeak-5500-Lb.html?page=12)).
+- Superwinch (via etrailer): about 5 min at full pull then 30 min rest;
+  lighter pulls run longer and cool faster; if the motor's too hot to keep
+  your hand on, stop
+  ([etrailer Q&A](https://www.etrailer.com/question-261309.html)).
+- The XBull 5000 manual wasn't reachable online, so check its duty cycle
+  when the winch is in hand and adjust `HEAT` in `winchheat.js` to suit.

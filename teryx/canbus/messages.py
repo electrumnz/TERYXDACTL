@@ -129,6 +129,9 @@ PI_HOLD = Message(
         S("tray", 0, 8, signed=True, comment="-1 down, 0 stop, +1 up"),
         S("winch", 8, 8, signed=True, comment="-1 out, 0 stop, +1 in"),
         S("winch_armed", 16, 1),
+        S("winch_timed_s", 24, 8, unit="s",
+          comment="Timed pull length, 0 = plain hold. Pico stops it on time by itself, "
+                  "capped at setting 21"),
         S("counter", 56, 8),
     ),
 )
@@ -254,6 +257,7 @@ SETTINGS: dict[int, tuple[str, str, int, int, int]] = {
     18: ("relay_active_low", "bool", 0, 0, 1),
     19: ("tray_full_travel_ms", "ms", 16000, 1000, 60000),
     20: ("low_12v_mv", "mV", 11000, 9000, 13000),
+    21: ("winch_timed_max_s", "s", 30, 1, 120),
 }
 SETTING_SAVE = 0xF0
 SETTING_RESET = 0xF1
