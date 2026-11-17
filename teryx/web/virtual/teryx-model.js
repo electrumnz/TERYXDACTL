@@ -301,9 +301,8 @@ export function buildTeryx() {
   // moulded roof
   BB.add(rbox(0.86, 0.035, 1.34, 0.12, 0.015), M.plastic, { p: [-0.17, 1.91, 0] });
   for (let i = -3; i <= 3; i++) BB.add(new THREE.BoxGeometry(0.7, 0.012, 0.03), M.plastic, { p: [-0.17, 1.93, i * 0.16] });
-  // light bar bracket on the front roof bar
-  rod(B, [0.14, 1.94, -0.66], [0.14, 1.94, 0.66], 0.012, M.frame);
-  for (const s of [-1, 1]) rod(B, [0.1, 1.88, s * 0.6], [0.14, 1.94, s * 0.6], 0.012, M.frame);
+  // brackets for the rear light bars, hanging off the rear roof bar
+  for (const s of [-1, 1]) for (const e of [-0.16, 0.16]) rod(B, [-0.55, 1.87, s * 0.3 + e], [-0.62, 1.84, s * 0.3 + e], 0.008, M.frame);
 
   // ---------------- rear fenders (body colour), rear panel, hitch, plug
   const rFender = fenderShape(-1.48, -0.62, 0.48,
@@ -513,7 +512,7 @@ export function buildTeryx() {
   const winchGlow = new THREE.PointLight(0xff7a1a, 0, 1.4); winchGlow.position.set(1.51, 0.65, 0); ute.add(winchGlow);
   const winch = { drum, cable, hook, glow: winchGlow, x: 1.52, y: 0.45 };
 
-  // ---------------- lights: 4 roof bars, interior bar, 2 rear pods
+  // ---------------- lights: 4 bars in the front grille, interior bar, 2 rear bars on the cage
   let fadeTex = null;
   function beamFade() {          // beams fade out away from the lamp
     if (fadeTex) return fadeTex;
@@ -523,23 +522,28 @@ export function buildTeryx() {
     g.fillStyle = gr; g.fillRect(0, 0, 4, 128);
     return (fadeTex = new THREE.CanvasTexture(c));
   }
-  function makeLight(x, y, z, w, dir, color = 0xfff2d6, angle = 0.5, dist = 40, pod = false) {
+  // style: "bar" (with mounting feet; hang puts them on top), "slim" (single-row bar in the grille), "pod"
+  function makeLight(x, y, z, w, dir, color = 0xfff2d6, angle = 0.5, dist = 40, style = "bar", hang = false) {
+    const pod = style === "pod", slim = style === "slim";
     const mat = new THREE.MeshStandardMaterial({ color: 0x222222, emissive: color, emissiveIntensity: 0 });
     const g = new THREE.Group(); g.position.set(x, y, z); ute.add(g);
     const lb = new Batch();
     if (pod) {
       lb.add(rbox(0.06, 0.1, 0.1, 0.02, 0.01), M.plastic);
       lb.add(new THREE.BoxGeometry(0.03, 0.06, 0.05), M.plastic, { p: [0.04, -0.07, 0] });
+    } else if (slim) {
+      lb.add(rbox(0.03, 0.03, w, 0.008, 0.006), M.plastic);
     } else {
       lb.add(rbox(0.07, 0.075, w, 0.015, 0.008), M.plastic);
       for (let i = 0; i < Math.round(w / 0.02); i++) lb.add(new THREE.BoxGeometry(0.05, 0.006, 0.004), M.plasticGrey, { p: [-0.01, 0.04, -w / 2 + 0.01 + i * 0.02] });  // fins
-      lb.add(new THREE.BoxGeometry(0.02, 0.03, 0.02), M.frame, { p: [0, -0.05, -w / 2 + 0.03] });
-      lb.add(new THREE.BoxGeometry(0.02, 0.03, 0.02), M.frame, { p: [0, -0.05, w / 2 - 0.03] });
+      const fy = hang ? 0.05 : -0.05;
+      lb.add(new THREE.BoxGeometry(0.02, 0.03, 0.02), M.frame, { p: [0, fy, -w / 2 + 0.03] });
+      lb.add(new THREE.BoxGeometry(0.02, 0.03, 0.02), M.frame, { p: [0, fy, w / 2 - 0.03] });
     }
     lb.build(g, { shadow: false });
-    const lens = new THREE.Mesh(new THREE.PlaneGeometry(pod ? 0.08 : w - 0.02, pod ? 0.08 : 0.05), mat);
+    const lens = new THREE.Mesh(new THREE.PlaneGeometry(pod ? 0.08 : w - 0.02, pod ? 0.08 : slim ? 0.018 : 0.05), mat);
     const d = V(...dir).normalize();
-    lens.lookAt(d); lens.position.copy(d).multiplyScalar(pod ? 0.032 : 0.037);
+    lens.lookAt(d); lens.position.copy(d).multiplyScalar(pod ? 0.032 : slim ? 0.017 : 0.037);
     g.add(lens);
     const spot = new THREE.SpotLight(color, 0, dist, angle, 0.6, 1);
     spot.position.set(x, y, z);
@@ -555,11 +559,13 @@ export function buildTeryx() {
     ute.add(beam);
     return { mat, spot, mesh: g, beamMat };
   }
-  const FRONT_Z = [-0.47, -0.157, 0.157, 0.47];
-  const lightBars = FRONT_Z.map(z => makeLight(0.15, 1.99, z, 0.3, [10, -2.2, z * 4], 0xfff2d6, 0.32, 45));
+  // Sam's Teryx: four slim bars stacked in the gaps of the front grille, front_1 at the top
+  const FRONT_Y = [0.835, 0.785, 0.735, 0.685];
+  const lightBars = FRONT_Y.map(y => makeLight(1.345, y, 0, 0.56, [10, -0.3, 0], 0xfff2d6, 0.4, 45, "slim"));
   const interior = makeLight(-0.15, 1.85, 0, 0.18, [0, -1, 0], 0xffe1b0, 1.1, 4);
   interior.mesh.rotation.z = Math.PI / 2;
-  const rearPods = [-0.55, 0.55].map(z => makeLight(-0.6, 2.01, z, 0.1, [-10, -3, z * 3], 0xffffff, 0.6, 18, true));
+  // rear light bars hang off the rear roof bar of the cage, facing back ("rear pods" on the dash)
+  const rearPods = [-0.3, 0.3].map(z => makeLight(-0.63, 1.8, z, 0.4, [-10, -3, z * 2], 0xffffff, 0.6, 18, "bar", true));
   // stock headlights get a real beam at night
   const headSpot = new THREE.SpotLight(0xfff2d6, 0, 30, 0.45, 0.5, 1);
   headSpot.position.set(1.35, 0.9, 0); headSpot.target.position.set(10, -0.6, 0);

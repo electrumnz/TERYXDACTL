@@ -334,9 +334,11 @@ for s in (-1, 1):
 # up high in the outer corners of the bonnet, under the guard tops.
 add_box("fascia", 0.16, 0.36, 0.86, "PlasticGrey", (1.25, 0.53, 0), r=0.04)
 add_box("fasciaHole", 0.03, 0.15, 0.4, "Plastic", (1.322, 0.5, 0), r=0.02)
-add_box("grilleBlock", 0.12, 0.15, 0.68, "Plastic", (1.27, 0.76, 0), r=0.03)
+# Sam's four front light bars sit in the four gaps of this grille, one above the
+# other (drawn in teryx-model.js so they can light up)
+add_box("grilleBlock", 0.12, 0.21, 0.68, "Plastic", (1.27, 0.76, 0), r=0.03)
 for i in range(3):
-    add_box(f"slat{i}", 0.03, 0.016, 0.64, "PlasticGrey", (1.325, 0.72 + i * 0.04, 0), r=0.006, seg=1)
+    add_box(f"slat{i}", 0.03, 0.014, 0.64, "PlasticGrey", (1.325, 0.71 + i * 0.05, 0), r=0.005, seg=1)
 add_box("chinSpoiler", 0.12, 0.06, 0.7, "Plastic", (1.3, 0.37, 0), rot=(0, 0, 0.3), r=0.02)
 for s in (-1, 1):
     add_box(f"vent{s}", 0.2, 0.018, 0.12, "Plastic", (0.9, 1.047, s * 0.24), rot=(0, 0, -0.2), r=0.008)
