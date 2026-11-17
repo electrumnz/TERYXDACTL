@@ -29,7 +29,13 @@ const nav = (id) => page.click(`.nav-btn[data-id="${id}"]`);
 
 await sim({ scenario: "idle" });
 await page.goto(`${BASE}/?screen=drive`);
-await page.evaluate(() => { teryx.settings.set("theme", "night"); teryx.applyTheme(); });
+// Winch, tray and media start greyed out (not wired up yet). Switch everything on to test it.
+await page.evaluate(() => teryx.settings.set("features.winch", false));
+check(await page.$eval('.nav-btn[data-id="winch"]', (e) => e.classList.contains("soon")), "winch shows greyed out until it's switched on");
+await page.click('.nav-btn[data-id="winch"]');
+check(!(await page.$eval("#screen-winch", (e) => e.classList.contains("active"))), "a greyed out feature doesn't open");
+await page.evaluate(() => { ["winch", "tray", "media"].forEach((k) => teryx.settings.set(`features.${k}`, true)); teryx.settings.set("look", "auto"); teryx.applyTheme(); });
+check(!(await page.$eval('.nav-btn[data-id="winch"]', (e) => e.classList.contains("soon"))), "switched on in settings, the winch isn't greyed any more");
 await sleep(1500);
 check(await page.$eval("#tb-link", (e) => e.classList.contains("ok")), "control box shows online");
 check(!(await page.$("#splash")), "boot splash has gone once the control box answers");

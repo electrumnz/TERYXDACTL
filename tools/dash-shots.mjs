@@ -1,10 +1,11 @@
-// Screenshot every dash screen in night and day, at the real screen size (1280x800).
+// Screenshot every dash screen in each look (Predator, Fossil, Night Hunt), at the real screen size (1280x800).
 // Used to refresh dash/docs/screens and to compare looks side by side.
 //
 //   node tools/dash-shots.mjs [out dir] [--scale 2]
 //
 // Starts the simulator itself (port 8099), drives it into a believable state for each
-// screen, pauses it so the numbers hold still, and saves <screen>-<theme>.png.
+// screen, pauses it so the numbers hold still, and saves <screen>-<look>.png
+// (look = std, offroad or night; LOOKS=std node ... for just one).
 // Needs Python deps (pip install -e . -e dash/server) and Playwright.
 import { spawn } from "child_process";
 import { createRequire } from "module";
@@ -29,7 +30,9 @@ process.on("exit", stop);
 for (let i = 0; i < 100; i++) { try { if ((await fetch(`${BASE}/api/state`)).ok) break; } catch {} await sleep(200); }
 
 // Each shot: which screen, what the sim should be doing first, and how long to let it run.
-const SHOTS = [
+const LOOKS = (process.env.LOOKS || "std,offroad,night").split(",");
+const ONLY = process.env.ONLY ? process.env.ONLY.split(",") : null;
+const SHOTS_ALL = [
   { name: "drive", screen: "drive", sim: { scenario: "trail" }, run: 9000 },
   { name: "trips", screen: "trips" },
   { name: "4wd", screen: "drivetrain", sim: { scenario: "idle" }, run: 1500 },
@@ -40,6 +43,7 @@ const SHOTS = [
   { name: "media", screen: "media", sim: { scenario: "idle" }, run: 1500 },
   { name: "settings", screen: "settings" },
 ];
+const SHOTS = ONLY ? SHOTS_ALL.filter((s) => ONLY.includes(s.name)) : SHOTS_ALL;
 
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1280, height: 800 }, deviceScaleFactor: scale });
@@ -47,17 +51,24 @@ const errors = [];
 page.on("pageerror", (e) => errors.push(e.message));
 await page.goto(`${BASE}/?screen=drive`);
 await sleep(2500);
+// Start from the real defaults: winch, tray and media greyed out (not wired up yet).
+await page.evaluate(() => { const d = { trips: true, drivetrain: true, lights: true, winch: false, tray: false, camera: true, media: false }; Object.entries(d).forEach(([k, v]) => teryx.settings.set(`features.${k}`, v)); });
 
 for (const s of SHOTS) {
   if (s.sim) { await sim({ paused: false }); await sim(s.sim); await sleep(s.run || 1000); await sim({ paused: true }); }
   await page.evaluate((id) => teryx.show(id), s.screen);
-  for (const theme of ["night", "day"]) {
-    await page.evaluate((t) => { teryx.settings.set("theme", t); teryx.applyTheme(); }, theme);
-    await sleep(700);
-    await page.screenshot({ path: `${OUT}/${s.name}-${theme}.png` });
+  for (const look of LOOKS) {
+    await page.evaluate((l) => { teryx.settings.set("look", l); teryx.looks.refresh(); teryx.applyTheme(); }, look);
+    await sleep(1800);   // the looks cross-fade over 1.4 s
+    await page.screenshot({ path: `${OUT}/${s.name}-${look}.png` });
   }
   console.log(`saved ${s.name}`);
+  // The drive shot shows the real defaults (features not wired up yet are greyed out).
+  // Switch everything on for the rest, so every screen can be opened.
+  if (s.name === "drive") await page.evaluate(() => Object.keys(teryx.settings.get("features")).forEach((k) => teryx.settings.set(`features.${k}`, true)));
 }
+await page.evaluate(() => { teryx.settings.set("look", "auto"); ["winch", "tray", "media"].forEach((k) => teryx.settings.set(`features.${k}`, false)); });
+await sleep(600);   // let the settings save to the sim before closing
 await sim({ paused: false });
 await browser.close();
 stop();

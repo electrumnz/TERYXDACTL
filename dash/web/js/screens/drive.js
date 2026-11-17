@@ -3,6 +3,8 @@ import { el, $ } from "../ui/controls.js";
 import { vehicleDiagram } from "../ui/vehicle.js";
 import { sensorWidget } from "../ui/sensors.js";
 import { fmtKm } from "../tripdata.js";
+import { featureOn } from "../features.js";
+import { icon } from "../ui/icons.js";
 
 export function socFromVolts(v, cells) {
   // Rough lithium curve per cell. Only used if the Shinegle doesn't send a state of charge.
@@ -18,48 +20,72 @@ export function socFromVolts(v, cells) {
 
 export function tempClass(t, warn, bad) { return t >= bad ? "bad" : t >= warn ? "warn" : "ok"; }
 
+// Three claw gouges for the power meter, in a 300 x 64 box. They fill left to right.
+const GOUGES = [0, 1, 2].map((i) => {
+  const x = 14 + i * 96;
+  return `M${x} 60 C${x + 22} 46 ${x + 52} 22 ${x + 84} 3 C${x + 66} 24 ${x + 38} 48 ${x + 12} 63 Z`;
+}).join(" ");
+
 export class DriveScreen {
   constructor(ctx) { this.ctx = ctx; this.id = "drive"; this.label = "Drive"; this.icon = "drive"; }
 
   mount(root) {
     root.innerHTML = `
-      <div class="drive">
-        <div class="col">
+      <div class="drive2">
+        <div class="d-left">
+          <div class="panel d-speed">
+            <span class="lbl">SPEED</span>
+            <div class="spd"><span class="speed num" id="d-speed">0</span><span class="speed-unit" id="d-unit">km/h</span></div>
+            <div class="gear-row" id="d-gears"><span data-g="reverse" class="r">R</span><span data-g="neutral">N</span><span data-g="forward" class="d">D</span></div>
+          </div>
+          <div class="panel d-power">
+            <span class="lbl">POWER</span>
+            <svg class="claws" id="d-claws" viewBox="0 0 300 64" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="lava" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#b8260a"/><stop offset=".5" stop-color="#ff7a1a"/><stop offset="1" stop-color="#ffd27a"/></linearGradient>
+                <linearGradient id="cool" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#0f6b58"/><stop offset="1" stop-color="#7ff0cf"/></linearGradient>
+                <clipPath id="d-pclip"><rect id="d-prect" x="0" y="0" width="0" height="64"/></clipPath>
+              </defs>
+              <path class="gouge" d="${GOUGES}"/>
+              <path class="lava" d="${GOUGES}" clip-path="url(#d-pclip)"/>
+            </svg>
+            <div class="power-kw num" id="d-kw">0.0 kW</div>
+          </div>
+          <div class="panel d-batt" id="d-batt" role="button" aria-label="Battery: tap to swap % and km">
+            <span class="lbl">BATTERY</span>
+            <div class="fangs"><img class="dead" src="img/dino/teeth.webp" alt=""><img class="lit" src="img/dino/teeth.webp" alt=""></div>
+            <div class="bnum"><div class="bmain num" id="d-bmain">--</div><div class="bsub num" id="d-bsub">--</div></div>
+          </div>
+        </div>
+        <div class="d-hero">
+          <div class="art rex"><div class="breathe">
+            <img data-j="closed" src="img/dino/head-closed.webp" alt="">
+            <img data-j="snarl" src="img/dino/head-snarl.webp" alt="" style="opacity:0">
+            <img data-j="roar" src="img/dino/head-roar.webp" alt="" style="opacity:0">
+          </div></div>
+          <div class="art fossil"><img src="img/dino/fossil.webp" alt=""></div>
+          <div class="d-chips" id="d-chips"></div>
+        </div>
+        <div class="d-stats">
           <div class="panel">
             <h3>Battery</h3>
-            <div class="batt-big"><span class="big-val num" id="d-soc">--</span><span class="unit">%</span></div>
-            <div class="batt-bar"><div id="d-socbar"></div></div>
-            <div class="kv"><span class="k">Range</span><span class="v num" id="d-range">--</span></div>
             <div class="kv"><span class="k">Pack</span><span class="v num" id="d-v">-- V</span></div>
             <div class="kv"><span class="k">Current</span><span class="v num" id="d-a">-- A</span></div>
             <div class="kv"><span class="k">Pack temp</span><span class="v num" id="d-bt">--</span></div>
             <div class="kv"><span class="k">12V aux</span><span class="v num" id="d-12v">-- V</span></div>
+            <div class="kv" hidden><span class="k">Charge</span><span class="v num" id="d-soc">--</span><span id="d-range"></span></div>
           </div>
-          <div class="panel grow">
+          <div class="panel">
             <h3>Motor</h3>
             <div class="kv"><span class="k">Motor</span><span class="v num" id="d-mt">--</span></div>
             <div class="temp-bar"><div id="d-mtbar"></div></div>
             <div class="kv"><span class="k">Controller</span><span class="v num" id="d-ct">--</span></div>
             <div class="temp-bar"><div id="d-ctbar"></div></div>
-            <div class="kv"><span class="k">Throttle</span><span class="v num" id="d-thr">--</span></div>
-            <div class="kv"><span class="k">Mode</span><span class="v" id="d-mode">--</span></div>
+            <div class="kv"><span class="k">Throttle · Mode</span><span class="v num"><span id="d-thr">--</span> · <span id="d-mode">--</span></span></div>
             <div class="kv"><span class="k">Odometer</span><span class="v num" id="d-odo">--</span></div>
           </div>
-        </div>
-        <div class="centre">
-          <div class="speed num" id="d-speed">0</div>
-          <div class="speed-unit" id="d-unit">KM/H</div>
-          <div class="gear-row" id="d-gears"><span data-g="reverse" class="r">R</span><span data-g="neutral">N</span><span data-g="forward" class="d">D</span></div>
-          <div class="power-bar">
-            <div class="power-track"><div class="power-zero" id="d-zero"></div><div class="power-fill" id="d-pfill"></div></div>
-            <div class="power-labels"><span>REGEN</span><span>POWER</span></div>
-            <div class="power-kw" id="d-kw">0.0 kW</div>
-          </div>
-          <div class="row" style="margin-top:18px;gap:10px" id="d-chips"></div>
-        </div>
-        <div class="col">
           <div class="panel" id="d-veh"><h3>Drivetrain</h3></div>
-          <div class="panel grow" id="d-sens"><h3>Tilt and GPS</h3></div>
+          <div class="panel" id="d-sens"><h3>Tilt and GPS</h3></div>
         </div>
       </div>`;
     this.root = root;
@@ -68,6 +94,12 @@ export class DriveScreen {
     $(root, "#d-veh").appendChild(this.veh.root);
     this.sens = sensorWidget(this.ctx.settings);
     $(root, "#d-sens").appendChild(this.sens.root);
+    this.jaws = [...root.querySelectorAll(".rex img")];
+    $(root, "#d-batt").onclick = () => {
+      const set = this.ctx.settings;
+      set.set("batteryShow", set.get("batteryShow") === "km" ? "pct" : "km");
+      this.update(this.ctx.store);
+    };
   }
 
   update(st) {
@@ -77,28 +109,47 @@ export class DriveScreen {
     const spd = st.get("mc.speed", 0) * (mph ? 0.621371 : 1);
     const mcOn = st.get("mc.online", true) !== false;
     q("#d-speed").textContent = mcOn ? Math.round(spd) : "--";
-    q("#d-unit").textContent = mph ? "MPH" : "KM/H";
+    q("#d-unit").textContent = mph ? "mph" : "km/h";
 
     const dir = st.get("mc.direction", "neutral");
     r.querySelectorAll("#d-gears span").forEach((e) => e.classList.toggle("on", e.dataset.g === dir));
 
+    // Power: the claws fill with power, or turn teal and fill with regen.
     const v = st.get("mc.batt_v", 0), a = st.get("mc.batt_a", 0);
     const kw = st.get("mc.power_kw") ?? (v * a) / 1000;
     const pmax = set.get("powerMaxKw"), rmax = set.get("regenMaxKw");
-    const zero = (rmax / (pmax + rmax)) * 100;
-    q("#d-zero").style.left = `${zero}%`;
-    const fill = q("#d-pfill");
-    if (kw >= 0) { fill.style.left = `${zero}%`; fill.style.width = `${Math.min(kw / pmax, 1) * (100 - zero)}%`; fill.style.background = "var(--draw)"; }
-    else { const w = Math.min(-kw / rmax, 1) * zero; fill.style.left = `${zero - w}%`; fill.style.width = `${w}%`; fill.style.background = "var(--regen)"; }
+    const frac = kw >= 0 ? Math.min(kw / pmax, 1) : Math.min(-kw / rmax, 1);
+    q("#d-prect").setAttribute("width", (frac * 300).toFixed(1));
+    q("#d-claws").classList.toggle("regen", kw < -0.05);
     q("#d-kw").textContent = `${kw >= 0 ? "" : "−"}${Math.abs(kw).toFixed(1)} kW`;
-    q("#d-kw").className = `power-kw ${kw < -0.05 ? "ok" : ""}`;
+    q("#d-kw").className = `power-kw num ${kw < -0.05 ? "ok" : ""}`;
 
+    // The T. rex opens its jaw as you put the power down.
+    const p = kw > 0 ? Math.min(kw / pmax, 1) : 0;
+    const clamp = (x) => Math.max(0, Math.min(1, x));
+    const snarl = clamp((p - 0.2) / 0.25), roar = clamp((p - 0.6) / 0.25);
+    if (this.jaws[1]._o !== snarl) { this.jaws[1].style.opacity = snarl; this.jaws[1]._o = snarl; }
+    if (this.jaws[2]._o !== roar) { this.jaws[2].style.opacity = roar; this.jaws[2]._o = roar; }
+
+    // Battery: fangs lit to the charge level. % and km, tap to swap which is big.
     let soc = st.get("mc.soc");
     if (soc == null) soc = socFromVolts(v, set.get("cells"));
+    const tr = this.ctx.trips && this.ctx.trips.data;
+    const rk = tr && tr.range_km;
+    const pctTxt = mcOn ? `${Math.round(soc)}%` : "--%";
+    const kmTxt = rk == null || !mcOn ? "-- km" : `${tr.basis === "guess" ? "~" : ""}${fmtKm(rk, mph)}`;
+    const kmFirst = set.get("batteryShow") === "km";
+    const socCls = soc < 15 ? "bad" : soc < 30 ? "warn" : "";
+    const kmCls = rk != null && rk < 5 ? "bad" : rk != null && rk < 15 ? "warn" : "";
+    q("#d-bmain").textContent = kmFirst ? kmTxt : pctTxt;
+    q("#d-bsub").textContent = kmFirst ? pctTxt : kmTxt;
+    q("#d-bmain").className = `bmain num ${kmFirst ? kmCls : socCls}`;
+    q("#d-bsub").className = `bsub num ${kmFirst ? socCls : kmCls}`;
+    q("#d-batt").style.setProperty("--soc", `${Math.max(0, Math.min(100, soc))}%`);
+    q("#d-batt").classList.toggle("low", soc < 15);
     q("#d-soc").textContent = mcOn ? Math.round(soc) : "--";
-    const bar = q("#d-socbar");
-    bar.style.width = `${soc}%`;
-    bar.style.background = soc < 15 ? "var(--bad)" : soc < 30 ? "var(--warn)" : "var(--good)";
+    q("#d-range").textContent = kmTxt;
+
     q("#d-v").textContent = `${v.toFixed(1)} V`;
     q("#d-a").textContent = `${a.toFixed(0)} A`;
     const v12 = st.get("an.aux_12v", 0);
@@ -120,24 +171,42 @@ export class DriveScreen {
     q("#d-bt").textContent = bt == null ? "--" : `${Math.round(bt)}°C`;
     q("#d-bt").className = `v num ${bt == null ? "" : tempClass(bt, 45, 55)}`;
 
+    // What's on right now, as big shortcuts: tap one to jump to its screen.
+    const on = (id) => featureOn(set, id);
     const chips = [];
-    if (st.get("mc.ready") === false) chips.push(`<span class="tb-chip" style="color:var(--warn);border-color:var(--warn)">NOT READY</span>`);
-    if (st.get("mc.limp")) chips.push(`<span class="tb-chip" style="color:var(--bad);border-color:var(--bad)">LIMP MODE</span>`);
+    const chip = (screen, cls, ic, txt) => chips.push(`<button class="act-chip ${cls}" data-go="${screen || ""}">${ic ? icon(ic) : ""}<span>${txt}</span></button>`);
+    if (st.get("mc.ready") === false) chip("", "warnc", "warn", "Not ready");
+    if (st.get("mc.limp")) chip("", "alert", "warn", "Limp mode");
+    if (st.get("in.park")) chip("", "alert", "", "Handbrake");
+    if (st.get("in.brake")) chip("", "alert", "", "Brake");
     const fw = st.get("act.4wd", "2wd");
-    chips.push(`<span class="tb-chip ${fw === "4wd" ? "on" : fw.startsWith("to_") ? "busy" : ""}">${fw === "4wd" ? "4WD" : fw === "to_4wd" ? "→ 4WD" : fw === "to_2wd" ? "→ 2WD" : fw === "fault" ? "4WD FAULT" : "2WD"}</span>`);
+    if (fw !== "2wd") chip("drivetrain", fw === "4wd" ? "on" : fw === "fault" ? "alert" : "busy", "fourwd", fw === "4wd" ? "4WD" : fw === "to_4wd" ? "→ 4WD" : fw === "to_2wd" ? "→ 2WD" : "4WD fault");
     const d = Math.round(st.get("an.diff_pos", 0));
-    if (d > 2) chips.push(`<span class="tb-chip on">DIFF ${d}%</span>`);
-    if (st.get("light.rear")) chips.push(`<span class="tb-chip on">REAR LIGHTS</span>`);
-    if (st.get("winch.armed")) chips.push(`<span class="tb-chip" style="color:var(--bad);border-color:var(--bad)">WINCH ARMED</span>`);
-    if (st.get("in.park")) chips.push(`<span class="tb-chip" style="color:var(--bad);border-color:var(--bad)">HANDBRAKE</span>`);
-    if (st.get("in.brake")) chips.push(`<span class="tb-chip" style="color:var(--bad);border-color:var(--bad)">BRAKE</span>`);
+    if (d > 2) chip("drivetrain", "on", "lock", `Diff ${d}%`);
+    if (on("lights")) {
+      let bars = 0; for (let i = 1; i <= 4; i++) if (st.get(`light.front_${i}`, 0) > 0) bars++;
+      if (bars) chip("lights", "on", "lights", `${bars === 4 ? "All bars" : `${bars} bar${bars > 1 ? "s" : ""}`} on`);
+      if (st.get("light.interior", 0) > 0) chip("lights", "on", "lights", "Cab light");
+      if (st.get("light.rear")) chip("lights", "on", "lights", "Rear lights");
+    }
+    if (on("winch")) {
+      if (st.get("winch.in") || st.get("winch.out")) chip("winch", "alert", "winch", `Winch ${st.get("winch.in") ? "in" : "out"}`);
+      else if (st.get("winch.armed")) chip("winch", "alert", "winch", "Winch armed");
+    }
+    if (on("tray")) {
+      const tray = st.get("act.tray", "down");
+      if (tray !== "down") chip("tray", "on", "tray", tray === "up" ? "Tray up" : `Tray ${Math.round(st.get("act.tray_pct", 0))}%`);
+    }
+    if (on("media") && this.ctx.media) {
+      const np = this.ctx.media.nowPlaying();
+      if (np.title && np.playing) chip("media", "on", "music", np.title.replace(/</g, "&lt;").slice(0, 28));
+    }
     const html = chips.join("");
-    if (html !== this._chips) { q("#d-chips").innerHTML = html; this._chips = html; }
+    if (html !== this._chips) {
+      q("#d-chips").innerHTML = html; this._chips = html;
+      q("#d-chips").querySelectorAll("[data-go]").forEach((b) => { if (b.dataset.go) b.onclick = () => this.ctx.show(b.dataset.go); });
+    }
 
     this.sens.update(st);
-    const tr = this.ctx.trips && this.ctx.trips.data;
-    const rk = tr && tr.range_km;
-    q("#d-range").textContent = rk == null || !mcOn ? "--" : `${tr.basis === "guess" ? "about " : ""}${fmtKm(rk, mph)}`;
-    q("#d-range").className = `v num ${rk != null && rk < 5 ? "bad" : rk != null && rk < 15 ? "warn" : ""}`;
   }
 }

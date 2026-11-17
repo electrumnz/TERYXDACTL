@@ -1,69 +1,140 @@
 /* Teryx dash theme: every colour, size and font the dash uses lives here.
-   A new look = change this file (and the matching splash colours in index.html).
-   dash.css only uses var(--...) from here, never raw colours. */
+   dash.css and dino.css only use var(--...) from here, never raw colours.
+
+   Three looks (see js/look.js), set as a class on <body>:
+     .look-std       Predator    everyday driving: dark T. rex hide, lava orange
+     .look-offroad   Fossil      4WD or diff lock on: fossil in rock, stone plates, amber
+     .look-night     Night Hunt  light bars on or after dark: almost black, dim ember orange
+   plus .theme-night when it's dark out, which gives Fossil darker colours. */
 
 @font-face { font-family: "Inter"; font-weight: 400; font-display: block; src: url("../fonts/inter-latin-400-normal.woff2") format("woff2"); }
 @font-face { font-family: "Inter"; font-weight: 600; font-display: block; src: url("../fonts/inter-latin-600-normal.woff2") format("woff2"); }
 @font-face { font-family: "Inter"; font-weight: 700; font-display: block; src: url("../fonts/inter-latin-700-normal.woff2") format("woff2"); }
 @font-face { font-family: "Inter"; font-weight: 800; font-display: block; src: url("../fonts/inter-latin-800-normal.woff2") format("woff2"); }
 @font-face { font-family: "Inter"; font-weight: 900; font-display: block; src: url("../fonts/inter-latin-900-normal.woff2") format("woff2"); }
+@font-face { font-family: "Barlow Condensed"; font-weight: 600; font-display: block; src: url("../fonts/barlow-condensed-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "Barlow Condensed"; font-weight: 700; font-display: block; src: url("../fonts/barlow-condensed-latin-700-normal.woff2") format("woff2"); }
+@font-face { font-family: "Barlow Condensed"; font-weight: 700; font-style: italic; font-display: block; src: url("../fonts/barlow-condensed-latin-700-italic.woff2") format("woff2"); }
+@font-face { font-family: "Barlow Condensed"; font-weight: 800; font-style: italic; font-display: block; src: url("../fonts/barlow-condensed-latin-800-italic.woff2") format("woff2"); }
 
 :root {
-  /* night (default) */
-  --bg: #0b0d0e;
-  --panel: #15181a;
-  --panel-2: #1c2023;
-  --line: #2a3034;
-  --text: #eef1f2;
-  --muted: #8b959b;
-  --dim: #565f65;
-  --accent: #ffad1f;      /* amber: the "you can press this" colour */
-  --accent-ink: #1a1200;
-  --good: #36d67e;
-  --warn: #ffad1f;
-  --bad: #ff4b4b;
-  --info: #39c3ff;
-  --regen: #36d67e;
-  --draw: #39c3ff;
-  --on-bad: #ffffff;      /* text on a --bad fill */
-  --on-warn: #1a1200;
-  --on-info: #001522;
-  --bad-soft: rgba(255,75,75,.15);
-  --good-soft: rgba(54,214,126,.2);
-  --lamp-on: #fff6d6;     /* lit lamp in the vehicle drawing */
-  --tail-off: #3a1414;
-  --tail-on: #8a2222;
-  --scrim: rgba(0,0,0,.55);
+  /* ---- Predator (default) ---- */
+  --bg: #0c0a07;
+  --panel: #17130e;          /* solid plate colour, for things that can't be see-through */
+  --panel-2: #231c15;        /* raised parts: buttons, tracks */
+  --line: #3d3125;           /* plate edges and dividers */
+  --text: #f4eadb;           /* bone */
+  --muted: #b3a38d;
+  --dim: #6e604f;
+  --accent: #ff7a1a;         /* lava orange: "you can press this", and lit things */
+  --accent-2: #ffb347;       /* the hot centre of a glow */
+  --accent-ink: #1c0b00;
+  --good: #8bd65e;
+  --warn: #ffb020;
+  --bad: #ff3d2e;
+  --info: #52c7e0;
+  --regen: #3fd8a8;
+  --draw: #ff7a1a;
+  --on-bad: #ffffff;
+  --on-warn: #1c0f00;
+  --on-info: #001a20;
+  --bad-soft: rgba(255,61,46,.16);
+  --good-soft: rgba(139,214,94,.2);
+  --lamp-on: #fff1cc;
+  --tail-off: #3a1410;
+  --tail-on: #a8261c;
+  --scrim: rgba(0,0,0,.6);
   --shadow: 0 2px 0 rgba(0,0,0,.6);
-  --shadow-lg: 0 10px 30px rgba(0,0,0,.5);
+  --shadow-lg: 0 12px 34px rgba(0,0,0,.6);
 
-  /* shape and size (not themed by day/night) */
+  /* plates (panels) and keys (buttons) */
+  --plate: linear-gradient(170deg, rgba(34,28,21,.9), rgba(13,11,8,.93));
+  --plate-edge: linear-gradient(160deg, #5a4633, #2a2119 45%, #4a3826);
+  --key: linear-gradient(175deg, #2c241b, #191410);
+  --key-edge: #4a3b2c;
+  --key-on: linear-gradient(175deg, #ff9a3d, #f2600c);
+  --glow: 0 0 18px rgba(255,122,26,.55);
+  --bolt: #8a7258;
+  --art-dim: 1;              /* brightness of the T. rex art */
+  --hero-glow: rgba(255,110,20,.35);
+
+  /* shape and size (same in every look) */
   --radius: 14px;
+  --cut: 14px;               /* the cut-off corner on plates */
+  --cut-sm: 9px;             /* ...and on keys */
   --nav-w: 104px;
   --top-h: 64px;
-  --touch: 64px;          /* smallest thing you can press: about 11 mm, glove sized */
+  --touch: 64px;             /* smallest thing you can press: about 11 mm, glove sized */
   --font: "Inter", "DejaVu Sans", "Liberation Sans", system-ui, sans-serif;
+  --display: "Barlow Condensed", "Inter", "DejaVu Sans Condensed", sans-serif;
   --mono: "DejaVu Sans Mono", "Liberation Mono", ui-monospace, monospace;
 }
 
-body.theme-day {
-  --bg: #e9ecee;
-  --panel: #ffffff;
-  --panel-2: #f2f4f5;
-  --line: #c3cad0;
-  --text: #0b0d0e;
-  --muted: #4c565c;
-  --dim: #8b959b;
-  --accent: #e08a00;
-  --accent-ink: #ffffff;
-  --good: #0f9d4f;
-  --warn: #c77700;
-  --bad: #d61f1f;
-  --info: #0077c2;
-  --regen: #0f9d4f;
-  --draw: #0077c2;
-  --tail-off: #e3c4c4;
-  --tail-on: #c03030;
-  --shadow: 0 2px 0 rgba(0,0,0,.12);
-  --shadow-lg: 0 10px 30px rgba(0,0,0,.18);
+/* ---- Fossil: off-road. Stone plates, bone text, amber ---- */
+body.look-offroad {
+  --bg: #1b130d;
+  --panel: #2a1e15;
+  --panel-2: #3a2a1d;
+  --line: #6a4b32;
+  --text: #fbefdc;
+  --muted: #d2b593;
+  --dim: #8c6c4f;
+  --accent: #ffa23a;
+  --accent-2: #ffd27a;
+  --accent-ink: #251300;
+  --good: #a9dd6a;
+  --warn: #ffc13b;
+  --bad: #ff4a36;
+  --info: #7fd0e0;
+  --regen: #6ee0b4;
+  --draw: #ffa23a;
+  --plate: linear-gradient(170deg, rgba(70,50,35,.92), rgba(36,25,17,.94));
+  --plate-edge: linear-gradient(160deg, #a77b52, #4e3725 50%, #8a6342);
+  --key: linear-gradient(175deg, #4c3725, #2e2117);
+  --key-edge: #7a5a3d;
+  --key-on: linear-gradient(175deg, #ffc067, #f58b1c);
+  --glow: 0 0 18px rgba(255,162,58,.5);
+  --bolt: #b48d63;
+  --hero-glow: rgba(255,150,50,.3);
+}
+/* Fossil after dark: same stone, turned down */
+body.look-offroad.theme-night {
+  --bg: #0e0a07;
+  --text: #ecdcc2;
+  --muted: #b39a7b;
+  --accent: #ff8a2a;
+  --plate: linear-gradient(170deg, rgba(42,30,21,.93), rgba(20,14,10,.95));
+  --plate-edge: linear-gradient(160deg, #6e5038, #33251a 50%, #5a412c);
+  --key: linear-gradient(175deg, #33261b, #1d1610);
+  --key-edge: #57412d;
+  --art-dim: .6;
+}
+
+/* ---- Night Hunt: nearly black, dim ember orange, nothing bright ---- */
+body.look-night {
+  --bg: #050403;
+  --panel: #0e0b08;
+  --panel-2: #17120d;
+  --line: #2c2219;
+  --text: #e6d6bf;
+  --muted: #94826b;
+  --dim: #574a3b;
+  --accent: #ff5f14;
+  --accent-2: #ff9a4a;
+  --accent-ink: #160700;
+  --good: #79b850;
+  --warn: #f0a020;
+  --bad: #f2382a;
+  --info: #3f9fb3;
+  --regen: #35b98f;
+  --draw: #ff5f14;
+  --plate: linear-gradient(170deg, rgba(20,16,12,.92), rgba(6,5,4,.95));
+  --plate-edge: linear-gradient(160deg, #4a2c18, #1d1510 45%, #3c2414);
+  --key: linear-gradient(175deg, #1c1611, #0e0b08);
+  --key-edge: #33271c;
+  --key-on: linear-gradient(175deg, #ff7a2e, #d9480a);
+  --glow: 0 0 16px rgba(255,95,20,.55);
+  --bolt: #5e4a36;
+  --art-dim: .55;
+  --hero-glow: rgba(255,80,10,.4);
 }
