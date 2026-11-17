@@ -259,7 +259,7 @@ HOST/BENCH BUILD ONLY. Lets the simulator drive the Pico's wired inputs and inje
 |---|---|---|---|---|
 | 1 (0x01) | `heartbeat_timeout_ms` | ms | 500 | 100-5000 |
 | 2 (0x02) | `speed_timeout_ms` | ms | 500 | 100-5000 |
-| 3 (0x03) | `fourwd_max_kmh` | km/h | 5 | 0-40 |
+| 3 (0x03) | `fourwd_max_kmh` | km/h | 1 | 0-40 |
 | 4 (0x04) | `fourwd_max_run_ms` | ms | 3000 | 500-10000 |
 | 5 (0x05) | `fourwd_overcurrent_da` | 0.1A | 60 | 5-300 |
 | 6 (0x06) | `diff_max_kmh` | km/h | 15 | 0-40 |

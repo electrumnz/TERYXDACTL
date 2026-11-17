@@ -101,7 +101,7 @@ def test_setting_values_are_clamped(b):
     assert b.cb.acks[-1]["value"] == 40 and b.cb.acks[-1]["status"] == 2
     assert not b.cb.on_defaults
     b.cb.on_frame("PI_SETTINGS", {"key": M.SETTING_RESET, "value": 0}, b.t)
-    assert b.cb.on_defaults and b.cb.settings["fourwd_max_kmh"] == 5
+    assert b.cb.on_defaults and b.cb.settings["fourwd_max_kmh"] == 1
 
 
 def test_diff_lock_moves_to_target(b):
@@ -119,6 +119,18 @@ def test_diff_lock_refused_above_15(b):
     b.run(1)
     assert b.cb.reject_reason == "too_fast"
     assert b.cb.diff.pos == 0
+
+
+def test_diff_unlocks_while_moving(b):
+    # Unlocking always works, so you can drop the lock before a turn
+    b.drive_req(0, 100)
+    b.run(4)
+    assert b.cb.diff.pos == pytest.approx(1.0)
+    b.speed = 20
+    b.run(0.1)
+    b.drive_req(0, 0)
+    b.run(4)
+    assert b.cb.diff.pos == pytest.approx(0.0)
 
 
 def test_tray_needs_hold_to_run(b):

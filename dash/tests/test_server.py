@@ -61,7 +61,7 @@ async def test_settings_rejects_junk(client):
 async def test_pico_settings_list_and_set(client, gw):
     data = await (await client.get("/api/pico-settings")).json()
     names = {s["name"]: s for s in data["settings"]}
-    assert names["fourwd_max_kmh"]["value"] == 5
+    assert names["fourwd_max_kmh"]["value"] == 1
     assert names["tray_overcurrent_da"]["scale"] == 0.1
     r = await client.put("/api/pico-settings", json={"name": "fourwd_max_kmh", "value": 7})
     assert r.status == 200

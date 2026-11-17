@@ -140,7 +140,7 @@ await nav("drivetrain");
 await page.click('#t-seg button[data-v="0"]');
 await sleep(1200);
 const toast = await page.$eval("#toast", (e) => (e.hidden ? "" : e.textContent));
-check(/slow/i.test(toast), `refusal explained when too fast ("${toast}")`);
+check(/slow|stop/i.test(toast), `refusal explained when too fast ("${toast}")`);
 s = await state();
 check(s["act.4wd"] === "4wd", "still in 4WD after refusal");
 await nav("drive");

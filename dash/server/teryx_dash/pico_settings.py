@@ -29,10 +29,10 @@ class Setting:
 FALLBACK: list[Setting] = [
     Setting(1, "heartbeat_timeout_ms", "Dash lost after", 500, "ms", None, 50, 100, 5000, "Stop moving parts if the dash goes quiet this long."),
     Setting(2, "speed_timeout_ms", "Speed lost after", 500, "ms", None, 50, 100, 5000, "Treat speed as unknown if the motor controller goes quiet this long."),
-    Setting(3, "fourwd_max_kmh", "2WD/4WD change below", 5, "km/h", None, 1, 0, 40),
+    Setting(3, "fourwd_max_kmh", "2WD/4WD change below", 1, "km/h", None, 1, 0, 40, "Kawasaki says stop before changing 2WD/4WD. 1 km/h means stopped."),
     Setting(4, "fourwd_max_run_ms", "4WD actuator max run", 3000, "ms", None, 250, 500, 10000),
     Setting(5, "fourwd_overcurrent_da", "4WD actuator current limit", 60, "A", 0.1, 5, 5, 300),
-    Setting(6, "diff_max_kmh", "Diff lock change below", 15, "km/h", None, 1, 0, 40),
+    Setting(6, "diff_max_kmh", "Diff lock add below", 15, "km/h", None, 1, 0, 40, "Locking only. Unlocking works at any speed."),
     Setting(7, "diff_max_run_ms", "Diff actuator max run", 4000, "ms", None, 250, 500, 10000),
     Setting(8, "diff_overcurrent_da", "Diff actuator current limit", 80, "A", 0.1, 5, 5, 300),
     Setting(9, "tray_max_run_ms", "Tray max run", 20000, "ms", None, 1000, 1000, 60000),

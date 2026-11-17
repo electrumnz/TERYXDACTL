@@ -44,7 +44,7 @@ inputs:
     in.tray_down:    {expander_pin: B3, normally_closed: true, label: "Tray down limit"}
     in.tray_up:      {expander_pin: B4, normally_closed: true, label: "Tray up limit"}
     in.winch_remote: {expander_pin: B5, label: "Winch remote in use"}
-    in.park:         {expander_pin: B6, label: "Park / handbrake"}
+    in.park:         {expander_pin: B6, label: "Parking brake pedal (stock switch)"}
     in.spare:        {expander_pin: B7, label: "Spare"}
   analogue:
     an.diff_pos:       {adc: ads1115, channel: 0, units: "%", calibrate: true}
@@ -86,10 +86,10 @@ safety:                      # defaults, adjustable in settings
   heartbeat_timeout_ms: 500
   speed_timeout_ms: 500
   hold_to_run_timeout_ms: 300
-  fourwd_max_kmh: 5
+  fourwd_max_kmh: 1           # Kawasaki: stop before changing 2WD/4WD (docs/teryx-drivetrain.md)
   fourwd_max_run_s: 3
   fourwd_overcurrent_a: 6
-  diff_max_kmh: 15
+  diff_max_kmh: 15            # adding lock only; unlocking is allowed at any speed
   diff_max_run_s: 4
   tray_requires_stopped: true
   tray_max_run_s: 20

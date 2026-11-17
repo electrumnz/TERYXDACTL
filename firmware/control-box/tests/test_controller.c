@@ -181,23 +181,28 @@ static void test_4wd_stall(void) {
 
 static void test_diff_closed_loop(void) {
     rig_init();
-    R.speed_x10 = 100;  // 10 km/h, under the 15 km/h limit
+    R.speed_x10 = 100;  // 10 km/h, under the 15 km/h limit for adding lock
     run(300);
     CHECK(R.c.diff.pct == 0);
-    drive(DRIVE_NO_CHANGE, 50);
-    run(3000);
-    CHECK(R.c.diff.pct >= 47 && R.c.diff.pct <= 53);
+    drive(DRIVE_NO_CHANGE, 100);
+    run(4000);
+    CHECK(R.c.diff.pct >= 97);
     CHECK(!R.c.diff.moving);
     const can_frame_t *a = last_sent(CAN_ID_PICO_ACT);
-    CHECK(a && a->data[7] == 50);
-    // Too fast for diff changes
+    CHECK(a && a->data[7] == 100);
+    // Unlocking works on the move (Kawasaki: unlock after crossing the obstacle)
     R.speed_x10 = 200;
     run(200);
+    drive(DRIVE_NO_CHANGE, 0);
+    run(4000);
+    CHECK(R.c.diff.pct <= 3);
+    CHECK(!R.c.diff.moving);
+    // ...but locking again at 20 km/h is refused
     drive(DRIVE_NO_CHANGE, 100);
     run(100);
     CHECK(reject_reason() == REJ_TOO_FAST);
     CHECK(!R.c.diff.moving);
-    CHECK(R.c.diff.target_pct == 50 || R.c.diff.target_pct == R.c.diff.pct);
+    CHECK(R.c.diff.target_pct == R.c.diff.pct);
 }
 
 static void test_diff_jam(void) {

@@ -122,7 +122,11 @@ static bool try_start_diff(controller_t *c, uint32_t now) {
     if (d->pct == PCT_UNKNOWN) { reject(c, REJ_FAULT); return false; }
     int err = (int)d->target_pct - (int)d->pct;
     if (err <= DIFF_DEADBAND_PCT && err >= -DIFF_DEADBAND_PCT) return true;
-    uint8_t r = motion_check(c, now, false, S(c, SET_DIFF_MAX_KMH));  // rule 4
+    // Rule 4: the speed limit only applies to adding lock. Kawasaki's manual
+    // has you stop to lock but unlock "after crossing the obstacle", and a
+    // locked front diff makes steering heavy, so unlocking works at any speed.
+    uint16_t lim = err > 0 ? S(c, SET_DIFF_MAX_KMH) : 0xFFFFu;
+    uint8_t r = motion_check(c, now, false, lim);
     if (r) { reject(c, r); return false; }
     if (d->moving) return true;  // already moving, the loop follows the new target
     d->moving = true;
@@ -339,14 +343,16 @@ static void run_diff(controller_t *c, uint32_t now, cb_out_t *o) {
         c->latched |= BIT(FAULT_DIFF_POT_STUCK);
         return;
     }
-    // Rule 4: speed limit applies to starting AND carrying on. If we speed up
-    // past it mid-move, stop where we are.
-    if (!ctl_speed_valid(c, now) || c->speed_x10 >= S(c, SET_DIFF_MAX_KMH) * 10u) {
+    int err = (int)d->target_pct - (int)d->pct;
+    // Rule 4: the speed limit applies to starting AND carrying on while adding
+    // lock. If we speed up past it mid-move, stop where we are. Unlocking
+    // carries on at any speed (but still needs a known speed, rule 2).
+    if (!ctl_speed_valid(c, now) ||
+        (err > 0 && c->speed_x10 >= S(c, SET_DIFF_MAX_KMH) * 10u)) {
         d->moving = false;
         d->target_pct = d->pct;
         return;
     }
-    int err = (int)d->target_pct - (int)d->pct;
     if (err <= DIFF_DEADBAND_PCT && err >= -DIFF_DEADBAND_PCT) { d->moving = false; return; }
 
     uint32_t run = since(now, d->start_ms);

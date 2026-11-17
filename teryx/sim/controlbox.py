@@ -10,9 +10,9 @@ Safety rules (IO list section 7, values from SETTINGS):
  1. Dash heartbeat lost 500 ms -> stop winch, tray and actuators, disarm winch.
     Lights stay as they are. Driving is never touched.
  2. No Shinegle speed for 500 ms -> speed unknown, block anything needing "stopped".
- 3. 2WD/4WD only below 5 km/h. Runs to end stop, max 3 s, stops on current > 6 A.
+ 3. 2WD/4WD only below 1 km/h (stopped, per Kawasaki). Runs to end stop, max 3 s, stops on current > 6 A.
     Position is "unknown" after boot until the first move to an end stop.
- 4. Diff lock % only below 15 km/h. Max run 4 s. Pot not moving -> fault.
+ 4. Adding diff lock % only below 15 km/h; unlocking at any speed. Max run 4 s. Pot not moving -> fault.
  5. Tray only when stopped, hold-to-run. Limit switches, current > 10 A, max 20 s.
     A latched tray fault is cleared by the next accepted press.
  6. Winch: arming needs stopped + known speed. Running needs armed + stopped +
@@ -204,7 +204,7 @@ class ControlBox:
         speed_ok = self.speed_known()
         resend_while_unknown = (prev is not None and v["fourwd_req"] == prev["fourwd_req"]
                                 and not self.fourwd_known and not self.fourwd.moving)
-        if resend_while_unknown and speed_ok and self.speed <= self.s("fourwd_max_kmh") \
+        if resend_while_unknown and speed_ok and self.speed < self.s("fourwd_max_kmh") \
                 and self.inp("in.ignition") and not self.fourwd_fault:
             # Position unknown after boot: a resend may home it (quietly, no reject spam)
             self.fourwd.target = 1.0 if v["fourwd_req"] else 0.0
@@ -215,7 +215,7 @@ class ControlBox:
                     self.reject("ignition_off")
                 elif not speed_ok:
                     self.reject("speed_unknown")
-                elif self.speed > self.s("fourwd_max_kmh"):
+                elif self.speed >= self.s("fourwd_max_kmh"):
                     self.reject("too_fast")
                 else:
                     self.fourwd_fault = False
@@ -227,7 +227,7 @@ class ControlBox:
             if abs(want - self.diff.target) > 0.005:
                 if not speed_ok:
                     self.reject("speed_unknown")
-                elif self.speed > self.s("diff_max_kmh"):
+                elif want > self.diff.pos + 0.02 and self.speed >= self.s("diff_max_kmh"):
                     self.reject("too_fast")
                 else:
                     self.diff.faulted = False

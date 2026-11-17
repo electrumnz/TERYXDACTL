@@ -25,7 +25,7 @@ import { demoPlayer } from "./ui/demoplayer.js";
 import { WinchHeat } from "./winchheat.js";
 
 // Fallback limits if the control box settings can't be read (match config/io-map.yaml safety defaults).
-const LIMIT_DEFAULTS = { fourwd_max_kmh: 5, diff_max_kmh: 15, tray_overcurrent_da: 10, winch_auto_disarm_s: 120 };
+const LIMIT_DEFAULTS = { fourwd_max_kmh: 1, diff_max_kmh: 15, tray_overcurrent_da: 10, winch_auto_disarm_s: 120 };
 
 const store = new Store();
 const settings = new Settings();

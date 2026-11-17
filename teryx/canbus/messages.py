@@ -239,7 +239,7 @@ TERYX_MESSAGES: tuple[Message, ...] = (
 SETTINGS: dict[int, tuple[str, str, int, int, int]] = {
     1: ("heartbeat_timeout_ms", "ms", 500, 100, 5000),
     2: ("speed_timeout_ms", "ms", 500, 100, 5000),
-    3: ("fourwd_max_kmh", "km/h", 5, 0, 40),
+    3: ("fourwd_max_kmh", "km/h", 1, 0, 40),
     4: ("fourwd_max_run_ms", "ms", 3000, 500, 10000),
     5: ("fourwd_overcurrent_da", "0.1A", 60, 5, 300),
     6: ("diff_max_kmh", "km/h", 15, 0, 40),

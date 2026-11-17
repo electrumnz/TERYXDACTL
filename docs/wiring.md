@@ -142,7 +142,7 @@ ground (0x48). RESET on the MCP23017 to 3.3V through 10kΩ.
 | 4 | Tray down limit (NC to ground) | B3 `in.tray_down` |
 | 5 | Tray up limit (NC to ground) | B4 `in.tray_up` |
 | 6 | Winch remote or either hand switch, "in" or "out" pressed (each through its own diode) | B5 `in.winch_remote` |
-| 7 | Handbrake / park switch | B6 `in.park` |
+| 7 | Parking brake pedal switch (stock, feeds the meter's parking brake light) | B6 `in.park` |
 | 8 | Spare | B7 |
 
 The limit switches are normally closed, so a broken wire reads as "at the
