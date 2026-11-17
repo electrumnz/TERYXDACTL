@@ -46,6 +46,8 @@ export const REJECTS = {
   not_parked:     "Put it in park first.",
   winch_remote:   "The handheld winch remote is in use.",
   bad_frame:      "The control box didn't understand that request.",
+  wait_timeout:   "Waited too long for the right speed, so it didn't change. Tap again to retry.",
+  busy:           "Wait for the last 4WD or diff change to finish.",
 };
 
 export function faultText(code, table) {

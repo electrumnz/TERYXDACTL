@@ -91,21 +91,50 @@ void ctl_init(controller_t *c, const settings_t *saved, bool watchdog_reset,
 // ---------------------------------------------------------------------------
 // Requests from the dash
 // ---------------------------------------------------------------------------
+//
+// Safe drive changes (docs/drive-changes.md): when a 4WD or diff lock request
+// only fails on speed (too fast / not stopped), it waits up to
+// SET_SHIFT_WAIT_MS for the speed to come right, then runs. The dash shows a
+// spinner and can cancel by asking for what's already there. Any other reason
+// (no speed signal, key off, fault ...) is still refused at once, and a wait
+// that times out is dropped, so nothing happens later by surprise.
+// While one drive change waits or runs, the other is refused (REJ_BUSY),
+// except taking diff lock off, which always works.
+
+static bool speed_reason(uint8_t r) { return r == REJ_TOO_FAST || r == REJ_NOT_STOPPED; }
+static bool fwd_busy(const controller_t *c) { return c->fwd.moving || c->fwd.waiting; }
+static bool diff_busy(const controller_t *c) { return c->diff.moving || c->diff.waiting; }
+
+// Forget a 4WD request, so it isn't done later by surprise.
+static void fwd_forget(controller_t *c) {
+    fourwd_t *f = &c->fwd;
+    f->waiting = false;
+    f->target = f->state == FWD_4WD ? REQ_4WD : f->state == FWD_2WD ? REQ_2WD : DRIVE_NO_CHANGE;
+}
 
 static void try_start_4wd(controller_t *c, uint32_t now) {
     fourwd_t *f = &c->fwd;
-    if (f->target == DRIVE_NO_CHANGE) return;
+    if (f->target == DRIVE_NO_CHANGE) { f->waiting = false; return; }
     uint8_t want = f->target == REQ_4WD ? FWD_4WD : FWD_2WD;
     uint8_t going = want == FWD_4WD ? FWD_TO_4WD : FWD_TO_2WD;
-    if (f->state == want || (f->moving && f->state == going)) return;
+    // Already there (this is also how the dash cancels a wait).
+    if (f->state == want || (f->moving && f->state == going)) { f->waiting = false; return; }
     // A change of mind mid-move just turns it round (same checks apply).
     uint8_t r = motion_check(c, now, false, S(c, SET_4WD_MAX_KMH));   // rule 3
+    if (!r && !f->waiting && diff_busy(c)) r = REJ_BUSY;
+    if (!r && c->diff.moving) r = REJ_BUSY;
     if (r) {
+        if (f->waiting) return;  // wait_4wd() handles a request that's already waiting
+        if (speed_reason(r) && S(c, SET_SHIFT_WAIT_MS) > 0) {
+            f->waiting = true;
+            f->wait_start_ms = now;
+            return;
+        }
         reject(c, r);
-        // Forget the request, so it isn't done later by surprise.
-        f->target = f->state == FWD_4WD ? REQ_4WD : f->state == FWD_2WD ? REQ_2WD : DRIVE_NO_CHANGE;
+        fwd_forget(c);
         return;
     }
+    f->waiting = false;
     f->from_unknown = f->moving || f->state == FWD_UNKNOWN || f->state == FWD_FAULT;
     f->moving = true;
     f->saw_current = false;
@@ -115,27 +144,96 @@ static void try_start_4wd(controller_t *c, uint32_t now) {
     c->latched &= (uint16_t)~(BIT(FAULT_4WD_TIMEOUT) | BIT(FAULT_4WD_OVERCURRENT));
 }
 
-// Returns false if refused.
-static bool try_start_diff(controller_t *c, uint32_t now) {
+// Returns REJ_NONE if started (or nothing to do), else why not. Doesn't reject.
+static uint8_t try_start_diff(controller_t *c, uint32_t now) {
     diff_t *d = &c->diff;
-    if (d->target_pct == PCT_UNKNOWN) return true;
-    if (d->pct == PCT_UNKNOWN) { reject(c, REJ_FAULT); return false; }
+    if (d->target_pct == PCT_UNKNOWN) return REJ_NONE;
+    if (d->pct == PCT_UNKNOWN) return REJ_FAULT;
     int err = (int)d->target_pct - (int)d->pct;
-    if (err <= DIFF_DEADBAND_PCT && err >= -DIFF_DEADBAND_PCT) return true;
+    if (err <= DIFF_DEADBAND_PCT && err >= -DIFF_DEADBAND_PCT) return REJ_NONE;
     // Rule 4: the speed limit only applies to adding lock. Kawasaki's manual
     // has you stop to lock but unlock "after crossing the obstacle", and a
     // locked front diff makes steering heavy, so unlocking works at any speed.
     uint16_t lim = err > 0 ? S(c, SET_DIFF_MAX_KMH) : 0xFFFFu;
     uint8_t r = motion_check(c, now, false, lim);
-    if (r) { reject(c, r); return false; }
-    if (d->moving) return true;  // already moving, the loop follows the new target
+    if (r) return r;
+    if (err > 0 && fwd_busy(c)) return REJ_BUSY;  // taking lock off always works
+    if (d->moving) return REJ_NONE;  // already moving, the loop follows the new target
     d->moving = true;
     d->start_ms = now;
     d->ref_raw = c->in.diff_pot_raw;
     d->last_move_ms = now;
     c->latched &= (uint16_t)~(BIT(FAULT_DIFF_TIMEOUT) | BIT(FAULT_DIFF_POT_STUCK) |
                               BIT(FAULT_DIFF_OVERCURRENT));
-    return true;
+    return REJ_NONE;
+}
+
+// A new diff target from the dash. Replaces (or cancels) any wait.
+static void diff_request(controller_t *c, uint8_t want, uint32_t now) {
+    diff_t *d = &c->diff;
+    d->waiting = false;
+    uint8_t old = d->target_pct;
+    d->target_pct = want;
+    uint8_t r = try_start_diff(c, now);
+    if (r == REJ_NONE) return;
+    d->target_pct = d->moving ? old : d->pct;
+    if (speed_reason(r) && S(c, SET_SHIFT_WAIT_MS) > 0) {
+        d->waiting = true;
+        d->wait_pct = want;
+        d->wait_start_ms = now;
+        return;
+    }
+    reject(c, r);
+}
+
+// Each tick: start a waiting request once it's safe, drop it on a hard
+// reason or when the wait runs out.
+static bool wait_over(const controller_t *c, uint32_t start, uint32_t now) {
+    return since(now, start) >= S(c, SET_SHIFT_WAIT_MS);
+}
+
+static void wait_4wd(controller_t *c, uint32_t now) {
+    fourwd_t *f = &c->fwd;
+    if (!f->waiting) return;
+    uint8_t r = motion_check(c, now, false, S(c, SET_4WD_MAX_KMH));
+    if (r == REJ_NONE && c->diff.moving) r = REJ_BUSY;  // a diff unlock finishing
+    if (r == REJ_NONE) { try_start_4wd(c, now); return; }
+    if (!speed_reason(r) && r != REJ_BUSY) { reject(c, r); fwd_forget(c); return; }
+    if (wait_over(c, f->wait_start_ms, now)) { reject(c, REJ_WAIT_TIMEOUT); fwd_forget(c); }
+}
+
+static void wait_diff(controller_t *c, uint32_t now) {
+    diff_t *d = &c->diff;
+    if (!d->waiting) return;
+    uint8_t r = motion_check(c, now, false, S(c, SET_DIFF_MAX_KMH));
+    if (r == REJ_NONE) {
+        d->waiting = false;
+        uint8_t old = d->target_pct;
+        d->target_pct = d->wait_pct;
+        r = try_start_diff(c, now);
+        if (r) { d->target_pct = d->moving ? old : d->pct; reject(c, r); }
+        return;
+    }
+    if (!speed_reason(r)) { d->waiting = false; reject(c, r); return; }
+    if (wait_over(c, d->wait_start_ms, now)) { d->waiting = false; reject(c, REJ_WAIT_TIMEOUT); }
+}
+
+// Throttle hold: only while a shift runs AND the Teryx was stopped when it
+// started. If it starts rolling the hold drops and stays off for that shift,
+// so throttle is never cut while moving.
+static void update_throttle_hold(controller_t *c, uint32_t now) {
+    bool shifting = c->fwd.moving || c->diff.moving;
+    if (!shifting || !S(c, SET_SHIFT_THROTTLE_HOLD)) {
+        c->throttle_hold = false;
+        c->throttle_hold_blocked = false;
+        return;
+    }
+    if (!stopped(c, now)) {
+        c->throttle_hold = false;
+        c->throttle_hold_blocked = true;
+        return;
+    }
+    if (!c->throttle_hold_blocked) c->throttle_hold = true;
 }
 
 static void winch_disarm(controller_t *c) {
@@ -203,11 +301,8 @@ void ctl_on_frame(controller_t *c, const can_frame_t *f, uint32_t now,
             c->fwd.target = f->data[0];
             try_start_4wd(c, now);
         }
-        if ((first || f->data[1] != c->last_drive[1]) && f->data[1] <= 100) {
-            uint8_t old = c->diff.target_pct;
-            c->diff.target_pct = f->data[1];
-            if (!try_start_diff(c, now)) c->diff.target_pct = c->diff.moving ? old : c->diff.pct;
-        }
+        if ((first || f->data[1] != c->last_drive[1]) && f->data[1] <= 100)
+            diff_request(c, f->data[1], now);
         c->last_drive[0] = f->data[0];
         c->last_drive[1] = f->data[1];
         break;
@@ -265,6 +360,8 @@ void ctl_on_frame(controller_t *c, const can_frame_t *f, uint32_t now,
 // ---------------------------------------------------------------------------
 
 static void stop_all_motion(controller_t *c) {
+    if (c->fwd.waiting) fwd_forget(c);
+    c->diff.waiting = false;
     if (c->fwd.moving) { c->fwd.moving = false; c->fwd.state = FWD_UNKNOWN; }
     if (c->diff.moving) {
         c->diff.moving = false;
@@ -608,6 +705,9 @@ static void send_status(controller_t *c, uint32_t now, cb_send_fn send, void *u)
     put_u16(&f.data[1], c->faults);
     f.data[3] = c->in.din;
     f.data[4] = pico_state(c, now) | (c->settings_from_flash_or_dash ? 0 : STATE_BIT_ON_DEFAULTS);
+    if (c->fwd.waiting) f.data[4] |= STATE_BIT_4WD_WAIT;
+    if (c->diff.waiting) f.data[4] |= STATE_BIT_DIFF_WAIT;
+    if (c->throttle_hold) f.data[4] |= STATE_BIT_THROTTLE_HOLD;
     f.data[5] = (uint8_t)((c->reject_count << 4) | (c->reject_reason & 0x0F));
     uint8_t flags = 0;
     if (c->winch.armed) flags |= FLAG_WINCH_ARMED;
@@ -632,7 +732,7 @@ static void send_status(controller_t *c, uint32_t now, cb_send_fn send, void *u)
     for (int i = 0; i < ACT_COUNT; i++) a.data[3 + i] = clamp_u8(c->in.i_da[i]);
     int32_t full = S(c, SET_TRAY_FULL_TRAVEL_MS);
     a.data[6] = c->tray.pos_ms < 0 ? PCT_UNKNOWN : (uint8_t)(c->tray.pos_ms * 100 / full);
-    a.data[7] = c->diff.target_pct;
+    a.data[7] = c->diff.waiting ? c->diff.wait_pct : c->diff.target_pct;
     send(&a, u);
 }
 
@@ -677,7 +777,7 @@ void ctl_tick(controller_t *c, const cb_in_t *in, cb_out_t *out, cb_send_fn send
         c->power_hold = true;
         c->shutting_down = false;
     } else {
-        if (c->tray.dir != 0 || c->fwd.moving || c->diff.moving) stop_all_motion(c);
+        if (c->tray.dir != 0 || fwd_busy(c) || diff_busy(c)) stop_all_motion(c);
         winch_disarm(c);
         if (c->power_hold && !c->shutting_down) {
             c->shutting_down = true;
@@ -694,8 +794,12 @@ void ctl_tick(controller_t *c, const cb_in_t *in, cb_out_t *out, cb_send_fn send
         if (!c->power_hold) c->shutting_down = false;
     }
 
+    wait_diff(c, now);
+    wait_4wd(c, now);
     run_diff(c, now, out);
     run_4wd(c, now, out);
+    update_throttle_hold(c, now);
+    out->throttle_hold = c->throttle_hold;
     run_tray(c, now, out, dash_ok);
     run_winch(c, now, out, dash_ok);
     run_lights(c, now, out);

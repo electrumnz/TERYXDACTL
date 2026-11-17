@@ -95,19 +95,17 @@ def main():
         ack = bus.last.get(0x714)
         check(ack is not None and ack[0] == 3 and struct.unpack("<H", ack[2:4])[0] == 8, "setting acked on 0x714")
 
-        # 4WD: refused at 20 km/h, done when stopped and asked again
+        # 4WD at 20 km/h: waits (0x710 byte 4 bit 4), then goes by itself once stopped
         state["speed"] = 200
         run(0.3)
         bus.send(0x702, [1, 0])
         run(0.3)
         st = bus.last[0x710]
-        check(st[5] & 0x0F == 1, "4WD refused when too fast (reject reason too_fast)")
+        check(st[4] & 0x10 and bus.last[0x712][1] != 1, "4WD waits while too fast")
         state["speed"] = 0
-        bus.send(0x702, [0, 0])
-        run(0.2)
-        bus.send(0x702, [1, 0])
         run(2.5)
-        check(bus.last[0x712][1] == 1, "4WD engaged when stopped")
+        check(bus.last[0x712][1] == 1, "4WD engaged once stopped")
+        check(not bus.last[0x710][4] & 0x10, "wait flag cleared")
 
         # Diff to 40 %
         bus.send(0x702, [1, 40])

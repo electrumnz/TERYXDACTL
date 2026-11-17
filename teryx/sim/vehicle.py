@@ -62,6 +62,7 @@ class Vehicle:
     torque_nm: float = 0.0
     forced_faults: set = field(default_factory=set)   # injected by scenarios / sim page
     regen_request: float = 0.0     # 0..1 brake pedal regen asked for by the control box
+    throttle_hold: bool = False    # control box holds throttle while a shift runs from a standstill
     inp: DriverInput = field(default_factory=DriverInput)
 
     # ----------------------------------------------------------- derived
@@ -113,7 +114,8 @@ class Vehicle:
         speed = abs(v)
         # Drive force from throttle, capped by power and top speed
         f_drive = 0.0
-        if direction and self.ready and i.throttle > 0:
+        held = self.throttle_hold and speed < 0.5 / 3.6   # never cut once moving
+        if direction and self.ready and i.throttle > 0 and not held:
             max_force = 3200.0 if i.mode == "sport" else 2600.0
             p_lim = self.power_limit_w()
             f_drive = min(max_force, p_lim / max(speed, 0.5)) * i.throttle

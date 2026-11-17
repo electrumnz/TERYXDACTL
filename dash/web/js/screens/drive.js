@@ -124,7 +124,8 @@ export class DriveScreen {
     if (st.get("mc.ready") === false) chips.push(`<span class="tb-chip" style="color:var(--warn);border-color:var(--warn)">NOT READY</span>`);
     if (st.get("mc.limp")) chips.push(`<span class="tb-chip" style="color:var(--bad);border-color:var(--bad)">LIMP MODE</span>`);
     const fw = st.get("act.4wd", "2wd");
-    chips.push(`<span class="tb-chip ${fw === "4wd" ? "on" : fw.startsWith("to_") ? "busy" : ""}">${fw === "4wd" ? "4WD" : fw === "to_4wd" ? "→ 4WD" : fw === "to_2wd" ? "→ 2WD" : fw === "fault" ? "4WD FAULT" : "2WD"}</span>`);
+    const w4 = st.get("act.4wd_wait");
+    chips.push(`<span class="tb-chip ${fw === "4wd" ? "on" : fw.startsWith("to_") || w4 ? "busy" : ""}">${w4 ? (fw === "4wd" ? "2WD WHEN STOPPED" : "4WD WHEN STOPPED") : fw === "4wd" ? "4WD" : fw === "to_4wd" ? "→ 4WD" : fw === "to_2wd" ? "→ 2WD" : fw === "fault" ? "4WD FAULT" : "2WD"}</span>`);
     const d = Math.round(st.get("an.diff_pos", 0));
     if (d > 2) chips.push(`<span class="tb-chip on">DIFF ${d}%</span>`);
     if (st.get("light.rear")) chips.push(`<span class="tb-chip on">REAR LIGHTS</span>`);

@@ -38,6 +38,9 @@ export class DemoVehicle {
     this.timer = setInterval(() => this.step(), 50);
   }
 
+  diffBusy() { return !!this.waitD || Math.abs(this.req.diff - this.s["an.diff_pos"]) > 0.5; }
+  start4wd(value) { this.req.fourwd = value; this.fourwdTimer = 1.4; this.s["act.4wd"] = value ? "to_4wd" : "to_2wd"; }
+
   reject(code) { this.rejectCount++; this.s["pico.reject"] = code; this.s["pico.reject_count"] = this.rejectCount; }
 
   receive(msg) {
@@ -48,10 +51,17 @@ export class DemoVehicle {
       else if (id === "light.effect") this.req.effect = value;
       else if (id === "light.rear") this.req.rear = value;
       else if (id === "act.4wd") {
-        if (spd >= 5) return this.reject("too_fast");
-        if (value !== this.req.fourwd) { this.req.fourwd = value; this.fourwdTimer = 1.4; s["act.4wd"] = value ? "to_4wd" : "to_2wd"; }
+        // Like the control box: too fast = wait (up to 10 s) for a stop; asking for what's there cancels
+        this.wait4 = null; s["act.4wd_wait"] = false;
+        if (value === this.req.fourwd) return;
+        if (this.diffBusy()) return this.reject("busy");
+        if (spd >= 1) { this.wait4 = { value, at: this.t }; s["act.4wd_wait"] = true; return; }
+        this.start4wd(value);
       } else if (id === "act.diff") {
-        if (spd >= 15) return this.reject("too_fast");
+        this.waitD = null; s["act.diff_wait"] = false;
+        const adding = value > s["an.diff_pos"] + 2;
+        if (adding && (this.fourwdTimer > 0 || this.wait4)) return this.reject("busy");
+        if (adding && spd >= 15) { this.waitD = { value, at: this.t }; s["act.diff_wait"] = true; s["act.diff_target"] = value; return; }
         this.req.diff = value; s["act.diff_target"] = value;
       } else if (id === "winch.armed") {
         if (value && spd > 0.5) return this.reject("not_stopped");
@@ -115,6 +125,19 @@ export class DemoVehicle {
     const now = performance.now(), dt = Math.min(0.2, (now - this.last) / 1000); this.last = now; this.t += dt;
     const s = this.s, r = this.req;
     this.scenarioDrive(dt);
+
+    // Waiting 4WD / diff changes: go once the speed is right, give up after 10 s
+    const spd = s["mc.speed"];
+    if (this.wait4) {
+      if (spd < 1 && !this.diffBusy()) { this.start4wd(this.wait4.value); this.wait4 = null; s["act.4wd_wait"] = false; }
+      else if (this.t - this.wait4.at > 10) { this.wait4 = null; s["act.4wd_wait"] = false; this.reject("wait_timeout"); }
+    }
+    if (this.waitD) {
+      if (spd < 15) { r.diff = this.waitD.value; this.waitD = null; s["act.diff_wait"] = false; }
+      else if (this.t - this.waitD.at > 10) { this.waitD = null; s["act.diff_wait"] = false; s["act.diff_target"] = r.diff; this.reject("wait_timeout"); }
+    }
+    // Throttle held while 4WD shifts from a standstill
+    s["pico.throttle_hold"] = this.fourwdTimer > 0 && spd < 0.5;
 
     // Battery
     s["mc.batt_v"] = 78.5 - s["mc.batt_a"] * 0.03 - (100 - s["mc.soc"]) * 0.05;

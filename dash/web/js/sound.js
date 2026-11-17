@@ -48,6 +48,7 @@ const PATTERNS = {
   reject: (t) => { tone(196, t, 0.18, { type: "sawtooth", vol: 0.35 }); },
   count:  (t) => { tone(880, t, 0.12, { type: "square", vol: 0.45 }); },
   go:     (t) => { tone(1318, t, 0.35, { type: "square", vol: 0.5 }); },
+  shifted:(t) => { tone(784, t, 0.1, { vol: 0.6 }); tone(1175, t + 0.12, 0.22, { vol: 0.7 }); },
   done:   (t) => { tone(1046, t, 0.12, { vol: 0.7 }); tone(784, t + 0.15, 0.2, { vol: 0.7 }); },
   click:  (t) => { tone(1800, t, 0.025, { type: "triangle", vol: 0.25 }); },
 };

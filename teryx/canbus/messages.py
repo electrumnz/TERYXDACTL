@@ -35,6 +35,8 @@ REJECT_REASON = {
     11: "not_parked",     # firmware update needs the Teryx parked
     12: "winch_remote",   # handheld winch remote in use
     13: "bad_frame",
+    14: "wait_timeout",   # 4WD / diff waited shift_wait_ms for the right speed and gave up
+    15: "busy",           # another drive change is waiting or running
 }
 REJECT_TEXT = {
     "too_fast": "Slow down first",
@@ -50,6 +52,8 @@ REJECT_TEXT = {
     "not_parked": "Park the Teryx first",
     "winch_remote": "Winch remote is in use",
     "bad_frame": "Request not understood",
+    "wait_timeout": "Gave up waiting. Try again",
+    "busy": "Wait for the last change to finish",
 }
 FAULT_BITS = {   # 0x710 bytes 1-2
     0: "dash_link",
@@ -161,6 +165,9 @@ PICO_STATUS = Message(
         S("inputs", 24, 8, comment="MCP23017 B0-B7, see INPUT_BITS"),
         S("state", 32, 2, choices=PICO_STATE),
         S("on_defaults", 35, 1, comment="Pico is running on default settings, please resend"),
+        S("fourwd_wait", 36, 1, comment="A 2WD/4WD request is waiting for the right speed (docs/drive-changes.md)"),
+        S("diff_wait", 37, 1, comment="A diff lock request is waiting for the right speed"),
+        S("throttle_hold", 38, 1, comment="Throttle held: a shift is running from a standstill"),
         S("reject_reason", 40, 4, choices=REJECT_REASON, comment="Why the last request was refused"),
         S("reject_count", 44, 4, comment="Goes up by one each time a request is refused"),
         S("winch_armed", 48, 1),
@@ -191,7 +198,7 @@ PICO_ACTUATORS = Message(
         S("fourwd_current", 32, 8, scale=0.1, unit="A"),
         S("tray_current", 40, 8, scale=0.1, unit="A"),
         S("tray_pct", 48, 8, unit="%", comment="Estimate from run time, no pot on the tray"),
-        S("diff_target", 56, 8, unit="%"),
+        S("diff_target", 56, 8, unit="%", comment="While diff_wait is set, the % it's waiting to move to"),
     ),
 )
 PICO_POWER = Message(
@@ -282,6 +289,9 @@ SETTINGS: dict[int, tuple[str, str, int, int, int]] = {
     27: ("brake_regen_2wd_pct", "%", 60, 0, 100),
     28: ("brake_pedal_min_raw", "raw", 2000, 0, 32767),
     29: ("brake_pedal_max_raw", "raw", 22000, 0, 32767),
+    # Safe drive changes (docs/drive-changes.md)
+    30: ("shift_wait_ms", "ms", 10000, 0, 30000),
+    31: ("shift_throttle_hold", "bool", 1, 0, 1),
 }
 SETTING_SAVE = 0xF0
 SETTING_RESET = 0xF1

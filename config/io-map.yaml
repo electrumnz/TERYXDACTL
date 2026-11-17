@@ -93,6 +93,8 @@ safety:                      # defaults, adjustable in settings
   fourwd_overcurrent_a: 6
   diff_max_kmh: 15            # adding lock only; unlocking is allowed at any speed
   diff_max_run_s: 4
+  shift_wait_s: 10            # a 4WD / diff request waits this long for the right speed, then gives up (0 = refuse at once)
+  shift_throttle_hold: true   # hold throttle while a shift runs from a standstill (never while moving)
   tray_requires_stopped: true
   tray_max_run_s: 20
   tray_overcurrent_a: 10

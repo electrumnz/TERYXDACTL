@@ -62,9 +62,23 @@ def test_refused_request_snaps_back(rig):
     assert wait_for(lambda: gw.snapshot()["pico.online"])
     sim.set_scenario("trail")
     assert wait_for(lambda: gw.snapshot()["mc.speed"] > 10, timeout=15)
+    assert gw.set_setting("shift_wait_ms", 600)
     gw.request("act.4wd", 1)
-    assert wait_for(lambda: gw.snapshot()["pico.reject"] == "too_fast")
+    assert wait_for(lambda: gw.snapshot()["act.4wd_wait"])        # spinner on the dash
+    assert wait_for(lambda: gw.snapshot()["pico.reject"] == "wait_timeout")
     assert wait_for(lambda: gw.snapshot()["req.act.4wd"] == 0)
+
+
+def test_waiting_request_can_be_cancelled(rig):
+    sim, gw = rig
+    assert wait_for(lambda: gw.snapshot()["pico.online"])
+    sim.set_scenario("trail")
+    assert wait_for(lambda: gw.snapshot()["mc.speed"] > 10, timeout=15)
+    gw.request("act.4wd", 1)
+    assert wait_for(lambda: gw.snapshot()["act.4wd_wait"])
+    gw.request("act.4wd", 0)
+    assert wait_for(lambda: not gw.snapshot()["act.4wd_wait"])
+    assert gw.snapshot()["pico.reject"] == "none"
 
 
 def test_settings_ack(rig):

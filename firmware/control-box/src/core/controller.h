@@ -47,6 +47,7 @@ typedef struct {
     uint8_t act_duty[ACT_COUNT];
     bool enter_bootloader;     // hardware layer: make outputs safe, reboot to USB boot
     bool save_settings;        // hardware layer: write settings to flash, then clear
+    bool throttle_hold;        // ask the Shinegle to hold throttle (how is TBC until it's decoded)
 } cb_out_t;
 
 typedef void (*cb_send_fn)(const can_frame_t *f, void *user);
@@ -59,6 +60,8 @@ typedef struct {
     bool saw_current;
     uint32_t start_ms;
     uint32_t low_since_ms;
+    bool waiting;           // asked for, waiting for the right speed (or timing out)
+    uint32_t wait_start_ms;
 } fourwd_t;
 
 typedef struct {
@@ -68,6 +71,9 @@ typedef struct {
     uint16_t ref_raw;       // pot reading when it last moved
     uint32_t last_move_ms;
     uint8_t pct;            // PCT_UNKNOWN if the pot can't be trusted
+    bool waiting;           // adding lock asked for, waiting to slow down
+    uint8_t wait_pct;       // what it's waiting to move to
+    uint32_t wait_start_ms;
 } diff_t;
 
 typedef struct {
@@ -126,6 +132,10 @@ typedef struct {
 
     fourwd_t fwd;
     diff_t diff;
+    // Throttle hold while a shift runs from a standstill. Never applied once
+    // moving: if the Teryx rolls, it drops and stays off until the shift ends.
+    bool throttle_hold;
+    bool throttle_hold_blocked;
     tray_t tray;
     winch_t winch;
 

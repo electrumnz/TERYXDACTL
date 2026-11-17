@@ -23,9 +23,10 @@ import { MediaScreen } from "./screens/media.js";
 import { MediaHub } from "./media/hub.js";
 import { demoPlayer } from "./ui/demoplayer.js";
 import { WinchHeat } from "./winchheat.js";
+import { ShiftWatch } from "./ui/shift.js";
 
 // Fallback limits if the control box settings can't be read (match config/io-map.yaml safety defaults).
-const LIMIT_DEFAULTS = { fourwd_max_kmh: 1, diff_max_kmh: 15, tray_overcurrent_da: 10, winch_auto_disarm_s: 120 };
+const LIMIT_DEFAULTS = { fourwd_max_kmh: 1, diff_max_kmh: 15, tray_overcurrent_da: 10, winch_auto_disarm_s: 120, shift_wait_ms: 10000 };
 
 const store = new Store();
 const settings = new Settings();
@@ -62,6 +63,7 @@ const ctx = {
 
 ctx.alerts = new Alerts(store, settings);
 ctx.winchHeat = new WinchHeat();
+ctx.shift = new ShiftWatch(ctx);   // safe 4WD / diff changes: spinner, wait, cancel, done
 ctx.trips = new TripData(ctx);
 ctx.media = new MediaHub(ctx);
 // Music dips under every alert sound. Alerts themselves always play at their own volume.
@@ -106,7 +108,7 @@ function topbar(st) {
   document.getElementById("tb-mode").textContent = String(st.get("mc.mode", "normal")).toUpperCase();
   const fw = st.get("act.4wd", "2wd"), c4 = document.getElementById("tb-4wd");
   c4.textContent = fw === "4wd" || fw === "to_4wd" ? "4WD" : "2WD";
-  c4.className = `tb-chip ${fw === "4wd" ? "on" : fw.startsWith("to_") ? "busy" : ""}`;
+  c4.className = `tb-chip ${fw === "4wd" ? "on" : fw.startsWith("to_") || st.get("act.4wd_wait") ? "busy" : ""}`;
   const d = Math.round(st.get("an.diff_pos", 0)), cd = document.getElementById("tb-diff");
   cd.textContent = `DIFF ${d}%`; cd.className = `tb-chip ${d > 2 ? "on" : ""}`;
   const v12 = st.get("an.aux_12v");
@@ -244,6 +246,7 @@ async function main() {
     if (firstState && (st.get("pico.online") || st.get("link.demo"))) { firstState = false; hideSplash(); }
     const wh = ctx.winchHeat.tick(st);
     st.s["dash.winch_heat"] = { pct: wh.pct, state: wh.state, restS: wh.restLeftS() };  // read by the alerts
+    ctx.shift.update(st);
     topbar(st); alertBanner(st); reverseCamera(st); player.update(st);
     // Only the screen on show is redrawn, to keep the Pi cool.
     if (ctx.current) ctx.current.update(st);
