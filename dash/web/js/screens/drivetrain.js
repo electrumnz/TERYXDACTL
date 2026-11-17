@@ -1,5 +1,8 @@
-// 2WD / 4WD and front diff lock (%). The dash asks; the control box checks speed and runs the actuators.
-import { el, $, Slider, toast } from "../ui/controls.js";
+// 2WD / 4WD and front diff lock. The dash asks; the control box checks speed and runs the actuators.
+// The stock 2013 Teryx 750 front diff is two-position (UN-LOCK / LOCK), so the dash offers Open and
+// Lock only. The bus still carries a %, and the gauge shows where the actuator really is.
+// Sources: docs/teryx-drivetrain.md
+import { $, toast } from "../ui/controls.js";
 import { vehicleDiagram } from "../ui/vehicle.js";
 
 function arc(pct) {
@@ -22,7 +25,7 @@ export class DrivetrainScreen {
           <div class="kv"><span class="k">Current</span><span class="v num" id="t-cur">-- A</span></div>
           <div class="lockout" id="t-lock"></div>
           <div id="t-veh" class="grow" style="min-height:0"></div>
-          <div class="muted small">Changes between 2WD and 4WD under <b id="t-lim">5</b> km/h. The control box checks your speed and stops the actuator at its end stop.</div>
+          <div class="muted small">Stop before changing 2WD/4WD (under <b id="t-lim">1</b> km/h). It finishes engaging as you roll off slowly. The control box checks your speed and stops the actuator at its end stop.</div>
         </div>
         <div class="panel col" style="gap:12px">
           <h3>Front diff lock</h3>
@@ -32,37 +35,30 @@ export class DrivetrainScreen {
             <text id="t-pct" x="130" y="118" text-anchor="middle" font-size="54" font-weight="900" fill="currentColor">0%</text>
             <text id="t-tgt" x="130" y="146" text-anchor="middle" font-size="16" font-weight="700" fill="var(--muted)"></text>
           </svg></div>
-          <div id="t-slider"></div>
-          <div class="presets" id="t-presets"></div>
+          <div class="seg" id="d-seg"><button data-v="0">OPEN</button><button data-v="100">LOCK</button></div>
           <div class="lockout" id="d-lock"></div>
-          <div class="muted small">0% is fully open, 100% is fully locked. Changes under <b id="d-lim">15</b> km/h.</div>
+          <div class="muted small" id="d-4wd"></div>
+          <div class="muted small">Lock under <b id="d-lim">1</b> km/h with the wheels straight. Unlock any time. Only works in 4WD.</div>
         </div>
       </div>`;
     this.root = root;
     this.veh = vehicleDiagram(); this.veh.root.classList.add("small"); $(root, "#t-veh").appendChild(this.veh.root);
     root.querySelectorAll("#t-seg button").forEach((b) => (b.onclick = () => this.ask4wd(+b.dataset.v)));
-    this.slider = new Slider({ label: "TARGET", fmt: (v) => `${v}%`, step: 5, onChange: (v, final) => { if (final) this.askDiff(v); } });
-    this.slider.onLocked = () => toast(`Diff lock only changes under ${this.lim("diff_max_kmh", 15)} km/h.`);
-    $(root, "#t-slider").appendChild(this.slider.root);
-    const pr = $(root, "#t-presets");
-    [0, 25, 50, 75, 100].forEach((p) => {
-      const b = el(`<button class="btn sm">${p === 0 ? "OPEN" : p === 100 ? "LOCK" : p + "%"}</button>`);
-      b.onclick = () => { this.slider.set(p); this.askDiff(p); };
-      pr.appendChild(b);
-    });
+    root.querySelectorAll("#d-seg button").forEach((b) => (b.onclick = () => this.askDiff(+b.dataset.v)));
   }
 
   lim(name, d) { return this.ctx.picoLimit(name, d); }
 
   ask4wd(v) {
     const st = this.ctx.store;
-    if (st.get("mc.speed", 0) >= this.lim("fourwd_max_kmh", 5)) toast(`Slow to under ${this.lim("fourwd_max_kmh", 5)} km/h to change 2WD/4WD.`);
+    if (st.get("mc.speed", 0) >= this.lim("fourwd_max_kmh", 1)) toast("Stop first to change 2WD/4WD.");
     this.ctx.link.request("act.4wd", v);
   }
 
   askDiff(v) {
     const st = this.ctx.store;
-    if (st.get("mc.speed", 0) >= this.lim("diff_max_kmh", 15)) toast(`Slow to under ${this.lim("diff_max_kmh", 15)} km/h to change the diff lock.`);
+    const pos = st.get("an.diff_pos", 0);
+    if (v > pos + 2 && st.get("mc.speed", 0) >= this.lim("diff_max_kmh", 1)) toast("Stop first to lock the diff.");
     this.ctx.link.request("act.diff", v);
   }
 
@@ -79,11 +75,11 @@ export class DrivetrainScreen {
       b.classList.toggle("busy", fw.startsWith("to_") && +b.dataset.v === want);
     });
     const spd = st.get("mc.speed", 0);
-    const fl = this.lim("fourwd_max_kmh", 5), dl = this.lim("diff_max_kmh", 15);
+    const fl = this.lim("fourwd_max_kmh", 1), dl = this.lim("diff_max_kmh", 1);
     q("#t-lim").textContent = fl; q("#d-lim").textContent = dl;
     const unknown = st.get("mc.online") === false || st.get("pico.speed_valid") === false;
     const l4 = q("#t-lock");
-    l4.textContent = unknown ? "Speed unknown: locked out" : spd >= fl ? `Locked out above ${fl} km/h` : "Ready";
+    l4.textContent = unknown ? "Speed unknown: locked out" : spd >= fl ? "Stop to change" : "Ready";
     l4.className = `lockout ${unknown || spd >= fl ? "warn" : ""}`;
 
     const pos = st.get("an.diff_pos", 0), tgt = st.get("act.diff_target", pos);
@@ -92,12 +88,16 @@ export class DrivetrainScreen {
     this.veh.update(st);
     q("#t-pct").textContent = `${Math.round(pos)}%`;
     q("#t-tgt").textContent = Math.abs(tgt - pos) > 1 ? `moving to ${Math.round(tgt)}%` : `${st.get("an.diff_current", 0) > 0.2 ? "holding" : "set"}`;
-    this.slider.set(Math.round(tgt / 5) * 5);
-    this.slider.setActual(pos);
+    const dwant = tgt >= 50 ? 100 : 0;
+    this.root.querySelectorAll("#d-seg button").forEach((b) => {
+      b.classList.toggle("on", +b.dataset.v === dwant);
+      b.classList.toggle("busy", Math.abs(tgt - pos) > 1 && +b.dataset.v === dwant);
+    });
+    // Unlocking is always allowed; only adding lock needs a stop.
     const dlocked = unknown || spd >= dl;
-    this.slider.setLocked(dlocked);
     const ld = q("#d-lock");
-    ld.textContent = unknown ? "Speed unknown: locked out" : spd >= dl ? `Locked out above ${dl} km/h` : "Ready";
+    ld.textContent = unknown ? "Speed unknown: locked out" : spd >= dl ? "Stop to lock (unlock any time)" : "Ready";
     ld.className = `lockout ${dlocked ? "warn" : ""}`;
+    q("#d-4wd").textContent = fw === "4wd" ? "" : "In 2WD the diff lock does nothing. Switch to 4WD first.";
   }
 }

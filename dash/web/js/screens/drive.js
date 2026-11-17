@@ -126,7 +126,7 @@ export class DriveScreen {
     const fw = st.get("act.4wd", "2wd");
     chips.push(`<span class="tb-chip ${fw === "4wd" ? "on" : fw.startsWith("to_") ? "busy" : ""}">${fw === "4wd" ? "4WD" : fw === "to_4wd" ? "→ 4WD" : fw === "to_2wd" ? "→ 2WD" : fw === "fault" ? "4WD FAULT" : "2WD"}</span>`);
     const d = Math.round(st.get("an.diff_pos", 0));
-    if (d > 2) chips.push(`<span class="tb-chip on">DIFF ${d}%</span>`);
+    if (d > 2) chips.push(`<span class="tb-chip on">${d >= 98 ? "DIFF LOCK" : `DIFF ${d}%`}</span>`);
     if (st.get("light.rear")) chips.push(`<span class="tb-chip on">REAR LIGHTS</span>`);
     if (st.get("winch.armed")) chips.push(`<span class="tb-chip" style="color:var(--bad);border-color:var(--bad)">WINCH ARMED</span>`);
     if (st.get("in.park")) chips.push(`<span class="tb-chip" style="color:var(--bad);border-color:var(--bad)">HANDBRAKE</span>`);

@@ -100,24 +100,35 @@ def test_setting_values_are_clamped(b):
     assert b.cb.acks[-1]["value"] == 40 and b.cb.acks[-1]["status"] == 2
     assert not b.cb.on_defaults
     b.cb.on_frame("PI_SETTINGS", {"key": M.SETTING_RESET, "value": 0}, b.t)
-    assert b.cb.on_defaults and b.cb.settings["fourwd_max_kmh"] == 5
+    assert b.cb.on_defaults and b.cb.settings["fourwd_max_kmh"] == 1
 
 
 def test_diff_lock_moves_to_target(b):
-    b.speed = 10
-    b.run(0.1)
     b.drive_req(0, 60)
     b.run(3)
     assert b.cb.diff.pos == pytest.approx(0.6)
 
 
-def test_diff_lock_refused_above_15(b):
-    b.speed = 16
+def test_diff_lock_refused_when_moving(b):
+    # Kawasaki: stop before locking the front diff
+    b.speed = 2
     b.run(0.1)
     b.drive_req(0, 100)
     b.run(1)
     assert b.cb.reject_reason == "too_fast"
     assert b.cb.diff.pos == 0
+
+
+def test_diff_unlocks_while_moving(b):
+    # Kawasaki: unlock "after crossing the obstacle", no stop needed
+    b.drive_req(0, 100)
+    b.run(4)
+    assert b.cb.diff.pos == pytest.approx(1.0)
+    b.speed = 20
+    b.run(0.1)
+    b.drive_req(0, 0)
+    b.run(4)
+    assert b.cb.diff.pos == pytest.approx(0.0)
 
 
 def test_tray_needs_hold_to_run(b):
@@ -275,7 +286,7 @@ def test_io_map_safety_values_are_read(tmp_path):
     f.write_text("safety:\n  fourwd_max_kmh: 7\n  tray_max_run_s: 12\n  tray_requires_stopped: true\n")
     s = safety_defaults(f)
     assert s["fourwd_max_kmh"] == 7 and s["tray_max_run_ms"] == 12000
-    assert s["diff_max_kmh"] == 15
+    assert s["diff_max_kmh"] == 1
 
 
 def test_built_in_defaults_match_the_io_list():

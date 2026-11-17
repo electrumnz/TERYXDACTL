@@ -9,10 +9,10 @@ typedef struct { uint16_t def, min, max; } range_t;
 static const range_t k_ranges[SET_COUNT] = {
     [SET_HEARTBEAT_TIMEOUT_MS] = {500, 100, 5000},
     [SET_SPEED_TIMEOUT_MS]     = {500, 100, 5000},
-    [SET_4WD_MAX_KMH]          = {5, 0, 40},
+    [SET_4WD_MAX_KMH]          = {1, 0, 40},   // Kawasaki: stop before 2WD/4WD
     [SET_4WD_MAX_RUN_MS]       = {3000, 500, 10000},
     [SET_4WD_OVERCURRENT_DA]   = {60, 5, 300},
-    [SET_DIFF_MAX_KMH]         = {15, 0, 40},
+    [SET_DIFF_MAX_KMH]         = {1, 0, 40},   // locking only; unlocking any speed
     [SET_DIFF_MAX_RUN_MS]      = {4000, 500, 10000},
     [SET_DIFF_OVERCURRENT_DA]  = {80, 5, 300},
     [SET_TRAY_MAX_RUN_MS]      = {20000, 1000, 60000},

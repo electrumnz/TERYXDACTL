@@ -51,9 +51,9 @@ await nav("drivetrain");
 await page.click('#t-seg button[data-v="1"]');
 s = await waitFor((s) => s["act.4wd"] === "4wd", 6000);
 check(s["act.4wd"] === "4wd", "4WD engages when stopped");
-await page.click("#t-presets button:nth-child(3)");
-s = await waitFor((s) => Math.abs(s["an.diff_pos"] - 50) <= 2, 8000);
-check(Math.abs(s["an.diff_pos"] - 50) <= 2, `diff lock reaches 50% (got ${s["an.diff_pos"]})`);
+await page.click('#d-seg button[data-v="100"]');
+s = await waitFor((s) => s["an.diff_pos"] >= 98, 8000);
+check(s["an.diff_pos"] >= 98, `diff locks (got ${s["an.diff_pos"]})`);
 await shot("live-4wd");
 
 // Winch: slide to arm, then hold IN

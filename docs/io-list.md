@@ -49,8 +49,8 @@ still drives, lights stay as they were, and anything moving stops.
 | ~26-way GPIO breakout | Pi side wiring |
 | 1x BTS7960 H-bridge | Front diff actuator |
 | ADS1115 | Analogue inputs |
-| 50mm actuator with pot | Front diff lock (%) |
-| 50mm actuator (standard) | 2WD / 4WD |
+| 50mm actuator with pot | Front diff lock (Open / Lock, the stock diff is two-position, see [teryx-drivetrain.md](teryx-drivetrain.md)) |
+| 50mm actuator (standard) | 2WD / 4WD (or drive the stock Kawasaki 4WD actuator instead, see [teryx-drivetrain.md](teryx-drivetrain.md)) |
 | 400mm actuator | Tray lift |
 | Trailer plug | Trailer lights |
 | 2K rear camera | Reverse view (USB or RCA/AHD, **TBC**) |
@@ -156,7 +156,7 @@ shifter. **TBC** on the bench.
 | `in.tray_down` | Tray down limit | B3 | Normally closed, so a broken wire reads as "at limit" |
 | `in.tray_up` | Tray up limit | B4 | Normally closed |
 | `in.winch_remote` | Winch remote in use | B5 | Optional, so the dash can show it |
-| `in.park` | Park / handbrake switch | B6 | Optional, **TBC** if fitted |
+| `in.park` | Parking brake pedal switch | B6 | The stock Teryx has one (it lights the red parking brake light in the meter). Tap that wire. Ground or 12V switching **TBC** |
 | `in.spare` | Spare | B7 | |
 
 ### Analogue
@@ -235,10 +235,16 @@ All limits are adjustable in settings, with these defaults:
    is never affected.
 2. **Lost speed:** no Shinegle speed for 500 ms → treat speed as unknown and
    block anything that needs "stopped".
-3. **2WD / 4WD:** only changes under **5 km/h**. Max run 3 s, stop on current
-   over 6A.
-4. **Diff lock %:** changes under **15 km/h**. Max run 4 s. If the pot reading
+3. **2WD / 4WD:** only changes when **stopped** (under 1 km/h). Kawasaki says
+   stop first, and shifting on the move can damage the front drive train. It
+   finishes engaging as you roll off. Max run 3 s, stop on current over 6A.
+4. **Diff lock:** Open / Lock on the dash (the stock diff is two-position).
+   **Locking** only when stopped (under 1 km/h). **Unlocking** works at any
+   speed. It only does anything in 4WD. Max run 4 s. If the pot reading
    doesn't move while driving, stop and flag a fault.
+
+   Sources for 3 and 4 (Kawasaki owner's manuals) are in
+   [teryx-drivetrain.md](teryx-drivetrain.md).
 5. **Tray:** only when **stopped** (speed 0). Hold-to-run only. Stops at limit
    switches, on current over 10A, or after 20 s.
 6. **Winch:** must be armed on the dash, speed 0, hold-to-run. In and out can

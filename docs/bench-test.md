@@ -25,7 +25,7 @@ Open http://localhost:8080/ and the sim page at /sim.
 
 - [ ] Dash shows speed, battery and temps moving
 - [ ] Tapping 4WD, diff, lights, tray and winch on the dash changes them on the sim page
-- [ ] Driving faster than 5 km/h on the sim page, then asking for 4WD, gets refused with a reason
+- [ ] Driving on the sim page (1 km/h or more), then asking for 4WD or diff LOCK, gets refused with a reason. Asking for diff OPEN while driving works
 
 Then run the real firmware logic against the sim (see
 [`firmware/control-box/README.md`](../firmware/control-box/README.md)):
