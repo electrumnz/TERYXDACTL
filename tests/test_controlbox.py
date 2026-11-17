@@ -104,14 +104,15 @@ def test_setting_values_are_clamped(b):
 
 
 def test_diff_lock_moves_to_target(b):
+    b.speed = 10
+    b.run(0.1)
     b.drive_req(0, 60)
     b.run(3)
     assert b.cb.diff.pos == pytest.approx(0.6)
 
 
-def test_diff_lock_refused_when_moving(b):
-    # Kawasaki: stop before locking the front diff
-    b.speed = 2
+def test_diff_lock_refused_above_15(b):
+    b.speed = 16
     b.run(0.1)
     b.drive_req(0, 100)
     b.run(1)
@@ -120,7 +121,7 @@ def test_diff_lock_refused_when_moving(b):
 
 
 def test_diff_unlocks_while_moving(b):
-    # Kawasaki: unlock "after crossing the obstacle", no stop needed
+    # Unlocking always works, so you can drop the lock before a turn
     b.drive_req(0, 100)
     b.run(4)
     assert b.cb.diff.pos == pytest.approx(1.0)
@@ -286,7 +287,7 @@ def test_io_map_safety_values_are_read(tmp_path):
     f.write_text("safety:\n  fourwd_max_kmh: 7\n  tray_max_run_s: 12\n  tray_requires_stopped: true\n")
     s = safety_defaults(f)
     assert s["fourwd_max_kmh"] == 7 and s["tray_max_run_ms"] == 12000
-    assert s["diff_max_kmh"] == 1
+    assert s["diff_max_kmh"] == 15
 
 
 def test_built_in_defaults_match_the_io_list():

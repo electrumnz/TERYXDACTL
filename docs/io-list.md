@@ -49,7 +49,7 @@ still drives, lights stay as they were, and anything moving stops.
 | ~26-way GPIO breakout | Pi side wiring |
 | 1x BTS7960 H-bridge | Front diff actuator |
 | ADS1115 | Analogue inputs |
-| 50mm actuator with pot | Front diff lock (Open / Lock, the stock diff is two-position, see [teryx-drivetrain.md](teryx-drivetrain.md)) |
+| 50mm actuator with pot | Front diff lock (%) |
 | 50mm actuator (standard) | 2WD / 4WD (or drive the stock Kawasaki 4WD actuator instead, see [teryx-drivetrain.md](teryx-drivetrain.md)) |
 | 400mm actuator | Tray lift |
 | Trailer plug | Trailer lights |
@@ -238,9 +238,9 @@ All limits are adjustable in settings, with these defaults:
 3. **2WD / 4WD:** only changes when **stopped** (under 1 km/h). Kawasaki says
    stop first, and shifting on the move can damage the front drive train. It
    finishes engaging as you roll off. Max run 3 s, stop on current over 6A.
-4. **Diff lock:** Open / Lock on the dash (the stock diff is two-position).
-   **Locking** only when stopped (under 1 km/h). **Unlocking** works at any
-   speed. It only does anything in 4WD. Max run 4 s. If the pot reading
+4. **Diff lock %:** **adding lock** only under **15 km/h**. **Unlocking**
+   works at any speed, so you can drop it before a turn. It only does
+   anything in 4WD. Max run 4 s. If the pot reading
    doesn't move while driving, stop and flag a fault.
 
    Sources for 3 and 4 (Kawasaki owner's manuals) are in

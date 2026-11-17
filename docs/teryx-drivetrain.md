@@ -29,16 +29,18 @@ converted to electric with a Shinegle 7.5 kW kit.
   (27010-0068). Aftermarket "manual 4WD actuator" kits are sold to replace it. [6] [7] [8]
 
 ### Front diff lock
-- It's **two-position, not variable**: "This vehicle is equipped with a
-  dual-mode differential for the front wheel." Positions are **UN-LOCK**
-  (differential mode) and **LOCK** (locked-axle mode). [1] [4]
-- It's a **mechanical lever** next to the gear lever, right of the driver's
-  seat, with a **push button** on top. Lock = pull it all the way back.
-  Unlock = push the button and move it all the way forward. [1] [9]
+- **On the owner's own 2013 Teryx 750 two-seater the front diff control is a
+  variable lever (a slider), checked by hand when they removed it.** That
+  first-hand check wins, so Teryx OS keeps the 0 to 100% control.
+- The 2011 and 2012 manuals we could read describe a two-position
+  "dual-mode" diff (LOCK / UN-LOCK) on a lever with a push button [1] [4] [9].
+  That doesn't match this Teryx, so either the 2013 two-seater differs or
+  those manuals cover a different version. We couldn't get the 2013 diff page
+  online to check. The parts of those pages that are about how a front diff
+  lock behaves still apply:
 - **Only works in 4WD**: "The differential control is effective only when 4WD
   is engaged." [9]
-- Kawasaki's lock procedure is: stop, switch to 4WD, pull the lever to LOCK.
-  To unlock it just says "after crossing the obstacle, move the shift lever
+- To unlock it just says "after crossing the obstacle, move the shift lever
   forward". No stop is mentioned for unlocking. [9]
 - **Don't lock in a turn**: "Do not shift to Locked-Axle Mode while turning or
   before entering a turn", because steering gets heavy and the Teryx can go
@@ -73,14 +75,13 @@ converted to electric with a Shinegle 7.5 kW kit.
 | Thing | Before | Now | Why |
 |---|---|---|---|
 | 2WD/4WD | changes under 5 km/h | changes only when **stopped** (under 1 km/h) | Kawasaki: stop first, shifting while moving can damage the front drive train [1] |
-| Diff lock (adding lock) | under 15 km/h | only when **stopped** (under 1 km/h) | Kawasaki's lock procedure starts with stopping [9] |
-| Diff lock (unlocking) | under 15 km/h | **any speed** | Kawasaki unlocks "after crossing the obstacle", and a locked diff makes steering heavy, so you want to be able to drop it on the move [1] [9] |
-| Diff lock on the dash | 0 to 100% slider with 25/50/75 presets | **Open / Lock** buttons | The stock diff is two-position. Half-way would leave it part engaged [1] |
-| Diff lock in 2WD | no hint | dash says "Only works in 4WD" | Kawasaki: diff control only works in 4WD [9] |
+| Diff lock (adding lock) | under 15 km/h | under 15 km/h (unchanged) | Variable diff, so the old default stays |
+| Diff lock (unlocking) | under 15 km/h | **any speed** | Kawasaki unlocks "after crossing the obstacle", and a locked diff makes steering heavy, so you want to be able to drop it before a turn [1] [9] |
+| Diff lock on the dash | 0 to 100% slider with presets | same (Open, 25, 50, 75, Lock) | This Teryx has a variable diff (checked by hand) |
+| Diff lock in 2WD | no hint | dash says it does nothing in 2WD | Kawasaki: diff control only works in 4WD [9] |
 | Handbrake input `in.park` | optional, "TBC if fitted" | expected, from the **stock parking brake switch** | The stock meter has a parking brake light, so the switch is there [11] |
 
-All the limits are still adjustable in Settings. The CAN frame still carries
-a diff %, so a variable diff could be added later without changing the bus.
+All the limits are still adjustable in Settings.
 
 ### Hardware notes (our reasoning, not from Kawasaki)
 - **4WD actuator:** the stock front diff only meshes once the wheels roll
@@ -90,15 +91,16 @@ a diff %, so a variable diff could be added later without changing the bus.
   from a relay instead of the 50 mm actuator. If the 50 mm actuator is used,
   it needs a spring in the linkage so it can preload the shift and let it snap
   in as you roll. Worth trying on the bench before deciding.
-- **Diff lever:** the lever has a push-button catch [1]. An actuator on the
-  lever or its cable needs that catch removed or held, or it can't unlock.
+- **Diff lever:** if the lever has a catch or detent, an actuator on the
+  lever or its cable needs that removed or held, or it can't unlock.
 
 ---
 
 ## Still to check on the real vehicle
 1. Is the stock electric 4WD actuator still on the front diff, and is the
    dash 2WD/4WD switch still wired to it?
-2. Is the stock diff lock lever still fitted (mechanical, LOCK/UN-LOCK)?
+2. Measure the diff lever's full travel and pull force, so the 50 mm
+   actuator and its pot calibration (Settings, diff pot min/max) match it.
 3. What did the Shinegle kit replace? Is the stock gearbox still there with
    its front and rear outputs, or is the "transfer case" a Shinegle part? Any
    paperwork or a photo of the label would answer this.

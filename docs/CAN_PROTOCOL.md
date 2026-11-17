@@ -261,7 +261,7 @@ HOST/BENCH BUILD ONLY. Lets the simulator drive the Pico's wired inputs and inje
 | 3 (0x03) | `fourwd_max_kmh` | km/h | 1 | 0-40 |
 | 4 (0x04) | `fourwd_max_run_ms` | ms | 3000 | 500-10000 |
 | 5 (0x05) | `fourwd_overcurrent_da` | 0.1A | 60 | 5-300 |
-| 6 (0x06) | `diff_max_kmh` | km/h | 1 | 0-40 |
+| 6 (0x06) | `diff_max_kmh` | km/h | 15 | 0-40 |
 | 7 (0x07) | `diff_max_run_ms` | ms | 4000 | 500-10000 |
 | 8 (0x08) | `diff_overcurrent_da` | 0.1A | 80 | 5-300 |
 | 9 (0x09) | `tray_max_run_ms` | ms | 20000 | 1000-60000 |

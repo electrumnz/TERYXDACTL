@@ -12,7 +12,7 @@ Safety rules (IO list section 7, values from SETTINGS):
  2. No Shinegle speed for 500 ms -> speed unknown, block anything needing "stopped".
  3. 2WD/4WD only below 1 km/h (stopped, per Kawasaki). Runs to end stop, max 3 s, stops on current > 6 A.
     Position is "unknown" after boot until the first move to an end stop.
- 4. Adding diff lock only below 1 km/h; unlocking at any speed. Max run 4 s. Pot not moving -> fault.
+ 4. Adding diff lock % only below 15 km/h; unlocking at any speed. Max run 4 s. Pot not moving -> fault.
  5. Tray only when stopped, hold-to-run. Limit switches, current > 10 A, max 20 s.
     A latched tray fault is cleared by the next accepted press.
  6. Winch: arming needs stopped + known speed. Running needs armed + stopped +

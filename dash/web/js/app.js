@@ -24,7 +24,7 @@ import { MediaHub } from "./media/hub.js";
 import { demoPlayer } from "./ui/demoplayer.js";
 
 // Fallback limits if the control box settings can't be read (match config/io-map.yaml safety defaults).
-const LIMIT_DEFAULTS = { fourwd_max_kmh: 1, diff_max_kmh: 1, tray_overcurrent_da: 10, winch_auto_disarm_s: 120 };
+const LIMIT_DEFAULTS = { fourwd_max_kmh: 1, diff_max_kmh: 15, tray_overcurrent_da: 10, winch_auto_disarm_s: 120 };
 
 const store = new Store();
 const settings = new Settings();
@@ -106,7 +106,7 @@ function topbar(st) {
   c4.textContent = fw === "4wd" || fw === "to_4wd" ? "4WD" : "2WD";
   c4.className = `tb-chip ${fw === "4wd" ? "on" : fw.startsWith("to_") ? "busy" : ""}`;
   const d = Math.round(st.get("an.diff_pos", 0)), cd = document.getElementById("tb-diff");
-  cd.textContent = d >= 98 ? "DIFF LOCK" : d > 2 ? `DIFF ${d}%` : "DIFF OPEN"; cd.className = `tb-chip ${d > 2 ? "on" : ""}`;
+  cd.textContent = `DIFF ${d}%`; cd.className = `tb-chip ${d > 2 ? "on" : ""}`;
   const v12 = st.get("an.aux_12v");
   const e12 = document.getElementById("tb-12v");
   e12.textContent = v12 == null ? "--" : `${v12.toFixed(1)}V`;

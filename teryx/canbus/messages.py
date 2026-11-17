@@ -239,7 +239,7 @@ SETTINGS: dict[int, tuple[str, str, int, int, int]] = {
     3: ("fourwd_max_kmh", "km/h", 1, 0, 40),
     4: ("fourwd_max_run_ms", "ms", 3000, 500, 10000),
     5: ("fourwd_overcurrent_da", "0.1A", 60, 5, 300),
-    6: ("diff_max_kmh", "km/h", 1, 0, 40),
+    6: ("diff_max_kmh", "km/h", 15, 0, 40),
     7: ("diff_max_run_ms", "ms", 4000, 500, 10000),
     8: ("diff_overcurrent_da", "0.1A", 80, 5, 300),
     9: ("tray_max_run_ms", "ms", 20000, 1000, 60000),

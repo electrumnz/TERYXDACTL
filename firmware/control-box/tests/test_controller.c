@@ -180,7 +180,7 @@ static void test_4wd_stall(void) {
 
 static void test_diff_closed_loop(void) {
     rig_init();
-    R.speed_x10 = 0;  // stopped: locking is only allowed under 1 km/h by default
+    R.speed_x10 = 100;  // 10 km/h, under the 15 km/h limit for adding lock
     run(300);
     CHECK(R.c.diff.pct == 0);
     drive(DRIVE_NO_CHANGE, 100);

@@ -89,7 +89,7 @@ safety:                      # defaults, adjustable in settings
   fourwd_max_kmh: 1           # Kawasaki: stop before changing 2WD/4WD (docs/teryx-drivetrain.md)
   fourwd_max_run_s: 3
   fourwd_overcurrent_a: 6
-  diff_max_kmh: 1             # adding lock only; unlocking is allowed at any speed
+  diff_max_kmh: 15            # adding lock only; unlocking is allowed at any speed
   diff_max_run_s: 4
   tray_requires_stopped: true
   tray_max_run_s: 20
