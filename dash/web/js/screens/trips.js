@@ -3,10 +3,12 @@ import { el, $, toast } from "../ui/controls.js";
 import { icon } from "../ui/icons.js";
 import { fmtKm, fmtKwh, fmtWhKm, fmtDur } from "../tripdata.js";
 
+// How sure the range is. It learns from km driven vs energy used, newest driving counting most.
 const BASIS = {
-  recent: "Based on the last 10 km you've driven.",
-  average: "Based on your average so far. Gets better as you drive.",
-  guess: "A first guess until you've driven a couple of km.",
+  learnt: (km) => `Learnt from your last ${Math.round(km)} km. Newest driving counts most.`,
+  learning: (km) => `Still learning: ${km.toFixed(1)} km driven so far. Settles after about 5 km.`,
+  average: () => "Based on your average so far. Gets better as you drive.",
+  guess: () => "A first guess until you've driven a bit.",
 };
 
 export class TripsScreen {
@@ -84,7 +86,7 @@ export class TripsScreen {
     $(r, "#tr-range").className = `big-val num ${rng != null && d.range_km < 5 ? "bad" : rng != null && d.range_km < 15 ? "warn" : ""}`;
     $(r, "#tr-left").textContent = d.kwh_left == null ? "--" : `${d.kwh_left.toFixed(1)} of ${d.pack_kwh} kWh`;
     $(r, "#tr-whk").textContent = fmtWhKm(d.wh_per_km, mph);
-    $(r, "#tr-basis").textContent = `${BASIS[d.basis] || ""} Pack size is set in Settings > Display.`;
+    $(r, "#tr-basis").textContent = `${BASIS[d.basis] ? BASIS[d.basis](d.learnt_km || 0) : ""} Pack size is set in Settings > Display.`;
 
     const hist = d.history || [];
     const maxKm = Math.max(1, ...hist.map((t) => t.km));

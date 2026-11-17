@@ -94,7 +94,7 @@ def test_range_estimate():
     # 36 km/h at 76 V x 50 A = 3.8 kW -> 105.6 Wh/km
     drive(log, t, 300, 36, amps=50)
     whk, basis = log.wh_per_km()
-    assert basis == "recent" and abs(whk - 105.6) < 2
+    assert basis == "learning" and abs(whk - 105.6) < 2
     r = log.summary({"mc.soc": 50}, pack_kwh=7.5)
     assert abs(r["range_km"] - 3750 / whk) < 0.5
     assert log.summary({})["range_km"] is None
@@ -109,3 +109,48 @@ def test_saves_and_loads(tmp_path):
     log.save()
     again = TripLog(p)
     assert len(again.history) == 1 and abs(again.lifetime["km"] - 1.0) < 0.05
+
+
+def test_range_learns_and_settles_on_new_driving():
+    """Drive gently for a while, then hard: the figure moves to the new use, newest counting most."""
+    log = TripLog()
+    t = drive(log, 0, 1, 0)
+    t = drive(log, t, 1000, 36, amps=40)           # 10 km at 76 V x 40 A / 36 km/h = 84.4 Wh/km
+    gentle, basis = log.wh_per_km()
+    assert basis == "learnt" and abs(gentle - 84.4) < 2
+    t = drive(log, t, 200, 36, amps=100)           # 2 km of hard going, 211 Wh/km
+    mid, _ = log.wh_per_km()
+    assert gentle < mid < 211
+    drive(log, t, 1000, 36, amps=100)              # 10 more km of it
+    hard, _ = log.wh_per_km()
+    assert hard > mid and hard > 180               # mostly learnt the new figure
+    assert hard < 211                              # still pulled a little toward the lifetime average
+
+
+def test_one_short_climb_doesnt_swing_range():
+    log = TripLog()
+    t = drive(log, 0, 1, 0)
+    t = drive(log, t, 1000, 36, amps=40)           # 10 km steady
+    before, _ = log.wh_per_km()
+    drive(log, t, 30, 36, amps=150)                # 0.3 km steep climb at 316 Wh/km
+    after, _ = log.wh_per_km()
+    assert after - before < 25
+
+
+def test_learning_carries_on_after_restart(tmp_path):
+    p = tmp_path / "trips.json"
+    log = TripLog(p)
+    t = drive(log, 0, 1, 0)
+    drive(log, t, 800, 36, amps=60)
+    log.save()
+    whk, basis = log.wh_per_km()
+    again = TripLog(p)
+    assert again.wh_per_km() == (whk, basis)
+    assert again.summary({"mc.soc": 50})["learnt_km"] == log.summary({"mc.soc": 50})["learnt_km"]
+
+
+def test_fresh_pack_uses_first_guess():
+    log = TripLog()
+    r = log.summary({"mc.soc": 100}, pack_kwh=7.5)
+    assert r["basis"] == "guess" and r["wh_per_km"] == DEFAULT_WH_PER_KM
+    assert abs(r["range_km"] - 7500 / DEFAULT_WH_PER_KM) < 0.1
