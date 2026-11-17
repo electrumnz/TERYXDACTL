@@ -13,6 +13,11 @@ Safety rules (IO list section 7, values from SETTINGS):
  3. 2WD/4WD only below 1 km/h (stopped, per Kawasaki). Runs to end stop, max 3 s, stops on current > 6 A.
     Position is "unknown" after boot until the first move to an end stop.
  4. Adding diff lock % only below 15 km/h; unlocking at any speed. Max run 4 s. Pot not moving -> fault.
+    3/4 extra (docs/drive-changes.md): a 4WD or diff request that is only too fast
+    WAITS up to shift_wait_ms for the speed to come right, then runs. Asking for
+    what's already there cancels it; a wait that runs out is dropped (wait_timeout).
+    One drive change at a time ("busy"), except taking diff lock off. Throttle is
+    held while a shift runs, only if it started from a standstill, never once moving.
  5. Tray only when stopped, hold-to-run. Limit switches, current > 10 A, max 20 s.
     A latched tray fault is cleared by the next accepted press.
  6. Winch: arming needs stopped + known speed. Running needs armed + stopped +
@@ -89,6 +94,11 @@ class ControlBox:
     diff: Actuator = field(default_factory=lambda: Actuator(rate=0.3))       # 3.3 s 0-100 %
     tray: Actuator = field(default_factory=lambda: Actuator(rate=1 / 16))    # 400 mm at 25 mm/s
     fourwd_fault: bool = False
+    # safe drive changes: (start time, wanted position) while waiting for the right speed
+    fourwd_wait: tuple | None = None
+    diff_wait: tuple | None = None
+    throttle_hold: bool = False
+    throttle_hold_blocked: bool = False
     # winch
     winch_armed: bool = False
     winch_dir: int = 0
@@ -221,29 +231,93 @@ class ControlBox:
             self.fourwd.target = 1.0 if v["fourwd_req"] else 0.0
         if prev is None or v["fourwd_req"] != prev["fourwd_req"]:
             want = 1.0 if v["fourwd_req"] else 0.0
+            self.fourwd_wait = None   # a new request replaces (or cancels) a wait
             if want != self.fourwd.target or self.fourwd_fault or not self.fourwd_known:
-                if not self.inp("in.ignition"):
-                    self.reject("ignition_off")
-                elif not speed_ok:
-                    self.reject("speed_unknown")
-                elif self.speed >= self.s("fourwd_max_kmh"):
-                    self.reject("too_fast")
+                reason = self._shift_check(self.s("fourwd_max_kmh"))
+                if reason is None and (self.diff.moving or self.diff_wait is not None):
+                    reason = "busy"
+                if reason is None:
+                    self._start_4wd(want)
+                elif reason == "too_fast" and self.s("shift_wait_ms") > 0:
+                    self.fourwd_wait = (self.t, want)
                 else:
-                    self.fourwd_fault = False
-                    self.fourwd.faulted = False
-                    self.latched -= {"fourwd_timeout", "fourwd_overcurrent"}
-                    self.fourwd.target = want
+                    self.reject(reason)
         if prev is None or v["diff_target"] != prev["diff_target"]:
             want = max(0, min(100, v["diff_target"])) / 100
+            self.diff_wait = None
             if abs(want - self.diff.target) > 0.005:
-                if not speed_ok:
-                    self.reject("speed_unknown")
-                elif want > self.diff.pos + 0.02 and self.speed >= self.s("diff_max_kmh"):
-                    self.reject("too_fast")
+                adding = want > self.diff.pos + 0.02
+                reason = self._shift_check(self.s("diff_max_kmh") if adding else 1e9)
+                if reason is None and adding and (self.fourwd.moving or self.fourwd_wait is not None):
+                    reason = "busy"
+                if reason is None:
+                    self._start_diff(want)
+                elif reason == "too_fast" and self.s("shift_wait_ms") > 0:
+                    self.diff_wait = (self.t, want)
                 else:
-                    self.diff.faulted = False
-                    self.latched -= {"diff_timeout", "diff_pot_stuck"}
-                    self.diff.target = want
+                    self.reject(reason)
+
+    def _shift_check(self, limit_kmh: float) -> str | None:
+        if not self.inp("in.ignition"):
+            return "ignition_off"
+        if not self.speed_known():
+            return "speed_unknown"
+        if self.speed >= limit_kmh:
+            return "too_fast"
+        return None
+
+    def _start_4wd(self, want: float) -> None:
+        self.fourwd_fault = False
+        self.fourwd.faulted = False
+        self.latched -= {"fourwd_timeout", "fourwd_overcurrent"}
+        self.fourwd.target = want
+
+    def _start_diff(self, want: float) -> None:
+        self.diff.faulted = False
+        self.latched -= {"diff_timeout", "diff_pot_stuck"}
+        self.diff.target = want
+
+    def _wait_tick(self) -> None:
+        """Start a waiting request once it's safe; drop it on a hard reason or time-out."""
+        wait_s = self.s("shift_wait_ms") / 1000
+        if not self.dash_ok() or not self.inp("in.ignition"):
+            self.fourwd_wait = self.diff_wait = None   # rule 1 / key-off: drop quietly
+        if self.fourwd_wait is not None:
+            start, want = self.fourwd_wait
+            reason = self._shift_check(self.s("fourwd_max_kmh"))
+            if reason is None and self.diff.moving:
+                reason = "busy"
+            if reason is None:
+                self.fourwd_wait = None
+                self._start_4wd(want)
+            elif reason not in ("too_fast", "busy"):
+                self.fourwd_wait = None
+                self.reject(reason)
+            elif self.t - start >= wait_s:
+                self.fourwd_wait = None
+                self.reject("wait_timeout")
+        if self.diff_wait is not None:
+            start, want = self.diff_wait
+            reason = self._shift_check(self.s("diff_max_kmh"))
+            if reason is None:
+                self.diff_wait = None
+                self._start_diff(want)
+            elif reason != "too_fast":
+                self.diff_wait = None
+                self.reject(reason)
+            elif self.t - start >= wait_s:
+                self.diff_wait = None
+                self.reject("wait_timeout")
+
+    def _update_throttle_hold(self) -> None:
+        shifting = self.fourwd.moving or self.diff.moving
+        if not shifting or not self.s("shift_throttle_hold"):
+            self.throttle_hold = self.throttle_hold_blocked = False
+        elif not self.stopped():
+            # Never cut throttle while moving: drop it and keep it off for this shift
+            self.throttle_hold, self.throttle_hold_blocked = False, True
+        elif not self.throttle_hold_blocked:
+            self.throttle_hold = True
 
     def _hold_request(self, v: dict, now: float) -> None:
         self.last_hold = now
@@ -335,6 +409,9 @@ class ControlBox:
                         direction=self.direction, soc=self.soc, fourwd=self.fourwd_state(),
                         throttle_pct=self.throttle)
 
+        # --- waiting 4WD / diff requests
+        self._wait_tick()
+
         # --- 4WD: runs to end stop, max run time, current limit
         self.fourwd.jammed = False
         was_moving = self.fourwd.moving
@@ -368,6 +445,8 @@ class ControlBox:
             if self.diff.jammed:
                 self.latched.add("diff_pot_stuck")
             self._fault_actuator(self.diff)
+
+        self._update_throttle_hold()
 
         # --- tray: hold-to-run, limit switches, current, max run
         if self.hold_tray > 0 and not self.inp("in.tray_up"):
@@ -550,6 +629,9 @@ class ControlBox:
                 "inputs": M.names_to_bits([n for n, on in inputs.items() if on], M.INPUT_BITS),
                 "state": M.enum_value(M.PICO_STATE, self.state()),
                 "on_defaults": int(self.on_defaults),
+                "fourwd_wait": int(self.fourwd_wait is not None),
+                "diff_wait": int(self.diff_wait is not None),
+                "throttle_hold": int(self.throttle_hold),
                 "reject_reason": M.enum_value(M.REJECT_REASON, self.reject_reason),
                 "reject_count": self.reject_count,
                 "winch_armed": int(self.winch_armed),
@@ -572,7 +654,7 @@ class ControlBox:
                 "fourwd_current": self.fourwd.current,
                 "tray_current": self.tray.current,
                 "tray_pct": self.tray.pos * 100,
-                "diff_target": self.diff.target * 100,
+                "diff_target": (self.diff_wait[1] if self.diff_wait else self.diff.target) * 100,
             }),
             ("PICO_POWER", {
                 "aux_12v": self.aux_12v, "pico_temp": self.temp,

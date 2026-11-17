@@ -194,6 +194,8 @@ class Simulator:
                 self.cb.step(dt, cb_now)
                 # ...and the Pico's regen request goes to the Shinegle (how is still TBC)
                 self.vehicle.regen_request = self.cb.regen.out.request_pct / 100
+                # ...and so does its throttle hold during a shift from a standstill (also TBC)
+                self.vehicle.throttle_hold = self.cb.throttle_hold
                 self.cb_node.enabled = self.links["controlbox"]
                 for name, values in self.cb.frames():
                     self.cb_node.send_due(BY_NAME[name], lambda values=values: values, now)
