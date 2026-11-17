@@ -121,6 +121,7 @@ static void test_boot_all_off(void) {
 
 static void test_4wd_speed_rule_and_change_only(void) {
     rig_init();
+    setting(SET_SHIFT_WAIT_MS, 0);  // waiting off: the old refuse-at-once rule
     run(300);
     drive(REQ_2WD, 0);  // known position first (unknown homes on resend, see below)
     run(3500);
@@ -181,6 +182,7 @@ static void test_4wd_stall(void) {
 
 static void test_diff_closed_loop(void) {
     rig_init();
+    setting(SET_SHIFT_WAIT_MS, 0);
     R.speed_x10 = 100;  // 10 km/h, under the 15 km/h limit for adding lock
     run(300);
     CHECK(R.c.diff.pct == 0);
@@ -632,6 +634,213 @@ static void test_status_frames(void) {
     CHECK(n710 >= 11);  // 10 Hz
 }
 
+
+// ---- Safe drive changes: wait for the right speed, time out, cancel, busy, throttle hold
+
+static uint8_t status_b4(void) { const can_frame_t *s = last_sent(CAN_ID_PICO_STATUS); return s ? s->data[4] : 0; }
+
+static void test_4wd_waits_for_stop(void) {
+    rig_init();
+    run(300);
+    drive(REQ_2WD, 0);
+    run(3500);
+    R.speed_x10 = 120;  // 12 km/h
+    run(300);
+    uint8_t rc = R.c.reject_count;
+    drive(REQ_4WD, 0);
+    run(500);
+    CHECK(R.c.fwd.waiting);
+    CHECK(!R.c.fwd.moving && R.c.fwd.state == FWD_2WD);
+    CHECK(status_b4() & STATE_BIT_4WD_WAIT);
+    CHECK(R.c.reject_count == rc);  // waiting is not a refusal
+    // Dash resends every second while we slow: still just one wait
+    for (int i = 0; i < 2; i++) { drive(REQ_4WD, 0); run(1000); }
+    CHECK(R.c.fwd.waiting);
+    R.speed_x10 = 0;
+    run(200);
+    CHECK(!R.c.fwd.waiting && R.c.fwd.moving && R.c.fwd.state == FWD_TO_4WD);
+    run(2500);
+    CHECK(R.c.fwd.state == FWD_4WD);
+    CHECK(!(status_b4() & STATE_BIT_4WD_WAIT));
+    CHECK(R.c.reject_count == rc);
+}
+
+static void test_4wd_wait_times_out(void) {
+    rig_init();
+    run(300);
+    drive(REQ_2WD, 0);
+    run(3500);
+    R.speed_x10 = 200;
+    run(300);
+    drive(REQ_4WD, 0);
+    run(9800);
+    CHECK(R.c.fwd.waiting);
+    run(400);
+    CHECK(!R.c.fwd.waiting);
+    CHECK(reject_reason() == REJ_WAIT_TIMEOUT);
+    // Not done later by surprise, even with the dash still resending 4WD
+    R.speed_x10 = 0;
+    for (int i = 0; i < 3; i++) { drive(REQ_4WD, 0); run(1000); }
+    CHECK(R.c.fwd.state == FWD_2WD && !R.c.fwd.moving);
+}
+
+static void test_4wd_wait_cancel(void) {
+    rig_init();
+    run(300);
+    drive(REQ_2WD, 0);
+    run(3500);
+    R.speed_x10 = 200;
+    run(300);
+    uint8_t rc = R.c.reject_count;
+    drive(REQ_4WD, 0);
+    run(1000);
+    CHECK(R.c.fwd.waiting);
+    drive(REQ_2WD, 0);  // Cancel = ask for what's already there
+    run(100);
+    CHECK(!R.c.fwd.waiting);
+    CHECK(R.c.reject_count == rc);
+    R.speed_x10 = 0;
+    run(2000);
+    CHECK(R.c.fwd.state == FWD_2WD && !R.c.fwd.moving);
+}
+
+static void test_4wd_wait_hard_reason(void) {
+    rig_init();
+    run(300);
+    drive(REQ_2WD, 0);
+    run(3500);
+    R.speed_x10 = 200;
+    run(300);
+    drive(REQ_4WD, 0);
+    run(500);
+    CHECK(R.c.fwd.waiting);
+    R.shinegle = false;  // speed signal lost: drop the wait, say why
+    run(1000);
+    CHECK(!R.c.fwd.waiting);
+    CHECK(reject_reason() == REJ_SPEED_UNKNOWN);
+    // Lost dash also drops a wait
+    rig_init();
+    run(300);
+    drive(REQ_2WD, 0);
+    run(3500);
+    R.speed_x10 = 200;
+    run(300);
+    drive(REQ_4WD, 0);
+    run(300);
+    R.dash = false;
+    run(1000);
+    CHECK(!R.c.fwd.waiting);
+}
+
+static void test_diff_waits_to_slow(void) {
+    rig_init();
+    drive(REQ_4WD, 0);
+    run(3000);
+    R.speed_x10 = 250;  // 25 km/h, over the 15 km/h lock limit
+    run(300);
+    drive(REQ_4WD, 60);
+    run(500);
+    CHECK(R.c.diff.waiting && !R.c.diff.moving);
+    CHECK(status_b4() & STATE_BIT_DIFF_WAIT);
+    const can_frame_t *a = last_sent(CAN_ID_PICO_ACT);
+    CHECK(a && a->data[7] == 60);  // dash sees what it's waiting for
+    R.speed_x10 = 100;
+    run(4000);
+    CHECK(!R.c.diff.waiting);
+    CHECK(R.c.diff.pct >= 57 && R.c.diff.pct <= 63);
+    // Unlocking never waits
+    R.speed_x10 = 300;
+    run(200);
+    drive(REQ_4WD, 0);
+    run(100);
+    CHECK(!R.c.diff.waiting && R.c.diff.moving);
+    run(3000);
+    CHECK(R.c.diff.pct <= 3);
+    // A wait cancelled by asking for the current %
+    drive(REQ_4WD, 80);
+    run(300);
+    CHECK(R.c.diff.waiting);
+    drive(REQ_4WD, R.c.diff.pct);
+    run(100);
+    CHECK(!R.c.diff.waiting && !R.c.diff.moving);
+}
+
+static void test_drive_busy(void) {
+    rig_init();
+    drive(REQ_2WD, 0);
+    run(3000);
+    // 4WD running: adding diff lock is refused as busy
+    drive(REQ_4WD, 0);
+    run(100);
+    CHECK(R.c.fwd.moving);
+    drive(REQ_4WD, 50);
+    run(50);
+    CHECK(reject_reason() == REJ_BUSY);
+    CHECK(!R.c.diff.moving && !R.c.diff.waiting);
+    run(3000);
+    CHECK(R.c.fwd.state == FWD_4WD);
+    // Diff running: a 4WD change is refused as busy
+    drive(REQ_4WD, 100);
+    run(100);
+    CHECK(R.c.diff.moving);
+    drive(REQ_2WD, 100);
+    run(50);
+    CHECK(reject_reason() == REJ_BUSY);
+    CHECK(R.c.fwd.state == FWD_4WD && !R.c.fwd.waiting);
+    drive(REQ_4WD, 100);  // the dash snaps its request back after a refusal
+    run(4000);
+    // 4WD waiting: adding lock is busy too, but taking it off still works
+    R.speed_x10 = 100;
+    run(300);
+    drive(REQ_2WD, 100);
+    run(100);
+    CHECK(R.c.fwd.waiting);
+    drive(REQ_2WD, 20);
+    run(100);
+    CHECK(R.c.diff.moving);
+    CHECK(R.c.fwd.waiting);
+}
+
+static void test_throttle_hold(void) {
+    rig_init();
+    drive(REQ_2WD, 0);
+    run(3000);
+    CHECK(!R.out.throttle_hold);
+    drive(REQ_4WD, 0);  // from a standstill: held while it shifts
+    run(200);
+    CHECK(R.c.fwd.moving && R.out.throttle_hold);
+    CHECK(status_b4() & STATE_BIT_THROTTLE_HOLD);
+    run(3000);
+    CHECK(!R.c.fwd.moving && !R.out.throttle_hold);
+    // Starts to roll mid-shift: hold drops and stays off for that shift
+    drive(REQ_2WD, 0);
+    run(200);
+    CHECK(R.out.throttle_hold);
+    R.speed_x10 = 20;
+    run(200);
+    CHECK(!R.out.throttle_hold);
+    R.speed_x10 = 0;
+    run(200);
+    CHECK(R.c.fwd.moving ? !R.out.throttle_hold : true);
+    run(3000);
+    // Diff added on the move: never held, even after stopping
+    R.speed_x10 = 80;
+    drive(REQ_4WD, 0);
+    run(3000);
+    drive(REQ_4WD, 100);
+    run(200);
+    CHECK(R.c.diff.moving && !R.out.throttle_hold);
+    R.speed_x10 = 0;
+    run(300);
+    CHECK(!R.out.throttle_hold);
+    run(4000);
+    // Setting off: never held
+    setting(SET_SHIFT_THROTTLE_HOLD, 0);
+    drive(REQ_4WD, 0);
+    run(200);
+    CHECK(R.c.diff.moving && !R.out.throttle_hold);
+}
+
 int main(void) {
     struct { const char *name; void (*fn)(void); } tests[] = {
         {"boot: all outputs off", test_boot_all_off},
@@ -639,6 +848,13 @@ int main(void) {
         {"4WD: unknown position homes on resend", test_4wd_homes_when_unknown},
         {"4WD: stall gives overcurrent fault", test_4wd_stall},
         {"diff: closed loop and speed rule", test_diff_closed_loop},
+        {"4WD: waits for a stop, then goes", test_4wd_waits_for_stop},
+        {"4WD: wait times out, not done later", test_4wd_wait_times_out},
+        {"4WD: wait cancelled by the dash", test_4wd_wait_cancel},
+        {"4WD: wait dropped on a hard reason", test_4wd_wait_hard_reason},
+        {"diff: waits to slow, unlock never waits", test_diff_waits_to_slow},
+        {"drive: one change at a time", test_drive_busy},
+        {"drive: throttle hold only from a standstill", test_throttle_hold},
         {"diff: jam detected", test_diff_jam},
         {"diff: pot disconnected", test_diff_pot_disconnected},
         {"tray: hold-to-run and limits", test_tray_hold_to_run},

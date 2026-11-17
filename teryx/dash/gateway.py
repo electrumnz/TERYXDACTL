@@ -216,6 +216,9 @@ class Gateway:
                 st["pico.speed_valid"] = bool(v["speed_valid"])
                 st["pico.parked"] = bool(v["parked"])
                 st["pico.shutdown_request"] = bool(v["shutdown_request"])
+                st["act.4wd_wait"] = bool(v.get("fourwd_wait", 0))
+                st["act.diff_wait"] = bool(v.get("diff_wait", 0))
+                st["pico.throttle_hold"] = bool(v.get("throttle_hold", 0))
                 if self._last_reject_count is not None and v["reject_count"] != self._last_reject_count:
                     self._resync_requests()
                 self._last_reject_count = v["reject_count"]
@@ -266,9 +269,11 @@ class Gateway:
     def _resync_requests(self) -> None:
         """A request was refused: snap the dash's request back to what the box is doing."""
         st = self.state
-        if "act.4wd" in st and st["act.4wd"] in ("2wd", "4wd"):
+        # Leave a request alone while the box is still waiting on it (a refusal of
+        # something else, like the tray, must not cancel a waiting 4WD change).
+        if "act.4wd" in st and st["act.4wd"] in ("2wd", "4wd") and not st.get("act.4wd_wait"):
             self.req["act.4wd"] = 1 if st["act.4wd"] == "4wd" else 0
-        if "act.diff_target" in st:
+        if "act.diff_target" in st and not st.get("act.diff_wait"):
             self.req["act.diff"] = int(st["act.diff_target"])
         self.node.send(M.PI_DRIVE, self._drive_values())
 

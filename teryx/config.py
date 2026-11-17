@@ -38,6 +38,8 @@ _SAFETY = {
     "brake_regen_full_pct": ("brake_regen_full_pct", 1),
     "brake_regen_fade_kmh": ("brake_regen_fade_kmh", 1),
     "brake_regen_2wd_pct": ("brake_regen_2wd_pct", 1),
+    "shift_wait_s": ("shift_wait_ms", 1000),
+    "shift_throttle_hold": ("shift_throttle_hold", 1),
 }
 
 
@@ -52,7 +54,7 @@ def safety_defaults(path: Path = IO_MAP) -> dict[str, int]:
         return settings
     data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     for key, value in (data.get("safety") or {}).items():
-        if isinstance(value, bool) and key == "brake_regen_on":
+        if isinstance(value, bool) and key in ("brake_regen_on", "shift_throttle_hold"):
             value = int(value)
         if key in _SAFETY and isinstance(value, (int, float)) and not isinstance(value, bool):
             name, mult = _SAFETY[key]

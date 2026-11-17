@@ -250,6 +250,14 @@ All limits are adjustable in settings, with these defaults:
 
    Sources for 3 and 4 (Kawasaki owner's manuals) are in
    [teryx-drivetrain.md](teryx-drivetrain.md).
+
+   **Waiting, one at a time, throttle hold (3 and 4):** a request that is only
+   too fast **waits** up to 10 s (`shift_wait_s`) for the speed to come right,
+   then runs. The dash shows a spinner, a hint and Cancel. Any other reason is
+   refused at once, and a wait that runs out is dropped. Only one drive change
+   at a time, except unlocking the diff. Throttle is held while a shift runs
+   **only if it started from a standstill**, and never once moving. Details in
+   [drive-changes.md](drive-changes.md).
 5. **Tray:** only when **stopped** (speed 0). Hold-to-run only. Stops at limit
    switches, on current over 10A, or after 20 s.
 6. **Winch:** must be armed on the dash, speed 0, hold-to-run. In and out can

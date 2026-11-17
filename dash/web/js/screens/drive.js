@@ -180,7 +180,8 @@ export class DriveScreen {
     if (st.get("in.park")) chip("", "alert", "", "Handbrake");
     if (st.get("in.brake")) chip("", "alert", "", "Brake");
     const fw = st.get("act.4wd", "2wd");
-    if (fw !== "2wd") chip("drivetrain", fw === "4wd" ? "on" : fw === "fault" ? "alert" : "busy", "fourwd", fw === "4wd" ? "4WD" : fw === "to_4wd" ? "→ 4WD" : fw === "to_2wd" ? "→ 2WD" : "4WD fault");
+    const w4 = st.get("act.4wd_wait");
+    if (fw !== "2wd" || w4) chip("drivetrain", fw === "4wd" && !w4 ? "on" : fw === "fault" ? "alert" : "busy", "fourwd", w4 ? (fw === "4wd" ? "2WD when stopped" : "4WD when stopped") : fw === "4wd" ? "4WD" : fw === "to_4wd" ? "→ 4WD" : fw === "to_2wd" ? "→ 2WD" : "4WD fault");
     const d = Math.round(st.get("an.diff_pos", 0));
     if (d > 2) chip("drivetrain", "on", "lock", `Diff ${d}%`);
     if (on("lights")) {

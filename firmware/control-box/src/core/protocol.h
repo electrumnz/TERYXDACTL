@@ -98,6 +98,9 @@ enum {
     SET_BRAKE_REGEN_2WD_PCT = 27, // share allowed when not in 4WD
     SET_BRAKE_PEDAL_MIN = 28,     // raw ADS1115 counts, pedal up
     SET_BRAKE_PEDAL_MAX = 29,     // raw ADS1115 counts, pedal on the floor
+    // Safe drive changes (docs/drive-changes.md)
+    SET_SHIFT_WAIT_MS = 30,       // how long a 4WD / diff request waits for the right speed, 0 = refuse at once
+    SET_SHIFT_THROTTLE_HOLD = 31, // 1 = ask the Shinegle to hold throttle while a shift runs from a standstill
     SET_COUNT,
     SET_CMD_SAVE = 0xF0,          // write current settings to flash
     SET_CMD_DEFAULTS = 0xF1,      // go back to defaults (not saved until 0xF0)
@@ -110,6 +113,9 @@ enum { SET_ACK_OK = 0, SET_ACK_UNKNOWN = 1, SET_ACK_RANGE = 2 };
 // b7 speed km/h as seen by the Pico (0xFF unknown).
 enum { CB_STATE_BOOT = 0, CB_STATE_OK = 1, CB_STATE_DEGRADED = 2, CB_STATE_FAILSAFE = 3 };
 #define STATE_BIT_ON_DEFAULTS   0x08u   // b4 bit 3: settings are defaults, please resend
+#define STATE_BIT_4WD_WAIT      0x10u   // b4 bit 4: a 4WD/2WD request is waiting for the right speed
+#define STATE_BIT_DIFF_WAIT     0x20u   // b4 bit 5: a diff lock request is waiting for the right speed
+#define STATE_BIT_THROTTLE_HOLD 0x40u   // b4 bit 6: throttle held while a shift runs from a standstill
 
 #define FLAG_WINCH_ARMED        0x01u   // b6
 #define FLAG_SPEED_VALID        0x02u
@@ -152,6 +158,8 @@ enum {
     REJ_NOT_PARKED = 11,     // firmware update refused
     REJ_REMOTE_IN_USE = 12,  // handheld winch remote has it
     REJ_BAD_FRAME = 13,
+    REJ_WAIT_TIMEOUT = 14,   // waited shift_wait_ms for the right speed, gave up
+    REJ_BUSY = 15,           // another drive change is waiting or running
 };
 
 // ---- 0x712 actuator states ---------------------------------------------------------

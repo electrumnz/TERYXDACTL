@@ -139,16 +139,38 @@ s = await waitFor((s) => s["act.tray"] !== "raising", 1500);
 check(s["act.tray"] !== "raising", "tray stops when released");
 check(s["act.tray_pct"] > 0, `tray moved (${s["act.tray_pct"]}%)`);
 
-// Lockout: driving along, ask for 2WD, the control box refuses and we say why
+// Safe drive changes: driving along, ask for 2WD. The control box waits for a stop
+// (spinner, hint, countdown, Cancel), Cancel drops it, and a wait that ends in a stop goes through.
 await sim({ scenario: "trail" });
 s = await waitFor((s) => s["mc.speed"] > 8, 15000);
 await nav("drivetrain");
 await page.click('#t-seg button[data-v="0"]');
-await sleep(1200);
+s = await waitFor((s) => s["act.4wd_wait"], 2000);
+check(s["act.4wd_wait"] === true, "2WD request waits while moving");
+await sleep(400);
+const waitTxt = await page.$eval("#t-wait", (e) => (e.hidden ? "" : e.textContent));
+check(/stop to shift/i.test(waitTxt) && /cancel/i.test(waitTxt), `hint and Cancel shown while waiting ("${waitTxt}")`);
+check(await page.$('#t-seg button[data-v="0"].sh-waiting .spin') !== null, "spinner on the 2WD button");
+check(await page.$('#t-presets button[data-p="50"].locked') !== null, "diff lock presets locked meanwhile");
+await shot("live-4wd-waiting");
+await page.click("#t-cancel");
+s = await waitFor((s) => !s["act.4wd_wait"], 2000);
+check(!s["act.4wd_wait"] && s["act.4wd"] === "4wd", "Cancel drops the wait, still in 4WD");
 const toast = await page.$eval("#toast", (e) => (e.hidden ? "" : e.textContent));
-check(/slow|stop/i.test(toast), `refusal explained when too fast ("${toast}")`);
-s = await state();
-check(s["act.4wd"] === "4wd", "still in 4WD after refusal");
+check(/cancel/i.test(toast), `cancel confirmed ("${toast}")`);
+await sleep(2000);
+await page.click('#t-seg button[data-v="0"]');
+s = await waitFor((s) => s["act.4wd_wait"], 2000);
+await sim({ scenario: "idle" });          // pull up: it changes by itself once stopped
+s = await waitFor((s) => s["act.4wd"] === "2wd", 12000);
+check(s["act.4wd"] === "2wd", "2WD goes through once stopped");
+await sleep(150);
+const done = await page.$('#t-seg button[data-v="0"].sh-done .tick');
+check(done !== null, "tick and pulse on the button when done");
+const toast2 = await page.$eval("#toast", (e) => (e.hidden ? "" : e.textContent));
+check(/2wd/i.test(toast2), `success toast ("${toast2}")`);
+await shot("live-4wd-done");
+await sim({ scenario: "trail" });
 await nav("drive");
 await sleep(500);
 await shot("live-drive-trail");

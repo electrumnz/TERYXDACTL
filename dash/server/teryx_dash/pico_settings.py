@@ -55,6 +55,8 @@ FALLBACK: list[Setting] = [
     Setting(27, "brake_regen_2wd_pct", "Brake regen in 2WD", 60, "%", None, 5, 0, 100, "Share of regen allowed when not in 4WD, as it only brakes the rear wheels."),
     Setting(28, "brake_pedal_min_raw", "Brake pedal up point", 2000, "raw", None, 100, 0, 32767, "Pedal sensor reading with your foot off. Set on the bench from the reading the control box sends."),
     Setting(29, "brake_pedal_max_raw", "Brake pedal floor point", 22000, "raw", None, 100, 0, 32767, "Pedal sensor reading with the pedal pushed hard down."),
+    Setting(30, "shift_wait_ms", "Wait for the right speed", 10000, "ms", None, 1000, 0, 30000, "How long a 4WD or diff lock change waits for you to stop or slow down before giving up. 0 = refuse straight away."),
+    Setting(31, "shift_throttle_hold", "Hold throttle while shifting", 1, "", None, 1, 0, 1, "Holds the throttle while 4WD or diff lock changes from a standstill. Never while moving."),
     Setting(17, "hold_to_run_timeout_ms", "Hold-to-run stop after", 300, "ms", None, 50, 100, 2000, "Stop the tray or winch if the dash's repeats stop this long."),
 ]
 

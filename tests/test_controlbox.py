@@ -71,6 +71,7 @@ def test_4wd_engages_when_slow(b):
 
 
 def test_4wd_refused_when_too_fast_and_not_done_later(b):
+    b.cb.on_frame("PI_SETTINGS", {"key": 30, "value": 0}, b.t)   # waiting off: refuse at once
     b.speed = 20
     b.run(0.2)
     b.drive_req(1)
@@ -113,6 +114,7 @@ def test_diff_lock_moves_to_target(b):
 
 
 def test_diff_lock_refused_above_15(b):
+    b.cb.on_frame("PI_SETTINGS", {"key": 30, "value": 0}, b.t)
     b.speed = 16
     b.run(0.1)
     b.drive_req(0, 100)
@@ -421,3 +423,132 @@ def test_unknown_4wd_homes_on_resend_once_speed_is_known():
     bench.drive_req(0)          # the 1 s resend
     bench.run(1.5)
     assert bench.cb.fourwd_state() == "2wd"
+
+
+# ---------------------------------------------------------------- safe drive changes (docs/drive-changes.md)
+
+def status(b):
+    return dict(b.cb.frames())["PICO_STATUS"]
+
+
+def test_4wd_waits_for_stop_then_goes(b):
+    b.speed = 12
+    b.run(0.2)
+    b.drive_req(1)
+    b.run(0.5)
+    assert status(b)["fourwd_wait"] == 1 and b.cb.fourwd_state() == "2wd"
+    assert b.cb.reject_count == 0
+    for _ in range(2):          # dash resends while slowing
+        b.drive_req(1)
+        b.run(1.0)
+    b.speed = 0
+    b.run(0.2)
+    assert b.cb.fourwd_state() == "to_4wd" and status(b)["fourwd_wait"] == 0
+    b.run(2.5)
+    assert b.cb.fourwd_state() == "4wd" and b.cb.reject_count == 0
+
+
+def test_4wd_wait_times_out_and_is_not_done_later(b):
+    b.speed = 20
+    b.run(0.2)
+    b.drive_req(1)
+    b.run(9.7)
+    assert b.cb.fourwd_wait is not None
+    b.run(0.5)
+    assert b.cb.fourwd_wait is None and b.cb.reject_reason == "wait_timeout"
+    b.speed = 0
+    for _ in range(3):
+        b.drive_req(1)
+        b.run(1.0)
+    assert b.cb.fourwd_state() == "2wd"
+
+
+def test_4wd_wait_cancel(b):
+    b.speed = 20
+    b.run(0.2)
+    b.drive_req(1)
+    b.run(1)
+    b.drive_req(0)              # Cancel = ask for what's already there
+    b.run(0.1)
+    assert b.cb.fourwd_wait is None and b.cb.reject_count == 0
+    b.speed = 0
+    b.run(2)
+    assert b.cb.fourwd_state() == "2wd"
+
+
+def test_4wd_wait_dropped_when_speed_lost(b):
+    b.speed = 20
+    b.run(0.2)
+    b.drive_req(1)
+    b.run(0.5)
+    b.shinegle_alive = False
+    b.run(1)
+    assert b.cb.fourwd_wait is None and b.cb.reject_reason == "speed_unknown"
+
+
+def test_diff_waits_to_slow_and_unlock_never_waits(b):
+    b.drive_req(1, 0)
+    b.run(3)
+    b.speed = 25
+    b.run(0.2)
+    b.drive_req(1, 60)
+    b.run(0.5)
+    st = status(b)
+    assert st["diff_wait"] == 1 and b.cb.diff.pos == 0
+    assert dict(b.cb.frames())["PICO_ACTUATORS"]["diff_target"] == pytest.approx(60)
+    b.speed = 10
+    b.run(3)
+    assert b.cb.diff.pos == pytest.approx(0.6) and b.cb.diff_wait is None
+    b.speed = 30
+    b.run(0.2)
+    b.drive_req(1, 0)
+    b.run(3)
+    assert b.cb.diff.pos == pytest.approx(0.0)
+
+
+def test_one_drive_change_at_a_time(b):
+    b.drive_req(1, 0)
+    b.run(0.2)
+    assert b.cb.fourwd.moving
+    b.drive_req(1, 50)
+    b.run(0.05)
+    assert b.cb.reject_reason == "busy" and not b.cb.diff.moving
+    b.run(3)
+    b.drive_req(1, 100)
+    b.run(0.2)
+    assert b.cb.diff.moving
+    b.drive_req(0, 100)
+    b.run(0.05)
+    assert b.cb.reject_reason == "busy" and b.cb.fourwd_state() == "4wd"
+
+
+def test_throttle_hold_only_from_a_standstill(b):
+    b.drive_req(1)
+    b.run(0.2)
+    assert b.cb.throttle_hold and status(b)["throttle_hold"] == 1
+    b.speed = 2                 # rolls: hold drops and stays off for this shift
+    b.run(0.2)
+    assert not b.cb.throttle_hold
+    b.speed = 0
+    b.run(0.2)
+    assert not b.cb.throttle_hold
+    b.run(3)
+    b.speed = 8                 # diff on the move: never held
+    b.run(0.2)
+    b.drive_req(1, 100)
+    b.run(0.3)
+    assert b.cb.diff.moving and not b.cb.throttle_hold
+
+
+def test_vehicle_honours_throttle_hold():
+    from teryx.sim.vehicle import Vehicle
+    v = Vehicle()
+    v.inp.direction, v.inp.throttle = "forward", 0.5
+    v.throttle_hold = True
+    for _ in range(50):
+        v.step(0.02)
+    assert v.speed_ms < 0.05
+    v.throttle_hold = False
+    for _ in range(50):
+        v.step(0.02)
+    assert v.speed_ms > 0.5

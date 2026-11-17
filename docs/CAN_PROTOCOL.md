@@ -96,7 +96,10 @@ From **controlbox**, every 100 ms.
 | `inputs` | byte 3 | u8 |  | MCP23017 B0-B7, see INPUT_BITS |
 | `state` | byte 4 bit 0 (+2 bits) | u2 |  | 0=boot, 1=ok, 2=degraded, 3=failsafe |
 | `on_defaults` | byte 4 bit 3 | u1 |  | Pico is running on default settings, please resend |
-| `reject_reason` | byte 5 bit 0 (+4 bits) | u4 |  | Why the last request was refused 0=none, 1=too_fast, 2=not_stopped, 3=speed_unknown, 4=not_armed, 5=interlock, 6=actuator_fault, 7=low_12v, 8=dash_link, 9=ignition_off, 10=at_limit, 11=not_parked, 12=winch_remote, 13=bad_frame |
+| `fourwd_wait` | byte 4 bit 4 | u1 |  | A 2WD/4WD request is waiting for the right speed (docs/drive-changes.md) |
+| `diff_wait` | byte 4 bit 5 | u1 |  | A diff lock request is waiting for the right speed |
+| `throttle_hold` | byte 4 bit 6 | u1 |  | Throttle held: a shift is running from a standstill |
+| `reject_reason` | byte 5 bit 0 (+4 bits) | u4 |  | Why the last request was refused 0=none, 1=too_fast, 2=not_stopped, 3=speed_unknown, 4=not_armed, 5=interlock, 6=actuator_fault, 7=low_12v, 8=dash_link, 9=ignition_off, 10=at_limit, 11=not_parked, 12=winch_remote, 13=bad_frame, 14=wait_timeout, 15=busy |
 | `reject_count` | byte 5 bit 4 (+4 bits) | u4 |  | Goes up by one each time a request is refused |
 | `winch_armed` | byte 6 bit 0 | u1 |  |  |
 | `speed_valid` | byte 6 bit 1 | u1 |  |  |
@@ -134,7 +137,7 @@ From **controlbox**, every 100 ms.
 | `fourwd_current` | byte 4 | u8 x0.1 | A |  |
 | `tray_current` | byte 5 | u8 x0.1 | A |  |
 | `tray_pct` | byte 6 | u8 | % | Estimate from run time, no pot on the tray |
-| `diff_target` | byte 7 | u8 | % |  |
+| `diff_target` | byte 7 | u8 | % | While diff_wait is set, the % it's waiting to move to |
 
 ### 0x713 PICO_POWER
 
@@ -268,6 +271,8 @@ HOST/BENCH BUILD ONLY. Lets the simulator drive the Pico's wired inputs and inje
 | 11 | `not_parked` |
 | 12 | `winch_remote` |
 | 13 | `bad_frame` |
+| 14 | `wait_timeout` |
+| 15 | `busy` |
 
 **Settings keys (0x704 / 0x714)**
 
@@ -302,6 +307,8 @@ HOST/BENCH BUILD ONLY. Lets the simulator drive the Pico's wired inputs and inje
 | 27 (0x1B) | `brake_regen_2wd_pct` | % | 60 | 0-100 |
 | 28 (0x1C) | `brake_pedal_min_raw` | raw | 2000 | 0-32767 |
 | 29 (0x1D) | `brake_pedal_max_raw` | raw | 22000 | 0-32767 |
+| 30 (0x1E) | `shift_wait_ms` | ms | 10000 | 0-30000 |
+| 31 (0x1F) | `shift_throttle_hold` | bool | 1 | 0-1 |
 | 240 (0xF0) | save to flash | | | |
 | 241 (0xF1) | reset to defaults | | | |
 | 242 (0xF2) | clear latched faults | | | |

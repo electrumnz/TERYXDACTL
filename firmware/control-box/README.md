@@ -83,6 +83,7 @@ If CAN is down it falls back to `picotool reboot -f -u` over USB. Needs
 | 1 Lost dash | No `0x700` for 500 ms: stop tray, 4WD and diff actuators, winch off and disarmed, isolator off. Lights stay. 3 s grace after boot |
 | 2 Lost speed | No Shinegle speed for 500 ms: speed unknown, so anything that needs "stopped" or a speed check is refused |
 | 3 2WD/4WD | Starts only when stopped (under 1 km/h, Kawasaki says stop first, see `docs/teryx-drivetrain.md`). Requests act on a change only, except that while the position is unknown (after boot) a resend homes it once it is safe. Full power to the end. Done when the current drops away (actuator's own limit switch), fault on over 6 A, gives up after 3 s |
+| 3/4 waiting | A 4WD or diff request that is only too fast waits up to `shift_wait_ms` (10 s) and runs once the speed is right. Asking for what's already there cancels it. Hard reasons (no speed, key off, lost dash, fault) drop it, a time-out rejects it (14). One drive change at a time (15 busy), except unlocking. Throttle hold only while a shift runs from a standstill, dropped for good if it rolls |
 | 4 Diff % | Adding lock starts only under 15 km/h, and stops where it is if speed goes over. Unlocking runs at any speed (needs a known speed). Closed loop on the pot with a 2 % deadband. Fault if the pot doesn't move for 1 s while driving, over 8 A, or after 4 s. Pot reading outside its calibrated range = wire fault |
 | 5 Tray | Stopped only, hold-to-run (stops 300 ms after the last `0x703`). Stops at limit switches, over 10 A, after 20 s, or if the Teryx moves. Both limits showing at once = wiring fault, tray locked out |
 | 6 Winch | Arm only when stopped. Hold-to-run. In and out never together, with 100 ms of both-off between them. Disarms on lost dash, key off, any speed, or 2 min idle. Tray and winch can't run at the same time. If the handheld remote or a hand switch is in use, the dash can't drive the winch. **Timed pull:** if `0x703` byte 3 is set (seconds), the Pico starts its own timer when the winch actually starts and stops it on time even if the dash keeps sending, capped at setting 21 (default 30 s). It won't run again until the dash lets go and presses again. A timed pull cut short (remote, interlock) also needs a new press. The 300 ms hold timeout still applies the whole time |
@@ -120,6 +121,11 @@ These are in the firmware and need adding to the test environment's
 - Settings keys 18 relay active-low, 19 tray full travel ms (for the tray %
   estimate), 20 low 12V warning mV, and `0xF2` clear latched faults.
 - `0x7E0` bench: bit 3 pot disconnected, bit 4 IO bus dead, bytes 3-4 12V aux mV.
+- Safe drive changes (`docs/drive-changes.md`, now in `messages.py` too):
+  `0x710` byte 4 bit 4 4WD waiting, bit 5 diff waiting, bit 6 throttle hold;
+  reject reasons 14 wait timed out, 15 busy; settings 30 `shift_wait_ms`,
+  31 `shift_throttle_hold`. `cb_out_t.throttle_hold` is there for the hardware
+  layer, but nothing sends it to the Shinegle until its CAN is decoded.
 
 ## Check on the bench before it goes on the Teryx
 

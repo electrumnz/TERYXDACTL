@@ -354,3 +354,10 @@ body.look-night .d-hero .rex img { filter: brightness(.5) contrast(1.15) sepia(.
 .demo-player { border-radius: 0 !important; clip-path: var(--clip-plate); border-color: var(--accent) !important; }
 .demo-player .dp-btn { border-radius: 0 !important; clip-path: var(--clip-key); }
 .demo-player .dp-btn.main { background: var(--key-on) !important; border-color: var(--accent-2) !important; color: var(--accent-ink) !important; }
+
+/* safe 4WD / diff changes (js/ui/shift.js): keep the state rings over the key edges */
+.seg button.sh-asked, .seg button.sh-waiting, .seg button.sh-moving, .btn.sh-asked, .btn.sh-waiting, .btn.sh-moving { box-shadow: inset 0 0 0 3px var(--info); color: var(--info); }
+.seg button.sh-done, .btn.sh-done { box-shadow: inset 0 0 0 3px var(--good); }
+.seg button.sh-timeout, .btn.sh-timeout { box-shadow: inset 0 0 0 3px var(--warn); color: var(--warn); }
+.seg button.sh-failed, .btn.sh-failed { box-shadow: inset 0 0 0 3px var(--bad); }
+.shift-wait { border-radius: 0; clip-path: var(--clip-key); background: rgba(0,0,0,.4); font-family: var(--display); font-size: 21px; letter-spacing: .04em; }
