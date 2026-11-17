@@ -1,47 +1,5 @@
 /* Teryx dash: rugged, high contrast, big touch targets (gloves). Screen is 1280x800. */
 
-:root {
-  --bg: #0b0d0e;
-  --panel: #15181a;
-  --panel-2: #1c2023;
-  --line: #2a3034;
-  --text: #eef1f2;
-  --muted: #8b959b;
-  --dim: #565f65;
-  --accent: #ffad1f;      /* amber: the "you can press this" colour */
-  --accent-ink: #1a1200;
-  --good: #36d67e;
-  --warn: #ffad1f;
-  --bad: #ff4b4b;
-  --info: #39c3ff;
-  --regen: #36d67e;
-  --draw: #39c3ff;
-  --shadow: 0 2px 0 rgba(0,0,0,.6);
-  --radius: 14px;
-  --nav-w: 104px;
-  --top-h: 60px;
-  --font: "Inter", "DejaVu Sans", "Liberation Sans", system-ui, sans-serif;
-  --mono: "DejaVu Sans Mono", "Liberation Mono", ui-monospace, monospace;
-}
-
-body.theme-day {
-  --bg: #e9ecee;
-  --panel: #ffffff;
-  --panel-2: #f2f4f5;
-  --line: #c3cad0;
-  --text: #0b0d0e;
-  --muted: #4c565c;
-  --dim: #8b959b;
-  --accent: #e08a00;
-  --accent-ink: #ffffff;
-  --good: #0f9d4f;
-  --warn: #c77700;
-  --bad: #d61f1f;
-  --info: #0077c2;
-  --regen: #0f9d4f;
-  --draw: #0077c2;
-  --shadow: 0 2px 0 rgba(0,0,0,.12);
-}
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font-family: var(--font); overflow: hidden; }
@@ -79,8 +37,8 @@ button { font: inherit; color: inherit; }
 }
 .tb-chip.on { color: var(--accent); border-color: var(--accent); }
 .tb-chip.busy { color: var(--info); border-color: var(--info); animation: pulse 1s infinite; }
-.tb-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--bad); box-shadow: 0 0 0 3px rgba(255,75,75,.2); }
-.tb-dot.ok { background: var(--good); box-shadow: 0 0 0 3px rgba(54,214,126,.2); }
+.tb-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--bad); box-shadow: 0 0 0 3px var(--bad-soft); }
+.tb-dot.ok { background: var(--good); box-shadow: 0 0 0 3px var(--good-soft); }
 .tb-icon svg { width: 26px; height: 26px; display: block; }
 
 /* ---------- nav ---------- */
@@ -129,7 +87,7 @@ button { font: inherit; color: inherit; }
 .btn.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 .btn.busy { border-color: var(--info); color: var(--info); animation: pulse 1s infinite; }
 .btn.danger { border-color: var(--bad); color: var(--bad); }
-.btn.danger.on { background: var(--bad); color: #fff; }
+.btn.danger.on { background: var(--bad); color: var(--on-bad); }
 .btn:disabled, .btn.locked { opacity: .4; }
 .btn svg { width: 30px; height: 30px; }
 .btn.sm { min-height: 54px; font-size: 16px; padding: 0 16px; }
@@ -160,13 +118,13 @@ button { font: inherit; color: inherit; }
   position: absolute; left: 50%; bottom: 24px; transform: translateX(-50%);
   background: var(--panel); border: 2px solid var(--warn); color: var(--text);
   padding: 14px 22px; border-radius: var(--radius); font-weight: 700; font-size: 18px; max-width: 760px; z-index: 50;
-  box-shadow: 0 10px 30px rgba(0,0,0,.5);
+  box-shadow: var(--shadow-lg);
 }
 .toast.good { border-color: var(--good); }
 .toast.bad { border-color: var(--bad); }
 .fault-banner {
   position: absolute; left: calc(var(--nav-w) + 20px); right: 20px; top: calc(var(--top-h) + 10px); z-index: 40;
-  background: var(--bad); color: #fff; border-radius: var(--radius); padding: 12px 18px; font-weight: 800; font-size: 18px;
+  background: var(--bad); color: var(--on-bad); border-radius: var(--radius); padding: 12px 18px; font-weight: 800; font-size: 18px;
   display: flex; align-items: center; justify-content: space-between; gap: 16px;
 }
 .fault-banner button { background: rgba(0,0,0,.25); border: 0; color: #fff; font-weight: 800; padding: 10px 16px; border-radius: 10px; font-size: 16px; }
@@ -210,7 +168,7 @@ button { font: inherit; color: inherit; }
 .veh .diff.locked { stroke: var(--accent); }
 .veh .beam { fill: var(--accent); opacity: 0; transition: opacity .2s; }
 .veh .lamp { fill: var(--dim); }
-.veh .lamp.on { fill: #fff6d6; }
+.veh .lamp.on { fill: var(--lamp-on); }
 .veh .rearlamp.on { fill: var(--bad); }
 
 /* ---------- drivetrain screen ---------- */
@@ -251,8 +209,8 @@ button { font: inherit; color: inherit; }
 .arm-slide .knob { position: absolute; top: 5px; left: 5px; width: 70px; height: 68px; border-radius: 999px; background: var(--accent); display: grid; place-items: center; color: var(--accent-ink); }
 .arm-slide .knob svg { width: 34px; height: 34px; }
 .arm-slide .txt { position: absolute; inset: 0; display: grid; place-items: center; font-weight: 900; font-size: 20px; letter-spacing: .12em; color: var(--muted); pointer-events: none; }
-.arm-slide.armed { border-color: var(--bad); background: rgba(255,75,75,.12); }
-.arm-slide.armed .knob { background: var(--bad); color: #fff; }
+.arm-slide.armed { border-color: var(--bad); background: var(--bad-soft); }
+.arm-slide.armed .knob { background: var(--bad); color: var(--on-bad); }
 .status-list { display: flex; flex-direction: column; gap: 8px; }
 .check { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 17px; }
 .check i { width: 22px; height: 22px; border-radius: 50%; flex: none; background: var(--bad); }
@@ -312,7 +270,7 @@ select.big { min-height: 56px; font: inherit; font-size: 17px; font-weight: 700;
    tilt/GPS widget. 1280x800 at 10.1" is about 5.9 px per mm, so 64 px
    is about 11 mm: the smallest thing you press with a glove on.
    ===================================================================== */
-:root { --touch: 64px; --top-h: 64px; }
+/* --touch and --top-h live in theme.css */
 body { transition: background-color .5s; }
 #app { transition: background-color .5s; }
 
@@ -339,9 +297,9 @@ select.big { min-height: var(--touch); font-size: 18px; }
 
 /* alert banner */
 .fault-banner { padding: 8px 8px 8px 20px; min-height: 80px; }
-.fault-banner[data-sev="bad"] { background: var(--bad); color: #fff; animation: fbpulse 1.2s ease-in-out infinite; }
-.fault-banner[data-sev="warn"] { background: var(--warn); color: #1a1200; }
-.fault-banner[data-sev="info"] { background: var(--info); color: #001522; }
+.fault-banner[data-sev="bad"] { background: var(--bad); color: var(--on-bad); animation: fbpulse 1.2s ease-in-out infinite; }
+.fault-banner[data-sev="warn"] { background: var(--warn); color: var(--on-warn); }
+.fault-banner[data-sev="info"] { background: var(--info); color: var(--on-info); }
 .fault-banner .fb-text { flex: 1; line-height: 1.25; }
 .fault-banner .fb-btns { display: flex; gap: 8px; }
 .fault-banner .fb-btn { min-width: 104px; min-height: var(--touch); background: rgba(0,0,0,.25); border: 0; color: inherit; font-weight: 900; font-size: 18px; border-radius: 12px; letter-spacing: .06em; }
@@ -350,8 +308,8 @@ select.big { min-height: var(--touch); font-size: 18px; }
 .nav-btn .badge.warn { background: var(--warn); }
 
 /* on-screen keyboard */
-.kb-overlay { position: absolute; inset: 0; z-index: 80; background: rgba(0,0,0,.55); display: flex; align-items: flex-end; }
-.kb { width: 100%; background: var(--panel); border-top: 2px solid var(--line); padding: 14px 16px 16px; box-shadow: 0 -12px 40px rgba(0,0,0,.5); }
+.kb-overlay { position: absolute; inset: 0; z-index: 80; background: var(--scrim); display: flex; align-items: flex-end; }
+.kb { width: 100%; background: var(--panel); border-top: 2px solid var(--line); padding: 14px 16px 16px; box-shadow: var(--shadow-lg); }
 .kb-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
 .kb-title { font-size: 20px; font-weight: 800; }
 .kb-field-row { display: flex; gap: 10px; align-items: stretch; }
@@ -403,7 +361,7 @@ select.big { min-height: var(--touch); font-size: 18px; }
 .tilt .tc { fill: none; stroke: var(--text); stroke-width: 3; }
 .tilt .tw { fill: var(--dim); }
 .tilt.warn .tb, .tilt.warn .tc { stroke: var(--warn); } .tilt.bad .tb, .tilt.bad .tc { stroke: var(--bad); }
-.tilt.bad { background: rgba(255,75,75,.12); }
+.tilt.bad { background: var(--bad-soft); }
 .tilt-v { font-size: 26px; font-weight: 900; }
 .tilt-l { font-size: 11px; font-weight: 800; letter-spacing: .1em; color: var(--muted); }
 .sens.no-imu .tilt { opacity: .35; }
@@ -498,8 +456,8 @@ select.big { min-height: var(--touch); font-size: 18px; }
   font-weight: 900; font-size: 18px; color: var(--bad); border: 3px solid var(--bad); letter-spacing: .02em;
 }
 .hb-chip[hidden] { display: none; }
-.veh .taillamp { fill: #3a1414; }
-.veh .taillamp.on { fill: #8a2222; }
+.veh .taillamp { fill: var(--tail-off); }
+.veh .taillamp.on { fill: var(--tail-on); }
 .veh .taillamp.brake { fill: var(--bad); filter: drop-shadow(0 0 6px var(--bad)); }
 
 /* ---------- reverse camera: rear light bar button ---------- */
@@ -526,7 +484,7 @@ select.big { min-height: var(--touch); font-size: 18px; }
   position: absolute; left: calc(var(--nav-w) + (1280px - var(--nav-w)) / 2); transform: translateX(-50%);
   top: calc(var(--top-h) + 10px); z-index: 45; display: flex; align-items: center; gap: 10px;
   width: 500px; padding: 10px 10px 10px 16px; border-radius: var(--radius);
-  background: var(--panel); border: 2px solid var(--info); box-shadow: 0 8px 26px rgba(0,0,0,.5);
+  background: var(--panel); border: 2px solid var(--info); box-shadow: var(--shadow-lg);
 }
 .demo-player[hidden] { display: none; }
 .demo-player.paused { border-color: var(--warn); }
@@ -541,5 +499,5 @@ select.big { min-height: var(--touch); font-size: 18px; }
   width: 64px; height: 64px; flex: none; border-radius: 14px; border: 2px solid var(--line); background: var(--panel-2);
   color: var(--text); display: grid; place-items: center; cursor: pointer;
 }
-.demo-player .dp-btn.main { background: var(--info); border-color: var(--info); color: #001018; }
+.demo-player .dp-btn.main { background: var(--info); border-color: var(--info); color: var(--on-info); }
 .demo-player .dp-btn svg { width: 30px; height: 30px; }

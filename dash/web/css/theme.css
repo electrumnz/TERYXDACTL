@@ -1,0 +1,69 @@
+/* Teryx dash theme: every colour, size and font the dash uses lives here.
+   A new look = change this file (and the matching splash colours in index.html).
+   dash.css only uses var(--...) from here, never raw colours. */
+
+@font-face { font-family: "Inter"; font-weight: 400; font-display: block; src: url("../fonts/inter-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-weight: 600; font-display: block; src: url("../fonts/inter-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-weight: 700; font-display: block; src: url("../fonts/inter-latin-700-normal.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-weight: 800; font-display: block; src: url("../fonts/inter-latin-800-normal.woff2") format("woff2"); }
+@font-face { font-family: "Inter"; font-weight: 900; font-display: block; src: url("../fonts/inter-latin-900-normal.woff2") format("woff2"); }
+
+:root {
+  /* night (default) */
+  --bg: #0b0d0e;
+  --panel: #15181a;
+  --panel-2: #1c2023;
+  --line: #2a3034;
+  --text: #eef1f2;
+  --muted: #8b959b;
+  --dim: #565f65;
+  --accent: #ffad1f;      /* amber: the "you can press this" colour */
+  --accent-ink: #1a1200;
+  --good: #36d67e;
+  --warn: #ffad1f;
+  --bad: #ff4b4b;
+  --info: #39c3ff;
+  --regen: #36d67e;
+  --draw: #39c3ff;
+  --on-bad: #ffffff;      /* text on a --bad fill */
+  --on-warn: #1a1200;
+  --on-info: #001522;
+  --bad-soft: rgba(255,75,75,.15);
+  --good-soft: rgba(54,214,126,.2);
+  --lamp-on: #fff6d6;     /* lit lamp in the vehicle drawing */
+  --tail-off: #3a1414;
+  --tail-on: #8a2222;
+  --scrim: rgba(0,0,0,.55);
+  --shadow: 0 2px 0 rgba(0,0,0,.6);
+  --shadow-lg: 0 10px 30px rgba(0,0,0,.5);
+
+  /* shape and size (not themed by day/night) */
+  --radius: 14px;
+  --nav-w: 104px;
+  --top-h: 64px;
+  --touch: 64px;          /* smallest thing you can press: about 11 mm, glove sized */
+  --font: "Inter", "DejaVu Sans", "Liberation Sans", system-ui, sans-serif;
+  --mono: "DejaVu Sans Mono", "Liberation Mono", ui-monospace, monospace;
+}
+
+body.theme-day {
+  --bg: #e9ecee;
+  --panel: #ffffff;
+  --panel-2: #f2f4f5;
+  --line: #c3cad0;
+  --text: #0b0d0e;
+  --muted: #4c565c;
+  --dim: #8b959b;
+  --accent: #e08a00;
+  --accent-ink: #ffffff;
+  --good: #0f9d4f;
+  --warn: #c77700;
+  --bad: #d61f1f;
+  --info: #0077c2;
+  --regen: #0f9d4f;
+  --draw: #0077c2;
+  --tail-off: #e3c4c4;
+  --tail-on: #c03030;
+  --shadow: 0 2px 0 rgba(0,0,0,.12);
+  --shadow-lg: 0 10px 30px rgba(0,0,0,.18);
+}
