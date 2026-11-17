@@ -325,7 +325,10 @@ body.look-night .d-hero .rex img { filter: brightness(.5) contrast(1.15) sepia(.
 .light-tile { padding: 10px 12px; gap: 8px; }
 .light-tile .lt-big, .light-tile .slider { height: 72px; }
 .dt #t-veh { display: flex; align-items: center; justify-content: center; overflow: hidden; }
-.dt #t-veh .veh svg { height: 200px; width: auto; }
+.dt #t-veh .veh svg { height: 100%; max-height: 200px; width: auto; }
+.dt #t-veh { flex: 1 1 0; min-height: 90px; }
+.dt #t-veh .veh { height: 100%; display: flex; justify-content: center; }
+.dt .lockout { margin-top: 0; }
 .dt .panel.col { gap: 10px !important; }
 
 /* camera: the big rear light key */
