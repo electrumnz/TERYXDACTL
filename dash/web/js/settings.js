@@ -3,6 +3,7 @@
 // Saved on the Pi via /api/settings, with localStorage as a fallback (demo mode, no server).
 
 import { FEATURE_DEFAULTS } from "./features.js";
+import { CAMP_DEFAULTS } from "./fun/campcalc.js";
 
 export const LIGHTS = [
   { id: "light.front_1", name: "Bar 1", where: "Front far left", dimmable: true },
@@ -58,6 +59,12 @@ export const DEFAULTS = {
       { name: "RNZ Concert", url: "https://rnz.streamguys1.com/concert/concert/playlist.m3u8" },
     ],
     carplay: { autoStart: true, hand: "rhd" },   // NZ is right-hand drive
+  },
+  fun: {
+    eggs: [],              // easter eggs found so far (fun/eggs.js)
+    digBest: 0,            // Fossil Dig: most brushes to spare
+    duelBestMs: 0,         // Roar Duel solo: quickest reaction
+    camp: { ...CAMP_DEFAULTS },   // camp mode battery maths (fun/campcalc.js)
   },
 };
 

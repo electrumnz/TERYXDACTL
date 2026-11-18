@@ -20,6 +20,7 @@ not stopped, not armed), the dash says why in plain words.
 | Tray | Hold UP or DOWN. Only when stopped. Shows limit switches, current and position |
 | Cameras | Up to three cameras (rear, front, trailer), picked with the buttons along the top. Ones not fitted are greyed out; the trailer camera also greys out with no trailer plugged in. Guide lines and mirror per camera. Pops up on its own in reverse (the trailer camera if a trailer is on) and goes back 3 s after |
 | Media | Bluetooth audio from a phone, music on the Pi or a USB stick, internet radio, and CarPlay / Android Auto through a Carlinkit USB adapter. One volume; music dips under alerts and in reverse. See [`docs/audio.md`](../docs/audio.md) |
+| Fun | Camp mode (fire, lights, battery hours), two original T. rex games, a streaming launcher, a light show and easter eggs. Parked only: park brake on and stopped. See [`docs/fun.md`](../docs/fun.md) |
 | Settings | Display (night/day/auto, units, pack size), sounds and alerts, lights setup, cameras, control box safety limits, diff pot calibration, faults, updates (OTA), Wi-Fi, about |
 
 Faults from the control box or motor controller show as a banner along the bottom with plain
