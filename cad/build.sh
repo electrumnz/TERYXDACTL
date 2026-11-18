@@ -25,6 +25,8 @@ for p in box lid gasket; do add "pi_box_$p" pi_box "part=$p"; done
 for b in control_box relay_box; do for p in box lid gasket plate; do add "${b}_$p" "$b" "part=$p"; done; done
 add fit_test_corner fit_test part=none
 add speaker_pod speaker_pod part=pod
+add speaker_pod_cover speaker_pod part=cover
+add speaker_pod_plug speaker_pod part=plug
 add speaker_pod_gasket speaker_pod part=gasket
 
 rm -f stl/*.stl.tmp

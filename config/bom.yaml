@@ -113,14 +113,6 @@ lines:
   - {id: pad, shop: aliexpress, part: "Thermal pad 1mm, 4 W/mK+", qty: 1, each: 5.00, source: Estimate}
   - {id: pillar, shop: aliexpress, part: Solid aluminium block 20x20x50mm, qty: 1, each: 5.00, source: Estimate, notes: Cut to ~45.3mm}
   - {id: paste, shop: aliexpress, part: Thermal paste small tube, qty: 1, each: 3.00, source: Estimate}
-  - {id: vents, shop: aliexpress, part: M12x1.5 breather vent plug, qty: 4, each: 2.00, source: Estimate, notes: "Pi box, both speaker pods, one spare"}
-  - {id: glands, shop: aliexpress, part: "Nylon cable glands IP68: PG7 x5, PG9 x5, PG16 x5, M20 x1", qty: 1, each: 16.00, source: Estimate, notes: "Pi box 4, control box 5, relay box 5, speaker pods 2 (cad/measurements.scad)"}
-  - {id: inserts_m3, shop: aliexpress, part: "M3 brass heat-set inserts 4.0mm OD x 5.7mm, 100 pack", qty: 1, each: 8.00, source: Estimate, notes: About 40 used}
-  - {id: pod_clamps, shop: aliexpress, part: "Aluminium roll-cage clamp with flat tab, 1.875 in (47.6 mm) tube, rubber liner, M6 bolt hole", qty: 4, each: 9.00, source: Estimate, notes: "Speaker pods, 2 each. Teryx perimeter tube is 1.875 in, top crossbars 1.7 in (Axia Alloys, 2008+ Teryx): measure where the pods go and buy that size"}
-  - {id: inserts_m6, shop: aliexpress, part: "M6 brass heat-set inserts 8mm OD x 12mm, 10 pack", qty: 1, each: 6.00, source: Estimate, notes: "Speaker pod mounting pads, 2 each"}
-  - {id: bolts_m6, shop: aliexpress, part: "M6 x 20 stainless bolts, spring + flat washers, 10 each", qty: 1, each: 6.00, source: Estimate, notes: "Pod to cage clamp, with threadlocker"}
-  - {id: inserts_small, shop: aliexpress, part: "M2 + M2.5 heat-set inserts, 50 each", qty: 1, each: 8.00, source: Estimate, notes: Pi and 4G board standoffs}
-  - {id: bolts, shop: aliexpress, part: "Stainless bolt kit: M2, M2.5, M3 (6-16mm), M4 (12-20mm), nuts, nylocs, washers", qty: 1, each: 25.00, source: Estimate, notes: "cad/README.md hardware table: ~50 small bolts, 16 M4, 4 M5 nuts"}
   - {id: ferrules, shop: aliexpress, part: "Bootlace ferrule kit 0.5-6mm² with ratchet crimper", qty: 1, each: 30.00, source: Estimate, notes: "Every wire end into a screw terminal in the boxes"}
   - {id: rings, shop: aliexpress, part: "Heatshrink ring / spade / butt terminal kit 0.5-6mm²", qty: 1, each: 25.00, source: Estimate}
   - {id: dupont, shop: aliexpress, part: "Dupont jumper wires (F-F, M-F, 20cm) + 2.54mm pin headers", qty: 1, each: 10.00, source: Estimate, covers: [DEBUG], notes: "Pico, Pi and board-to-board links inside the boxes; debug header"}
@@ -230,4 +222,6 @@ later_lines:
   - {part: Carlinkit CCPA from Audio City (NZ stock), shop: Audio City, each: 180.00, notes: Backup if the AliExpress one is slow}
 
 bought:
+  - {part: "Cable glands and M12 breather vents, 10 packs (boxes + speaker pods)", shop: AliExpress, each: 24.00}
+  - {part: "Heat-set insert kit (M2 to M6) and stainless bolt kit (M2 to M6)", shop: AliExpress, each: 45.00}
   - {part: Samsung Galaxy XCover 5 (RC remote), shop: Trade Me, each: 187.00}

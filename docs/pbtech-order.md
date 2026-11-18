@@ -56,14 +56,6 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Thermal pad 1mm, 4 W/mK+ | 1 | 5.00 | 5.00 | Estimate |  |
 | Solid aluminium block 20x20x50mm | 1 | 5.00 | 5.00 | Estimate | Cut to ~45.3mm |
 | Thermal paste small tube | 1 | 3.00 | 3.00 | Estimate |  |
-| M12x1.5 breather vent plug | 4 | 2.00 | 8.00 | Estimate | Pi box, both speaker pods, one spare |
-| Nylon cable glands IP68: PG7 x5, PG9 x5, PG16 x5, M20 x1 | 1 | 16.00 | 16.00 | Estimate | Pi box 4, control box 5, relay box 5, speaker pods 2 (cad/measurements.scad) |
-| M3 brass heat-set inserts 4.0mm OD x 5.7mm, 100 pack | 1 | 8.00 | 8.00 | Estimate | About 40 used |
-| Aluminium roll-cage clamp with flat tab, 1.875 in (47.6 mm) tube, rubber liner, M6 bolt hole | 4 | 9.00 | 36.00 | Estimate | Speaker pods, 2 each. Teryx perimeter tube is 1.875 in, top crossbars 1.7 in (Axia Alloys, 2008+ Teryx): measure where the pods go and buy that size |
-| M6 brass heat-set inserts 8mm OD x 12mm, 10 pack | 1 | 6.00 | 6.00 | Estimate | Speaker pod mounting pads, 2 each |
-| M6 x 20 stainless bolts, spring + flat washers, 10 each | 1 | 6.00 | 6.00 | Estimate | Pod to cage clamp, with threadlocker |
-| M2 + M2.5 heat-set inserts, 50 each | 1 | 8.00 | 8.00 | Estimate | Pi and 4G board standoffs |
-| Stainless bolt kit: M2, M2.5, M3 (6-16mm), M4 (12-20mm), nuts, nylocs, washers | 1 | 25.00 | 25.00 | Estimate | cad/README.md hardware table: ~50 small bolts, 16 M4, 4 M5 nuts |
 | Bootlace ferrule kit 0.5-6mm² with ratchet crimper | 1 | 30.00 | 30.00 | Estimate | Every wire end into a screw terminal in the boxes |
 | Heatshrink ring / spade / butt terminal kit 0.5-6mm² | 1 | 25.00 | 25.00 | Estimate |  |
 | Dupont jumper wires (F-F, M-F, 20cm) + 2.54mm pin headers | 1 | 10.00 | 10.00 | Estimate | Pico, Pi and board-to-board links inside the boxes; debug header |
@@ -71,7 +63,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Waterproof 3-pin plug pair (DT style) | 3 | 3.00 | 9.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
 | Waterproof 4-pin plug pair (DT style) | 2 | 3.50 | 7.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
 | Waterproof 6-pin plug pair (DT style) | 2 | 5.00 | 10.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
-| **Total** | | | **833.01** | | |
+| **Total** | | | **720.01** | | |
 
 ### Core Electronics (AU, online)
 
@@ -147,16 +139,16 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Shop | NZ$ |
 |---|---|
 | PB Tech (buy Thursday) | 623.21 |
-| AliExpress (one order, 2 to 4 weeks) | 833.01 |
+| AliExpress (one order, 2 to 4 weeks) | 720.01 |
 | Core Electronics (AU, online) | 246.68 |
 | Gogo:Tronics and element14 (NZ, online) | 7.43 |
 | Local: Jaycar, Narva stockist, Repco, auto electrical | 1,549.00 |
 | Separate pickup | 115.00 |
-| **Everything** | **3,374.33** |
+| **Everything** | **3,261.33** |
 
 ### Already got (not in the totals)
 
-10.1 in touch screen, 12 V battery, 12 in light bar, 12-way fuse box (in the post; 12 fuses planned, so it is full), 200 degree rear camera (in the post), 250 A manual reset breaker (winch kill switch), 4 in pod, 5 A step-down buck (in the post; input must take 20 V+), 7 in light bar, ADS1115 (3 in the post), Amber + white LED roof beacon, BTS7960 (3 in the post), EU 7-pin round trailer plug (check the socket half and cap came too), Kenwood KFC-2053MRB 8 in marine speakers (pair), Kicker KM104 10 in marine sub (bought 18 Nov), XBull 5000 lb winch (and its 35 mm² cables), XBull remote, XBull solenoid box, short actuator (in the post), smart actuator with position feedback (in the post), spare light bar (trailer), tray actuator (in the post). Samsung Galaxy XCover 5 (RC remote) (NZ$187).
+10.1 in touch screen, 12 V battery, 12 in light bar, 12-way fuse box (in the post; 12 fuses planned, so it is full), 200 degree rear camera (in the post), 250 A manual reset breaker (winch kill switch), 4 in pod, 5 A step-down buck (in the post; input must take 20 V+), 7 in light bar, ADS1115 (3 in the post), Amber + white LED roof beacon, BTS7960 (3 in the post), EU 7-pin round trailer plug (check the socket half and cap came too), Kenwood KFC-2053MRB 8 in marine speakers (pair), Kicker KM104 10 in marine sub (bought 18 Nov), XBull 5000 lb winch (and its 35 mm² cables), XBull remote, XBull solenoid box, short actuator (in the post), smart actuator with position feedback (in the post), spare light bar (trailer), tray actuator (in the post). Cable glands and M12 breather vents, 10 packs (boxes + speaker pods) (NZ$24), Heat-set insert kit (M2 to M6) and stainless bolt kit (M2 to M6) (NZ$45), Samsung Galaxy XCover 5 (RC remote) (NZ$187).
 
 ### Comes with the Shinegle kit or the stock Teryx
 

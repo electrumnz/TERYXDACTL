@@ -27,14 +27,14 @@ driver:
   displacement_l: 0.35   # GUESS: basket, magnet and terminals inside the pod
 
 pod:
-  gross_l: 7.40     # air inside the printed pod, from the CAD (cad/build.sh checks it)
-  net_l: 7.05       # gross minus the speaker
+  gross_l: 6.85     # air inside the printed pod, from the CAD (cad/build.sh checks it)
+  net_l: 6.50       # gross minus the speaker
 
 fill:
   # Loose polyester fibre (pillow or speaker wadding, not foam, it dries out),
   # about 10 g per litre, half fills the pod. Makes the box act bigger.
   gain: 1.15
-  grams: 70
+  grams: 65
 
 amp_hpf:
   # The AliExpress amp's fixed high pass on ch 1-2. The slope isn't on the
