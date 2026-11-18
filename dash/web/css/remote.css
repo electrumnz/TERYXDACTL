@@ -112,6 +112,8 @@ body.has-pad main { grid-template-columns: 150px 1fr 120px; }
 .setbox h2 { margin: 0; font: italic 800 26px/1 var(--display); letter-spacing: .06em; }
 .setrow { display: grid; grid-template-columns: 1fr 120px; gap: 12px; align-items: center; }
 .setrow p { margin: 4px 0 0; font-size: 13px; color: var(--muted); line-height: 1.35; }
+.appkeys { display: flex; flex-direction: column; gap: 6px; }
+.appkeys[hidden] { display: none; }
 .pinbox { display: flex; flex-direction: column; gap: 8px; padding: 10px; border: 1px solid var(--accent); border-radius: 10px; }
 .pinbox[hidden] { display: none; }
 .pinbox input { font: 700 28px/1 var(--display); letter-spacing: .4em; text-align: center; padding: 8px; background: var(--panel-2); color: var(--text); border: 1px solid var(--line); border-radius: 8px; -webkit-user-select: text; user-select: text; }

@@ -1,0 +1,6 @@
+// Teryx Remote: the Android app for the phone that lives in the ATV.
+// It's a thin wrapper round the same web page as the iPhone (dash/web/remote.html),
+// so there's only one remote to keep up to date. See android/README.md.
+plugins {
+    id "com.android.application" version "8.7.3" apply false
+}

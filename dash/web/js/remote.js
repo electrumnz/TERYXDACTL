@@ -18,6 +18,7 @@
   const S = { allow_4g: false, cap_4g_kmh: 2, link_timeout_4g_s: 0.5, link_timeout_s: 0.2, fwd_cap_kmh: 5, rev_cap_kmh: 3, overspeed_brake_kmh: 1.5,
     stopped_kmh: 0.5, spin_motor_kmh: 3, spin_ground_kmh: 0.5, spin_s: 1.5, stall_throttle: 0.5, stall_s: 3 };
   const F = 1, N = 0, R = -1;
+  const App = window.TeryxApp || null;   // set when running inside the Android app
 
   // ---- inputs -----------------------------------------------------------
   const inp = { drive: 0, steer: 0, go: 0, brake: 0, dead: false, winch: 0, estop: false };
@@ -49,8 +50,9 @@
     const ios = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
     const app = matchMedia("(display-mode: fullscreen), (display-mode: standalone)").matches || navigator.standalone === true;
     const bits = [];
-    bits.push(app ? "Running as an app." : ios ? "Add to Home Screen (Share, then Add to Home Screen) for full screen." : "Install it (browser menu, Add to Home screen) for full screen.");
-    bits.push(wake ? "Screen stays on." : "wakeLock" in navigator ? "Tap anywhere to keep the screen on." : "Can't keep the screen on here: set Auto-Lock to Never while launching.");
+    if (App) bits.push(`Teryx Remote app ${App.version()}${App.kiosk() ? ", locked kiosk" : ""}.`);
+    else bits.push(app ? "Running as an app." : ios ? "Add to Home Screen (Share, then Add to Home Screen) for full screen." : "Install it (browser menu, Add to Home screen) for full screen.");
+    bits.push(wake || App ? "Screen stays on." : "wakeLock" in navigator ? "Tap anywhere to keep the screen on." : "Can't keep the screen on here: set Auto-Lock to Never while launching.");
     bits.push(navigator.getGamepads ? (window.isSecureContext ? "Gamepads OK." : "Gamepads need the secure (https) page.") : "No gamepad support in this browser.");
     el.textContent = bits.join(" ");
   }
@@ -170,6 +172,19 @@
   }
   document.querySelectorAll("[data-link]").forEach((b) => b.addEventListener("click", () => setLink(b.dataset.link)));
   show4g();
+
+  // ---- inside the Android app (android/): a couple of extra buttons -------------
+  if (App) {
+    $("appKeys").hidden = false;
+    $("appWifi").addEventListener("click", () => App.wifiSettings());
+    $("appSettings").addEventListener("click", () => {
+      $("pinWhy").textContent = "PIN to leave the remote for the phone's settings";
+      $("pin").value = ""; $("pinBox").hidden = false; $("pin").focus();
+      pinThen = () => App.phoneSettings();
+    });
+  }
+  // Taken out of the glove box (charger pulled): the app wakes the screen and tells us.
+  addEventListener("teryx-unplugged", () => { keepAwake(); flash("READY. PRESS ARM RC WHEN YOU'RE SET", true); });
   phoneInfo(); keepAwake();
 
   // ---- pretend Teryx --------------------------------------------------------

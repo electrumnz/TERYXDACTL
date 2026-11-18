@@ -226,6 +226,28 @@ it arrives.
    kiosk features need a paid licence (price **not checked**).
 5. Keep it on a USB charger in the cab so it's always full.
 
+**Or install our Android app** (`android/`, guide in `android/README.md`). It's
+the same remote page inside a small app you install from a file (the demo site
+has it at `teryx-remote.apk`). It can be the phone's Home app, keeps the screen
+on, does a full kiosk lock if set up with adb once, ignores the back button,
+and needs no certificate setup because it serves the page to itself securely.
+iPhones can't install apps from a file, so on iPhone it stays the home-screen
+web app. **Built but not yet tried on a real phone.**
+
+**Living in the glove box:**
+
+- Charger: a 12 V USB-C socket in the glove box (`GLOVE_USB` in
+  `config/wiring.yaml`), fed from the accessory relay with a 3 A fuse. It's off
+  with the key off, so it can't flatten the 12 V battery. The control box could
+  keep it on for a while after key-off later (TBC).
+- Battery care: if the phone has a charge limit (often called "protect battery"
+  or 80%), turn it on, since it sits on the charger. A closed glove box in the
+  sun gets hot, and heat plus full charge is what swells phone batteries. Leave
+  it out of the glove box on hot days if it feels warm, and check it now and
+  then for swelling (the screen lifting or the back bulging).
+- Taking it out: pulling it off the charger wakes the screen straight into the
+  remote, showing READY.
+
 ### 4c. Driving over 4G (off by default)
 
 Sam's idea: if it's ever stolen, drive it out of the thief's driveway from the

@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2200 634" width="2200" height="634" font-family="Arial, Helvetica, sans-serif" data-sheet="power">
-<rect width="2200" height="634" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2200 705" width="2200" height="705" font-family="Arial, Helvetica, sans-serif" data-sheet="power">
+<rect width="2200" height="705" fill="#ffffff"/>
 <text x="40" y="40" font-size="22" text-anchor="start" font-weight="bold" fill="#1f2328">12 V power: battery, fuses, key, dash rail, bucks</text>
 <text x="40" y="62" font-size="12" text-anchor="start" font-weight="normal" fill="#57606a">Teryx OS wiring, sheet &#x27;power&#x27;. Made from config/wiring.yaml by `python -m teryx wiring`. Don&#x27;t edit this file.</text>
 <line x1="40" y1="92" x2="74" y2="92" stroke="#1a7f37" stroke-width="2.5"/>
@@ -14,22 +14,23 @@
 <text x="920" y="96" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">Placeholder / later</text>
 <text x="40" y="120" font-size="11" text-anchor="start" font-weight="normal" fill="#57606a">Labels: wire id, size, fuse (if the wire has its own), and anything in between. Faded = optional. Hover for notes. Full table: docs/wiring/README.md</text>
 <g data-wire="P01" data-from="BAT12.pos" data-to="FB.IN" data-status="planned"><title>P01: BAT12.pos -&gt; FB.IN - 60 A main fuse at the battery. Was 6 mm² in wiring.md, which the table only rates to 40 A</title><path d="M310,197 C395,197 395,197 480,197" fill="none" stroke="#424a53" stroke-width="3.2"/></g>
-<g data-wire="P02" data-from="FB.F16" data-to="KEY.BAT" data-status="planned"><title>P02: FB.F16 -&gt; KEY.BAT</title><path d="M750,257 C835,257 835,348 920,348" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="P03" data-from="KEY.IGN" data-to="RAIL.BUS" data-status="planned"><title>P03: KEY.IGN -&gt; RAIL.BUS</title><path d="M1190,368 C1250,368 1250,459 1190,459" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="P02" data-from="FB.F16" data-to="KEY.BAT" data-status="planned"><title>P02: FB.F16 -&gt; KEY.BAT</title><path d="M750,257 C835,257 835,368 920,368" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="P03" data-from="KEY.IGN" data-to="RAIL.BUS" data-status="planned"><title>P03: KEY.IGN -&gt; RAIL.BUS</title><path d="M1190,388 C1250,388 1250,479 1190,479" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="P04" data-from="FB.F12" data-to="RELAYS.COM8" data-status="planned"><title>P04: FB.F12 -&gt; RELAYS.COM8</title><path d="M750,237 C835,237 835,237 920,237" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="P05" data-from="RELAYS.NO8" data-to="RAIL.BUS" data-status="planned"><title>P05: RELAYS.NO8 -&gt; RAIL.BUS - Power hold, in parallel with the key</title><path d="M1190,257 C1250,257 1250,459 1190,459" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="P06" data-from="RAIL.BUS" data-to="TVS.K" data-status="planned"><title>P06: RAIL.BUS -&gt; TVS.K</title><path d="M1190,459 C1275,459 1275,197 1360,197" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="P07" data-from="RAIL.BUS" data-to="PI_BUCK.VIN" data-status="planned"><title>P07: RAIL.BUS -&gt; PI_BUCK.VIN</title><path d="M1190,459 C1275,459 1275,288 1360,288" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="P08" data-from="RAIL.BUS" data-to="PICO_BUCK.VIN" data-status="planned"><title>P08: RAIL.BUS -&gt; PICO_BUCK.VIN - 2 A inline fuse</title><path d="M1190,459 C1275,459 1275,399 1360,399" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="P09" data-from="PI_BUCK.VOUT" data-to="PI5.5V" data-status="planned"><title>P09: PI_BUCK.VOUT -&gt; PI5.5V - Short and thick, under 30 cm. Set usb_max_current_enable=1</title><path d="M1630,308 C1715,308 1715,197 1800,197" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="P10" data-from="PICO_BUCK.VOUT" data-to="PICO.VSYS" data-status="planned"><title>P10: PICO_BUCK.VOUT -&gt; PICO.VSYS</title><path d="M1630,419 C1715,419 1715,288 1800,288" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="P11" data-from="PICO_BUCK.VOUT" data-to="RELAYS.JDVCC" data-status="planned"><title>P11: PICO_BUCK.VOUT -&gt; RELAYS.JDVCC - Relay coils, about 0.6 A for 8</title><path d="M1360,419 C1275,419 1275,197 1190,197" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="P12" data-from="PICO_BUCK.VOUT" data-to="RELAYS2.JDVCC" data-status="planned"><title>P12: PICO_BUCK.VOUT -&gt; RELAYS2.JDVCC</title><path d="M1630,419 C1715,419 1715,379 1800,379" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="P13" data-from="RAIL.BUS" data-to="SCREEN_PSU.VIN" data-status="tbc"><title>P13: RAIL.BUS -&gt; SCREEN_PSU.VIN - Fuse size depends on the screen&#x27;s draw</title><path d="M1190,459 C1275,459 1275,510 1360,510" fill="none" stroke="#bf8700" stroke-width="2.2" stroke-dasharray="7 4"/></g>
-<g data-wire="P14" data-from="SCREEN_PSU.VOUT" data-to="SCREEN.DC_IN" data-status="tbc"><title>P14: SCREEN_PSU.VOUT -&gt; SCREEN.DC_IN</title><path d="M1630,530 C1715,530 1715,470 1800,470" fill="none" stroke="#bf8700" stroke-width="2.2" stroke-dasharray="7 4"/></g>
+<g data-wire="P05" data-from="RELAYS.NO8" data-to="RAIL.BUS" data-status="planned"><title>P05: RELAYS.NO8 -&gt; RAIL.BUS - Power hold, in parallel with the key</title><path d="M1190,277 C1250,277 1250,479 1190,479" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="P06" data-from="RAIL.BUS" data-to="TVS.K" data-status="planned"><title>P06: RAIL.BUS -&gt; TVS.K</title><path d="M1190,479 C1275,479 1275,288 1360,288" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="P07" data-from="RAIL.BUS" data-to="PI_BUCK.VIN" data-status="planned"><title>P07: RAIL.BUS -&gt; PI_BUCK.VIN</title><path d="M1190,479 C1275,479 1275,379 1360,379" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="P08" data-from="RAIL.BUS" data-to="PICO_BUCK.VIN" data-status="planned"><title>P08: RAIL.BUS -&gt; PICO_BUCK.VIN - 2 A inline fuse</title><path d="M1190,479 C1275,479 1275,490 1360,490" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="P09" data-from="PI_BUCK.VOUT" data-to="PI5.5V" data-status="planned"><title>P09: PI_BUCK.VOUT -&gt; PI5.5V - Short and thick, under 30 cm. Set usb_max_current_enable=1</title><path d="M1630,399 C1715,399 1715,197 1800,197" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="P10" data-from="PICO_BUCK.VOUT" data-to="PICO.VSYS" data-status="planned"><title>P10: PICO_BUCK.VOUT -&gt; PICO.VSYS</title><path d="M1630,510 C1715,510 1715,288 1800,288" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="P11" data-from="PICO_BUCK.VOUT" data-to="RELAYS.JDVCC" data-status="planned"><title>P11: PICO_BUCK.VOUT -&gt; RELAYS.JDVCC - Relay coils, about 0.6 A for 8</title><path d="M1360,510 C1275,510 1275,197 1190,197" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="P12" data-from="PICO_BUCK.VOUT" data-to="RELAYS2.JDVCC" data-status="planned"><title>P12: PICO_BUCK.VOUT -&gt; RELAYS2.JDVCC</title><path d="M1630,510 C1715,510 1715,379 1800,379" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="P13" data-from="RAIL.BUS" data-to="SCREEN_PSU.VIN" data-status="tbc"><title>P13: RAIL.BUS -&gt; SCREEN_PSU.VIN - Fuse size depends on the screen&#x27;s draw</title><path d="M1190,479 C1275,479 1275,601 1360,601" fill="none" stroke="#bf8700" stroke-width="2.2" stroke-dasharray="7 4"/></g>
+<g data-wire="P14" data-from="SCREEN_PSU.VOUT" data-to="SCREEN.DC_IN" data-status="tbc"><title>P14: SCREEN_PSU.VOUT -&gt; SCREEN.DC_IN</title><path d="M1630,621 C1715,621 1715,470 1800,470" fill="none" stroke="#bf8700" stroke-width="2.2" stroke-dasharray="7 4"/></g>
 <g data-wire="P15" data-from="FB.F11" data-to="RELAYS.COM7" data-status="planned"><title>P15: FB.F11 -&gt; RELAYS.COM7 - Accessory 12 V, on with ignition</title><path d="M750,217 C835,217 835,217 920,217" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="P20" data-from="RELAYS.NO7" data-to="GLOVE_USB.VIN" data-status="planned"><title>P20: RELAYS.NO7 -&gt; GLOVE_USB.VIN - 3 A inline fuse. Charges the RC phone with the key on; the control box may hold it on for a while after key-off (TBC)</title><path d="M1190,257 C1275,257 1275,197 1360,197" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
 <g data-wire="P16" data-from="BAT12.pos" data-to="AMP.B+" data-status="planned"><title>P16: BAT12.pos -&gt; AMP.B+ - Own fuse at the battery. 4 x 50 W can pull 20-30 A</title><path d="M310,197 C395,197 395,348 480,348" fill="none" stroke="#424a53" stroke-width="3.2" stroke-opacity="0.65"/></g>
-<g data-wire="P17" data-from="RAIL.BUS" data-to="AMP.REM" data-status="planned"><title>P17: RAIL.BUS -&gt; AMP.REM - Remote turn-on, goes off with the rail</title><path d="M920,459 C835,459 835,368 750,368" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="P17" data-from="RAIL.BUS" data-to="AMP.REM" data-status="planned"><title>P17: RAIL.BUS -&gt; AMP.REM - Remote turn-on, goes off with the rail</title><path d="M920,479 C835,479 835,368 750,368" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
 <g data-wire="P18" data-from="DCDC.out_pos" data-to="BAT12.pos" data-status="tbc"><title>P18: DCDC.out_pos -&gt; BAT12.pos - DC-DC charge lead. Size and fuse depend on its rating</title><path d="M480,459 C395,459 395,197 310,197" fill="none" stroke="#bf8700" stroke-width="1.4" stroke-dasharray="7 4"/></g>
 <g data-wire="P19" data-from="BAT12.pos" data-to="EPS_ECU.B+" data-status="planned"><title>P19: BAT12.pos -&gt; EPS_ECU.B+ - Own 60 A fuse and cable straight to the battery (Toyota fuses the Prius EPS at 60 A)</title><path d="M310,197 C395,197 395,550 480,550" fill="none" stroke="#424a53" stroke-width="3.2" stroke-opacity="0.65"/></g>
 <g data-device="BAT12" data-status="confirmed"><title>BAT12: 12 V aux battery - Kept after the conversion. Charged by the DC-DC</title><rect x="40" y="150" width="270" height="69" rx="6" fill="#fff8e6" stroke="#0969da" stroke-width="1.5"/>
@@ -70,7 +71,7 @@
 <line x1="480" y1="550" x2="750" y2="550" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="554" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">B+</text>
 </g>
-<g data-device="RELAYS" data-status="confirmed"><title>RELAYS: 8-ch relay board - Owned. JD-VCC jumper off, coils on 5 V, inputs from 3.3 V</title><rect x="920" y="150" width="270" height="129" rx="6" fill="#f6f1ff" stroke="#0969da" stroke-width="1.5"/>
+<g data-device="RELAYS" data-status="confirmed"><title>RELAYS: 8-ch relay board - Owned. JD-VCC jumper off, coils on 5 V, inputs from 3.3 V</title><rect x="920" y="150" width="270" height="149" rx="6" fill="#f6f1ff" stroke="#0969da" stroke-width="1.5"/>
 <text x="930" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">8-ch relay board</text>
 <text x="930" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">RELAYS · confirmed</text>
 <line x1="920" y1="197" x2="1190" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
@@ -80,51 +81,59 @@
 <line x1="920" y1="237" x2="1190" y2="237" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="1055" y="241" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">COM8</text>
 <line x1="920" y1="257" x2="1190" y2="257" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="261" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">NO8</text>
+<text x="1055" y="261" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">NO7</text>
+<line x1="920" y1="277" x2="1190" y2="277" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="281" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">NO8</text>
 </g>
-<g data-device="KEY" data-status="confirmed"><title>KEY: Teryx key switch</title><rect x="920" y="301" width="270" height="89" rx="6" fill="#f0f6ff" stroke="#0969da" stroke-width="1.5"/>
-<text x="930" y="319" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Teryx key switch</text>
-<text x="930" y="334" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">KEY · confirmed</text>
-<line x1="920" y1="348" x2="1190" y2="348" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="352" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">BAT</text>
+<g data-device="KEY" data-status="confirmed"><title>KEY: Teryx key switch</title><rect x="920" y="321" width="270" height="89" rx="6" fill="#f0f6ff" stroke="#0969da" stroke-width="1.5"/>
+<text x="930" y="339" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Teryx key switch</text>
+<text x="930" y="354" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">KEY · confirmed</text>
 <line x1="920" y1="368" x2="1190" y2="368" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="372" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IGN</text>
+<text x="1055" y="372" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">BAT</text>
+<line x1="920" y1="388" x2="1190" y2="388" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="392" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IGN</text>
 </g>
-<g data-device="RAIL" data-status="planned"><title>RAIL: Dash 12 V rail - Key OR relay 8 (power hold). Stays up after key-off until the Pico lets go</title><rect x="920" y="412" width="270" height="69" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
-<text x="930" y="430" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Dash 12 V rail</text>
-<text x="930" y="445" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">RAIL · planned</text>
-<line x1="920" y1="459" x2="1190" y2="459" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="463" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">BUS</text>
+<g data-device="RAIL" data-status="planned"><title>RAIL: Dash 12 V rail - Key OR relay 8 (power hold). Stays up after key-off until the Pico lets go</title><rect x="920" y="432" width="270" height="69" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
+<text x="930" y="450" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Dash 12 V rail</text>
+<text x="930" y="465" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">RAIL · planned</text>
+<line x1="920" y1="479" x2="1190" y2="479" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="483" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">BUS</text>
 </g>
-<g data-device="TVS" data-status="planned"><title>TVS: 1.5KE18A TVS diode - Clamps spikes on the dash rail</title><rect x="1360" y="150" width="270" height="69" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
-<text x="1370" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">1.5KE18A TVS diode</text>
-<text x="1370" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">TVS · planned</text>
+<g data-device="GLOVE_USB" data-status="planned"><title>GLOVE_USB: Glove box USB-C charger (RC phone) - 12 V to USB-C PD socket for the phone that lives in the glove box (docs/rc-beach-launch.md 4b). Fed from the accessory relay so it&#x27;s off with the key off</title><rect x="1360" y="150" width="270" height="69" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
+<text x="1370" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Glove box USB-C charger (RC phone)</text>
+<text x="1370" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">GLOVE_USB · planned · optional</text>
 <line x1="1360" y1="197" x2="1630" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1495" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">K</text>
+<text x="1495" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VIN</text>
 </g>
-<g data-device="PI_BUCK" data-status="planned"><title>PI_BUCK: Pololu D36V50F5 5 V 5.5 A - Pi 5 power. About 16 W of its 27 W with the AI HAT+ 2 fitted</title><rect x="1360" y="241" width="270" height="89" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
-<text x="1370" y="259" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Pololu D36V50F5 5 V 5.5 A</text>
-<text x="1370" y="274" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">PI_BUCK · planned</text>
+<g data-device="TVS" data-status="planned"><title>TVS: 1.5KE18A TVS diode - Clamps spikes on the dash rail</title><rect x="1360" y="241" width="270" height="69" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
+<text x="1370" y="259" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">1.5KE18A TVS diode</text>
+<text x="1370" y="274" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">TVS · planned</text>
 <line x1="1360" y1="288" x2="1630" y2="288" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1495" y="292" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VIN</text>
-<line x1="1360" y1="308" x2="1630" y2="308" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1495" y="312" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VOUT</text>
+<text x="1495" y="292" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">K</text>
 </g>
-<g data-device="PICO_BUCK" data-status="planned"><title>PICO_BUCK: Mini560 5 V buck (control box)</title><rect x="1360" y="352" width="270" height="89" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
-<text x="1370" y="370" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Mini560 5 V buck (control box)</text>
-<text x="1370" y="385" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">PICO_BUCK · planned</text>
+<g data-device="PI_BUCK" data-status="planned"><title>PI_BUCK: Pololu D36V50F5 5 V 5.5 A - Pi 5 power. About 16 W of its 27 W with the AI HAT+ 2 fitted</title><rect x="1360" y="332" width="270" height="89" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
+<text x="1370" y="350" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Pololu D36V50F5 5 V 5.5 A</text>
+<text x="1370" y="365" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">PI_BUCK · planned</text>
+<line x1="1360" y1="379" x2="1630" y2="379" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="383" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VIN</text>
 <line x1="1360" y1="399" x2="1630" y2="399" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1495" y="403" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VIN</text>
-<line x1="1360" y1="419" x2="1630" y2="419" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1495" y="423" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VOUT</text>
+<text x="1495" y="403" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VOUT</text>
 </g>
-<g data-device="SCREEN_PSU" data-status="tbc"><title>SCREEN_PSU: Screen 12 V supply - Depends on the screen&#x27;s power brick. If it is 12 V, a 12 V stabiliser</title><rect x="1360" y="463" width="270" height="89" rx="6" fill="#eef9f1" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
-<text x="1370" y="481" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Screen 12 V supply</text>
-<text x="1370" y="496" font-size="10" text-anchor="start" font-weight="normal" fill="#bf8700">SCREEN_PSU · tbc</text>
+<g data-device="PICO_BUCK" data-status="planned"><title>PICO_BUCK: Mini560 5 V buck (control box)</title><rect x="1360" y="443" width="270" height="89" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="1370" y="461" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Mini560 5 V buck (control box)</text>
+<text x="1370" y="476" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">PICO_BUCK · planned</text>
+<line x1="1360" y1="490" x2="1630" y2="490" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="494" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VIN</text>
 <line x1="1360" y1="510" x2="1630" y2="510" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1495" y="514" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VIN</text>
-<line x1="1360" y1="530" x2="1630" y2="530" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1495" y="534" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VOUT</text>
+<text x="1495" y="514" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VOUT</text>
+</g>
+<g data-device="SCREEN_PSU" data-status="tbc"><title>SCREEN_PSU: Screen 12 V supply - Depends on the screen&#x27;s power brick. If it is 12 V, a 12 V stabiliser</title><rect x="1360" y="554" width="270" height="89" rx="6" fill="#eef9f1" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
+<text x="1370" y="572" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Screen 12 V supply</text>
+<text x="1370" y="587" font-size="10" text-anchor="start" font-weight="normal" fill="#bf8700">SCREEN_PSU · tbc</text>
+<line x1="1360" y1="601" x2="1630" y2="601" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="605" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VIN</text>
+<line x1="1360" y1="621" x2="1630" y2="621" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="625" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VOUT</text>
 </g>
 <g data-device="PI5" data-status="confirmed"><title>PI5: Raspberry Pi 5 8GB - The 40-pin header and the PCIe port are kept for the AI HAT+ 2. CAN module wires go to header pins that come up through the HAT</title><rect x="1800" y="150" width="270" height="69" rx="6" fill="#eef9f1" stroke="#0969da" stroke-width="1.5"/>
 <text x="1810" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Raspberry Pi 5 8GB</text>
@@ -152,19 +161,20 @@
 </g>
 <text x="472" y="194" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P01  10 mm²  60 A</text>
 <text x="758" y="254" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P02  1 mm²</text>
-<text x="1198" y="365" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P03  1 mm²  7.5 A</text>
+<text x="1198" y="385" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P03  1 mm²  7.5 A</text>
 <text x="758" y="234" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P04  1 mm²</text>
-<text x="1198" y="254" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P05  1 mm²  7.5 A</text>
-<text x="1352" y="194" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P06  1 mm²</text>
-<text x="1352" y="285" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P07  1.5 mm²</text>
-<text x="1352" y="396" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P08  0.75 mm²  2 A</text>
-<text x="1638" y="305" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P09  1.5 mm²</text>
+<text x="1198" y="274" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P05  1 mm²  7.5 A</text>
+<text x="1352" y="285" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P06  1 mm²</text>
+<text x="1352" y="376" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P07  1.5 mm²</text>
+<text x="1352" y="487" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P08  0.75 mm²  2 A</text>
+<text x="1638" y="396" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P09  1.5 mm²</text>
 <text x="1792" y="285" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P10  0.5 mm²</text>
 <text x="1198" y="194" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P11  0.5 mm²</text>
 <text x="1792" y="376" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P12  0.5 mm²</text>
-<text x="1352" y="507" font-size="9.5" text-anchor="end" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">P13  1 mm²  3 A</text>
-<text x="1638" y="527" font-size="9.5" text-anchor="start" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">P14  1 mm²</text>
+<text x="1352" y="598" font-size="9.5" text-anchor="end" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">P13  1 mm²  3 A</text>
+<text x="1638" y="618" font-size="9.5" text-anchor="start" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">P14  1 mm²</text>
 <text x="758" y="214" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P15  1.5 mm²</text>
+<text x="1198" y="254" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P20  0.75 mm²  3 A</text>
 <text x="472" y="345" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P16  4 mm²  30 A</text>
 <text x="758" y="365" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P17  0.5 mm²  2 A</text>
 <text x="472" y="456" font-size="9.5" text-anchor="end" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">P18</text>

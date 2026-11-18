@@ -1,0 +1,53 @@
+plugins { id "com.android.application" }
+
+android {
+    namespace "nz.teryx.remote"
+    compileSdk 35
+
+    defaultConfig {
+        applicationId "nz.teryx.remote"
+        minSdk 26          // Android 8. Anything older can't run a recent WebView well
+        targetSdk 35
+        versionCode Integer.parseInt(System.getenv("TERYX_VERSION_CODE") ?: "1")
+        versionName "0.1." + (System.getenv("TERYX_VERSION_CODE") ?: "1")
+    }
+
+    // Sign with the project's key when CI has it (a repo secret), so updates install over
+    // the top. Without it the APK gets the debug key, and an update means uninstall first.
+    signingConfigs {
+        teryx {
+            def ks = System.getenv("TERYX_KEYSTORE")
+            if (ks) {
+                storeFile file(ks)
+                storePassword System.getenv("TERYX_KEYSTORE_PASSWORD")
+                keyAlias System.getenv("TERYX_KEY_ALIAS")
+                keyPassword System.getenv("TERYX_KEY_PASSWORD")
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig System.getenv("TERYX_KEYSTORE") ? signingConfigs.teryx : signingConfigs.debug
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation "androidx.webkit:webkit:1.12.1"   // Apache 2.0
+}
+
+// Copy the remote web page into the app, so it works with no internet and needs no
+// certificate: the app serves it to itself on a secure (https) address.
+def copyWeb = tasks.register("copyWeb", Copy) {
+    from("${rootDir}/../dash/web") {
+        include "remote.html", "remote.webmanifest", "css/theme.css", "css/remote.css", "js/remote.js", "fonts/**", "img/dino/badge.webp"
+    }
+    into layout.buildDirectory.dir("webassets/web")
+}
+android.sourceSets.main.assets.srcDirs += layout.buildDirectory.dir("webassets").get().asFile
+tasks.named("preBuild") { dependsOn copyWeb }
