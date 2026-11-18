@@ -10,7 +10,7 @@ Why things are wired this way (power hold, diodes, CAN rules): [`docs/wiring.md`
 Viewer with search: [`index.html`](index.html), also online at
 <https://electrumnz.github.io/TERYXDACTL/wiring/>.
 
-**78 devices, 249 wires.** By status: 19 from_manual, 3 confirmed, 197 planned, 26 tbc, 4 placeholder.
+**78 devices, 250 wires.** By status: 19 from_manual, 3 confirmed, 196 planned, 28 tbc, 4 placeholder.
 Nothing has been checked on the real Teryx yet.
 
 Wire sizes follow the conservative table in the YAML (from
@@ -88,8 +88,9 @@ runs up to about 5 m). Go one size up for bundled or hot runs.
 - [ ] **Toyota Aqua EPS ECU (89650-52B51)** (EPS_ECU): Photo both EPS ECU plugs (pin numbers and wire colours) when the column is picked up
 - [ ] **Aqua steering column (motor + torque sensor)** (EPS_COL): Measure the space from the steering wheel to where the Teryx shaft goes to the rack
 - [ ] **7-pin flat trailer socket (Narva 82043BL, reed switch)** (TRAILER): Which way does the Narva reed switch switch, and what triggers it?
+- [ ] **Analogue video to camera-ribbon (CSI) board, ADV7280-M (rear + trailer)** (TCAM_DONGLE): Confirm the board works on the Pi 5 (dtoverlay=adv728x-m,adv7280m=1); set each AHD camera to CVBS/PAL (OSD menu or mode wire)
 - [ ] **Glove box USB-C charger (RC phone)** (GLOVE_USB): Pick a 12 V USB-C PD panel socket (waterproof cap, about 20-30 W)
-- [ ] **Rear camera (200 degree, Sam's)** (CAM_REAR): Rear camera USB or RCA/AHD? Photo its plug
+- [ ] **Rear camera (200 degree, Sam's)** (CAM_REAR): Rear camera: AHD with a CVBS mode? Photo its plug and label
 
 Wires marked TBC, with what's unknown:
 
@@ -104,7 +105,8 @@ Wires marked TBC, with what's unknown:
 - D33 EPS_ECU.MOTOR to EPS_COL.MOTOR: Toyota's own plug, keep it from the wrecker
 - T05 BRAKE_SW.OUT to TRAILER.P6_STOP: Trailer brake lights still work with the control box off
 - T06 RELAYS.NO1 to TRAILER.P2_REV: Reversing pin. Relay 1 also runs the floods by hand, so trailer reverse lights would come on with them
-- X03 CAM_REAR.USB to PI5.USB3_A: Or a UVC capture dongle if it's an RCA/AHD camera
+- X03 CAM_REAR.VID to TCAM_DONGLE.VID_R: Shielded video lead, soldered
+- X04 TCAM_DONGLE.CSI to PI5.CSI1: Camera ribbon, 2nd port
 
 ## Fuse block
 
@@ -450,8 +452,9 @@ Fuses not in the block (inline, at the battery or on a board):
 |---|---|---|---|---|---|---|---|
 | X01 | PI5.HDMI0 | SCREEN.HDMI |  |  |  | planned |  |
 | X02 | SCREEN.USB | PI5.USB2_B |  |  |  | planned | Touch. Screen only does touch over USB. Right-angle lead, cable-tied to the box |
-| X03 | CAM_REAR.USB | PI5.USB3_A |  |  |  | tbc | Or a UVC capture dongle if it's an RCA/AHD camera |
-| X04 | TCAM_DONGLE.USB | PI5.USB3_B |  |  |  | planned (optional) | Other USB controller from the rear camera |
+| X03 | CAM_REAR.VID | TCAM_DONGLE.VID_R |  |  |  | tbc | Shielded video lead, soldered |
+| X03b | CAM_REAR.VID_GND | TCAM_DONGLE.VID_R_GND |  |  |  | tbc |  |
+| X04 | TCAM_DONGLE.CSI | PI5.CSI1 |  |  |  | tbc | Camera ribbon, 2nd port |
 | X07 | CARPLAY.USB | PI5.USB2_A |  |  |  | planned (optional) | CarPlay dongle is USB only. Right-angle lead, dongle zip-tied down inside the box |
 | X11 | CAM_FRONT.CSI | PI5.CSI0 |  |  |  | planned |  |
 | X13 | AIHAT.PCIE | PI5.PCIE |  |  |  | placeholder (optional) | Keep the PCIe port free for this |
@@ -544,13 +547,13 @@ Fuses not in the block (inline, at the battery or on a board):
 | TRAILER | 7-pin flat trailer socket (Narva 82043BL, reed switch) | rear | planned | See [`docs/cameras.md`](../../docs/cameras.md). |
 | TCAM_PLUG | Trailer camera 4-pin plug | rear | planned (optional) | Own small waterproof plug next to the 7-pin (pick from cameras.md) |
 | CAM_TRAILER | Trailer camera (12 V AHD) | trailer | planned (optional) |  |
-| TCAM_DONGLE | AHD to USB (UVC) capture dongle (rear + trailer, relay-switched) | dash | planned (optional) |  |
+| TCAM_DONGLE | Analogue video to camera-ribbon (CSI) board, ADV7280-M (rear + trailer) | dash | tbc | No USB (Sam). The cameras run in CVBS (PAL) mode into this board, which sits in the Pi box on the Pi's 2nd camera ribbon port. ADV7280-M has several analogue inputs picked in software (adv728x-m overlay, adv7180 driver), so it swaps rear/trailer itself, no relay. A spare input can take a small cabin camera later. Pi 5 support for these boards is not proven yet: bench test it first |
 | PI5 | Raspberry Pi 5 8GB | dash | confirmed | The 40-pin header and the PCIe port are kept for the AI HAT+ 2. CAN module wires go to header pins that come up through the HAT See [`docs/wiring.md`](../../docs/wiring.md). |
 | AIHAT | AI HAT+ 2 (later) | dash | placeholder (optional) | Not buying yet. Room, cooling (about 4.5 W) and the PCIe port stay free for it See [`docs/ai-hat-ideas.md`](../../docs/ai-hat-ideas.md). |
 | PI_CAN | MCP2515 CAN module (Pi) | dash | planned | Seeed MCP2515 + SN65HVD230 on the Pi box wall |
 | SCREEN | 10.1 in touch screen | dash | confirmed | 1280x800, HDMI + USB touch, 3.5 mm audio in |
 | GLOVE_USB | Glove box USB-C charger (RC phone) | dash | planned (optional) | 12 V to USB-C PD socket for the phone that lives in the glove box (docs/rc-beach-launch.md 4b). Fed from the accessory relay so it's off with the key off |
-| CAM_REAR | Rear camera (200 degree, Sam's) | rear | tbc | Sam thinks it's AHD. Then it shares the one AHD-to-USB (UVC) dongle with the trailer camera: a spare relay swaps the video to the trailer cam when the trailer plug is in. Only 2 streams ever (front on its ribbon + rear or trailer). No AHD-to-ribbon (CSI) board has proven Pi 5 support yet, so the dongle is the one USB we keep: right-angle lead, tied down. Cabin camera is 'later' on the 2nd ribbon port |
+| CAM_REAR | Rear camera (200 degree, Sam's) | rear | tbc | Sam thinks it's AHD. Set to CVBS/PAL mode, soldered shielded video lead to the analogue-to-ribbon board. Rear or trailer is picked in software when the trailer plug is in. 12 V feed TBC |
 | CAM_FRONT | Camera Module 3 Wide (front) | dash | planned | Inside the screen housing, 200-300 mm ribbon |
 | MODEM_4G | SIMCom A7670SA 4G board | dash | placeholder (optional) | 6-pin header S G V K T R G. V takes 5-10 V from the spare Mini560 5 V buck. NEVER raw 12 V (10 V max, and the car runs 14.4 V with spikes). K is tied to ground on the board, so it starts by itself. T/R are 115200 baud TTL to the Pi's GPIO 15/14; measure T before connecting (3.3 V ok, else BSS138). Micro USB also on board. Its GNSS (FASE version, u.FL GPS socket on Sam's board) is the dash GPS too, so there is no separate USB GPS. Check on arrival that it gets a fix with the SIM out / 4G off. No USB: it's on the header pins (soldered leads), so texts, GPS and slow data only, no live video over 4G |
 | CARPLAY | Carlinkit CPC200-CCPA | dash | planned (optional) |  |

@@ -526,11 +526,12 @@ devices:
     optional: true
     pins: {V12: 12v, GND: gnd, VID: video, VID_GND: video}
   TCAM_DONGLE:
-    name: AHD to USB (UVC) capture dongle (rear + trailer, relay-switched)
+    name: Analogue video to camera-ribbon (CSI) board, ADV7280-M (rear + trailer)
     zone: dash
-    status: planned
-    optional: true
-    pins: {VID: video, VID_GND: video, USB: usb}
+    status: tbc
+    note: "No USB (Sam). The cameras run in CVBS (PAL) mode into this board, which sits in the Pi box on the Pi's 2nd camera ribbon port. ADV7280-M has several analogue inputs picked in software (adv728x-m overlay, adv7180 driver), so it swaps rear/trailer itself, no relay. A spare input can take a small cabin camera later. Pi 5 support for these boards is not proven yet: bench test it first"
+    check: "Confirm the board works on the Pi 5 (dtoverlay=adv728x-m,adv7280m=1); set each AHD camera to CVBS/PAL (OSD menu or mode wire)"
+    pins: {VID: video, VID_GND: video, VID_R: video, VID_R_GND: video, CSI: csi}
 
   # ---------------------------------------------------------- dash computer
   PI5:
@@ -598,9 +599,9 @@ devices:
     name: Rear camera (200 degree, Sam's)
     zone: rear
     status: tbc
-    note: "Sam thinks it's AHD. Then it shares the one AHD-to-USB (UVC) dongle with the trailer camera: a spare relay swaps the video to the trailer cam when the trailer plug is in. Only 2 streams ever (front on its ribbon + rear or trailer). No AHD-to-ribbon (CSI) board has proven Pi 5 support yet, so the dongle is the one USB we keep: right-angle lead, tied down. Cabin camera is 'later' on the 2nd ribbon port"
-    check: Rear camera USB or RCA/AHD? Photo its plug
-    pins: {USB: usb}
+    note: "Sam thinks it's AHD. Set to CVBS/PAL mode, soldered shielded video lead to the analogue-to-ribbon board. Rear or trailer is picked in software when the trailer plug is in. 12 V feed TBC"
+    check: "Rear camera: AHD with a CVBS mode? Photo its plug and label"
+    pins: {VID: video, VID_GND: video}
   CAM_FRONT:
     name: Camera Module 3 Wide (front)
     zone: dash
@@ -902,8 +903,9 @@ wires:
   # --- dash computer
   - {id: X01, from: PI5.HDMI0, to: SCREEN.HDMI, sys: dash, status: planned}
   - {id: X02, from: SCREEN.USB, to: PI5.USB2_B, sys: dash, status: planned, note: "Touch. Screen only does touch over USB. Right-angle lead, cable-tied to the box"}
-  - {id: X03, from: CAM_REAR.USB, to: PI5.USB3_A, sys: dash, status: tbc, note: "Or a UVC capture dongle if it's an RCA/AHD camera"}
-  - {id: X04, from: TCAM_DONGLE.USB, to: PI5.USB3_B, sys: dash, status: planned, optional: true, note: "Other USB controller from the rear camera"}
+  - {id: X03, from: CAM_REAR.VID, to: TCAM_DONGLE.VID_R, sys: dash, status: tbc, note: "Shielded video lead, soldered"}
+  - {id: X03b, from: CAM_REAR.VID_GND, to: TCAM_DONGLE.VID_R_GND, sys: dash, status: tbc}
+  - {id: X04, from: TCAM_DONGLE.CSI, to: PI5.CSI1, sys: dash, status: tbc, note: "Camera ribbon, 2nd port"}
   - {id: X07, from: CARPLAY.USB, to: PI5.USB2_A, sys: dash, status: planned, optional: true, note: "CarPlay dongle is USB only. Right-angle lead, dongle zip-tied down inside the box"}
   - {id: X11, from: CAM_FRONT.CSI, to: PI5.CSI0, sys: dash, status: planned}
   - {id: X13, from: AIHAT.PCIE, to: PI5.PCIE, sys: dash, status: placeholder, optional: true, note: "Keep the PCIe port free for this"}
