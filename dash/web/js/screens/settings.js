@@ -16,7 +16,7 @@ async function api(path, opts = {}) {
 }
 
 const SECTIONS = [
-  ["display", "Display"], ["lock", "Vehicle lock"], ["sounds", "Sounds and alerts"], ["audio", "Audio and media"], ["lights", "Lights setup"], ["camera", "Cameras"], ["limits", "Safety limits"],
+  ["display", "Display"], ["lock", "Vehicle lock"], ["remote", "Remote control"], ["sounds", "Sounds and alerts"], ["audio", "Audio and media"], ["lights", "Lights setup"], ["camera", "Cameras"], ["limits", "Safety limits"],
   ["diff", "Diff calibration"], ["features", "Features"], ["faults", "Faults"], ["updates", "Updates"], ["wifi", "Wi-Fi"], ["about", "About"],
 ];
 
@@ -89,6 +89,25 @@ export class SettingsScreen {
     body.appendChild(row("Power bar scale", "Full scale of the power bar on the drive screen.", stepper(s.get("powerMaxKw"), { step: 1, min: 5, max: 30, fmt: (v) => `${v} kW`, onChange: (v) => s.set("powerMaxKw", v) })));
     body.appendChild(row("Battery pack size", "Usable energy in the traction pack, for the range estimate. 72 V x 105 Ah is about 7.5 kWh.", stepper(s.get("packKwh"), { step: 0.5, min: 1, max: 40, fmt: (v) => `${v.toFixed(1)} kWh`, onChange: (v) => s.set("packKwh", v) })));
     body.appendChild(row("Battery cells in series", "Only used to estimate battery % from voltage if the motor controller doesn't send one.", stepper(s.get("cells"), { step: 1, min: 10, max: 40, onChange: (v) => s.set("cells", v) })));
+  }
+
+  // ---------- Remote control (docs/rc-beach-launch.md) ----------
+  // 4G driving is off unless turned on here, and changing it either way needs the lock PIN.
+  sec_remote(body) {
+    const ctx = this.ctx, s = ctx.settings, st = ctx.store;
+    this.title(body, "Remote control", "Drive the Teryx from your phone or a handheld, for launching off the beach. 3 km/h in reverse, 5 km/h forward. It stops on the brake if the signal drops, you let go of the green button or the wheels dig in. On the Teryx's own Wi-Fi, open <b>remote.html</b> on the dash's address.");
+    const sw = toggle(!!s.get("rc.allow4g"), async (v) => {
+      sw.set(!v);   // only changes once the PIN checks out
+      if (st.get("lock.state") === "off" || st.get("lock.state") == null) { toast("Set a vehicle lock PIN first (Vehicle lock).", "bad"); return; }
+      const p = await askPin("Enter your PIN", v ? "To allow driving over 4G." : "To turn 4G driving off.");
+      if (p == null) return;
+      const r = await lockCommand(ctx, "verify", p);
+      if (r !== "ok") { toast(r === "no_link" || r === "no_answer" ? "No answer from the control box." : lockResultText(r) || `Control box said no (${r}).`, "bad"); return; }
+      s.set("rc.allow4g", v); sw.set(v);
+      toast(v ? "4G driving allowed. 2 km/h, cameras must be live, stops if the lag gets over 0.3 s." : "4G driving off.", v ? "warn" : "good");
+    });
+    body.appendChild(row("Allow driving over 4G", "Off unless you turn it on. Meant for getting it back if it's ever pinched, not for everyday use. Over 4G it's capped at 2 km/h, won't move unless the cameras are live, and stops on the brake if the lag gets over 0.3 s or the link drops. Police say don't go after a stolen vehicle yourself: call 111. Needs your PIN to change.", sw));
+    body.appendChild(row("Remote speed limits", "Reverse 3 km/h, forward 5 km/h on Wi-Fi or the handheld's own radio. 2 km/h over 4G. Set in the RC box.", null));
   }
 
   // ---------- Vehicle lock (docs/vehicle-lock.md) ----------

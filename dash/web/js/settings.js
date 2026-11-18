@@ -47,6 +47,7 @@ export const DEFAULTS = {
       trailer: { fitted: false, name: "Trailer", deviceId: "", v4l2Device: "", mirror: true,  guides: true },
     },
   },
+  rc: { allow4g: false },  // remote driving over 4G (docs/rc-beach-launch.md). Off by default, needs the PIN to change
   features: { ...FEATURE_DEFAULTS },   // what's wired up yet; the rest shows greyed out (see features.js)
   updates: { channel: "stable", auto_check: true },
   media: {

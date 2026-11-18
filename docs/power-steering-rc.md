@@ -15,6 +15,10 @@ country, so shipping figures are what AliExpress quoted for NZ. AliExpress says
 Cheaper option: a column from a wrecked car, see
 [`power-steering-wrecker.md`](power-steering-wrecker.md).
 
+**RC mode for launching off the beach or a ramp (phone remote, RC box, speed
+caps, water limit, 4G) is now planned in [`rc-beach-launch.md`](rc-beach-launch.md).**
+That doc replaces the 8 km/h cap and the radio pick below.
+
 ## 1. Short answer
 
 - **Best AliExpress pick:** the CFMoto CF800-style EPS unit (part 7020-100400,
