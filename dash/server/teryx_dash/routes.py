@@ -15,6 +15,7 @@ from typing import Any
 from aiohttp import web
 
 from . import pico_settings
+from .fun import setup_fun_routes
 from .media import setup_media_routes
 from .ota import Ota, OtaConfig
 from .trips import DEFAULT_PACK_KWH, TripLog
@@ -75,6 +76,8 @@ def setup_routes(app: web.Application, gateway: Any) -> None:
     r = app.router
     # Audio, Bluetooth phone, music and radio (media.py).
     setup_media_routes(app, gateway, lambda: SETTINGS_FILE)
+    # Fun screen: streaming window and camp mode screen power (fun.py).
+    setup_fun_routes(app, gateway, CONFIG_DIR, lambda: SETTINGS_FILE, lambda: snapshot(gateway))
 
     # ---------- dash settings ----------
     async def get_settings(_):
