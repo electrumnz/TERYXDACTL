@@ -76,7 +76,7 @@ runs up to about 5 m). Go one size up for bundled or hot runs.
 - [ ] **Shinegle kit key switch** (KIT_KEY): Is the kit key the same switch as the Teryx key? Meter what voltage reaches J1-1 with the key on (12 V or 72 V)
 - [ ] **Blade fuse block** (FB): Read the front bar labels. Each pair (1+4, 2+3) must draw under about 12 A together (about 140 W) to share a 15 A fuse. If not, give each bar its own 10 A again
 - [ ] **Screen 12 V supply** (SCREEN_PSU): Read the label on the screen's power brick (volts and amps)
-- [ ] **8-ch relay board** (RELAYS): Does the relay board click from 3.3 V logic? Active high or low?
+- [ ] **16-ch relay board, channels 1-8** (RELAYS): Does the relay board click from 3.3 V logic? Active high or low?
 - [ ] **Rear flood left (4 in pod)** (FLOOD_L): Light bars and pods dim with PWM? Test one on a cheap dimmer
 - [ ] **Winch isolator contactor** (WINCH_ISO): Do the remote and hand switches need to work with the dash dead? If so the isolator needs a second coil feed from a hidden key switch
 - [ ] **XBull solenoid box** (WINCH_SOL): Photo the XBull solenoid box terminals and the remote plug pins
@@ -507,12 +507,12 @@ Fuses not in the block (inline, at the battery or on a board):
 | ADS1 | ADS1115 ADC (0x48) | control_box | planned | ALERT pin left free so GP22 can be the steering CAN chip select (read "ready" over I2C) |
 | ADS2 | Second ADS1115 (0x49) | control_box | planned (optional) | Brake pedal regen only See [`docs/brake-regen.md`](../../docs/brake-regen.md). |
 | OPTO | 8-ch opto board (PC817, 12 V in) | control_box | planned |  |
-| RELAYS | 8-ch relay board | control_box | planned | Mechanical 5 V relays with opto and JD-VCC jumper (AliExpress cart). The solid state G3MB-202P board Sam has is AC only and won't turn off on 12 V DC. JD-VCC jumper off, coils on 5 V, inputs from 3.3 V |
-| RELAYS2 | 4-ch relay board (2 used, 2 spare) | control_box | planned (optional) | Relay 9 steering enable, relay 10 drive lock (uses the NC contact) |
+| RELAYS | 16-ch relay board, channels 1-8 | control_box | planned | One 16-channel board of mechanical 5 V relays with opto and JD-VCC jumper (AliExpress cart), in an aux box next to the control box. RELAYS2 is channels 9-16 of the same board. The solid state G3MB-202P board Sam has is AC only and won't turn off on 12 V DC. JD-VCC jumper off, coils on 5 V, inputs from 3.3 V |
+| RELAYS2 | 16-ch relay board, channels 9-16 (2 used, 6 spare) | control_box | planned (optional) | Same board as RELAYS. Relay 9 steering enable, relay 10 drive lock (uses the NC contact) |
 | BTS1 | BTS7960 1 (front diff) | control_box | confirmed |  |
 | BTS2 | BTS7960 2 (2WD/4WD) | control_box | planned |  |
 | BTS3 | BTS7960 3 (tray) | control_box | planned |  |
-| MOSFET | 5-ch MOSFET board (low side) | control_box | planned | Logic-level MOSFETs that fully turn on from 3.3 V |
+| MOSFET | 5 x LR7843 isolated MOSFET modules (low side) | control_box | planned | One single-channel LR7843 module per light bar (opto input, 30 V MOSFET), plus a spare in the AliExpress cart. About 6 A per front bar, so no heatsink. Each module's ground is shown here as one pin |
 | LB1 | Front bar 1 (far left) | front | confirmed |  |
 | LB2 | Front bar 2 (inner left) | front | confirmed |  |
 | LB3 | Front bar 3 (inner right) | front | confirmed |  |

@@ -10,16 +10,18 @@ Backup (now),Audio City,Carlinkit CPC200-CCPA dongle (photo shows CCPA code),Car
 AliExpress,AliExpress (search "Carlinkit CCPA"),Carlinkit CPC200-CCPA (or CCPA-MIC) dongle,,1,65.00,65.00,"US$33-39 snapshots x 1.822","Title must say CCPA + Android head unit + Autokit; lsusb must show 1314:1520 or 1314:1521",https://www.aliexpress.us/item/3256809220614383.html
 AliExpress,AliExpress,4-channel class D amp 12V (RCA in + remote turn-on),,1,82.00,82.00,"~US$45 snapshot x 1.822","Not waterproof; mount under the seat",https://www.aliexpress.com/w/wholesale-amplifier-4-channel-class-d.html
 AliExpress,AliExpress,BTS7960 43A H-bridge,,2,12.00,24.00,"~US$6-7 each (Walmart 2-pack US$11.56)",One on hand; 3 needed,
-AliExpress,AliExpress,8-channel PC817 opto board 12V,,1,,,Not priced,,
-AliExpress,AliExpress,MOSFET PWM board 5ch (AOD4184),,1,,,Not priced,Only once a light bar dims,
-AliExpress,AliExpress,"8-channel 5V relay board, mechanical, opto + JD-VCC jumper, 10A NO/NC",,1,15.00,15.00,"US$8.29 x 1.822","Relays 1-8; not the solid state G3MB-202P kind (AC only); VCC 3.3V, JD-VCC 5V; active low",https://reach.dog/shop/treedix-official/products/treedix-dc-5v-8-channel-relay-board-module-isolated-optocoupler-high-and-low-level-h-l-level-trigger-module-triggered-compatible-with-arduino-raspberry-pi-8-channel
-AliExpress,AliExpress,"4-channel 5V relay board, same type",,1,9.00,9.00,"~US$5 estimate","Relays 9-10 + 2 spare",
+AliExpress,AliExpress,8-channel PC817 opto board 12V in,,1,9.00,9.00,"~US$5 estimate","Needed: all 8 control box inputs",
+AliExpress,AliExpress,"Isolated MOSFET switch module LR7843 (opto input, screw terminals)",,6,5.00,30.00,"~US$1.70-3.07 each","Needed: one per light bar (4 front ~6A each + interior) + 1 spare; 30V, no heatsink; 3.3V input; 500Hz PWM ok",https://abra-electronics.com/electromechanical/relays/relay-modules-shields/mod-lr7843-30v-161a-mosfet-isolation-module-for-arduino.html
+AliExpress,AliExpress,"16-channel 5V relay board, mechanical, opto + JD-VCC jumper, 10A NO/NC",,1,21.00,21.00,"~US$11.28 eBay snapshot x 1.822","All 10 relays + 6 spare; aux box; must have JD-VCC jumper; not solid state",https://www.ebay.de/itm/143395133451
 AliExpress,AliExpress,20-way blade fuse block with cover + negative bus (16 fuses planned),,1,40.00,40.00,"~US$15-25 estimate","Buy the blade fuses in NZ; 30A/way, 100A total, stud feed",https://www.aliexpress.com/w/wholesale-Modular%20Fuse%20Block.html
 AliExpress,AliExpress,"Finned heatsink 100x100x40mm, black anodised, flat base 5mm+",,1,20.00,20.00,Estimate,"Pi box lid outside; replaces the 3007 fan; rated alt Fischer SK 92/100 SA element14 NZ 4621580",https://nz.element14.com/fischer-elektronik/sk-92-100-sa/heat-sink-100mm-1-4-c-w/dp/4621580
 AliExpress,AliExpress,"Thermal pad 1mm, 4 W/mK or better",,1,5.00,5.00,Estimate,"20x20 on the Pi chip",
 AliExpress,AliExpress,"Solid aluminium block 20x20x50mm (pillar)",,1,5.00,5.00,Estimate,"Cut to ~45.3mm",
 AliExpress,AliExpress,Thermal paste small tube,,1,3.00,3.00,Estimate,,
 AliExpress,AliExpress,"M12x1.5 breather vent plug, membrane",,2,2.00,4.00,Estimate,"Pi box bottom wall; one spare",
+AliExpress,AliExpress,USB sound card / DAC 3.5mm out,,1,8.00,8.00,Estimate,"Needed for the amp; Pi 5 has no audio jack",
+AliExpress,AliExpress,"Winch isolator contactor 12V coil, 200A continuous duty",,1,30.00,30.00,Estimate,"Relay 6 arms it; continuous duty, not a starter solenoid",
+AliExpress,AliExpress,"Waterproof micro limit switch, roller lever (NC)",,3,2.67,8.00,Estimate,"Tray up/down + 1 spare",
 AliExpress,AliExpress,SIMCom A7670SA 4G Cat-1 core board (must list B28),,1,28.00,28.00,"US$15.46 x 1.822","UART only = texts/WHERE/LOCK, too slow for cameras; better if USB-C goes to the module's own USB pins",https://www.aliexpress.us/item/3256808314829525.html
 AliExpress,AliExpress,4-channel BSS138 level shifter,,1,2.00,2.00,Estimate,"Probably not needed; measure the board's T pin first (3.3V ok straight to the Pi)",
 AliExpress,AliExpress,Active GPS antenna IPEX (with the GPS/FASE version),,1,8.00,8.00,Estimate,,
@@ -27,20 +29,24 @@ AliExpress,AliExpress,LTE antenna 698-2700MHz + u.FL to SMA lead,,1,12.00,12.00,
 Later,GameSir official store on AliExpress,GameSir G8 Galileo USB-C phone gamepad grip (RC mode),,0,78.00,0.00,"US$40-45 deals x 1.822 (list US$79.99)","Not now (Sam 18 Nov); instead of Razer Kishi V3 NZ$167.58 at PB Tech",https://gamesir.com/collections/all-products/products/gamesir-g8-galileo
 Bought,Trade Me,"Samsung Galaxy XCover 5 second-hand as RC remote (Android 14, 4/64 GB, IP68)",,1,187.00,0.00,"Trade Me 18 Nov, 90 day warranty","Bought by Sam 18 Nov, not in totals; Fully Kiosk Browser licence optional",https://www.trademe.co.nz/
 Order online,Core Electronics (AU),Seeed MCP2515 + SN65HVD230 CAN board (Pi + control box + sniffer + power steering),,4,22.77,91.08,AU$18.45 x 1.234,15 in stock 17 Nov,https://core-electronics.com.au/seeed-studio-can-bus-breakout-board-for-xiao-and-qt-py-mcp2515-controller-sn65hvd230-transceiver-chip.html
-Order online,Core Electronics (AU),MCP23017 board,WS-15391,1,13.45,13.45,AU$10.90 x 1.234,9 in stock 17 Nov,https://core-electronics.com.au/catalog/product/view/sku/WS-15391
+Order online,Core Electronics (AU),MCP23017 board (2nd drives relays 9-10),WS-15391,2,13.45,26.90,AU$10.90 x 1.234,9 in stock 17 Nov,https://core-electronics.com.au/catalog/product/view/sku/WS-15391
 Order online,Core Electronics (AU),DFRobot USB GPS receiver,TEL0138,1,25.98,25.98,AU$21.05 x 1.234 (search result),"Alt RS NZ 247-3251 NZ$30.85",https://core-electronics.com.au/catalog/product/view/sku/TEL0138
 Order online,Core Electronics (AU),Pololu D36V50F5 5V 5.5A regulator,POLOLU-4091,1,111.20,111.20,AU$90.11 x 1.234,In stock 17 Nov,https://core-electronics.com.au/catalog/product/view/sku/POLOLU-4091
 Order online,Core Electronics (AU),Shipping to NZ (estimate),,1,17.50,17.50,AU$12-16 from product page,Check at checkout,
 Order online,Gogo:Tronics,Mini560 5V 5A buck,,2,2.95,5.90,Checked 17 Nov,"Control box + 4G board (V pin, 5V)",https://sparks.gogo.co.nz/catalog/DC-Power-260/Fixed-Output-Step-Down-Converter-Out-5v-up-to-5A-Continuous-In-7-20v-1009.html
 Order online,element14 NZ,1.5KE18A TVS diode,9884831,2,2.24,4.48,Checked 17 Nov (GST unclear),,https://nz.element14.com/stmicroelectronics/1-5ke18a/diode-tvs-1-5kw-18v/dp/9884831
-Order online,Narva stockist,Narva 7-pin flat socket with reed switch,82043BL,1,,,Not priced,Trailer detect,https://narva.com.au/products/narva-7-pin-flat-quickfit-trailer-socket-with-reed-switch-for-use-with-normally-closed-circuits-1-pack
+Buy locally,Narva stockist,Narva 7-pin flat socket with reed switch,82043BL,1,35.00,35.00,Estimate,Trailer detect,https://narva.com.au/products/narva-7-pin-flat-quickfit-trailer-socket-with-reed-switch-for-use-with-normally-closed-circuits-1-pack
+Buy locally,Jaycar / Narva,"Blade fuse assortment 3/5/7.5/10/15A",,1,25.00,25.00,Estimate,"Real fuses, not AliExpress",
+Buy locally,Jaycar,"F-N-R switch, DPDT centre-off, 10A+",,1,20.00,20.00,Estimate,,
+Buy locally,Any,Marine speakers (pair),,1,100.00,100.00,Estimate,For the amp,
+Buy locally,Any,Prepaid SIM,,1,10.00,10.00,Estimate,For the 4G board,
+Buy locally,Jaycar / Repco,"Wire, crimp terminals, heatshrink, loom",,1,,,Not priced,Sizes in config/wiring.yaml,
 Separate pickup,Dodson's (Trade Me),Toyota Aqua EPS column (ECU 89650-52B51),,1,115.00,115.00,About NZ$115,Picking up 19 Nov,
 Later,PB Tech,Raspberry Pi Active Cooler (with the AI HAT only),SEVRBP0531,0,11.21,0.00,Checked 17 Nov,"Not needed for the sealed box now",https://www.pbtech.co.nz/product/SEVRBP0531
 Later (optional),Newegg NZ,Noctua NF-A4x10 5V PWM fan (on the heatsink fins if hot / with AI HAT),,0,21.85,0.00,Search result 18 Nov,"Outside the box; Pi 5 fan header via adaptor",https://www.newegg.com/global/nz-en/noctua-nf-a4x10-5v-pwm/p/1YF-000T-000N2
 Later,PB Tech / Core Electronics,Raspberry Pi AI HAT+ 2,SEVRBP0446,0,423.43,0.00,Search result 18 Nov,"Not buying now; Core ~NZ$357-373 landed; box stays sized for it",https://www.pbtech.co.nz/product/SEVRBP0446
 Later (alternative),AliExpress / eBay / Trade Me,Huawei E3372h-607 4G USB stick (bands 1/3/7/8/28/40),,0,,0.00,"~US$36-42 (~NZ$66-77) search results","Cheaper pick; check label says -607; HiLink network adaptor, SMS via web API",
 Later (optional, dearer),Waveshare / Fruugo NZ,Waveshare SIM7600G-H 4G Dongle,,0,,0.00,"US$101.99 waveshare.com, or ~NZ$139-179 + shipping Fruugo NZ","4G anti-theft; goes in the Pi box",https://www.waveshare.com/sim7600g-h-4g-dongle.htm
-Later (optional),Any,Prepaid SIM,,0,,0.00,Not priced,Top up once a year,
 Later (optional),Any,AirTag (backup tracker),,0,,0.00,About NZ$47-68,,
 Later (optional),PB Tech,Kingston XS1000 1TB USB-C SSD,HDDKCP225100,0,,0.00,NZ$189-253 (price moved between checks),"Dashcam/Sentry video; cradle in Pi box lid",https://www.pbtech.co.nz/product/HDDKCP225100
 Later (optional),TBC,Short right-angle USB-C to USB-A lead,,0,,0.00,Not priced,For the SSD,
@@ -48,6 +54,7 @@ Later (optional),PB Tech,Raspberry Pi Camera Module 3 NoIR Wide (cabin camera),S
 Later,TBC,Powered USB hub,,0,,0.00,Not priced,Pi 5 has 4 USB ports,
 Later,PB Tech,EasyCAP DC60 USB capture (only if rear cam is RCA),SEVOEM9701,0,28.75,0.00,Search result 18 Nov,Optional,https://www.pbtech.co.nz/product/SEVOEM9701
 ,,TOTAL buy tomorrow (all PB Tech),,,,585.44,,,
-,,TOTAL AliExpress (priced),,,,322.00,,,
-,,TOTAL other online (priced),,,,269.59,,,
-,,TOTAL everything priced incl Aqua column,,,,1292.03,,,
+,,TOTAL AliExpress (priced),,,,404.00,,,
+,,TOTAL other online (priced),,,,283.04,
+,,TOTAL buy locally (priced),,,,190.00,,,,,
+,,TOTAL everything priced incl Aqua column,,,,1577.48,,,

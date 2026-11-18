@@ -46,8 +46,8 @@
 <line x1="40" y1="383" x2="310" y2="383" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="175" y="387" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VID_GND</text>
 </g>
-<g data-device="RELAYS" data-status="planned"><title>RELAYS: 8-ch relay board - Mechanical 5 V relays with opto and JD-VCC jumper (AliExpress cart). The solid state G3MB-202P board Sam has is AC only and won&#x27;t turn off on 12 V DC. JD-VCC jumper off, coils on 5 V, inputs from 3.3 V</title><rect x="480" y="150" width="270" height="169" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
-<text x="490" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">8-ch relay board</text>
+<g data-device="RELAYS" data-status="planned"><title>RELAYS: 16-ch relay board, channels 1-8 - One 16-channel board of mechanical 5 V relays with opto and JD-VCC jumper (AliExpress cart), in an aux box next to the control box. RELAYS2 is channels 9-16 of the same board. The solid state G3MB-202P board Sam has is AC only and won&#x27;t turn off on 12 V DC. JD-VCC jumper off, coils on 5 V, inputs from 3.3 V</title><rect x="480" y="150" width="270" height="169" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="490" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">16-ch relay board, channels 1-8</text>
 <text x="490" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">RELAYS · planned</text>
 <line x1="480" y1="197" x2="750" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">COM2</text>
