@@ -168,6 +168,12 @@ the same as the lock screen).
   Pi are both on Sam's Tailscale tailnet, and the Pi is at `http://teryx:8080`.
   Being on the tailnet is the device check; the PIN for `rc.allow4g` sits on
   top. The remote app can open a ready-filled `sms:` link for the wake text.
+- **The 4G module has to give real data speed.** On a board wired only to the
+  Pi's UART, 4G data is PPP at roughly 11-90 KB/s: fine for texts, far too slow
+  for live video. So RC over 4G needs the module's own USB wired to the Pi (not a
+  USB-serial chip), or a USB 4G stick. On a UART-only setup the link endpoint
+  answers "texts only", the link never shows as up, and RC over 4G refuses on its
+  own. See "Which 4G module" in `docs/remote-access.md`.
 - **RC over 4G also refuses unless the 4G link is up** (`GET /api/remote/link`
   says `up`), and the app keeps the link alive while driving
   (`POST /api/remote/link` with `minutes`) so it can't drop mid-drive. To be
