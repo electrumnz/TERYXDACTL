@@ -25,7 +25,6 @@ TERYX_IMU=off turns it off; TERYX_IMU=/dev/i2c-N picks another bus. With no I2C 
 from __future__ import annotations
 
 import asyncio
-import fcntl
 import json
 import math
 import os
@@ -64,6 +63,7 @@ class Mpu6050:
     """Plain /dev/i2c-N access, so there's nothing extra to install."""
 
     def __init__(self, dev: str = "/dev/i2c-1", addr: int = ADDR):
+        import fcntl   # Linux only; imported here so the dash still loads on Windows/macOS
         self.fd = os.open(dev, os.O_RDWR)
         fcntl.ioctl(self.fd, I2C_SLAVE, addr)
         os.write(self.fd, bytes([REG_PWR_MGMT_1, 0x00]))
