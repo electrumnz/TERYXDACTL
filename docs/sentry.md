@@ -87,17 +87,13 @@ Sizing, at the defaults (1280 x 720, 15 fps, 2 Mb/s):
 | 1 TB drive, 75% for the loop | about **200 hours** of all four cameras, about 25 days of 8 h driving |
 | 500 GB drive | about 100 hours |
 
-**Pick (18 Nov): Samsung PRO Endurance 128 GB microSD** in the Pi's own slot, for the OS and the
-recordings. PB Tech MEMSAM11230, about NZ$115. Samsung rate the 128 GB for 70,080 hours of
-non-stop recording. It only records when moving and on Sentry events, so that's years of use.
-No USB at all, because USB plugs shake loose (Sam's rule).
+**For now (Sam, 18 Nov): just the official Raspberry Pi A2 SD card 128 GB** (PB Tech SEVRBP0538)
+for the OS. It isn't made for non-stop writes, so **dashcam and Sentry recording stay off, or
+short clips only, until extra storage is added.** Sam will sort that later.
 
-| 128 GB card | |
-|---|---|
-| OS and apps | about 16 GB |
-| Loop space (75% of the rest) | about 84 GB |
-| Four cameras | about **23 hours** of recording |
-| One camera | about 90 hours |
+When it's added, the easy no-USB pick is a high-endurance microSD swapped into the slot, e.g.
+Samsung PRO Endurance 128 GB (PB Tech MEMSAM11230, about NZ$115, rated 70,080 hours of non-stop
+recording). That holds about 23 hours of all four cameras.
 
 The loop deletes the oldest clips first. Sentry clips are marked and kept.
 

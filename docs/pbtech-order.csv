@@ -6,7 +6,7 @@ PB Tech (buy Thursday),pbtech,Pi 5 camera cable 200mm,SEVRBP0541,2,2.12,4.24,Sea
 PB Tech (buy Thursday),pbtech,Raspberry Pi Pico 2 5-pack,SEVRBP0628,1,47.20,47.20,Checked 17 Nov,"Control box, CAN sniffer, steering bench test, 2 spare",https://www.pbtech.co.nz/product/SEVRBP0628
 PB Tech (buy Thursday),pbtech,Raspberry Pi 27W USB-C power supply (bench),SEVRBP0512,1,24.90,24.90,Search result 18 Nov,Bench only,https://www.pbtech.co.nz/product/SEVRBP0512
 PB Tech (buy Thursday),pbtech,Raspberry Pi micro HDMI to HDMI cable 1m,SEVRBP0207,1,11.80,11.80,Search result 18 Nov,Alt black SEVRBP0262 ~11.10,https://www.pbtech.co.nz/product/SEVRBP0207
-PB Tech (buy Thursday),pbtech,Samsung PRO Endurance 128GB microSD (OS + recordings),MEMSAM11230,1,114.90,114.90,PB Tech page 18 Nov,"In the Pi's own slot, no USB. Samsung rate the 128GB for 70,080 hours of non-stop recording; it only records on movement and Sentry events, so years of life. Oldest clips overwritten first",https://www.pbtech.co.nz/product/MEMSAM11230
+PB Tech (buy Thursday),pbtech,Raspberry Pi A2 SD card 128GB (OS),SEVRBP0538,1,47.32,47.32,Search result 18 Nov,"Official card, in the Pi's own slot. Not made for non-stop writes, so dashcam/Sentry recording stays off or minimal until extra storage is added",https://www.pbtech.co.nz/product/SEVRBP0538
 PB Tech (buy Thursday),pbtech,"Raspberry Pi DAC+ HAT (ex IQaudio DAC+, SC0368)",SEVRBP0313,1,35.65,35.65,Search result 18 Nov (out of stock when indexed),"Official board, RCA out. If PB Tech has none: Pakronics NZ ~NZ$40",https://www.pbtech.co.nz/product/SEVRBP0313
 "AliExpress (one order, 2 to 4 weeks)",aliexpress,Carlinkit CPC200-CCPA (or CCPA-MIC) CarPlay dongle,,1,65.00,65.00,US$33-39 x 1.822,Title must say CCPA + Android head unit; lsusb 1314:1520/1521,
 "AliExpress (one order, 2 to 4 weeks)",aliexpress,"4-channel class D amp, 4 x 63W RMS at 4 ohm, 2 x 200W bridged, 90Hz HPF/LPF (Sam's pick)",,1,100.00,100.00,"Sam, AliExpress ~NZ$100","Ch 1-2 Kenwoods, ch 3-4 kept for a bridged sub later; under the seat, not waterproof",
@@ -85,6 +85,7 @@ PB Tech (buy Thursday),pbtech,"Raspberry Pi DAC+ HAT (ex IQaudio DAC+, SC0368)",
 "Local: Jaycar, Narva stockist, Repco, auto electrical",local,"Tinned lugs for 10 mm², M8 hole",,10,2.00,20.00,Estimate; counted from config/wiring.yaml,2 spare,
 "Local: Jaycar, Narva stockist, Repco, auto electrical",local,"Tinned lugs for 35 mm², M8 hole",,6,2.00,12.00,Estimate; counted from config/wiring.yaml,2 spare,
 Separate pickup,pickup,Toyota Aqua EPS column (ECU 89650-52B51),,1,115.00,115.00,About NZ$115,"Dodson's, picking up 19 Nov",
+Later,PB Tech,"Recording storage (e.g. Samsung PRO Endurance 128GB, MEMSAM11230)",,0,114.90,0.00,,For dashcam/Sentry. Sam to sort later,
 Later,PB Tech,Raspberry Pi AI HAT+ 2,,0,423.43,0.00,,Not now,
 Later,PB Tech,Raspberry Pi Active Cooler,,0,11.21,0.00,,Only with the AI HAT,
 Later,Newegg NZ,Noctua NF-A4x10 5V fan,,0,21.85,0.00,,Only if the Pi box runs hot,
@@ -92,10 +93,10 @@ Later,Core / AliExpress,Second ADS1115 + brake pedal Hall sensor (+ pressure sen
 Later,AliExpress,GameSir G8 Galileo phone gamepad,,0,78.00,0.00,,"RC mode, Sam: not now",
 Later,PB Tech,EasyCAP DC60 USB capture,,0,28.75,0.00,,Only if the rear camera turns out to be RCA,
 Later,Audio City,Carlinkit CCPA from Audio City (NZ stock),,0,180.00,0.00,,Backup if the AliExpress one is slow,
-,,TOTAL PB Tech (buy Thursday),,,,760.79,,,
+,,TOTAL PB Tech (buy Thursday),,,,693.21,,,
 ,,"TOTAL AliExpress (one order, 2 to 4 weeks)",,,,731.01,,,
 ,,"TOTAL Core Electronics (AU, online)",,,,246.68,,,
 ,,"TOTAL Gogo:Tronics and element14 (NZ, online)",,,,10.38,,,
 ,,"TOTAL Local: Jaycar, Narva stockist, Repco, auto electrical",,,,1241.50,,,
 ,,TOTAL Separate pickup,,,,115.00,,,
-,,TOTAL everything,,,,3105.36,,,
+,,TOTAL everything,,,,3037.78,,,
