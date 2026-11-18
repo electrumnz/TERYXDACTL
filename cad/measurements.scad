@@ -173,3 +173,48 @@ grid_pitch  = 10;
 grid_hole   = 2.6;
 grid_t      = 3;
 grid_post_h = 5;    // gap under the plate for wires and solder joints
+
+// ---------------------------------------------------------------------------
+// Pi box extras: micro HDMI clamp and the 4G board
+// ---------------------------------------------------------------------------
+// Screen's micro HDMI lead. Micro HDMI plugs work loose with vibration, so the
+// plug sits on a cradle printed into the box floor and two cable ties hold it:
+// one round the plug's moulding (stops it rocking) and one round the cable a bit
+// further on (takes any pull off the plug). Leave a small loop of slack between
+// the second tie and the floor hole.
+// The Pi sits with its HDMI edge facing the bottom wall (-Y), USB-C on the left.
+// Port spots from the Raspberry Pi 5 mechanical drawing (datasheets.raspberrypi.com):
+// HDMI0 centre 25.8 mm from the board's left edge, ports flush with the edge,
+// about 3.4 mm tall. Use HDMI0 (the one next to USB-C).
+hdmi_clamp   = true;              // false = no cradle
+pi_hdmi0_x   = 25.8;              // Raspberry Pi drawing
+pi_pcb_t     = 1.6;               // Pi board thickness
+hdmi_port_h  = 3.4;               // Raspberry Pi drawing, height of the socket
+// Official Raspberry Pi micro HDMI to HDMI cable, Pi end. Raspberry Pi don't
+// publish the moulding size: GUESS from a similar official adaptor's micro end
+// (11.26 x 8.16 mm). CHECK with calipers when the cable turns up.
+hdmi_plug    = [11.3, 8.2, 22];   // GUESS moulding width, thickness, length out from the board edge
+hdmi_cable_d = 5;                 // cable OD (reseller listing: 5 mm)
+hdmi_pad     = 1.0;               // gap left under the plug for foam tape, so the
+                                  // cradle never pushes the plug up
+
+// 4G board inside the Pi box, on standoffs under the lid (over the strip right
+// of the Pi, clear of the lid fan, the SSD cradle and the AI HAT's leads).
+// Board: Waveshare SIM7600G-H 4G HAT (B). Picked because the SIM7600G-H covers
+// LTE B28 (700 MHz, the NZ country band) as well as B1/B3/B7; the A7670E boards
+// don't list B28. It's Pi Zero sized (Waveshare: 65 x 30.5 to 32 mm, sources
+// differ) with the Zero's 58 x 23 M2.5 hole pattern (CHECK on the board), and
+// talks to the Pi over a micro USB lead to one of the Pi's USB ports. Components
+// face into the box, so with the lid off and flipped the SIM slot is right there.
+// Its u.FL aerial sockets (MAIN, AUX) go on the supplied u.FL to SMA leads to
+// SMA bulkheads in the right-hand wall, so the aerials sit outside the box.
+modem_on       = true;              // false = no 4G board
+modem_board    = [31, 65];          // X, Y as it sits in the box (long side along Y)
+modem_holes    = [23, 58];          // GUESS Pi Zero pattern, M2.5
+modem_pos      = [42, -2];          // board centre, box coordinates
+modem_standoff = 6;                 // gap from the lid to the board
+modem_sma      = 2;                 // SMA bulkheads in the right wall (MAIN, AUX). 3 adds GNSS
+sma_hole       = 6.6;               // 1/4"-36 SMA bulkhead thread is 6.35 mm
+sma_z          = 42;                // height of the SMA holes from the box floor's underside
+sma_y0         = 4;                 // first SMA hole (Y), above the side vents
+sma_pitch      = 14;                // gap between SMA holes (room for the 8 mm nut and a spanner)

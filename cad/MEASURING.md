@@ -30,6 +30,14 @@ While you're there, read the label on the power brick (volts and amps) and
 check which video sockets are on the back (VGA only, or HDMI too). See
 "About the screen" in [README.md](README.md).
 
+## 1b. Pi box bits (5 minutes, once they turn up)
+
+| Setting | How to measure it |
+|---|---|
+| `hdmi_plug` | The micro HDMI cable's Pi end: width and thickness of the rubber moulding, and how far it sticks out from the Pi when plugged in. The cradle sits `hdmi_pad` (1 mm) under it for foam tape |
+| `hdmi_cable_d` | Cable thickness just past the plug |
+| `modem_holes`, `modem_board` | 4G board size and hole spacing, centre to centre. Waveshare's sizes for it disagree by a mm or so |
+
 ## 2. Your printer
 
 | Setting | |
