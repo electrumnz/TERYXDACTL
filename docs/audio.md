@@ -131,11 +131,8 @@ and set the gain so 63 W doesn't push them past their 50 W. Channels 3 and 4 sta
 later, bridged into a 4 ohm one (low pass on). It gets its own **40 A** fuse at the battery on
 **6 mm²** cable, feed and earth.
 
-**For the printed pods** (not drawn yet): a 180 mm hole in the front face, at least **95 mm** clear
-depth behind the mounting face (86 mm plus room for the terminals and the cable), and room for the
-speaker's outer flange (measure it, roughly 210 mm across). Bigger inside is better for bass: an 8"
-likes about 10 litres or more per side if you can fit it. Measure the real speaker before printing,
-since one listing gives a different depth.
+**Printed pods: done**, see [speaker-pods.md](speaker-pods.md). Sealed 7.4 L each, with a bass
+EQ on the Pi ("Teryx speaker pods" output) to suit these free-air marine speakers.
 
 ### 4. Wiring and bits
 

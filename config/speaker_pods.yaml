@@ -1,0 +1,52 @@
+# Speaker pods for the two Kenwood KFC-2053MRB 8" marine coaxials.
+#   python -m teryx speakerbox          check the numbers, show the bass response
+#   python -m teryx speakerbox --write  rewrite the Pi's bass EQ (scripts/pipewire/)
+# Why sealed, where the numbers come from, and how to measure your own:
+# docs/speaker-pods.md
+#
+# The CAD lives in cad/parts/speaker_pod.scad (sizes in cad/measurements.scad).
+# cad/build.sh checks the printed pod's air volume matches `pod.gross_l`.
+
+driver:
+  name: Kenwood KFC-2053MRB
+  # Kenwood publish no Thiele-Small numbers for this speaker (checked their US
+  # and AU spec pages, 18 Nov 2026). These are ESTIMATES for a free-air marine
+  # 8" with a small 90 mm ferrite magnet; the published 55 Hz low end points to
+  # an Fs near 55 Hz. Measure the real ones (docs/speaker-pods.md) and put
+  # them here, then run --write.
+  source: ESTIMATE
+  fs: 55          # Hz
+  qts: 0.85
+  vas_l: 35
+  # Every corner of these ranges is checked, so the pod works whatever the real
+  # numbers turn out to be.
+  range:
+    fs: [45, 65]
+    qts: [0.6, 1.1]
+    vas_l: [20, 50]
+  displacement_l: 0.35   # GUESS: basket, magnet and terminals inside the pod
+
+pod:
+  gross_l: 6.85     # air inside the printed pod, from the CAD (cad/build.sh checks it)
+  net_l: 6.50       # gross minus the speaker
+
+fill:
+  # Loose polyester fibre (pillow or speaker wadding, not foam, it dries out),
+  # about 10 g per litre, half fills the pod. Makes the box act bigger.
+  gain: 1.15
+  grams: 65
+
+amp_hpf:
+  # The AliExpress amp's fixed high pass on ch 1-2. The slope isn't on the
+  # listing: GUESS 12 dB/octave (2nd order, Q 0.707), which is what these
+  # boards normally use.
+  hz: 90
+  q: 0.707
+
+eq:
+  # The Pi reshapes the pod's bass (a Linkwitz transform) to a flat 2nd order
+  # roll-off at target_hz. Together with the amp's high pass that's a
+  # Linkwitz-Riley 24 dB/octave at 90 Hz, which is where a sub would take over.
+  target_hz: 90
+  target_q: 0.707
+  max_boost_db: 6   # never boost more than this; target_hz moves up instead

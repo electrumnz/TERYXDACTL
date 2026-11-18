@@ -281,3 +281,43 @@ modem_cap_pos  = [39 + pib_dx, -20];         // lies along X
 sma_holes      = [[4, 38, 0],       // 4G (LTE) aerial
                   [22, 48, 1]];     // GPS aerial, ringed
 sma_hole       = 6.6;               // 1/4"-36 SMA bulkhead thread is 6.35 mm
+
+// ---------------------------------------------------------------------------
+// Speaker pods: Kenwood KFC-2053MRB 8" marine coaxials (Sam has these).
+// Sealed pods, one piece each, printed face down. The speaker goes in from the
+// front like it would in a boat panel, so the only joint is its own flange.
+// Sizing and why sealed: docs/speaker-pods.md, config/speaker_pods.yaml.
+// LISTING = Kenwood's spec page (kenwood.com/usa/car/marine/kfc-2053mrb/spec.html)
+// ---------------------------------------------------------------------------
+spk_cutout    = 180;    // LISTING cut-out 7-1/16 in (179.4 mm), +0.6
+spk_grille_w  = 230;    // LISTING grille 9-1/16 in square
+spk_depth     = 86;     // LISTING mounting depth 3-3/8 in
+spk_clear     = 100;    // clear depth wanted behind the face (terminals + cable)
+pod_face_w    = 244;    // front face outside, square (must fit the bed: 250)
+pod_face_r    = 30;     // its corner radius
+pod_face_t    = 10;     // solid face round the cut-out: the speaker's screws bite in here
+pod_wall      = 5;      // shell wall (print 100% or 8+ walls, see docs)
+pod_neck_l    = 40;     // square part behind the face
+pod_waist_d   = 214;    // outside diameter where the taper ends
+pod_taper_l   = 86;     // square-to-round taper length
+pod_pad_d     = 110;    // where the 45 deg cone meets the cage knuckle
+pod_fins      = 8;      // stiffening fins round the inside wall
+pod_fin_h     = 12;     // how far the fins stand in from the wall
+pod_fin_t     = 4;
+pod_spines    = 4;      // the T. rex ridge along the top
+m6_insert_d   = 8.0;    // hole for an M6 heat-set insert (check the packet)
+m6_insert_deep= 13;
+pod_gland     = PG7;    // speaker cable gland, underneath
+pod_vent      = M12V;   // membrane breather, underneath
+pod_gasket_t  = 1.6;    // TPU gasket under the speaker's flange
+cage_tube_d   = 47.6;   // WEB 2008+ Teryx perimeter tube 1.875 in (Axia Alloys); top crossbars 1.7 in. MEASURE yours
+// Cage mount: the back of the pod wraps round the cage tube. The pod's back half
+// of the "knuckle" is printed with the pod; a cover half closes over the tube
+// with 4 hidden M6 bolts (heads under printed plugs). A strip of rubber lines it.
+rubber_t      = 1.5;    // rubber strip round the tube (the bore is this much bigger)
+knuckle_wall  = 18;     // tube bore to the outside of the knuckle (room for the bolts)
+knuckle_w     = 110;    // knuckle length along the tube
+knuckle_gap   = 2;      // gap between the halves, so they squeeze the tube
+knuckle_seat  = 6;      // solid between the pod's air space and the tube channel
+tube_along_x  = true;   // true: tube runs left/right behind the pod (crossbar)
+                        // false: tube runs up/down (a cage upright)
