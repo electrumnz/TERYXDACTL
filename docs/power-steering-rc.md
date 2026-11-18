@@ -12,6 +12,9 @@ Prices checked 18 Nov 2026, logged in to AliExpress with NZ as the ship-to
 country, so shipping figures are what AliExpress quoted for NZ. AliExpress says
 "Tax excluded, add at checkout", so add 15% GST on top.
 
+Cheaper option: a column from a wrecked car, see
+[`power-steering-wrecker.md`](power-steering-wrecker.md).
+
 ## 1. Short answer
 
 - **Best AliExpress pick:** the CFMoto CF800-style EPS unit (part 7020-100400,
