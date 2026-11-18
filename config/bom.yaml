@@ -203,7 +203,7 @@ later:
 
 # Not in the totals; shown so nothing is forgotten.
 later_lines:
-  - {part: "Small CVBS cabin camera (Sentry face shot)", shop: AliExpress, each: 25.00, notes: "Spare input on the video board; both camera ribbon ports are now used"}
+  - {part: "Cabin camera (Sentry face shot): Sam's own AHD camera, set to CVBS", shop: Owned, each: 0.00, notes: "Spare input on the video board. The front stays a Pi Camera Module 3 on its own ribbon"}
   - {part: "Recording storage (e.g. Samsung PRO Endurance 128GB, MEMSAM11230)", shop: PB Tech, each: 114.90, notes: "For dashcam/Sentry. Sam to sort later"}
   - {part: Raspberry Pi AI HAT+ 2, shop: PB Tech, each: 423.43, notes: Not now}
   - {part: Raspberry Pi Active Cooler, shop: PB Tech, each: 11.21, notes: Only with the AI HAT}
