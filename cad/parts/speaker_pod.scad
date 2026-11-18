@@ -1,12 +1,17 @@
-// Speaker pod for a Kenwood KFC-2053MRB 8" marine coaxial. Sealed, and it
+// Speaker pod for a Kenwood KFC-2053MRB 8" marine coaxial, built as a T. rex
+// head with the speaker in its open mouth (concept 4). Sealed, and it
 // wraps round the roll-cage tube: the back of the pod is half of a "knuckle"
 // round the tube, and a cover closes over the other half with 4 hidden M6
 // bolts. A strip of rubber (Sam's) lines the bore.
 //
 // part = "pod"    print face down, ASA
 //        "cover"  print split face down, ASA
-//        "plug"   print 4 per pod, push into the bolt holes in the cover
-//        "jaw"    the teeth, print flat (teeth up), bolts under the front
+//        "plug"   print 7 per pod, push into the bolt holes in the cover and jaw
+//        "head", "head_teeth", "head_eyes", "head_pupils"
+//                 the T. rex head that bolts on top, one STL per colour,
+//                 print face (snout) down as one multi-colour object
+//        "jaw", "jaw_teeth"
+//                 lower jaw that bolts underneath, flat side down
 //        "gasket" TPU, under the speaker's flange
 //        "cavity" the air inside (only for the volume check in build.sh)
 //        "assembly" preview with the tube
@@ -91,9 +96,15 @@ module fins() {   // longitudinal fins on the inside wall, clear of the speaker'
       difference() { shape(pod_wall - e); shape(pod_wall + pod_fin_h); }
     }
 }
-// ---------------------------------------------------------------- T. rex bits
+// ---------------------------------------------------------------- T. rex head
+// Concept 4 (docs/speaker-pods.md): the pod is a T. rex head and the speaker
+// sits in its open mouth. The pod itself stays a plain sealed box; the head
+// (snout, brows, eyes, upper teeth) and the lower jaw are separate prints that
+// bolt on, so the bass maths never changes. Each comes as one STL per colour
+// in the same place, for an AMS: load them together as one multi-part object.
+//
 // Spikes: chunky, raked back at 45 deg so they print without support (the
-// pod prints face down, so "back" is "up" on the printer).
+// pod and head print face down, so "back" is "up" on the printer).
 // spike(base, normal angle a in the Y-Z plane (0 = straight up +Y, 45 = up and
 // back), height h, base length l, thickness t)
 module spike(p, a, h, l, t) {
@@ -106,12 +117,12 @@ module spike(p, a, h, l, t) {
     translate(tip) cube([2, 0.1, 0.1], center = true);
   }
 }
-module spikes() {   // the ridge along the top flat, front to back
+module spikes() {   // the ridge along the top, behind the head
   for (i = [0 : pod_spines - 1]) {
-    z0 = pod_face_t + 52 + (z_cone - pod_face_t - 70) * i / max(pod_spines - 1, 1);
+    z0 = z_head + 16 + 22 * i;
     on_cone = z0 > z_waist;
-    h  = 44 - i * 3;
-    spike([0, r_top(z0), z0], on_cone ? 45 : atan2(r_top(z_neck) - r_top(z_waist), pod_taper_l), h, h * 0.8, 15);
+    h  = 36 - i * 4;
+    spike([0, r_top(z0), z0], on_cone ? 45 : atan2(r_top(z_neck) - r_top(z_waist), pod_taper_l), h, h * 0.8, 14);
   }
 }
 module cover_spikes() {   // two more over the cage collar, so the ridge runs onto the bar
@@ -120,59 +131,148 @@ module cover_spikes() {   // two more over the cage collar, so the ridge runs on
     spike([0, Rk * 0.86, Rk * 0.75], 45, 22, 15, 11);
   }
 }
-// Brow ridges: two armour plates over the top of the speaker, front face on the
-// bed, sloping back so they print clean.
-module brows() {   // angry brow: high at the outside, low in the middle
-  top = pod_face_w / 2 - 3;
-  for (s = [-1, 1]) hull() {
-    translate([s * 92 - 8, top, 0]) cube([16, 26, 1]);      // outer end, tall
-    translate([s * 14 - 4, top, 0]) cube([8, 9, 1]);        // inner end, low
-    translate([s * 92 - 8, top, 0]) cube([16, 14, 40]);
-    translate([s * 50 - 10, top, 0]) cube([20, 3, 80]);     // tails off back into the shell
-  }
-}
-// Claw marks: three slashes on each side, 2 mm deep in the 5 mm wall.
-module claws() {
+// Gills: four slots down each cheek, 2.6 mm deep in the 5 mm wall.
+module gills() {
   intersection() {
     difference() { shape(0); shape(2.6); }
-    for (i = [0 : 2]) hull() {
-      translate([0, 55 - i * 22, z_neck + 18 + i * 8]) rotate([0, 90, 0]) cylinder(d = 10, h = 400, center = true);
-      translate([0, -15 - i * 22, z_neck + 78 + i * 6]) rotate([0, 90, 0]) cylinder(d = 3.5, h = 400, center = true);
-    }
+    for (i = [0 : 3]) hull() for (z = [pod_face_t + 6, z_neck - 4 + i * 4])
+      translate([0, 78 - i * 18, z]) rotate([0, 90, 0]) cylinder(d = 7, h = 400, center = true, $fn = 16);
   }
 }
-// Jaw: a separate printed strip of teeth that bolts under the front of the pod,
-// teeth standing up in front of the bottom edge of the speaker grille.
+
+y_top  = pod_face_w / 2;            // top of the pod = roof of the mouth
+z_nose = -head_snout;               // front of the snout (and of the jaw)
+z_head = 112;                       // back of the head
+assert(y_top + head_h <= y_top + 80, "head too tall");
+
+// Faceted shapes from a list of [x, y, z] points, mirrored left/right.
+module pts(list) { hull() for (p = list, s = [-1, 1]) translate([s * p[0], p[1], p[2]]) cube(0.5, center = true); }
+
+module head_shape() {
+  H = head_h;
+  pts([
+    [80, y_top, z_nose], [124, y_top, 0], [124, y_top, 50], [60, y_top - 17, z_head],   // sits on the pod
+    [70, y_top + 28, z_nose],                         // snout front
+    [0, y_top + 42, -68],                             // nose bump
+    [95, y_top + H * 0.64, -40],                      // bridge of the nose
+    [116, y_top + H * 0.87, 5],                       // corner over the eye
+    [110, y_top + H, 50],                             // top of the skull
+    [75, y_top + H * 0.74, z_head],                   // back of the skull
+  ]);
+}
+eye  = [103, y_top + 40, -10];      // eyeball centre (right side; mirrored)
+eye_r = 16;
+module brows() {   // angry ridge over each eye, swept back so it prints clean
+  for (s = [-1, 1]) hull() for (p = [[88, y_top + 60, -46], [121, y_top + 70, -4],
+                                      [100, y_top + 56, -8], [117, y_top + 80, 16],
+                                      [92, y_top + 78, 34]])
+    translate([s * p[0], p[1], p[2]]) cube(4, center = true);
+}
+module eye_balls() { for (s = [-1, 1]) translate([s * eye[0], eye[1], eye[2]]) sphere(r = eye_r, $fn = 48); }
+module eye_sockets() { for (s = [-1, 1]) translate([s * (eye[0] + 12), eye[1], eye[2]]) sphere(r = 19.5, $fn = 48); }
+module pupils() {   // upright slit on the outer skin of each eyeball
+  for (s = [-1, 1]) intersection() {
+    translate([s * eye[0], eye[1], eye[2]]) difference() { sphere(r = eye_r + e, $fn = 48); sphere(r = eye_r - 1.6, $fn = 48); }
+    translate([s * (eye[0] + eye_r), eye[1], eye[2]]) scale([1, 1, 0.22]) rotate([0, 90, 0]) cylinder(r = 10, h = 2 * eye_r, center = true);
+  }
+}
+module nostrils() {
+  for (s = [-1, 1]) translate([s * 28, y_top + 16, z_nose - e]) scale([1.4, 1, 1]) cylinder(d = 9, h = 12);
+}
+// Teeth: hang from the roof of the mouth, raked back 45 deg (like real T. rex
+// teeth, and it prints without support). Their tips stay spk_proud + 5 in
+// front of the speaker's face.
+module tooth(x, z, h, t = 13) {
+  tip = [x, y_top - h, z + 1.05 * h];
+  assert(tip[2] <= -spk_proud - 5, str("tooth at z=", z, " hits the speaker grille"));
+  hull() {
+    translate([x, y_top + 3, z]) cube([t, 0.1, 0.1], center = true);
+    translate([x, y_top + 3, z + 0.9 * t]) cube([t * 0.6, 0.1, 0.1], center = true);
+    translate([x, y_top - 0.5, z]) cube([t, 0.1, 0.1], center = true);
+    translate([x, y_top - 0.5, z + 0.9 * t]) cube([t * 0.6, 0.1, 0.1], center = true);
+    translate(tip) cube([1.5, 0.1, 0.1], center = true);
+  }
+}
+function edge_x(z) = 80 + 44 * (z - z_nose) / head_snout;     // side of the mouth
+up_front = [[-66, 26], [-44, 38], [-22, 24], [0, 28], [22, 24], [44, 38], [66, 26]];
+module upper_teeth() {
+  for (t = up_front) tooth(t[0], z_nose + 4, t[1]);
+  for (s = [-1, 1], t = [[z_nose + 20, 28], [z_nose + 34, 20]]) tooth(s * (edge_x(t[0]) - 9), t[0], t[1], 11);
+}
+// head inserts: 3 M4 bolts come up from inside the pod (reach in through the
+// speaker hole), through the top wall into heat-set inserts in the head
+head_bolts = [[-85, 30], [85, 30], [0, 42]];
+module head_bolt_spots() { for (b = head_bolts) translate([b[0], y_top, b[1]]) rotate([-90, 0, 0]) children(); }
+
+module head_all() {      // the whole head in one colour, before the split
+  difference() {
+    union() { head_shape(); brows(); head_spikes(); }
+    shape(-0.4);                                     // sits over the pod
+    eye_sockets();
+    nostrils();
+    head_bolt_spots() translate([0, 0, -e]) cylinder(d = m4_insert_d, h = 10);
+    translate([-200, y_top - 100, -200]) cube([400, 100, 400]);   // flat roof of the mouth
+  }
+}
+module head_spikes() {
+  spike([0, y_top + head_h - 1, 34], -8, 26, 20, 13);
+  spike([0, y_top + head_h - 6, 68], 17, 30, 24, 14);
+  spike([0, y_top + head_h - 15, 96], 17, 30, 24, 14);
+}
+module head_stone() { difference() { head_all(); upper_teeth(); eye_balls(); } }
+module head_eyes()  { difference() { eye_balls(); pupils(); head_all(); } }
+module head_pupils(){ difference() { pupils(); head_all(); } }
+module head_teeth() { upper_teeth(); }
+
+// Lower jaw: bolts under the front of the pod (3 M4 bolts up into inserts in
+// the pads), chin out under the snout, teeth up in front of the speaker.
 jaw_z  = [6, pod_neck_l + pod_face_t - 4];   // pads span this along Z
 jaw_x  = [-60, 0, 60];
 jaw_pad = 6;
-module jaw_pads() {
+jaw_d  = 38;                                  // jaw depth under the pod
+module jaw_pads(grow = 0) {
   for (x = jaw_x) hull() {
-    translate([x - 10, -pod_face_w / 2 - jaw_pad, jaw_z[0] + jaw_pad]) cube([20, jaw_pad + 2, 22 - jaw_pad]);
-    translate([x - 10, -pod_face_w / 2, jaw_z[0]]) cube([20, 2, 22]);
+    translate([x - 10 - grow, -y_top - jaw_pad - grow, jaw_z[0] + jaw_pad]) cube([20 + 2 * grow, jaw_pad + 2, 22 - jaw_pad + grow]);
+    translate([x - 10 - grow, -y_top, jaw_z[0] - grow]) cube([20 + 2 * grow, 2, 22 + 2 * grow]);
   }
 }
 module jaw_holes() {
-  for (x = jaw_x) translate([x, -pod_face_w / 2 - jaw_pad - e, jaw_z[0] + 11]) rotate([-90, 0, 0]) cylinder(d = m4_insert_d, h = 9);
+  for (x = jaw_x) translate([x, -y_top - jaw_pad - e, jaw_z[0] + 11]) rotate([-90, 0, 0]) cylinder(d = m4_insert_d, h = 9);
 }
-jaw_t = 6;
-module jaw() {   // in pod coordinates
-  y0 = -pod_face_w / 2 - jaw_pad - jaw_t;
+module jaw_shape() {
+  yb = -y_top - jaw_d;
+  pts([
+    [80, -y_top, z_nose], [124, -y_top, 0], [124, -y_top, 46],
+    [72, yb + 14, z_nose], [62, yb, z_nose + 18], [110, yb, -10], [104, yb, 46],
+  ]);
+}
+module lower_tooth(x, z, h, t = 13) {
+  tip = [x, -y_top + h, z + 0.25 * h];
+  assert(tip[2] <= -spk_proud - 5, str("lower tooth at z=", z, " hits the speaker grille"));
+  hull() {
+    translate([x, -y_top - 3, z]) cube([t, 0.1, 0.1], center = true);
+    translate([x, -y_top - 3, z + 0.9 * t]) cube([t * 0.6, 0.1, 0.1], center = true);
+    translate(tip) cube([1.5, 0.1, 0.1], center = true);
+  }
+}
+lo_front = [[-55, 30], [-33, 22], [-11, 26], [11, 26], [33, 22], [55, 30]];
+module lower_teeth() {
+  for (t = lo_front) lower_tooth(t[0], z_nose + 6, t[1]);
+  for (s = [-1, 1], t = [[z_nose + 24, 22], [z_nose + 40, 16]]) lower_tooth(s * (edge_x(t[0]) - 10), t[0], t[1], 11);
+}
+module jaw_all() {
   difference() {
-    union() {
-      translate([-88, y0, -22]) cube([176, jaw_t, 22 + jaw_z[0] + 22]);
-      for (i = [0 : 6]) {
-        x = -78 + i * 26;
-        hgt = (i % 2 == 0) ? 42 : 32;                      // fangs and teeth
-        translate([x, y0 + jaw_t - e, -11]) rotate([-90, 0, 0]) cylinder(d1 = 20, d2 = 2, h = hgt, $fn = 6);
-      }
-    }
-    for (x = jaw_x) translate([x, y0 - e, jaw_z[0] + 11]) {
-      rotate([-90, 0, 0]) cylinder(d = 4.5, h = jaw_t + 2);
-      rotate([-90, 0, 0]) cylinder(d1 = 9, d2 = 4.5, h = 2.3);
+    jaw_shape();
+    shape(-0.4);
+    jaw_pads(0.4);
+    for (x = jaw_x) translate([x, -y_top - jaw_d - e, jaw_z[0] + 11]) rotate([-90, 0, 0]) {
+      cylinder(d = 4.5, h = jaw_d);
+      cylinder(d = 11, h = jaw_d - jaw_pad - 8);      // counterbore, plugged
     }
   }
 }
+module jaw_stone() { difference() { jaw_all(); lower_teeth(); } }
+module jaw_teeth() { lower_teeth(); }
 
 // boss underneath (on the taper) for a gland or breather, square to the axis
 module under_boss(z, x, d) {
@@ -193,14 +293,14 @@ module pod() {
     union() {
       outside();
       spikes();
-      brows();
       jaw_pads();
       under_boss(z_gland, x_gland, pod_gland);
       under_boss(z_vent, x_vent, pod_vent);
     }
     cavity();
-    claws();
+    gills();
     jaw_holes();
+    head_bolt_spots() translate([0, 0, -pod_wall - 1]) cylinder(d = m4_clear, h = pod_wall + 2);
     translate([0, 0, -e]) cylinder(d = spk_cutout, h = pod_face_t + 2 * e);
     under_hole(z_gland, x_gland, pod_gland);
     under_hole(z_vent, x_vent, pod_vent);
@@ -237,15 +337,41 @@ module gasket() {   // sits under the speaker's square flange
   }
 }
 
+// head parts print face down (snout on the bed); jaw parts print flat side down
+module head_print() { translate([0, 0, head_snout]) children(); }
+module jaw_print()  { translate([0, 0, y_top + jaw_d]) rotate([90, 0, 0]) children(); }
+
 if (part == "pod") pod();
 else if (part == "cover") translate([0, 0, -zt - knuckle_gap / 2]) cover();
 else if (part == "plug") plug();
-else if (part == "jaw") translate([0, 0, pod_face_w / 2 + jaw_pad + jaw_t]) rotate([90, 0, 0]) jaw();
+else if (part == "head") head_print() head_stone();
+else if (part == "head_teeth") head_print() head_teeth();
+else if (part == "head_eyes") head_print() head_eyes();
+else if (part == "head_pupils") head_print() head_pupils();
+else if (part == "jaw") jaw_print() jaw_stone();
+else if (part == "jaw_teeth") jaw_print() jaw_teeth();
 else if (part == "gasket") gasket();
 else if (part == "cavity") cavity();
-else if (part == "assembly") {
-  color("#56603f") pod();
-  color("#2b2b2b") cover();
-  color("#2b2b2b") jaw();
-  color("silver", 0.5) knuckle_rot() bar(cage_tube_d / 2, knuckle_w + 200);
+else if (part == "assembly") rotate([90, 0, 0]) assembly();   // Z up for pictures, face towards +Y
+
+module speaker() {   // rough look of the Kenwood, for pictures only
+  color("#1c1c1c") translate([0, 0, -spk_proud]) difference() {
+    rsq(spk_grille_w, 14, spk_proud);
+    translate([0, 0, -e]) cylinder(d = 168, h = 6);
+  }
+  color("#2a2a2a") translate([0, 0, -spk_proud + 8]) cylinder(d1 = 60, d2 = 168, h = 2);
+  color("#555") translate([0, 0, -spk_proud - 2]) sphere(d = 40);
+}
+module assembly() {
+  stone = "#6b6458"; bone = "#e6dcc3";
+  color(stone) pod();
+  color("#3a3631") cover();
+  color(stone) head_stone();
+  color(bone) head_teeth();
+  color("#d98a1c") head_eyes();
+  color("#111") head_pupils();
+  color(stone) jaw_stone();
+  color(bone) jaw_teeth();
+  speaker();
+  color("#222", 0.8) knuckle_rot() bar(cage_tube_d / 2, knuckle_w + 260);
 }
