@@ -132,6 +132,12 @@ These are in the firmware and need adding to the test environment's
   but like throttle hold nothing reaches the Shinegle yet. `cb_out_t.save_lock` asks the
   hardware layer to write the lock sector. Debug UART (GP0/GP1, 115200) now runs the
   `LOCK RESET` workshop command.
+- Remote lock and Sentry (`docs/remote-access.md`, `docs/sentry.md`): `0x705` command 7
+  `REMOTE` (result 9 "pending"), `0x716` bit 36 lock waiting. Heartbeat `dash_state` 3
+  "sentry" keeps power hold on with the key off; `0x710` byte 6 bit 5 `sentry_hold`, bit 6
+  `sentry_flat`. Setting 32 `sentry_min_12v_mv` (default 12 200). The settings blob now has
+  64 slots, so a Pico updated from an older build starts on default settings until the dash
+  resends them.
 
 ## Check on the bench before it goes on the Teryx
 

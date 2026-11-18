@@ -34,8 +34,13 @@ def _serve(gateway, sim, args) -> None:
 
 
 def cmd_run(args) -> None:
+    import os
+    import tempfile
     from .dash.gateway import Gateway
     from .sim.runner import Simulator
+    # Simulator: fake 4G stick, and saved clips in a temp folder (no SSD on a laptop).
+    os.environ.setdefault("TERYX_MODEM", "fake")
+    os.environ.setdefault("TERYX_VIDEO_DIR", os.path.join(tempfile.gettempdir(), "teryx-video-sim"))
     sim = Simulator(args.bus, args.scenario, controlbox=not args.no_controlbox).start()
     gw = Gateway(args.bus).start()
     try:

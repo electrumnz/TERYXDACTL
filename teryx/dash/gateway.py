@@ -59,6 +59,8 @@ class Gateway:
         self._dirty = {"lights": True, "drive": True}
         self._last_reject_count = None
         self._lock_counter = 0
+        # Sentry (docs/sentry.md): the heartbeat says "sentry" so the Pico keeps power on after key-off
+        self.sentry = False
         # Settings: what we want the Pico to use, and what it has acked
         self.wanted_settings = M.default_settings()
         self.settings: dict[str, int] = {}
@@ -128,7 +130,8 @@ class Gateway:
                 self._send_hold(force=True)
 
     def lock(self, cmd: str, digits: str | None = None) -> None:
-        """Vehicle lock (docs/vehicle-lock.md). cmd: lock, unlock, verify, set_pin, set_puk, remove.
+        """Vehicle lock (docs/vehicle-lock.md). cmd: lock, unlock, verify, set_pin, set_puk, remove,
+        remote (docs/remote-access.md: locks once stopped 10 s or key off).
 
         The control box decides and answers on 0x716 (lock.* in the state). The PIN only
         passes through here; nothing on the Pi keeps it.
@@ -140,6 +143,11 @@ class Gateway:
             self._lock_counter = (self._lock_counter + 1) & 0xFF
             self.node.send(M.PI_LOCK, {"cmd": codes[cmd], **encode_digits(digits or ""),
                                        "counter": self._lock_counter})
+
+    def set_sentry(self, on: bool) -> None:
+        """Ask the Pico to keep power on after key-off (docs/sentry.md). It still cuts power
+        if the 12V stays under setting 32, whatever this says."""
+        self.sentry = bool(on)
 
     def set_setting(self, key, value: int, timeout: float = 1.0) -> bool:
         """Send one 0x704 setting and wait for the 0x714 ack. Key is a number or a name."""
@@ -182,7 +190,7 @@ class Gateway:
 
     def _send_periodic(self, now: float) -> None:
         with self._lock:
-            self.node.send_due(M.PI_HEARTBEAT, lambda: {"dash_state": 1}, now)
+            self.node.send_due(M.PI_HEARTBEAT, lambda: {"dash_state": 3 if self.sentry else 1}, now)
             if self._dirty["lights"]:
                 self._dirty["lights"] = False
                 self.node.send(M.PI_LIGHTS, self._lights_values())
@@ -237,6 +245,8 @@ class Gateway:
                 st["act.4wd_wait"] = bool(v.get("fourwd_wait", 0))
                 st["act.diff_wait"] = bool(v.get("diff_wait", 0))
                 st["pico.throttle_hold"] = bool(v.get("throttle_hold", 0))
+                st["pico.sentry_hold"] = bool(v.get("sentry_hold", 0))
+                st["pico.sentry_flat"] = bool(v.get("sentry_flat", 0))
                 if self._last_reject_count is not None and v["reject_count"] != self._last_reject_count:
                     self._resync_requests()
                 self._last_reject_count = v["reject_count"]
@@ -278,6 +288,7 @@ class Gateway:
                 st["lock.puk_set"] = bool(v["puk_set"])
                 st["lock.inhibit"] = bool(v["inhibit"])
                 st["lock.lockout"] = bool(v["lockout"])
+                st["lock.pending"] = bool(v.get("pending", 0))
                 st["lock.result"] = M.LOCK_RESULT.get(v["result"], "none")
                 st["lock.result_text"] = M.LOCK_RESULT_TEXT.get(st["lock.result"], "")
                 st["lock.result_count"] = v["result_count"]

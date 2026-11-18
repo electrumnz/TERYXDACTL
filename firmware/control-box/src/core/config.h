@@ -78,6 +78,7 @@
 #define POT_MARGIN         400       // raw counts outside cal range = pot wire fault
 #define DASH_BOOT_GRACE_MS 3000u     // after Pico boot, before "lost dash" is a fault
 #define SHUTDOWN_GRACE_MS  10000u     // after Pi stops heartbeating while shutting down
+#define SENTRY_LOW_MS      30000u     // 12V under setting 32 this long: sentry off until key on
 #define LOW_12V_HOLD_MS    5000u
 #define PICO_HOT_C         70
 #define WATCHDOG_FLAG_MS   30000u    // how long the watchdog-reset fault shows after boot

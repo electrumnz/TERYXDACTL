@@ -9,7 +9,9 @@ typedef struct {
     uint16_t v[SET_COUNT];   // indexed by SET_* key, slot 0 unused
 } settings_t;
 
-#define SETTINGS_BLOB_SLOTS 32
+// 64 since sentry (key 32) filled the first 32. A blob saved by older firmware (32 slots)
+// fails its CRC and reads as defaults, and the dash sends its settings again (on_defaults).
+#define SETTINGS_BLOB_SLOTS 64
 _Static_assert(SET_COUNT <= SETTINGS_BLOB_SLOTS, "too many settings for the flash blob");
 #define SETTINGS_MAGIC 0x54455259u  // "TERY"
 

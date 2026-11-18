@@ -26,6 +26,7 @@ class Bench:
         self.direction = 1
         self.hold = None   # (tray, winch, armed)
         self.dash_alive = True
+        self.dash_state = 1        # 3 = sentry (docs/sentry.md)
         self.shinegle_alive = True
 
     def run(self, seconds, dt=0.02):
@@ -36,7 +37,7 @@ class Bench:
                 for name, values in shinegle_frames(self.speed, self.direction):
                     self.cb.on_frame(name, values, self.t)
             if self.dash_alive:
-                self.cb.on_frame("PI_HEARTBEAT", {"dash_state": 1}, self.t)
+                self.cb.on_frame("PI_HEARTBEAT", {"dash_state": self.dash_state}, self.t)
                 if self.hold:
                     tray, winch, armed, *timed = self.hold
                     self.cb.on_frame("PI_HOLD", {"tray": tray, "winch": winch, "winch_armed": armed,
@@ -552,3 +553,22 @@ def test_vehicle_honours_throttle_hold():
     for _ in range(50):
         v.step(0.02)
     assert v.speed_ms > 0.5
+
+
+def test_sentry_keeps_power_while_12v_ok(b):
+    """Same rules as test_sentry_hold in the firmware tests (docs/sentry.md)."""
+    cb = b.cb
+    b.dash_state = 3
+    cb.forced["in.ignition"] = False
+    b.run(90)                       # well past shutdown_wait_s
+    st = dict(cb.frames())["PICO_STATUS"]
+    assert cb.relays()["power.hold"] and st["sentry_hold"] == 1 and st["shutdown_request"] == 0
+    cb.bench_aux_mv = 12000         # under 12.2 V for 30 s: sentry off until key on
+    b.run(31)
+    st = dict(cb.frames())["PICO_STATUS"]
+    assert st["sentry_flat"] == 1 and st["shutdown_request"] == 1 and not cb.sentry_hold
+    b.run(31)
+    assert not cb.relays()["power.hold"]
+    cb.forced["in.ignition"] = True
+    b.run(0.5)
+    assert not cb.sentry_flat

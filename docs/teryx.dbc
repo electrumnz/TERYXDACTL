@@ -102,6 +102,8 @@ BO_ 1808 PICO_STATUS: 8 PICO_BOX
  SG_ reverse_active : 50|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ shutdown_request : 51|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ parked : 52|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ sentry_hold : 53|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ sentry_flat : 54|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ speed : 56|8@1+ (1,0) [0|255] "km/h" Vector__XXX
 
 BO_ 1809 PICO_OUTPUTS: 8 PICO_BOX
@@ -152,6 +154,7 @@ BO_ 1814 PICO_LOCK: 8 PICO_BOX
  SG_ puk_set : 33|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ inhibit : 34|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ lockout : 35|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ pending : 36|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ result : 40|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ result_count : 48|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ fails : 56|8@1+ (1,0) [0|255] "" Vector__XXX
@@ -199,6 +202,8 @@ CM_ SG_ 1808 reject_reason "Why the last request was refused";
 CM_ SG_ 1808 reject_count "Goes up by one each time a request is refused";
 CM_ SG_ 1808 shutdown_request "Key off: Pi should shut down";
 CM_ SG_ 1808 parked "Stopped and safe for OTA updates";
+CM_ SG_ 1808 sentry_hold "Key off, power kept on because the Pi asked for sentry";
+CM_ SG_ 1808 sentry_flat "Sentry refused: 12V under setting 32 (until the key goes on)";
 CM_ SG_ 1808 speed "Speed as the Pico sees it, 255 = unknown";
 CM_ SG_ 1809 relays "See RELAY_BITS";
 CM_ BO_ 1809 "What the outputs are actually doing (after effects and safety).";
@@ -219,6 +224,7 @@ CM_ SG_ 1814 lockout_s "Lockout time left";
 CM_ SG_ 1814 window "Change window open (PIN checked in the last 60 s)";
 CM_ SG_ 1814 puk_set "A recovery code is stored";
 CM_ SG_ 1814 inhibit "Drive inhibit asked for (how is TBC until the Shinegle is decoded)";
+CM_ SG_ 1814 pending "Remote lock asked for, waiting until stopped 10 s or key off";
 CM_ SG_ 1814 result "Result of the last 0x705";
 CM_ SG_ 1814 result_count "Goes up by one per 0x705";
 CM_ SG_ 1814 fails "Wrong tries in a row (kept over power cuts)";
@@ -249,9 +255,9 @@ BA_ "GenMsgCycleTime" BO_ 2016 100;
 
 VAL_ 384 direction 0 "neutral" 1 "forward" 2 "reverse" ;
 VAL_ 384 mode 0 "eco" 1 "normal" 2 "sport" ;
-VAL_ 1792 dash_state 0 "boot" 1 "ok" 2 "shutting_down" ;
+VAL_ 1792 dash_state 0 "boot" 1 "ok" 2 "shutting_down" 3 "sentry" ;
 VAL_ 1793 effect 0 "none" 1 "strobe" 2 "chase" 3 "outside_only" 4 "inside_only" 5 "breathe" 6 "sos" ;
-VAL_ 1797 cmd 1 "lock" 2 "unlock" 3 "verify" 4 "set_pin" 5 "set_puk" 6 "remove" ;
+VAL_ 1797 cmd 1 "lock" 2 "unlock" 3 "verify" 4 "set_pin" 5 "set_puk" 6 "remove" 7 "remote" ;
 VAL_ 1808 state 0 "boot" 1 "ok" 2 "degraded" 3 "failsafe" ;
 VAL_ 1808 reject_reason 0 "none" 1 "too_fast" 2 "not_stopped" 3 "speed_unknown" 4 "not_armed" 5 "interlock" 6 "actuator_fault" 7 "low_12v" 8 "dash_link" 9 "ignition_off" 10 "at_limit" 11 "not_parked" 12 "winch_remote" 13 "bad_frame" 14 "wait_timeout" 15 "busy" ;
 VAL_ 1809 effect 0 "none" 1 "strobe" 2 "chase" 3 "outside_only" 4 "inside_only" 5 "breathe" 6 "sos" ;
@@ -261,4 +267,4 @@ VAL_ 1812 status 0 "ok" 1 "unknown_key" 2 "out_of_range" 3 "locked" ;
 VAL_ 1813 state 0 "off" 1 "ready" 2 "active" 3 "limited" 4 "sensor_fault" ;
 VAL_ 1813 limit 0 "none" 1 "low_speed" 2 "speed_unknown" 3 "not_forward" 4 "battery_full" 5 "two_wd" 6 "sensor" 7 "throttle" ;
 VAL_ 1814 state 0 "off" 1 "unlocked" 2 "locked" ;
-VAL_ 1814 result 0 "none" 1 "ok" 2 "wrong" 3 "not_parked" 4 "no_pin" 5 "lockout" 6 "bad_digits" 7 "not_allowed" 8 "recovered" ;
+VAL_ 1814 result 0 "none" 1 "ok" 2 "wrong" 3 "not_parked" 4 "no_pin" 5 "lockout" 6 "bad_digits" 7 "not_allowed" 8 "recovered" 9 "pending" ;

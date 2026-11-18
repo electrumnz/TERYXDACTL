@@ -28,6 +28,7 @@ typedef struct {
     uint8_t timed_s;        // 0x703 byte 3, 0 = plain hold
     bool armed;
     bool holding;           // send 0x703
+    bool sentry;            // heartbeat says DASH_SENTRY instead of DASH_RUNNING
     can_frame_t sent[64];
     int nsent;
     uint8_t max_relays_both_winch;  // set if in and out were ever on together
@@ -60,7 +61,7 @@ static void run(uint32_t ms) {
     for (uint32_t e = 0; e < ms; e += TICK_MS) {
         R.t += TICK_MS;
         if (R.t % 100 == 0) {
-            if (R.dash) { uint8_t d[2] = {(uint8_t)(R.t / 100), DASH_RUNNING}; frame(CAN_ID_PI_HEARTBEAT, 2, d); }
+            if (R.dash) { uint8_t d[2] = {(uint8_t)(R.t / 100), R.sentry ? DASH_SENTRY : DASH_RUNNING}; frame(CAN_ID_PI_HEARTBEAT, 2, d); }
             if (R.shinegle) { uint8_t d[4] = {(uint8_t)R.speed_x10, (uint8_t)(R.speed_x10 >> 8), R.dir, 0}; frame(CAN_ID_MC_SPEED, 4, d); }
             if (R.holding) {
                 uint8_t d[4] = {(uint8_t)R.hold_tray, (uint8_t)R.hold_winch, R.armed ? HOLD_FLAG_WINCH_ARMED : 0, R.timed_s};
@@ -584,6 +585,65 @@ static void test_key_off_shutdown(void) {
     CHECK(!R.c.shutting_down);
 }
 
+// Sentry (docs/sentry.md): key off, the Pi asks to stay on. Kept on while the 12V is OK.
+static void test_sentry_hold(void) {
+    rig_init();
+    run(300);
+    R.sentry = true;
+    R.p.din_model &= (uint8_t)~BIT(IN_IGNITION);
+    run(120000);   // well past shutdown_wait_s
+    const can_frame_t *s = last_sent(CAN_ID_PICO_STATUS);
+    CHECK(R.out.relays & BIT(R_POWER_HOLD));
+    CHECK(s && !(s->data[6] & FLAG_SHUTDOWN_REQUEST) && (s->data[6] & FLAG_SENTRY_HOLD));
+    CHECK((R.out.relays & BIT(R_ACCESSORY)) == 0);
+    // Nothing moves in sentry: tray refused (ignition off).
+    R.holding = true;
+    R.hold_tray = 1;
+    run(500);
+    CHECK(R.c.tray.dir == 0);
+    R.holding = false;
+    R.hold_tray = 0;
+    // A short dip (winch, a cold morning) doesn't end it...
+    R.p.aux_mv = 12000;
+    run(20000);
+    CHECK(R.c.sentry_hold && !R.c.sentry_flat);
+    R.p.aux_mv = 12600;
+    run(5000);
+    // ...30 s under 12.2 V does. Then the normal shutdown runs.
+    R.p.aux_mv = 12100;
+    run(31000);
+    s = last_sent(CAN_ID_PICO_STATUS);
+    CHECK(R.c.sentry_flat && !R.c.sentry_hold);
+    CHECK(s && (s->data[6] & FLAG_SHUTDOWN_REQUEST) && (s->data[6] & FLAG_SENTRY_FLAT));
+    run(31000);
+    CHECK((R.out.relays & BIT(R_POWER_HOLD)) == 0);
+
+    // The Pi stops asking: normal shutdown wait, then off.
+    rig_init();
+    run(300);
+    R.sentry = true;
+    R.p.din_model &= (uint8_t)~BIT(IN_IGNITION);
+    run(60000);
+    CHECK(R.out.relays & BIT(R_POWER_HOLD));
+    R.sentry = false;
+    run(29000);
+    CHECK(R.out.relays & BIT(R_POWER_HOLD));
+    run(1500);
+    CHECK((R.out.relays & BIT(R_POWER_HOLD)) == 0);
+
+    // The setting moves the cut-off. Key on clears a flat latch.
+    rig_init();
+    run(300);
+    setting(SET_SENTRY_MIN_12V_MV, 12900);
+    R.sentry = true;
+    R.p.din_model &= (uint8_t)~BIT(IN_IGNITION);
+    run(31000);
+    CHECK(R.c.sentry_flat);
+    R.p.din_model |= BIT(IN_IGNITION);
+    run(200);
+    CHECK(!R.c.sentry_flat);
+}
+
 static void test_fw_update(void) {
     rig_init();
     R.speed_x10 = 100;
@@ -999,6 +1059,77 @@ static void test_lock_survives_power_cut(void) {
     CHECK(!ctl_locked(&R.c) && !vlock_pin_set(&R.c.lock));
 }
 
+// Remote lock (text from the owner's phone): never on the move, waits until stopped.
+static void test_lock_remote(void) {
+    rig_init();
+    run(300);
+    lock_cmd(LOCK_CMD_REMOTE, NULL);
+    CHECK(R.c.lock.result == LOCK_RES_NO_PIN && !vlock_pending(&R.c.lock));
+    lock_cmd(LOCK_CMD_SET_PIN, "4821");
+    // Driving at 40 km/h, no park brake (a thief won't put it on).
+    park_brake(false);
+    R.speed_x10 = 400;
+    run(500);
+    lock_cmd(LOCK_CMD_REMOTE, NULL);
+    CHECK(R.c.lock.result == LOCK_RES_PENDING && vlock_pending(&R.c.lock) && !ctl_locked(&R.c));
+    run(30000);
+    CHECK(!ctl_locked(&R.c) && !R.out.drive_inhibit);
+    CHECK(lock_frame()[0] == LOCK_UNLOCKED && (lock_frame()[4] & LOCK_FLAG_PENDING));
+    // Pending survives a power cut.
+    lock_blob_t flash = R.c.lock.saved;
+    ctl_init(&R.c, NULL, false, false, R.t);
+    ctl_load_lock(&R.c, &flash, R.t);
+    CHECK(vlock_pending(&R.c.lock) && !ctl_locked(&R.c));
+    // A short stop (lights, a gate) doesn't lock it...
+    R.speed_x10 = 0;
+    run(5000);
+    CHECK(!ctl_locked(&R.c));
+    R.speed_x10 = 150;
+    run(2000);
+    CHECK(!ctl_locked(&R.c));
+    // ...10 s stopped does.
+    R.speed_x10 = 0;
+    run(9000);
+    CHECK(!ctl_locked(&R.c));
+    run(1200);
+    CHECK(ctl_locked(&R.c) && !vlock_pending(&R.c.lock) && R.out.drive_inhibit);
+    // The PIN on the dash unlocks as normal.
+    lock_cmd(LOCK_CMD_UNLOCK, "4821");
+    CHECK(R.c.lock.result == LOCK_RES_OK && !ctl_locked(&R.c));
+
+    // Already stopped for 10 s when the text comes: locks straight away.
+    lock_cmd(LOCK_CMD_REMOTE, NULL);
+    CHECK(ctl_locked(&R.c));
+    lock_cmd(LOCK_CMD_UNLOCK, "4821");
+    // Speed unknown (Shinegle quiet) with the key on: not proven stopped, so it waits.
+    R.speed_x10 = 300;
+    run(300);
+    lock_cmd(LOCK_CMD_REMOTE, NULL);
+    R.speed_x10 = 0;
+    R.shinegle = false;
+    run(20000);
+    CHECK(!ctl_locked(&R.c) && vlock_pending(&R.c.lock));
+    // Key off: locks straight away.
+    R.p.din_model &= (uint8_t)~BIT(IN_IGNITION);
+    run(100);
+    CHECK(ctl_locked(&R.c));
+    R.p.din_model |= BIT(IN_IGNITION);
+    R.shinegle = true;
+    run(300);
+
+    // The right PIN cancels a remote lock that hasn't happened yet.
+    lock_cmd(LOCK_CMD_UNLOCK, "4821");
+    R.speed_x10 = 300;
+    run(300);
+    lock_cmd(LOCK_CMD_REMOTE, NULL);
+    CHECK(vlock_pending(&R.c.lock));
+    lock_cmd(LOCK_CMD_UNLOCK, "4821");
+    CHECK(R.c.lock.result == LOCK_RES_OK && !vlock_pending(&R.c.lock));
+    R.speed_x10 = 0;
+    run(15000);
+    CHECK(!ctl_locked(&R.c));
+}
+
 static void test_lock_wrong_tries(void) {
     lock_up();
     for (int i = 0; i < LOCK_FREE_TRIES - 1; i++) {
@@ -1096,6 +1227,7 @@ int main(void) {
         {"lights, reverse, trailer", test_lights_and_relays},
         {"settings and flash blob", test_settings},
         {"key-off shutdown", test_key_off_shutdown},
+        {"sentry: power kept on while the 12V is OK", test_sentry_hold},
         {"firmware update request", test_fw_update},
         {"IO bus dead", test_io_bus_dead},
         {"status frames", test_status_frames},
@@ -1104,6 +1236,7 @@ int main(void) {
         {"lock: blocks motion, lights, settings, OTA", test_lock_blocks_everything},
         {"lock: survives a power cut", test_lock_survives_power_cut},
         {"lock: wrong tries and lockout", test_lock_wrong_tries},
+        {"lock: remote lock waits until stopped", test_lock_remote},
         {"lock: change PIN, recovery code, workshop reset", test_lock_change_pin_and_recovery},
     };
     for (size_t i = 0; i < sizeof(tests) / sizeof(tests[0]); i++) {

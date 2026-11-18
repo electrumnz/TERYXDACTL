@@ -18,6 +18,7 @@ export const CAMS = [
   { id: "rear", name: "Rear" },
   { id: "front", name: "Front" },
   { id: "trailer", name: "Trailer" },
+  { id: "cabin", name: "Cabin" },
 ];
 
 /** "ok", "off" (not fitted) or "notrailer" (trailer camera with no trailer plugged in). */

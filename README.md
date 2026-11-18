@@ -18,6 +18,8 @@ control box does the safety-critical switching, and they talk over CAN.
 | Brake pedal regen (test feature, off by default) | `teryx/regen.py` | [`docs/brake-regen.md`](docs/brake-regen.md) |
 | Ideas and open-source projects to learn from | `docs/` | [`inspiration.md`](docs/inspiration.md) |
 | What the AI HAT+ 2 could do, and is it worth it | `docs/` | [`ai-hat-ideas.md`](docs/ai-hat-ideas.md) |
+| 4G anti-theft: text it to find it, lock it or see the cameras | `dash/server/teryx_dash/remote.py` | [`docs/remote-access.md`](docs/remote-access.md) |
+| Sentry, dashcam and saved clips on a USB SSD | `dash/server/teryx_dash/sentry.py` | [`docs/sentry.md`](docs/sentry.md) |
 | Power steering kit (AliExpress vs SuperATV) and remote control (RC) mode | `docs/` | [`power-steering-rc.md`](docs/power-steering-rc.md) |
 | Power steering from a wrecked car (Prius / Kia Soul / Yaris column, run by the Pico) | `docs/`, `teryx/eps_toyota.py` | [`power-steering-wrecker.md`](docs/power-steering-wrecker.md) |
 

@@ -40,6 +40,7 @@ _SAFETY = {
     "brake_regen_2wd_pct": ("brake_regen_2wd_pct", 1),
     "shift_wait_s": ("shift_wait_ms", 1000),
     "shift_throttle_hold": ("shift_throttle_hold", 1),
+    "sentry_min_12v": ("sentry_min_12v_mv", 1000),
 }
 
 
