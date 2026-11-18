@@ -1,5 +1,13 @@
 # Wiring
 
+> **The whole-vehicle wiring now lives in [`config/wiring.yaml`](../config/wiring.yaml).**
+> It draws the single line diagrams, wire and fuse schedule and the check list in
+> [`docs/wiring/`](wiring/README.md) (`python -m teryx wiring`), and a test checks it:
+> fuses, wire sizes, no 12 V on a 3.3 V pin, two CAN ends, Pico pins match `io-map.yaml`,
+> PCIe and header kept for the AI HAT+ 2. Viewer:
+> <https://electrumnz.github.io/TERYXDACTL/wiring/>. This page explains the why.
+> If the two disagree, the YAML wins.
+
 How everything connects, with wire sizes and fuses. Pin numbers come from
 [`io-list.md`](io-list.md) section 3, so if a pin changes there, change it here
 too. Nothing here has been checked on the real Teryx yet: treat it as the
@@ -21,7 +29,7 @@ starting point for the bench build.
 flowchart LR
   BATT["12V aux battery<br/>(charged by Shinegle DC-DC)"]
   BATT -- "35mm² + 250A breaker" --> WSOL["Winch solenoid box"] --> WINCH["XBull 5000lb winch"]
-  BATT -- "6mm² + 60A main fuse" --> FB["12-way fuse block"]
+  BATT -- "10mm² + 60A main fuse" --> FB["18-20 way fuse block"]
   KEY["Key switch (12V when on)"] --> RAIL
   FB -- "7.5A" --> HOLD["Relay 8 power.hold<br/>(contacts parallel to key)"] --> RAIL["Dash 12V rail"]
   RAIL -- "5V 5A buck" --> PI["Pi 5 + 10.1in screen"]
@@ -50,7 +58,7 @@ holds itself in.
 | From | To | Wire | Fuse | Notes |
 |---|---|---|---|---|
 | Battery + | Winch solenoid box | 35mm² (2 AWG) | 250A breaker | Use the cable that came with the winch |
-| Battery + | Fuse block | 6mm² (10 AWG) | 60A main | Total of all small loads, light bars on full ≈ 35A |
+| Battery + | Fuse block | 10mm² (8 AWG) | 60A main | Total of all small loads, light bars on full ≈ 35A. Was 6mm², but 6mm² is only good for a 40A fuse ([table](https://info.speedingparts.eu/what-cable-size-should-you-use-in-a-12v-automotive-system)) |
 | Key switch | Dash 12V rail | 1mm² | 7.5A | |
 | Fuse block | Relay 8 common | 1mm² | 7.5A | Relay 8 NO contact → dash 12V rail |
 | Dash 12V rail | Pi buck in | 1.5mm² | (rail fuse) | Buck out → Pi USB-C or 5V/GND pins, keep under 30cm |

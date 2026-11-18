@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1320 412" width="1320" height="412" font-family="Arial, Helvetica, sans-serif" data-sheet="can">
+<rect width="1320" height="412" fill="#ffffff"/>
+<text x="40" y="40" font-size="22" text-anchor="start" font-weight="bold" fill="#1f2328">CAN buses: main Teryx bus and the steering bus</text>
+<text x="40" y="62" font-size="12" text-anchor="start" font-weight="normal" fill="#57606a">Teryx OS wiring, sheet &#x27;can&#x27;. Made from config/wiring.yaml by `python -m teryx wiring`. Don&#x27;t edit this file.</text>
+<line x1="40" y1="92" x2="74" y2="92" stroke="#1a7f37" stroke-width="2.5"/>
+<text x="80" y="96" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">Measured on the Teryx</text>
+<line x1="250" y1="92" x2="284" y2="92" stroke="#0969da" stroke-width="2.5"/>
+<text x="290" y="96" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">Manual / confirmed</text>
+<line x1="460" y1="92" x2="494" y2="92" stroke="#424a53" stroke-width="2.5"/>
+<text x="500" y="96" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">Our design, not built yet</text>
+<line x1="670" y1="92" x2="704" y2="92" stroke="#bf8700" stroke-width="2.5" stroke-dasharray="7 4"/>
+<text x="710" y="96" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">TBC: needs checking</text>
+<line x1="880" y1="92" x2="914" y2="92" stroke="#8250df" stroke-width="2.5" stroke-dasharray="2 4"/>
+<text x="920" y="96" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">Placeholder / later</text>
+<text x="40" y="120" font-size="11" text-anchor="start" font-weight="normal" fill="#57606a">Labels: wire id, size, fuse (if the wire has its own), and anything in between. Faded = optional. Hover for notes. Full table: docs/wiring/README.md</text>
+<g data-wire="C01" data-from="SG1202.CAN_H" data-to="PICO_CAN.CANH" data-status="tbc"><title>C01: SG1202.CAN_H -&gt; PICO_CAN.CANH - Twisted pair. CAN is optional on the SG1202, check it&#x27;s fitted. Bit rate TBC (try 250k then 500k)</title><path d="M310,197 C395,197 395,197 480,197" fill="none" stroke="#bf8700" stroke-width="1.4" stroke-dasharray="7 4"/></g>
+<g data-wire="C02" data-from="SG1202.CAN_L" data-to="PICO_CAN.CANL" data-status="tbc"><title>C02: SG1202.CAN_L -&gt; PICO_CAN.CANL</title><path d="M310,217 C395,217 395,217 480,217" fill="none" stroke="#bf8700" stroke-width="1.4" stroke-dasharray="7 4"/></g>
+<g data-wire="C03" data-from="PICO_CAN.CANH" data-to="PI_CAN.CANH" data-status="planned"><title>C03: PICO_CAN.CANH -&gt; PI_CAN.CANH - 120 ohm at the Shinegle end and the Pi end. 60 ohm H to L with all off</title><path d="M750,197 C835,197 835,197 920,197" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="C04" data-from="PICO_CAN.CANL" data-to="PI_CAN.CANL" data-status="planned"><title>C04: PICO_CAN.CANL -&gt; PI_CAN.CANL</title><path d="M750,217 C835,217 835,217 920,217" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="C05" data-from="EPS_CAN.CANH" data-to="EPS_ECU.CANH" data-status="planned"><title>C05: EPS_CAN.CANH -&gt; EPS_ECU.CANH - Own bus, 500 kbit/s, Toyota frames 0x0B4 and 0x2C4</title><path d="M310,308 C395,308 395,308 480,308" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="C06" data-from="EPS_CAN.CANL" data-to="EPS_ECU.CANL" data-status="planned"><title>C06: EPS_CAN.CANL -&gt; EPS_ECU.CANL</title><path d="M310,328 C395,328 395,328 480,328" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-device="SG1202" data-status="from_manual"><title>SG1202: Shinegle SG1202 controller - Full J1 pinout in config/shinegle-sg1202.yaml and docs/img/sg1202-wiring.svg</title><rect x="40" y="150" width="270" height="89" rx="6" fill="#fff1f0" stroke="#0969da" stroke-width="1.5"/>
+<text x="50" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Shinegle SG1202 controller</text>
+<text x="50" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">SG1202 · from_manual</text>
+<line x1="40" y1="197" x2="310" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">CAN_H  CAN H (optional on this model, p…</text>
+<line x1="40" y1="217" x2="310" y2="217" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">CAN_L  CAN L (pins TBC)</text>
+</g>
+<g data-device="EPS_CAN" data-status="planned"><title>EPS_CAN: MCP2515 CAN module (steering bus) - Own 500 kbit/s bus to the steering ECU. Transmit only, INT not wired</title><rect x="40" y="261" width="270" height="89" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="50" y="279" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">MCP2515 CAN module (steering bus)</text>
+<text x="50" y="294" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">EPS_CAN · planned · optional</text>
+<line x1="40" y1="308" x2="310" y2="308" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="312" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">CANH</text>
+<line x1="40" y1="328" x2="310" y2="328" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="332" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">CANL</text>
+</g>
+<g data-device="PICO_CAN" data-status="planned"><title>PICO_CAN: MCP2515 CAN module (control box) - Seeed MCP2515 + SN65HVD230 (3.3 V). Crystal TBC on the bench</title><rect x="480" y="150" width="270" height="89" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="490" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">MCP2515 CAN module (control box)</text>
+<text x="490" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">PICO_CAN · planned</text>
+<line x1="480" y1="197" x2="750" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">CANH</text>
+<line x1="480" y1="217" x2="750" y2="217" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">CANL</text>
+</g>
+<g data-device="EPS_ECU" data-status="tbc"><title>EPS_ECU: Toyota Aqua EPS ECU (89650-52B51) - Wrecker column, bench test with the Prius CAN frames first. ECU plug pinout TBC</title><rect x="480" y="261" width="270" height="89" rx="6" fill="#f0f6ff" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
+<text x="490" y="279" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Toyota Aqua EPS ECU (89650-52B51)</text>
+<text x="490" y="294" font-size="10" text-anchor="start" font-weight="normal" fill="#bf8700">EPS_ECU · tbc · optional</text>
+<line x1="480" y1="308" x2="750" y2="308" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="312" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">CANH</text>
+<line x1="480" y1="328" x2="750" y2="328" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="332" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">CANL</text>
+</g>
+<g data-device="PI_CAN" data-status="planned"><title>PI_CAN: MCP2515 CAN module (Pi) - Seeed MCP2515 + SN65HVD230 on the Pi box wall</title><rect x="920" y="150" width="270" height="89" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
+<text x="930" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">MCP2515 CAN module (Pi)</text>
+<text x="930" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">PI_CAN · planned</text>
+<line x1="920" y1="197" x2="1190" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">CANH</text>
+<line x1="920" y1="217" x2="1190" y2="217" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">CANL</text>
+</g>
+<text x="318" y="194" font-size="9.5" text-anchor="start" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">C01  0.5 mm²</text>
+<text x="318" y="214" font-size="9.5" text-anchor="start" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">C02  0.5 mm²</text>
+<text x="912" y="194" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">C03  0.5 mm²</text>
+<text x="912" y="214" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">C04  0.5 mm²</text>
+<text x="318" y="305" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">C05  0.5 mm²</text>
+<text x="318" y="325" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">C06  0.5 mm²</text>
+</svg>

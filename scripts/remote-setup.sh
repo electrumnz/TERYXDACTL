@@ -97,4 +97,4 @@ Your phone (also on Tailscale) can then open http://teryx:8080 whenever the 4G d
 TXT
 fi
 echo
-echo "Done. Set your number and code on the dash: Settings > Remote (4G)."
+echo "Done. Set your number and code on the dash: Settings > Remote (4G texts)."

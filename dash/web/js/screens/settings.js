@@ -16,7 +16,7 @@ async function api(path, opts = {}) {
 }
 
 const SECTIONS = [
-  ["display", "Display"], ["lock", "Vehicle lock"], ["sounds", "Sounds and alerts"], ["audio", "Audio and media"], ["lights", "Lights setup"], ["camera", "Cameras"], ["sentry", "Sentry and clips"], ["remote", "Remote (4G)"], ["limits", "Safety limits"],
+  ["display", "Display"], ["lock", "Vehicle lock"], ["remote", "Remote control"], ["sounds", "Sounds and alerts"], ["audio", "Audio and media"], ["lights", "Lights setup"], ["camera", "Cameras"], ["sentry", "Sentry and clips"], ["phone4g", "Remote (4G texts)"], ["limits", "Safety limits"],
   ["diff", "Diff calibration"], ["features", "Features"], ["faults", "Faults"], ["updates", "Updates"], ["wifi", "Wi-Fi"], ["about", "About"],
 ];
 
@@ -89,6 +89,25 @@ export class SettingsScreen {
     body.appendChild(row("Power bar scale", "Full scale of the power bar on the drive screen.", stepper(s.get("powerMaxKw"), { step: 1, min: 5, max: 30, fmt: (v) => `${v} kW`, onChange: (v) => s.set("powerMaxKw", v) })));
     body.appendChild(row("Battery pack size", "Usable energy in the traction pack, for the range estimate. 72 V x 105 Ah is about 7.5 kWh.", stepper(s.get("packKwh"), { step: 0.5, min: 1, max: 40, fmt: (v) => `${v.toFixed(1)} kWh`, onChange: (v) => s.set("packKwh", v) })));
     body.appendChild(row("Battery cells in series", "Only used to estimate battery % from voltage if the motor controller doesn't send one.", stepper(s.get("cells"), { step: 1, min: 10, max: 40, onChange: (v) => s.set("cells", v) })));
+  }
+
+  // ---------- Remote control (docs/rc-beach-launch.md) ----------
+  // 4G driving is off unless turned on here, and changing it either way needs the lock PIN.
+  sec_remote(body) {
+    const ctx = this.ctx, s = ctx.settings, st = ctx.store;
+    this.title(body, "Remote control", "Drive the Teryx from your phone or a handheld, for launching off the beach. 3 km/h in reverse, 5 km/h forward. It stops on the brake if the signal drops, you let go of the green button or the wheels dig in. On the Teryx's own Wi-Fi, open <b>remote.html</b> on the dash's address.");
+    const sw = toggle(!!s.get("rc.allow4g"), async (v) => {
+      sw.set(!v);   // only changes once the PIN checks out
+      if (st.get("lock.state") === "off" || st.get("lock.state") == null) { toast("Set a vehicle lock PIN first (Vehicle lock).", "bad"); return; }
+      const p = await askPin("Enter your PIN", v ? "To allow driving over 4G." : "To turn 4G driving off.");
+      if (p == null) return;
+      const r = await lockCommand(ctx, "verify", p);
+      if (r !== "ok") { toast(r === "no_link" || r === "no_answer" ? "No answer from the control box." : lockResultText(r) || `Control box said no (${r}).`, "bad"); return; }
+      s.set("rc.allow4g", v); sw.set(v);
+      toast(v ? "4G driving allowed. 2 km/h, cameras must be live, stops if the lag gets over 0.3 s." : "4G driving off.", v ? "warn" : "good");
+    });
+    body.appendChild(row("Allow driving over 4G", "Off unless you turn it on. Meant for getting it back if it's ever pinched, not for everyday use. Over 4G it's capped at 2 km/h, won't move unless the cameras are live, and stops on the brake if the lag gets over 0.3 s or the link drops. Police say don't go after a stolen vehicle yourself: call 111. Needs your PIN to change.", sw));
+    body.appendChild(row("Remote speed limits", "Reverse 3 km/h, forward 5 km/h on Wi-Fi or the handheld's own radio. 2 km/h over 4G. Set in the RC box.", null));
   }
 
   // ---------- Vehicle lock (docs/vehicle-lock.md) ----------
@@ -305,7 +324,7 @@ export class SettingsScreen {
   // Nothing here texts or alerts anyone: clips are saved, and you look when you want to.
   async sec_sentry(body) {
     const s = this.ctx.settings;
-    this.title(body, "Sentry and clips", "With the Teryx locked and the key off, the cameras keep recording and save a clip when something moves. Someone trying the key while it's locked saves one too, with a photo from the cabin camera. With the key on, the cameras record in a loop like a dashcam. Nothing is sent anywhere: look at clips here, or from your phone (Remote).");
+    this.title(body, "Sentry and clips", "With the Teryx locked and the key off, the cameras keep recording and save a clip when something moves. Someone trying the key while it's locked saves one too, with a photo from the cabin camera. With the key on, the cameras record in a loop like a dashcam. Nothing is sent anywhere: look at clips here, or from your phone (Remote (4G texts)).");
     const stat = el(`<div class="set-row"><div><div class="lbl">Now</div><div class="desc" id="sn-now">…</div></div></div>`);
     body.appendChild(stat);
     body.appendChild(row("Sentry when locked", "Keeps the Pi on with the key off while the Teryx is locked. Uses about 0.9 A from the 12V battery (docs/sentry.md).", toggle(s.get("sentry.enabled") !== false, (v) => s.set("sentry.enabled", v))));
@@ -358,11 +377,11 @@ export class SettingsScreen {
   }
 
   // ---------- Remote (4G) (docs/remote-access.md) ----------
-  async sec_remote(body) {
+  async sec_phone4g(body) {
     this.title(body, "Remote (4G)", "A 4G stick with a prepaid SIM, data normally off. Text the Teryx from your phone: WHERE, LOCK, CAMS or OFF, then your code. It only answers your number with the right code, and never texts on its own.");
     let d;
     try { d = await api("remote"); } catch (e) { body.appendChild(el(`<div class="muted">No answer (${e.message}).</div>`)); return; }
-    const put = async (b, okText) => { try { d = { ...d, ...(await api("remote", { method: "PUT", body: b })) }; if (okText) toast(okText, "good"); this.open("remote"); } catch (e) { toast(e.message, "bad"); } };
+    const put = async (b, okText) => { try { d = { ...d, ...(await api("remote", { method: "PUT", body: b })) }; if (okText) toast(okText, "good"); this.open("phone4g"); } catch (e) { toast(e.message, "bad"); } };
     const m = d.modem || {};
     body.appendChild(row("4G stick", "", el(`<span class="muted">${m.present ? `Found${m.operator ? `, ${m.operator}` : ""}${m.signal_pct != null ? `, signal ${m.signal_pct}%` : ""}. Data ${m.data_on ? "ON" : "off"}.` : "Not plugged in."}${d.simulated ? " (simulator)" : ""}</span>`)));
     body.appendChild(row("Remote texts", d.code_set && d.numbers.length ? "" : "Add your number and a code first.", toggle(!!d.enabled, (v) => put({ enabled: v }, v ? "Remote texts on." : "Remote texts off."))));
@@ -392,7 +411,7 @@ export class SettingsScreen {
         try {
           const r = await api("remote/sim-text", { method: "POST", body: { from: d.numbers[0] || "021 000 0000", text: t } });
           toast(r.replies.length ? `Reply: ${r.replies.join(" / ")}` : "No reply (ignored).", r.replies.length ? "good" : "warn");
-          this.open("remote");
+          this.open("phone4g");
         } catch (e) { toast(e.message, "bad"); }
       };
       body.appendChild(row("Pretend to be your phone", "Sends from the first allowed number.", go));

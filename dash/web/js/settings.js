@@ -60,6 +60,7 @@ export const DEFAULTS = {
     eventsPct: 25,         // share of the video drive kept for saved clips
     width: 1280, height: 720, fps: 15, kbps: 2000,
   },
+  rc: { allow4g: false },  // remote driving over 4G (docs/rc-beach-launch.md). Off by default, needs the PIN to change
   features: { ...FEATURE_DEFAULTS },   // what's wired up yet; the rest shows greyed out (see features.js)
   updates: { channel: "stable", auto_check: true },
   media: {

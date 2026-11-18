@@ -1,0 +1,229 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2200 1304" width="2200" height="1304" font-family="Arial, Helvetica, sans-serif" data-sheet="dash">
+<rect width="2200" height="1304" fill="#ffffff"/>
+<text x="40" y="40" font-size="22" text-anchor="start" font-weight="bold" fill="#1f2328">Dash computer: Pi 5, screen, cameras, USB, audio</text>
+<text x="40" y="62" font-size="12" text-anchor="start" font-weight="normal" fill="#57606a">Teryx OS wiring, sheet &#x27;dash&#x27;. Made from config/wiring.yaml by `python -m teryx wiring`. Don&#x27;t edit this file.</text>
+<line x1="40" y1="92" x2="74" y2="92" stroke="#1a7f37" stroke-width="2.5"/>
+<text x="80" y="96" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">Measured on the Teryx</text>
+<line x1="250" y1="92" x2="284" y2="92" stroke="#0969da" stroke-width="2.5"/>
+<text x="290" y="96" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">Manual / confirmed</text>
+<line x1="460" y1="92" x2="494" y2="92" stroke="#424a53" stroke-width="2.5"/>
+<text x="500" y="96" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">Our design, not built yet</text>
+<line x1="670" y1="92" x2="704" y2="92" stroke="#bf8700" stroke-width="2.5" stroke-dasharray="7 4"/>
+<text x="710" y="96" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">TBC: needs checking</text>
+<line x1="880" y1="92" x2="914" y2="92" stroke="#8250df" stroke-width="2.5" stroke-dasharray="2 4"/>
+<text x="920" y="96" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">Placeholder / later</text>
+<text x="40" y="120" font-size="11" text-anchor="start" font-weight="normal" fill="#57606a">Labels: wire id, size, fuse (if the wire has its own), and anything in between. Faded = optional. Hover for notes. Full table: docs/wiring/README.md</text>
+<g data-wire="X01" data-from="PI5.HDMI0" data-to="SCREEN.HDMI" data-status="planned"><title>X01: PI5.HDMI0 -&gt; SCREEN.HDMI</title><path d="M310,197 C395,197 395,197 480,197" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="X02" data-from="SCREEN.USB" data-to="USB_HUB.P1" data-status="planned"><title>X02: SCREEN.USB -&gt; USB_HUB.P1 - Touch</title><path d="M750,217 C810,217 810,525 750,525" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="X03" data-from="CAM_REAR.USB" data-to="PI5.USB3_A" data-status="tbc"><title>X03: CAM_REAR.USB -&gt; PI5.USB3_A - Or a UVC capture dongle if it&#x27;s an RCA/AHD camera</title><path d="M480,308 C395,308 395,217 310,217" fill="none" stroke="#bf8700" stroke-width="1.4" stroke-dasharray="7 4"/></g>
+<g data-wire="X04" data-from="TCAM_DONGLE.USB" data-to="PI5.USB3_B" data-status="planned"><title>X04: TCAM_DONGLE.USB -&gt; PI5.USB3_B - Other USB controller from the rear camera</title><path d="M480,414 C395,414 395,237 310,237" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="X05" data-from="USB_HUB.UP" data-to="PI5.USB2_B" data-status="planned"><title>X05: USB_HUB.UP -&gt; PI5.USB2_B</title><path d="M480,505 C395,505 395,257 310,257" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="X06" data-from="GPS.USB" data-to="USB_HUB.P2" data-status="planned"><title>X06: GPS.USB -&gt; USB_HUB.P2</title><path d="M920,197 C835,197 835,545 750,545" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="X07" data-from="CARPLAY.USB" data-to="USB_HUB.P3" data-status="planned"><title>X07: CARPLAY.USB -&gt; USB_HUB.P3</title><path d="M920,288 C835,288 835,565 750,565" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="X08" data-from="USB_DAC.USB" data-to="USB_HUB.P4" data-status="planned"><title>X08: USB_DAC.USB -&gt; USB_HUB.P4</title><path d="M920,379 C835,379 835,585 750,585" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="X09" data-from="MODEM_4G.USB" data-to="USB_HUB.P5" data-status="placeholder"><title>X09: MODEM_4G.USB -&gt; USB_HUB.P5</title><path d="M920,490 C835,490 835,605 750,605" fill="none" stroke="#8250df" stroke-width="1.4" stroke-dasharray="2 4" stroke-opacity="0.65"/></g>
+<g data-wire="X10" data-from="SSD.USB" data-to="USB_HUB.P6" data-status="placeholder"><title>X10: SSD.USB -&gt; USB_HUB.P6</title><path d="M920,581 C835,581 835,625 750,625" fill="none" stroke="#8250df" stroke-width="1.4" stroke-dasharray="2 4" stroke-opacity="0.65"/></g>
+<g data-wire="X11" data-from="CAM_FRONT.CSI" data-to="PI5.CSI0" data-status="planned"><title>X11: CAM_FRONT.CSI -&gt; PI5.CSI0</title><path d="M480,716 C395,716 395,277 310,277" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="X12" data-from="CAM_CABIN.CSI" data-to="PI5.CSI1" data-status="placeholder"><title>X12: CAM_CABIN.CSI -&gt; PI5.CSI1</title><path d="M480,807 C395,807 395,297 310,297" fill="none" stroke="#8250df" stroke-width="1.4" stroke-dasharray="2 4" stroke-opacity="0.65"/></g>
+<g data-wire="X13" data-from="AIHAT.PCIE" data-to="PI5.PCIE" data-status="placeholder"><title>X13: AIHAT.PCIE -&gt; PI5.PCIE - Keep the PCIe port free for this</title><path d="M480,898 C395,898 395,317 310,317" fill="none" stroke="#8250df" stroke-width="1.4" stroke-dasharray="2 4" stroke-opacity="0.65"/></g>
+<g data-wire="X14" data-from="AIHAT.HDR" data-to="PI5.HAT_HDR" data-status="placeholder"><title>X14: AIHAT.HDR -&gt; PI5.HAT_HDR - 16 mm stacking header over the Active Cooler</title><path d="M480,918 C395,918 395,337 310,337" fill="none" stroke="#8250df" stroke-width="1.4" stroke-dasharray="2 4" stroke-opacity="0.65"/></g>
+<g data-wire="X15" data-from="PI5.P1_3V3" data-to="PI_CAN.VCC" data-status="planned"><title>X15: PI5.P1_3V3 -&gt; PI_CAN.VCC</title><path d="M310,357 C395,357 395,1120 480,1120" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="X16" data-from="PI5.P23_SCLK" data-to="PI_CAN.SCK" data-status="planned"><title>X16: PI5.P23_SCLK -&gt; PI_CAN.SCK</title><path d="M310,477 C395,477 395,1140 480,1140" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="X17" data-from="PI5.P19_MOSI" data-to="PI_CAN.SI" data-status="planned"><title>X17: PI5.P19_MOSI -&gt; PI_CAN.SI</title><path d="M310,417 C395,417 395,1160 480,1160" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="X18" data-from="PI_CAN.SO" data-to="PI5.P21_MISO" data-status="planned"><title>X18: PI_CAN.SO -&gt; PI5.P21_MISO</title><path d="M480,1180 C395,1180 395,437 310,437" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="X19" data-from="PI5.P24_CE0" data-to="PI_CAN.CS" data-status="planned"><title>X19: PI5.P24_CE0 -&gt; PI_CAN.CS</title><path d="M310,497 C395,497 395,1200 480,1200" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="X20" data-from="PI_CAN.INT" data-to="PI5.P22_GPIO25" data-status="planned"><title>X20: PI_CAN.INT -&gt; PI5.P22_GPIO25</title><path d="M480,1220 C395,1220 395,457 310,457" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="X21" data-from="USB_DAC.OUT" data-to="AMP.IN" data-status="planned"><title>X21: USB_DAC.OUT -&gt; AMP.IN</title><path d="M1190,399 C1275,399 1275,197 1360,197" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="X22" data-from="AMP.SPK" data-to="SPEAKERS.IN" data-status="planned"><title>X22: AMP.SPK -&gt; SPEAKERS.IN</title><path d="M1630,217 C1715,217 1715,197 1800,197" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="X23" data-from="PI5.P3_SDA" data-to="IMU.SDA" data-status="planned"><title>X23: PI5.P3_SDA -&gt; IMU.SDA</title><path d="M310,377 C395,377 395,1009 480,1009" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="X24" data-from="PI5.P5_SCL" data-to="IMU.SCL" data-status="planned"><title>X24: PI5.P5_SCL -&gt; IMU.SCL</title><path d="M310,397 C395,397 395,1029 480,1029" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-device="PI5" data-status="confirmed"><title>PI5: Raspberry Pi 5 8GB - The 40-pin header and the PCIe port are kept for the AI HAT+ 2. CAN module wires go to header pins that come up through the HAT</title><rect x="40" y="150" width="270" height="369" rx="6" fill="#eef9f1" stroke="#0969da" stroke-width="1.5"/>
+<text x="50" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Raspberry Pi 5 8GB</text>
+<text x="50" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">PI5 · confirmed</text>
+<line x1="40" y1="197" x2="310" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">HDMI0</text>
+<line x1="40" y1="217" x2="310" y2="217" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">USB3_A</text>
+<line x1="40" y1="237" x2="310" y2="237" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="241" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">USB3_B</text>
+<line x1="40" y1="257" x2="310" y2="257" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="261" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">USB2_B</text>
+<line x1="40" y1="277" x2="310" y2="277" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="281" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">CSI0</text>
+<line x1="40" y1="297" x2="310" y2="297" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="301" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">CSI1</text>
+<line x1="40" y1="317" x2="310" y2="317" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="321" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">PCIE</text>
+<line x1="40" y1="337" x2="310" y2="337" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="341" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">HAT_HDR  40-pin header to the 16 mm sta…</text>
+<line x1="40" y1="357" x2="310" y2="357" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="361" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P1_3V3</text>
+<line x1="40" y1="377" x2="310" y2="377" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="381" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P3_SDA</text>
+<line x1="40" y1="397" x2="310" y2="397" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="401" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P5_SCL</text>
+<line x1="40" y1="417" x2="310" y2="417" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="421" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P19_MOSI</text>
+<line x1="40" y1="437" x2="310" y2="437" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="441" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P21_MISO</text>
+<line x1="40" y1="457" x2="310" y2="457" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="461" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P22_GPIO25</text>
+<line x1="40" y1="477" x2="310" y2="477" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="481" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P23_SCLK</text>
+<line x1="40" y1="497" x2="310" y2="497" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="501" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P24_CE0</text>
+</g>
+<g data-device="SCREEN" data-status="confirmed"><title>SCREEN: 10.1 in touch screen - 1280x800, HDMI + USB touch, 3.5 mm audio in</title><rect x="480" y="150" width="270" height="89" rx="6" fill="#eef9f1" stroke="#0969da" stroke-width="1.5"/>
+<text x="490" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">10.1 in touch screen</text>
+<text x="490" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">SCREEN · confirmed</text>
+<line x1="480" y1="197" x2="750" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">HDMI</text>
+<line x1="480" y1="217" x2="750" y2="217" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">USB</text>
+</g>
+<g data-device="CAM_REAR" data-status="tbc"><title>CAM_REAR: Rear camera (2K)</title><rect x="480" y="261" width="270" height="69" rx="6" fill="#f4f4f4" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
+<text x="490" y="279" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Rear camera (2K)</text>
+<text x="490" y="294" font-size="10" text-anchor="start" font-weight="normal" fill="#bf8700">CAM_REAR · tbc</text>
+<line x1="480" y1="308" x2="750" y2="308" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="312" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">USB</text>
+</g>
+<g data-device="TCAM_DONGLE" data-status="planned"><title>TCAM_DONGLE: UVC capture dongle (trailer camera)</title><rect x="480" y="352" width="270" height="84" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
+<text x="490" y="370" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">UVC capture dongle (trailer</text>
+<text x="490" y="385" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">camera)</text>
+<text x="490" y="400" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">TCAM_DONGLE · planned · optional</text>
+<line x1="480" y1="414" x2="750" y2="414" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="418" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">USB</text>
+</g>
+<g data-device="USB_HUB" data-status="planned"><title>USB_HUB: Powered USB hub - For the slow USB things. Not picked yet, power feed TBC</title><rect x="480" y="458" width="270" height="189" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
+<text x="490" y="476" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Powered USB hub</text>
+<text x="490" y="491" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">USB_HUB · planned</text>
+<line x1="480" y1="505" x2="750" y2="505" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="509" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">UP</text>
+<line x1="480" y1="525" x2="750" y2="525" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="529" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P1</text>
+<line x1="480" y1="545" x2="750" y2="545" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="549" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P2</text>
+<line x1="480" y1="565" x2="750" y2="565" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="569" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P3</text>
+<line x1="480" y1="585" x2="750" y2="585" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="589" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P4</text>
+<line x1="480" y1="605" x2="750" y2="605" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="609" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P5</text>
+<line x1="480" y1="625" x2="750" y2="625" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="629" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P6</text>
+</g>
+<g data-device="CAM_FRONT" data-status="planned"><title>CAM_FRONT: Camera Module 3 Wide (front) - Inside the screen housing, 200-300 mm ribbon</title><rect x="480" y="669" width="270" height="69" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
+<text x="490" y="687" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Camera Module 3 Wide (front)</text>
+<text x="490" y="702" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">CAM_FRONT · planned</text>
+<line x1="480" y1="716" x2="750" y2="716" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="720" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">CSI</text>
+</g>
+<g data-device="CAM_CABIN" data-status="placeholder"><title>CAM_CABIN: Cabin camera (sentry) - Being worked out in the 4G / sentry thread. Port TBC</title><rect x="480" y="760" width="270" height="69" rx="6" fill="#eef9f1" stroke="#8250df" stroke-width="1.5" stroke-dasharray="2 4"/>
+<text x="490" y="778" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Cabin camera (sentry)</text>
+<text x="490" y="793" font-size="10" text-anchor="start" font-weight="normal" fill="#8250df">CAM_CABIN · placeholder · optional</text>
+<line x1="480" y1="807" x2="750" y2="807" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="811" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">CSI</text>
+</g>
+<g data-device="AIHAT" data-status="placeholder"><title>AIHAT: AI HAT+ 2 (later) - Not buying yet. Room, cooling (about 4.5 W) and the PCIe port stay free for it</title><rect x="480" y="851" width="270" height="89" rx="6" fill="#eef9f1" stroke="#8250df" stroke-width="1.5" stroke-dasharray="2 4"/>
+<text x="490" y="869" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">AI HAT+ 2 (later)</text>
+<text x="490" y="884" font-size="10" text-anchor="start" font-weight="normal" fill="#8250df">AIHAT · placeholder · optional</text>
+<line x1="480" y1="898" x2="750" y2="898" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="902" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">PCIE</text>
+<line x1="480" y1="918" x2="750" y2="918" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="922" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">HDR</text>
+</g>
+<g data-device="IMU" data-status="planned"><title>IMU: IMU (roll / pitch)</title><rect x="480" y="962" width="270" height="89" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
+<text x="490" y="980" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">IMU (roll / pitch)</text>
+<text x="490" y="995" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">IMU · planned · optional</text>
+<line x1="480" y1="1009" x2="750" y2="1009" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="1013" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SDA</text>
+<line x1="480" y1="1029" x2="750" y2="1029" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="1033" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SCL</text>
+</g>
+<g data-device="PI_CAN" data-status="planned"><title>PI_CAN: MCP2515 CAN module (Pi) - Seeed MCP2515 + SN65HVD230 on the Pi box wall</title><rect x="480" y="1073" width="270" height="169" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
+<text x="490" y="1091" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">MCP2515 CAN module (Pi)</text>
+<text x="490" y="1106" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">PI_CAN · planned</text>
+<line x1="480" y1="1120" x2="750" y2="1120" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="1124" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VCC</text>
+<line x1="480" y1="1140" x2="750" y2="1140" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="1144" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SCK</text>
+<line x1="480" y1="1160" x2="750" y2="1160" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="1164" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SI</text>
+<line x1="480" y1="1180" x2="750" y2="1180" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="1184" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SO</text>
+<line x1="480" y1="1200" x2="750" y2="1200" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="1204" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">CS</text>
+<line x1="480" y1="1220" x2="750" y2="1220" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="1224" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">INT</text>
+</g>
+<g data-device="GPS" data-status="planned"><title>GPS: DFRobot TEL0138 USB GPS</title><rect x="920" y="150" width="270" height="69" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
+<text x="930" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">DFRobot TEL0138 USB GPS</text>
+<text x="930" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">GPS · planned · optional</text>
+<line x1="920" y1="197" x2="1190" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">USB</text>
+</g>
+<g data-device="CARPLAY" data-status="planned"><title>CARPLAY: Carlinkit CPC200-CCPA</title><rect x="920" y="241" width="270" height="69" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
+<text x="930" y="259" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Carlinkit CPC200-CCPA</text>
+<text x="930" y="274" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">CARPLAY · planned · optional</text>
+<line x1="920" y1="288" x2="1190" y2="288" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="292" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">USB</text>
+</g>
+<g data-device="USB_DAC" data-status="planned"><title>USB_DAC: USB audio out</title><rect x="920" y="332" width="270" height="89" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
+<text x="930" y="350" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">USB audio out</text>
+<text x="930" y="365" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">USB_DAC · planned · optional</text>
+<line x1="920" y1="379" x2="1190" y2="379" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="383" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">USB</text>
+<line x1="920" y1="399" x2="1190" y2="399" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="403" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT</text>
+</g>
+<g data-device="MODEM_4G" data-status="placeholder"><title>MODEM_4G: 4G USB modem - Being worked out in the 4G / sentry thread</title><rect x="920" y="443" width="270" height="69" rx="6" fill="#eef9f1" stroke="#8250df" stroke-width="1.5" stroke-dasharray="2 4"/>
+<text x="930" y="461" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">4G USB modem</text>
+<text x="930" y="476" font-size="10" text-anchor="start" font-weight="normal" fill="#8250df">MODEM_4G · placeholder · optional</text>
+<line x1="920" y1="490" x2="1190" y2="490" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="494" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">USB</text>
+</g>
+<g data-device="SSD" data-status="placeholder"><title>SSD: USB SSD (recordings) - Only if we record footage. Shares the hub&#x27;s bandwidth; never NVMe on the PCIe port</title><rect x="920" y="534" width="270" height="69" rx="6" fill="#eef9f1" stroke="#8250df" stroke-width="1.5" stroke-dasharray="2 4"/>
+<text x="930" y="552" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">USB SSD (recordings)</text>
+<text x="930" y="567" font-size="10" text-anchor="start" font-weight="normal" fill="#8250df">SSD · placeholder · optional</text>
+<line x1="920" y1="581" x2="1190" y2="581" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="585" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">USB</text>
+</g>
+<g data-device="AMP" data-status="planned"><title>AMP: 12 V marine amp</title><rect x="1360" y="150" width="270" height="89" rx="6" fill="#f0f6ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="1370" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">12 V marine amp</text>
+<text x="1370" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">AMP · planned · optional</text>
+<line x1="1360" y1="197" x2="1630" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN</text>
+<line x1="1360" y1="217" x2="1630" y2="217" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SPK</text>
+</g>
+<g data-device="SPEAKERS" data-status="planned"><title>SPEAKERS: Marine speakers</title><rect x="1800" y="150" width="270" height="69" rx="6" fill="#f0f6ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="1810" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Marine speakers</text>
+<text x="1810" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">SPEAKERS · planned · optional</text>
+<line x1="1800" y1="197" x2="2070" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1935" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN</text>
+</g>
+<text x="318" y="194" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X01</text>
+<text x="758" y="214" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X02</text>
+<text x="472" y="305" font-size="9.5" text-anchor="end" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">X03</text>
+<text x="472" y="411" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X04</text>
+<text x="472" y="502" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X05</text>
+<text x="912" y="194" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X06</text>
+<text x="912" y="285" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X07</text>
+<text x="912" y="376" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X08</text>
+<text x="912" y="487" font-size="9.5" text-anchor="end" font-weight="normal" fill="#8250df" stroke="#ffffff" stroke-width="3" paint-order="stroke">X09</text>
+<text x="912" y="578" font-size="9.5" text-anchor="end" font-weight="normal" fill="#8250df" stroke="#ffffff" stroke-width="3" paint-order="stroke">X10</text>
+<text x="472" y="713" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X11</text>
+<text x="472" y="804" font-size="9.5" text-anchor="end" font-weight="normal" fill="#8250df" stroke="#ffffff" stroke-width="3" paint-order="stroke">X12</text>
+<text x="472" y="895" font-size="9.5" text-anchor="end" font-weight="normal" fill="#8250df" stroke="#ffffff" stroke-width="3" paint-order="stroke">X13</text>
+<text x="472" y="915" font-size="9.5" text-anchor="end" font-weight="normal" fill="#8250df" stroke="#ffffff" stroke-width="3" paint-order="stroke">X14</text>
+<text x="318" y="354" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X15</text>
+<text x="318" y="474" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X16</text>
+<text x="318" y="414" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X17</text>
+<text x="472" y="1177" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X18</text>
+<text x="318" y="494" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X19</text>
+<text x="472" y="1217" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X20</text>
+<text x="1198" y="396" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X21</text>
+<text x="1638" y="214" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X22</text>
+<text x="318" y="374" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X23</text>
+<text x="318" y="394" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X24</text>
+</svg>

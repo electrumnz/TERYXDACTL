@@ -23,7 +23,7 @@ SSD until you look at them, on the dash or over 4G.
 Every text has to pass all of these, in order, or it's ignored with no reply at all (a thief
 testing the number learns nothing):
 
-1. Remote access is turned on (Settings > Remote (4G)).
+1. Remote access is turned on (Settings > Remote (4G texts)).
 2. The text is less than 3 days old (stops a pile of old texts all running when the stick
    comes back into coverage).
 3. It's from one of up to 3 phone numbers you've listed.
@@ -129,7 +129,7 @@ video SSD, and tells you how to put the Pi on Tailscale (`sudo tailscale up --ho
 The APN normally comes from the SIM; if not, pass `--apn` (Skinny's is `wapaccess.co.nz` [15]).
 The 4G connection gets a higher route metric than Wi-Fi, so when both are up Wi-Fi is used.
 
-Then on the dash: **Settings > Remote (4G)**: add your number, set a code, turn it on. In the
+Then on the dash: **Settings > Remote (4G texts)**: add your number, set a code, turn it on. In the
 simulator there's a box there to send a pretend text and see the reply.
 
 ## Battery
@@ -159,7 +159,7 @@ hidden somewhere else on its own battery:
 | Text rules, modem, data timer, phone link API | `dash/server/teryx_dash/remote.py` |
 | Remote lock (firmware) | `firmware/control-box/src/core/lock.c` (`vlock_remote_check`), `controller.c` (`remote_safe`) |
 | Remote lock (simulator) | `teryx/vehicle_lock.py`, `teryx/sim/controlbox.py` |
-| Dash | Settings > Remote (4G) in `dash/web/js/screens/settings.js` |
+| Dash | Settings > Remote (4G texts) in `dash/web/js/screens/settings.js` |
 | Setup | `scripts/remote-setup.sh`, `dash/deploy/51-teryx-modem.rules` |
 | Tests | `dash/tests/test_remote.py`, `tests/test_vehicle_lock.py`, `firmware/control-box/tests/test_controller.c` (`test_lock_remote`) |
 
