@@ -213,7 +213,7 @@ and programmer plugged in.
 | 0x703 | Pi → Pico | 10 Hz while held | Hold-to-run: tray (i8: −1 down, 0 stop, +1 up), winch (i8: −1 out, 0 stop, +1 in), winch armed (bit), timed pull seconds (u8, 0 = plain hold). Pico stops the motion if no 0x703 for 300 ms, and stops a timed pull on time by itself |
 | 0x704 | Pi → Pico | on change | Settings: speed limits, timeouts (see section 7) |
 | 0x710 | Pico → Pi | 10 Hz | Status: b0 counter, b1–2 fault flags (u16, see below), b3 digital inputs B0–B7 as bits, b4 Pico state (0 boot, 1 ok, 2 degraded, 3 failsafe), b5 reject reason (low nibble) + reject counter (high nibble), b6 bit 0 winch armed |
-| 0x711 | Pico → Pi | 10 Hz | Outputs: b0 relay bits, b1–5 light levels (u8 ×5), b6 active light effect |
+| 0x711 | Pico → Pi | 10 Hz | Outputs: b0 relay bits, b1–5 light levels (u8 ×5), b6 active light effect, b7 second relay board (bit 0 power steering on, bit 1 drive lock) |
 | 0x712 | Pico → Pi | 10 Hz | Actuators: b0 diff %, b1 4WD state, b2 tray state, b3–5 currents (u8 ×3, 0.1A), b6 tray estimated % (from run time), b7 diff target % |
 | 0x713 | Pico → Pi | 1 Hz | 12V aux (u16, mV), Pico temp (i8) |
 | 0x715 | Pico → Pi | 10 Hz | Brake regen: pedal % (u8), regen request % (u8), state + limit (nibbles), pedal raw (u16), brake light bit. See [`brake-regen.md`](brake-regen.md) |

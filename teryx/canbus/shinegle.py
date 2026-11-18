@@ -47,6 +47,7 @@ _SIMPLE = {   # dbc signal name -> io-map name, plain numbers
     "batt_v": "mc.batt_v", "batt_a": "mc.batt_a", "soc": "mc.soc",
     "motor_temp": "mc.motor_temp", "ctrl_temp": "mc.ctrl_temp", "batt_temp": "mc.batt_temp",
     "odometer": "mc.odometer",
+    "error_code": "mc.error_code",   # the SG1810 ErrorCode (LED flash count), config/shinegle-faults.yaml
 }
 _FLAGS = {"brake": "mc.brake", "ready": "mc.ready", "limp": "mc.limp"}
 _ENUMS = {"direction": ("mc.direction", "neutral"), "mode": ("mc.mode", "eco")}
@@ -58,7 +59,7 @@ MC_DEFAULTS = {
     "mc.throttle": 0, "mc.brake": False, "mc.ready": False, "mc.limp": False,
     "mc.batt_v": 0.0, "mc.batt_a": 0.0, "mc.soc": 0, "mc.power_kw": 0.0,
     "mc.motor_temp": 0, "mc.ctrl_temp": 0, "mc.batt_temp": 0,
-    "mc.faults": [], "mc.odometer": 0.0,
+    "mc.faults": [], "mc.odometer": 0.0, "mc.error_code": 0,
 }
 
 

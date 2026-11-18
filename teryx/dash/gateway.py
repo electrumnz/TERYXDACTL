@@ -289,6 +289,8 @@ class Gateway:
             elif msg.name == "PICO_OUTPUTS":
                 for bit, name in M.RELAY_BITS.items():
                     st[name] = bool(int(v["relays"]) & (1 << bit))
+                for bit, name in M.RELAY2_BITS.items():
+                    st[name] = bool(int(v.get("relays2", 0)) & (1 << bit))
                 for k, short in LIGHT_IDS.items():
                     st[k] = v[short]
                 st["light.effect"] = M.LIGHT_EFFECT.get(v["effect"], "none")

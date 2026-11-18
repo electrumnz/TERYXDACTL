@@ -5,6 +5,7 @@ import { sensorWidget } from "../ui/sensors.js";
 import { fmtKm } from "../tripdata.js";
 import { featureOn } from "../features.js";
 import { icon } from "../ui/icons.js";
+import { TellTales } from "../telltales.js";
 
 export function socFromVolts(v, cells) {
   // Rough lithium curve per cell. Only used if the Shinegle doesn't send a state of charge.
@@ -58,6 +59,7 @@ export class DriveScreen {
           </div>
         </div>
         <div class="d-hero">
+          <div class="d-tells" id="d-tells" aria-label="Warning lights"></div>
           <div class="art rex"><div class="breathe">
             <img data-j="closed" src="img/dino/head-closed.webp" alt="">
             <img data-j="snarl" src="img/dino/head-snarl.webp" alt="" style="opacity:0">
@@ -173,12 +175,15 @@ export class DriveScreen {
 
     // What's on right now, as big shortcuts: tap one to jump to its screen.
     const on = (id) => featureOn(set, id);
+    // Warning lights: lamps from the same alert list the banner uses.
+    this.tells = this.tells || new TellTales();
+    const keys = new Set((this.ctx.alerts?.active || []).map((a) => a.key));
+    const lamps = this.tells.render(this.tells.tick(st, set, keys));
+    if (lamps !== this._lamps) { q("#d-tells").innerHTML = lamps; this._lamps = lamps; }
+
     const chips = [];
     const chip = (screen, cls, ic, txt) => chips.push(`<button class="act-chip ${cls}" data-go="${screen || ""}">${ic ? icon(ic) : ""}<span>${txt}</span></button>`);
-    if (st.get("mc.ready") === false) chip("", "warnc", "warn", "Not ready");
-    if (st.get("mc.limp")) chip("", "alert", "warn", "Limp mode");
-    if (st.get("in.park")) chip("", "alert", "", "Handbrake");
-    if (st.get("in.brake")) chip("", "alert", "", "Brake");
+    // Ready, handbrake, limp etc are warning lights now (telltales.js), so no chips for them.
     const fw = st.get("act.4wd", "2wd");
     const w4 = st.get("act.4wd_wait");
     if (fw !== "2wd" || w4) chip("drivetrain", fw === "4wd" && !w4 ? "on" : fw === "fault" ? "alert" : "busy", "fourwd", w4 ? (fw === "4wd" ? "2WD when stopped" : "4WD when stopped") : fw === "4wd" ? "4WD" : fw === "to_4wd" ? "→ 4WD" : fw === "to_2wd" ? "→ 2WD" : "4WD fault");

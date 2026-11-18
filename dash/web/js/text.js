@@ -17,6 +17,7 @@ export const PICO_FAULTS = {
   watchdog_reset:     { sev: "warn", text: "Control box restarted itself after a hang. Everything started off." },
   diff_overcurrent:   { sev: "bad",  text: "Diff lock actuator pulled too much current and was stopped." },
   io_bus:             { sev: "bad",  text: "Control box can't talk to its relay or sensor boards. Check the I2C wiring." },
+  brake_pedal:        { sev: "bad",  text: "Brake pedal sensor doesn't agree with the brake switch. Brake regen is off. Your brakes still work as normal." },
 };
 
 export const MC_FAULTS = {

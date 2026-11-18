@@ -84,6 +84,10 @@ RELAY_BITS = {   # 0x711 byte 0, relay 1 = bit 0
     6: "aux.accessory",
     7: "power.hold",
 }
+RELAY2_BITS = {   # 0x711 byte 7, second relay board on MCP23017 0x21
+    0: "steer.on",         # relay 9: power steering column powered and getting its speed frames
+    1: "drive.lock_relay", # relay 10: Shinegle key line opened because the Teryx is locked
+}
 INPUT_BITS = {   # 0x710 byte 3, MCP23017 B0-B7
     0: "in.ignition",
     1: "in.brake",
@@ -238,6 +242,7 @@ PICO_OUTPUTS = Message(
         S("front_1", 8, 8), S("front_2", 16, 8), S("front_3", 24, 8), S("front_4", 32, 8),
         S("interior", 40, 8),
         S("effect", 48, 8, choices=LIGHT_EFFECT),
+        S("relays2", 56, 8, comment="Second relay board, see RELAY2_BITS (power steering on, drive lock)"),
     ),
 )
 PICO_ACTUATORS = Message(

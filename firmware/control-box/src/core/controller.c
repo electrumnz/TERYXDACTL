@@ -828,6 +828,7 @@ static void send_status(controller_t *c, uint32_t now, cb_send_fn send, void *u)
     o.data[0] = c->out.relays;
     memcpy(&o.data[1], c->out.light, L_COUNT);
     o.data[6] = c->effect;
+    o.data[7] = c->out.relays2;   // bit 0 power steering on, bit 1 drive lock (R2_*)
     send(&o, u);
 
     can_frame_t l2 = {.id = CAN_ID_PICO_LIGHTS2, .dlc = 8};

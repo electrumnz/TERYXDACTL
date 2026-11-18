@@ -33,6 +33,10 @@ def test_dash_sees_both_boxes(rig):
     s = gw.snapshot()
     assert 80 <= s["mc.soc"] <= 90
     assert s["mc.direction"] == "neutral"
+    # Power steering relay echoed on 0x711 byte 7: on with the key on, drive lock open.
+    assert wait_for(lambda: gw.snapshot().get("steer.on") is True)
+    assert gw.snapshot()["drive.lock_relay"] is False
+    assert gw.snapshot()["mc.error_code"] == 0
 
 
 def test_requests_round_trip(rig):

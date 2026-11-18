@@ -23,6 +23,7 @@ export const DEFAULTS = {
   packKwh: 7.5,            // traction pack size for the range estimate (72 V x 105 Ah, TBC)
   sound: { enabled: true, volume: 0.7, clicks: true },
   tilt: { rollWarn: 25, rollBad: 32, pitchWarn: 28, pitchBad: 35 },   // degrees, for the tilt alerts
+  service: { dueKm: 0 },    // service reminder light at this odometer reading, 0 = off
   powerMaxKw: 10,          // scale of the power bar (7.5 kW motor, peaks above)
   regenMaxKw: 4,
   cells: 24,               // for a voltage-based battery % if the Shinegle doesn't send one (72V pack, TBC)

@@ -159,6 +159,7 @@ What the outputs are actually doing (after effects and safety).
 | `front_4` | byte 4 | u8 |  |  |
 | `interior` | byte 5 | u8 |  |  |
 | `effect` | byte 6 | u8 |  | 0=none, 1=strobe, 2=chase, 3=outside_only, 4=inside_only, 5=breathe, 6=sos |
+| `relays2` | byte 7 | u8 |  | Second relay board, see RELAY2_BITS (power steering on, drive lock) |
 
 ### 0x712 PICO_ACTUATORS
 
@@ -458,6 +459,7 @@ From **shinegle**, every 200 ms. **PLACEHOLDER.**
 | `fault_battery_over_temp` | byte 1 bit 0 | u1 |  | Battery too hot |
 | `fault_precharge` | byte 1 bit 1 | u1 |  | Precharge fault |
 | `odometer` | bytes 2-5 | u32 x0.1 | km |  |
+| `error_code` | byte 6 | u8 |  | Controller ErrorCode, same number as the LED flash count (0 or 1 = no fault). Text in config/shinegle-faults.yaml |
 | `counter` | byte 7 | u8 |  |  |
 
 **Shinegle fault bits (placeholder)**
