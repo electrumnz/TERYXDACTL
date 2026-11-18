@@ -194,13 +194,26 @@ module pi_box_model() {
     }
 }
 
-// 4G board standoffs on the inside of the lid (z < 0 hangs into the box), with
-// M2.5 heat-set inserts. Printed with the lid.
+// 4G board, its buck and capacitor on the inside of the lid (z < 0 hangs into
+// the box). Printed with the lid.
 modem_hole_pts = [for (sx = [-1, 1], sy = [-1, 1]) [modem_pos[0] + sx * modem_holes[0] / 2, modem_pos[1] + sy * modem_holes[1] / 2]];
+module tie_pad(size, h) {   // pad with a cable-tie tunnel across it (along X), at the lid face
+    difference() {
+        translate([-size[0] / 2, -size[1] / 2, -h]) cube([size[0], size[1], h + e]);
+        translate([-size[0] / 2 - 1, -tie_w / 2, -tie_h + e]) cube([size[0] + 2, tie_w, tie_h]);
+    }
+}
 module modem_mount() {
     difference() {
-        for (p = modem_hole_pts) translate([p[0], p[1], -modem_standoff]) cylinder(d = 6.5, h = modem_standoff + e);
-        for (p = modem_hole_pts) translate([p[0], p[1], -modem_standoff - 1]) cylinder(d = m25_insert_d, h = 5 + 1);
+        for (p = modem_hole_pts) translate([p[0], p[1], -modem_gap]) cylinder(d = 6, h = modem_gap + e);
+        for (p = modem_hole_pts) translate([p[0], p[1], -modem_gap - 1]) cylinder(d = modem_hole_d, h = 5 + 1);
+    }
+    // buck: flat pad, tie round it
+    translate([modem_buck_pos[0], modem_buck_pos[1], 0]) tie_pad([modem_buck[0] + 4, 8], 3.5);
+    // capacitor: saddle with a groove, tie round it
+    translate([modem_cap_pos[0], modem_cap_pos[1], 0]) difference() {
+        rotate(90) tie_pad([modem_cap[0] + 4, modem_cap[1] - 6], 3.5 + modem_cap[0] / 3);
+        translate([-modem_cap[1], 0, -3.5 - modem_cap[0] / 2]) rotate([0, 90, 0]) cylinder(d = modem_cap[0], h = 2 * modem_cap[1]);
     }
 }
 

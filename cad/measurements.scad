@@ -198,23 +198,30 @@ hdmi_cable_d = 5;                 // cable OD (reseller listing: 5 mm)
 hdmi_pad     = 1.0;               // gap left under the plug for foam tape, so the
                                   // cradle never pushes the plug up
 
-// 4G board inside the Pi box, on standoffs under the lid (over the strip right
-// of the Pi, clear of the lid fan, the SSD cradle and the AI HAT's leads).
-// Board: Waveshare SIM7600G-H 4G HAT (B). Picked because the SIM7600G-H covers
-// LTE B28 (700 MHz, the NZ country band) as well as B1/B3/B7; the A7670E boards
-// don't list B28. It's Pi Zero sized (Waveshare: 65 x 30.5 to 32 mm, sources
-// differ) with the Zero's 58 x 23 M2.5 hole pattern (CHECK on the board), and
-// talks to the Pi over a micro USB lead to one of the Pi's USB ports. Components
-// face into the box, so with the lid off and flipped the SIM slot is right there.
-// Its u.FL aerial sockets (MAIN, AUX) go on the supplied u.FL to SMA leads to
-// SMA bulkheads in the right-hand wall, so the aerials sit outside the box.
+// 4G board inside the Pi box, under the lid, over the strip right of the Pi
+// (clear of the lid fan, the SSD cradle and the AI HAT's leads).
+// Board: SIMCom A7670SA core board (AliExpress, must list B28, see the shopping
+// list). SIMCom's manual gives 44.45 x 31.75 x 12.44 mm including the header
+// pins, micro SIM holder and one IPEX (u.FL) aerial socket. It hangs parts-down
+// on four standoffs, so with the lid off and flipped the SIM slot is right there.
+// The header pins point up at the lid: solder the wires on (or use right-angle
+// plugs) so they fit in the modem_gap. Its UART goes to the Pi or a spare Pico.
+// Beside it on the lid: a pad for the small buck that feeds it (MP1584, 22 x 17
+// mm, set to about 3.8-4.0 V) and a saddle for the 1000 uF capacitor, each held
+// with a cable tie through a tunnel. One u.FL to SMA lead goes to an SMA
+// bulkhead in the right-hand wall, so the aerial sits outside the box.
 modem_on       = true;              // false = no 4G board
-modem_board    = [31, 65];          // X, Y as it sits in the box (long side along Y)
-modem_holes    = [23, 58];          // GUESS Pi Zero pattern, M2.5
-modem_pos      = [42, -2];          // board centre, box coordinates
-modem_standoff = 6;                 // gap from the lid to the board
-modem_sma      = 2;                 // SMA bulkheads in the right wall (MAIN, AUX). 3 adds GNSS
+modem_board    = [31.75, 44.45];    // X, Y as it sits in the box (long side along Y)
+modem_holes    = [25.75, 38.45];    // GUESS holes 3 mm in from each edge. CHECK on the board
+modem_hole_d   = 3.2;               // hole for an M2 heat-set insert (or 2.2 for an M2 self-tapper)
+modem_pos      = [39, 10];          // board centre, box coordinates
+modem_gap      = 12;                // lid to the back of the board (room for the header pins)
+modem_buck     = [17, 22];          // MP1584 module, X and Y
+modem_buck_pos = [39, -37.5];
+modem_cap      = [10.5, 21];        // 1000 uF capacitor, diameter and length (16 V is usually 10 x 20)
+modem_cap_pos  = [39, -20];         // lies along X
+modem_sma      = 1;                 // SMA bulkheads in the right wall
 sma_hole       = 6.6;               // 1/4"-36 SMA bulkhead thread is 6.35 mm
-sma_z          = 42;                // height of the SMA holes from the box floor's underside
+sma_z          = 40;                // height of the SMA hole from the box floor's underside
 sma_y0         = 4;                 // first SMA hole (Y), above the side vents
-sma_pitch      = 14;                // gap between SMA holes (room for the 8 mm nut and a spanner)
+sma_pitch      = 14;                // gap between holes if there's more than one
