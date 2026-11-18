@@ -164,6 +164,29 @@ If ModemManager won't take it, `--uart-direct` skips ModemManager and the dash t
 commands to the module itself (`TERYX_MODEM=at:/dev/ttyAMA0:115200`): texts only, no data.
 The module's default is 115 200 baud [20].
 
+## GPS
+
+The 4G board's own GPS gives the Teryx its position, for WHERE texts, night mode and the
+Sensors panel. There's no separate GPS. The dash asks the board every 2 seconds and fills
+`pi.gps.*`; when the fix drops it keeps the last spot and marks it old.
+
+- **Board on the UART, spoken to directly** (`TERYX_MODEM=at:/dev/ttyAMA0`): `AT+CGNSSPWR=1`
+  once, then `AT+CGPSINFO`. The answer is `lat ddmm.mmmmmm, N/S, lon dddmm.mmmmmm, E/W, date,
+  UTC, height m, speed knots, course`, and only commas until there's a fix. Layout from SIMCom's
+  [A76XX GNSS application note V1.03](https://www.waveshare.net/w/upload/7/75/A76XX_Series_GNSS_Application_Note_V1.03.pdf),
+  section 5.2.
+- **Board run by ModemManager** (`TERYX_MODEM=mmcli`, the default on the Pi): the dash turns on
+  `--location-enable-gps-raw --location-enable-gps-nmea` and reads `mmcli --location-get -K`
+  (keys `modem.location.gps.latitude` etc, from ModemManager's
+  [mmcli-output.c](https://chromium.googlesource.com/chromiumos/third_party/modemmanager-next/+/refs/tags/1.24.2/cli/mmcli-output.c)).
+  ModemManager's SIMCom support starts GPS with `AT+CGPS`, which is the older SIM7xxx command
+  ([commit](https://git.uninsane.org/colin/ModemManager/commit/81795f3023a7a03dac5da28fd4b5bf48100a457d)),
+  so it may not start the A7670's GNSS. If `mmcli -m any --location-status` shows no GPS, or the
+  Sensors panel never gets a fix outside, use the direct UART mode above for GPS and texts.
+- Some A7670 boards ship without GNSS in the firmware and answer `ERROR` to `AT+CGNSSPWR`
+  ([LILYGO forum](https://community.lilygo.cc/uid/901)). That's why the parts list says to get the
+  "FASE" (GNSS) option. Test it on day one with the active aerial outside.
+
 ## The SIM
 
 Any NZ prepaid SIM that does texts and data. The catch is keeping it alive when you never

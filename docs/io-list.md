@@ -191,9 +191,9 @@ and programmer plugged in.
 | ID | Input | How |
 |---|---|---|
 | `pi.touch` | Touch screen | USB |
-| `pi.camera` | Rear camera | USB, or AHD/RCA via a USB capture dongle (**TBC**) |
-| `pi.imu` | Roll / pitch | I2C, optional |
-| `pi.gps` | Position / speed backup | USB GPS (DFRobot TEL0138), see `shopping-list.md` 4b |
+| `pi.camera` | Cameras | Front: Camera Module 3 on ribbon port 1. Rear + trailer (+ cabin later): CVBS into an ADV7280-M board on ribbon port 2. See `cameras.md` |
+| `pi.imu` | Roll / pitch | MPU-6050 on the Pi's I2C (GPIO2/3), read by `dash/server/teryx_dash/imu.py` |
+| `pi.gps` | Position / speed backup | The A7670SA 4G board's own GPS, read by `dash/server/teryx_dash/remote.py`, see `shopping-list.md` 4b |
 
 ---
 
@@ -302,14 +302,14 @@ Wiring detail: [`docs/wiring.md`](wiring.md).
 
 ## 9. Open items
 
-- [ ] Camera type: USB or RCA/AHD
-- [ ] Do the light bars dim with PWM? Test one with a cheap dimmer
+- [x] Camera type: rear is Sam's 200° AHD camera set to CVBS/PAL, into the ADV7280-M board (18 Nov, `cameras.md`)
+- [ ] Do the light bars dim with PWM? Everything is wired dimmable now (18 Nov, `lights.md`); still test one bar on the bench
 - [ ] Shinegle CAN bit rate and message layout (record with dash + programmer). Listen-only, try 250k then 500k, check if frames stop without the Shinegle dash (request/response), log findings to `shinegle.dbc`
 - [ ] Shinegle reverse signal: CAN or a wire?
 - [x] 12V battery: yes, kept after the conversion
 - [ ] DC-DC converter rating
-- [ ] 5V buck converter rating (needs 5A)
-- [ ] Relay board works off 3.3V logic?
+- [x] 5V buck converter rating: Pi on the Pololu D36V50F5 (5.5 A), owned 5 A buck for the rest
+- [ ] Relay board works off 3.3V logic? (Pico drives it through the MCP23017; check on the bench)
 - [ ] Trailer indicators wanted? (Teryx has none stock; would need 2 more outputs)
 - [ ] Brake pedal regen: does the Shinegle take a brake/regen input (analogue, switch or CAN)? Checklist in [`brake-regen.md`](brake-regen.md)
 

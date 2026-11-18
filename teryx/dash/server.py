@@ -185,7 +185,8 @@ def _with_sim(state: dict, sim) -> dict:
         demo = sim.demo_info()
         if demo:
             state["sim.demo"] = demo
-        # The fake tilt sensor and GPS stand in for the Pi's own sensor service (not fitted yet).
+        # The fake tilt sensor and GPS fill in for the Pi's own (teryx_dash imu.py, and the 4G board's
+        # GPS in remote.py) when those aren't there. Real readings win.
         for k, v in sim.sensors.state().items():
             state.setdefault(k, v)
     return state

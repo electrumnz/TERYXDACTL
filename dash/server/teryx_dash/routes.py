@@ -16,6 +16,7 @@ from aiohttp import web
 
 from . import pico_settings
 from .fun import setup_fun_routes
+from .imu import setup_imu_routes
 from .media import setup_media_routes
 from .remote import setup_remote_routes
 from .sentry import setup_sentry_routes
@@ -83,6 +84,8 @@ def setup_routes(app: web.Application, gateway: Any) -> None:
     # 4G remote texts (remote.py, docs/remote-access.md) and sentry / dashcam clips (sentry.py, docs/sentry.md).
     setup_remote_routes(app, gateway, lambda: CONFIG_DIR, lambda: snapshot(gateway))
     setup_sentry_routes(app, gateway, lambda: SETTINGS_FILE, lambda: snapshot(gateway))
+    # Tilt sensor on the Pi's I2C into pi.imu.* (imu.py). The 4G board's GPS is read in remote.py.
+    setup_imu_routes(app, gateway, lambda: CONFIG_DIR, lambda: is_stopped(gateway))
 
     # ---------- dash settings ----------
     async def get_settings(_):

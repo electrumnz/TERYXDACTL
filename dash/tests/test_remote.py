@@ -272,3 +272,79 @@ def test_make_modem_picks_uart(monkeypatch):
     assert isinstance(m, R.AtModem) and m.at.port == "/dev/ttyAMA0" and m.at.baud == 921600
     monkeypatch.setenv("TERYX_MODEM", "fake")
     assert isinstance(R.make_modem(), FakeModem)
+
+
+# ---------------------------------------------------------------- GPS from the 4G board
+def test_cgpsinfo_parse():
+    # Example straight from SIMCom's A76XX GNSS application note, 5.2
+    fix = R.parse_cgpsinfo("\r\n+CGPSINFO:3113.343286,N,12121.234064,E,250311,072809.3,44.1,0.0,0\r\nOK\r\n", now=5)
+    assert fix["pi.gps.fix"] and fix["pi.gps.time"] == 5
+    assert fix["pi.gps.lat"] == pytest.approx(31 + 13.343286 / 60, abs=1e-6)
+    assert fix["pi.gps.lon"] == pytest.approx(121 + 21.234064 / 60, abs=1e-6)
+    assert fix["pi.gps.alt_m"] == 44.1 and fix["pi.gps.speed_kmh"] == 0.0 and fix["pi.gps.heading"] == 0.0
+    # Southern / western hemisphere, and speed in knots
+    nz = R.parse_cgpsinfo("+CGPSINFO: 4117.400000,S,17446.800000,E,181126,010203.0,12.0,10.0,90.5\r\nOK")
+    assert nz["pi.gps.lat"] == pytest.approx(-41.29) and nz["pi.gps.lon"] == pytest.approx(174.78)
+    assert nz["pi.gps.speed_kmh"] == 18.5 and nz["pi.gps.heading"] == 90.5
+    # No fix yet: just commas
+    assert R.parse_cgpsinfo("+CGPSINFO: ,,,,,,,,\r\nOK") is None
+    assert R.parse_cgpsinfo("ERROR") is None
+
+
+def test_mm_location_parse():
+    text = """modem.location.3gpp.mcc : 530
+modem.location.gps.utc : 010203.00
+modem.location.gps.latitude : -41.290000
+modem.location.gps.longitude : 174.780000
+modem.location.gps.altitude : 12.000000
+modem.location.gps.nmea.length : 2
+modem.location.gps.nmea.value[1] : $GPRMC,010203.00,A,4117.40000,S,17446.80000,E,10.0,90.5,181126,,,A*6C
+modem.location.gps.nmea.value[2] : $GPGGA,010203.00,4117.40000,S,17446.80000,E,1,08,1.0,12.0,M,,M,,*4A
+"""
+    fix = R.parse_mm_location(text, now=1)
+    assert fix["pi.gps.lat"] == -41.29 and fix["pi.gps.lon"] == 174.78 and fix["pi.gps.alt_m"] == 12.0
+    assert fix["pi.gps.speed_kmh"] == 18.5 and fix["pi.gps.heading"] == 90.5 and fix["pi.gps.sats"] == 8
+    assert R.parse_mm_location("modem.location.gps.latitude : --\nmodem.location.gps.longitude : --\n") is None
+
+
+async def test_gps_loop_publishes_to_gateway(tmp_path):
+    import asyncio
+
+    class GpsModem(FakeModem):
+        fixes = [{"pi.gps.fix": True, "pi.gps.lat": -41.29, "pi.gps.lon": 174.78}, None]
+
+        async def location(self):
+            return self.fixes.pop(0) if self.fixes else None
+
+    class Gw:
+        def __init__(self):
+            self.local = {}
+
+        def set_local(self, v):
+            self.local.update(v)
+
+        def snapshot(self):
+            return dict(self.local)
+
+    gw = Gw()
+    app = web.Application()
+    R.setup_remote_routes(app, gw, lambda: tmp_path, gw.snapshot, modem=GpsModem(), poll_s=3600, gps_s=0.01)
+    async with TestClient(TestServer(app)):
+        for _ in range(50):
+            await asyncio.sleep(0.01)
+            if gw.local.get("pi.gps.fix") is False:
+                break
+    assert gw.local["pi.gps.lat"] == -41.29 and gw.local["pi.gps.fix"] is False   # lost fix keeps the spot
+
+
+async def test_at_modem_gps_powers_up_once():
+    sent = []
+
+    async def at(cmd, body=None, timeout=5):
+        sent.append(cmd)
+        return "+CGPSINFO:4117.400000,S,17446.800000,E,181126,010203.0,12.0,0.0,0\r\nOK" if cmd == "AT+CGPSINFO" else "OK"
+
+    m = R.AtModem(at)
+    assert (await m.location())["pi.gps.lat"] == pytest.approx(-41.29)
+    await m.location()
+    assert sent == ["AT+CGNSSPWR=1", "AT+CGPSINFO", "AT+CGPSINFO"]

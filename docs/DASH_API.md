@@ -97,16 +97,19 @@ Keys follow the io-map ids in `config/io-map.yaml`.
 
 **Pi sensors (not fitted yet)**
 
-The dash's tilt/GPS widget, tilt alarms and day/night Auto read these when they're there. A
-sensor service on the Pi will publish them later; the simulator fakes them now.
+The dash's tilt/GPS widget, tilt alarms and day/night Auto read these when they're there. On the
+Pi they come from `teryx_dash/imu.py` and the 4G board's GPS (`teryx_dash/remote.py`); the
+simulator fakes them when those aren't there.
 
 | Key | Type | Notes |
 |---|---|---|
 | `pi.imu.roll` | ° | + = right side down |
 | `pi.imu.pitch` | ° | + = nose up |
+| `pi.imu.ok` | bool | `false` = tilt sensor stopped answering. From `teryx_dash/imu.py` (MPU-6050 on I2C) |
 | `pi.gps.fix` | bool | `false` = GPS fitted but no fix yet. Missing = no GPS |
-| `pi.gps.lat`, `pi.gps.lon` | ° | Only used on the Pi (day/night). Never saved or sent anywhere |
-| `pi.gps.alt_m`, `pi.gps.heading`, `pi.gps.speed_kmh`, `pi.gps.sats` | m, °, km/h, count | |
+| `pi.gps.lat`, `pi.gps.lon` | ° | From the A7670SA 4G board's GPS (`teryx_dash/remote.py`). Used on the Pi (day/night, Sensors) and in a WHERE reply to a listed number. Never saved |
+| `pi.gps.alt_m`, `pi.gps.heading`, `pi.gps.speed_kmh`, `pi.gps.sats` | m, °, km/h, count | `sats` only through ModemManager's NMEA |
+| `pi.gps.time` | s | Unix time of the last fix |
 | `pi.light_lux` | lux | Light sensor, if one is ever fitted. Wins over the sun for day/night |
 
 ### UI to server
