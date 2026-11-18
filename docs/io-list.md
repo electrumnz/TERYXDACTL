@@ -74,7 +74,7 @@ Prices and links checked live: [`shopping-list.md`](shopping-list.md).
 | 5-ch MOSFET PWM board (logic-level, e.g. AOD4184) | Light bar dimming/effects | $15 |
 | Cheap 12V PWM dimmer | Test if the bars dim before buying the MOSFET board | $10 |
 | 2x micro limit switches | Tray up / down end stops | $5 |
-| Fuse block (blade, 12-way) + inline fuses | Every output fused | $30 |
+| Fuse block (blade, 18-20 way, or two 12-way) + inline fuses | Every output fused. 16 fuses are planned, so a 12-way is too small (see [`wiring/README.md`](wiring/README.md#fuse-block)) | $30 |
 | Power-hold relay (or use relay 8) | Lets the Pi shut down cleanly after key-off | – |
 | Spare Pico + MCP2515 module | USB CAN adaptor for sniffing the Shinegle in step 4 (`firmware/can-sniffer`, slcan + SavvyCAN GVRET) | $20 |
 | IMU (ICM-20948 or MPU-6050), optional | Roll / pitch gauge | $10 |

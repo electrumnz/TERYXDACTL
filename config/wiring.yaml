@@ -1,0 +1,932 @@
+# Teryx OS: the whole-vehicle wiring, machine readable.
+#
+# This file is the source of truth for what connects to what. Everything in
+# docs/wiring/ is made from it:
+#
+#     python -m teryx wiring           check this file, then write docs/wiring/
+#     python -m teryx wiring --check   only check it (what CI runs, via tests)
+#
+# docs/wiring.md explains the why (power hold, diodes, CAN rules). Pin numbers
+# on the Pico must match config/io-map.yaml; a test checks that.
+#
+# Nothing here has been checked on the real Teryx yet. Status of each device
+# and each wire:
+#   measured    checked on Sam's Teryx with a meter or a photo
+#   from_manual drawn in a maker's manual (Shinegle, Kawasaki, Raspberry Pi)
+#   confirmed   Sam told us, or a part he owns
+#   planned     our own design, written up in docs/, not built yet
+#   tbc         we expect it, but something about it is unknown (see `check`)
+#   placeholder another thread or a later add-on (AI HAT+ 2, 4G, sentry camera)
+# `optional: true` means the Teryx works without it.
+#
+# Pins: `v` is the voltage domain. A wire may only join two pins with the same
+# domain unless it says `via:` (an opto, a divider, a diode, a dongle). Domains:
+#   hv      72 V traction pack +          hvneg   72 V pack negative (NOT chassis)
+#   motor   3-phase motor (U V W)         sg      Shinegle low voltage side (its own ground, TBC)
+#   12v     12 V system                   gnd     chassis ground (12 V negative)
+#   5v      5 V logic supply              3v3     3.3 V logic (Pi, Pico, boards)
+#   can     CAN H / CAN L                 usb     USB data (+ 5 V)
+#   hdmi, csi, pcie, video, audio, spk    the obvious
+#   coil    a relay or contactor coil whose voltage is unknown
+# `supply: true` pins feed loads. A wire leaving one needs a fuse (`fuse` on
+# the wire, or `fuse_a` on the pin) and must be thick enough for that fuse.
+# `multi: true` pins (and all gnd / hvneg pins) may take more than one wire.
+# `term: true` marks the 120 ohm terminator at each end of a CAN bus.
+
+version: 1
+
+# Smallest wire for a fuse, 12 V runs up to about 5 m. Conservative "RK"
+# column of the table at
+# https://info.speedingparts.eu/what-cable-size-should-you-use-in-a-12v-automotive-system
+# (use a fuse the same as or smaller than the cable's figure). Bundled or
+# engine-bay runs: go one size up.
+wire_table_mm2_to_max_fuse_a:
+  0.5: 5
+  0.75: 7.5
+  1.0: 10
+  1.5: 15
+  2.5: 20
+  4.0: 30
+  6.0: 40
+  8.0: 50
+  10.0: 70
+
+sheets:
+  hv:      {title: "Traction: 72 V pack, controller, motor, DC-DC", root: PACK}
+  sg:      {title: "Shinegle low voltage: key, F-N-R, throttle, sensors, programmer", root: SG1202}
+  power:   {title: "12 V power: battery, fuses, key, dash rail, bucks", root: BAT12}
+  ground:  {title: "Grounds (chassis, star point)", root: GND_STAR}
+  can:     {title: "CAN buses: main Teryx bus and the steering bus", root: SG1202}
+  logic:   {title: "Control box inside: Pico 2 and its boards", root: PICO}
+  inputs:  {title: "12 V signals into the control box (opto board)", root: OPTO}
+  lights:  {title: "Lights", root: FB}
+  winch:   {title: "Winch", root: BAT12}
+  drive:   {title: "Drive: 4WD, diff lock, tray, power steering", root: PICO}
+  trailer: {title: "Trailer plug and trailer camera", root: TRAILER}
+  dash:    {title: "Dash computer: Pi 5, screen, cameras, USB, audio", root: PI5}
+
+devices:
+  # ---------------------------------------------------------------- traction
+  PACK:
+    name: Traction battery pack
+    zone: hv
+    status: tbc
+    note: 72 V. Size TBC (the range maths assumes 7.5 kWh)
+    check: Battery pack make, size (kWh), and where its main fuse is. Photo the label
+    pins: {pos: hv, neg: hvneg}
+  HV_ISO:
+    name: 150 A air-break switch
+    zone: hv
+    status: from_manual
+    note: SG12X2 manual Fig. 2 puts B+ through it
+    check: Is the air-break switch fitted, and where? Photo it
+    pins: {in: hv, out: hv}
+  CONTACTOR:
+    name: Main contactor
+    zone: hv
+    status: tbc
+    note: SG1810 fault 13 is "main contactor or brake fault", so there is probably one. Coil wiring not in any manual we have
+    check: Is there a main contactor between the pack and the controller? Photo it and trace its two small coil wires
+    pins: {in: hv, out: {v: hv, multi: true}, coil_pos: coil, coil_neg: coil}
+  SG1202:
+    name: Shinegle SG1202 controller
+    zone: hv
+    status: from_manual
+    note: Full J1 pinout in config/shinegle-sg1202.yaml and docs/img/sg1202-wiring.svg
+    doc: docs/shinegle-controller.md
+    pins:
+      B+: hv
+      B-: hvneg
+      U: motor
+      V: motor
+      W: motor
+      J1-1: {v: sg, desc: KSI key switch power}
+      J1-6: {v: sg, desc: speed pulse out}
+      J1-7: {v: sg, multi: true, desc: logic ground}
+      J1-8: {v: sg, desc: motor temp 1}
+      J1-9: {v: sg, desc: throttle switch}
+      J1-16: {v: sg, desc: throttle wiper}
+      J1-18: {v: sg, desc: throttle ground}
+      J1-22: {v: sg, desc: forward}
+      J1-25: {v: sg, multi: true, desc: +12 V out}
+      J1-28: {v: sg, desc: SCI Tx}
+      J1-29: {v: sg, desc: SCI Rx}
+      J1-31: {v: sg, desc: speed A}
+      J1-32: {v: sg, desc: speed B}
+      J1-33: {v: sg, desc: reverse}
+      J3: {v: sg, desc: 6-pin programmer port}
+      CAN_H: {v: can, term: true, desc: "CAN H (optional on this model, pins TBC)"}
+      CAN_L: {v: can, desc: "CAN L (pins TBC)"}
+  MOTOR:
+    name: 7.5 kW AC motor
+    zone: hv
+    status: confirmed
+    pins: {U: motor, V: motor, W: motor, SPD_A: sg, SPD_B: sg, SPD_12V: sg, SPD_GND: sg, TEMP1: sg, TEMP2: sg}
+  DCDC:
+    name: DC-DC converter 72 V to 12 V
+    zone: hv
+    status: tbc
+    note: Charges the 12 V battery. Rating TBC; it decides how long winch + steering can run
+    check: DC-DC label (amps out), where its 72 V feed comes from, and whether it is isolated (does its 12 V negative join the pack negative?)
+    pins: {in_pos: hv, in_neg: hvneg, out_pos: {v: 12v, supply: true}, out_neg: gnd}
+
+  # ------------------------------------------------- Shinegle low voltage side
+  KIT_KEY:
+    name: Shinegle kit key switch
+    zone: cab
+    status: tbc
+    note: The kit comes with its own key switch. Is it the Teryx key, or a second one?
+    check: Is the kit key the same switch as the Teryx key? Meter what voltage reaches J1-1 with the key on (12 V or 72 V)
+    pins: {in: sg, out: {v: sg, multi: true}}
+  ESTOP:
+    name: E-stop button
+    zone: cab
+    status: planned
+    optional: true
+    note: For RC mode. In series with KSI so it cuts drive with no software
+    doc: docs/power-steering-rc.md
+    pins: {in: sg, out: sg}
+  FNR:
+    name: F-N-R switch
+    zone: cab
+    status: planned
+    note: Physical switch straight to the controller. The reverse side is also tapped for the control box
+    pins: {COM: sg, F: sg, R: {v: sg, multi: true}}
+  THROTTLE:
+    name: Throttle pedal (kit accelerator)
+    zone: cab
+    status: from_manual
+    pins: {V12: sg, WIPER: sg, GND: sg, SW: sg}
+  SPEEDO:
+    name: Shinegle dash / speed panel
+    zone: cab
+    status: from_manual
+    optional: true
+    pins: {SPD: sg}
+  PROG:
+    name: SG1810 handheld programmer
+    zone: cab
+    status: from_manual
+    optional: true
+    note: Only plugged in for setup. Carries 12 V, never into USB
+    doc: docs/shinegle-sg1810-programmer.md
+    pins: {PLUG: sg}
+
+  # ---------------------------------------------------------- 12 V power
+  BAT12:
+    name: 12 V aux battery
+    zone: engine_bay
+    status: confirmed
+    note: Kept after the conversion. Charged by the DC-DC
+    pins: {pos: {v: 12v, supply: true, multi: true}, neg: gnd}
+  GND_STAR:
+    name: Ground point (star)
+    zone: engine_bay
+    status: planned
+    note: One solid chassis ground near the fuse block. Every 12 V ground goes here
+    pins: {G: gnd}
+  FB:
+    name: Blade fuse block
+    zone: cab
+    status: tbc
+    note: Needs 16 ways. The 12-way on the parts list is too small, so use an 18 to 20-way or two 12-ways
+    check: Pick the fuse block (18-20 way, or two 12-way side by side)
+    pins:
+      IN: 12v
+      F1:  {v: 12v, supply: true, fuse_a: 10,  desc: front bar 1}
+      F2:  {v: 12v, supply: true, fuse_a: 10,  desc: front bar 2}
+      F3:  {v: 12v, supply: true, fuse_a: 10,  desc: front bar 3}
+      F4:  {v: 12v, supply: true, fuse_a: 10,  desc: front bar 4}
+      F5:  {v: 12v, supply: true, fuse_a: 5,   desc: interior bar}
+      F6:  {v: 12v, supply: true, fuse_a: 10,  desc: relay 1 rear floods}
+      F7:  {v: 12v, supply: true, fuse_a: 5,   desc: relay 2 trailer tail}
+      F8:  {v: 12v, supply: true, fuse_a: 5,   desc: relay 3 trailer stop}
+      F9:  {v: 12v, supply: true, fuse_a: 3,   multi: true, desc: relays 4-6 winch coils}
+      F10: {v: 12v, supply: true, fuse_a: 3,   multi: true, desc: winch hand switches, tray limits, trailer reed}
+      F11: {v: 12v, supply: true, fuse_a: 10,  desc: relay 7 accessory}
+      F12: {v: 12v, supply: true, fuse_a: 7.5, desc: relay 8 power hold}
+      F13: {v: 12v, supply: true, fuse_a: 10,  desc: BTS7960 1 diff}
+      F14: {v: 12v, supply: true, fuse_a: 10,  desc: BTS7960 2 4WD}
+      F15: {v: 12v, supply: true, fuse_a: 15,  desc: BTS7960 3 tray}
+      F16: {v: 12v, supply: true, fuse_a: 7.5, desc: key switch}
+  KEY:
+    name: Teryx key switch
+    zone: cab
+    status: confirmed
+    pins: {BAT: 12v, IGN: {v: 12v, multi: true}}
+  RAIL:
+    name: Dash 12 V rail
+    zone: dash
+    status: planned
+    note: Key OR relay 8 (power hold). Stays up after key-off until the Pico lets go
+    doc: docs/wiring.md
+    pins: {BUS: {v: 12v, supply: true, multi: true, fuse_a: 7.5}}
+  TVS:
+    name: 1.5KE18A TVS diode
+    zone: dash
+    status: planned
+    note: Clamps spikes on the dash rail
+    pins: {K: 12v, A: gnd}
+  PI_BUCK:
+    name: Pololu D36V50F5 5 V 5.5 A
+    zone: dash
+    status: planned
+    note: Pi 5 power. About 16 W of its 27 W with the AI HAT+ 2 fitted
+    pins: {VIN: 12v, GND: gnd, VOUT: {v: 5v, multi: true}}
+  PICO_BUCK:
+    name: Mini560 5 V buck (control box)
+    zone: control_box
+    status: planned
+    pins: {VIN: 12v, GND: gnd, VOUT: {v: 5v, multi: true}}
+  SCREEN_PSU:
+    name: Screen 12 V supply
+    zone: dash
+    status: tbc
+    note: Depends on the screen's power brick. If it is 12 V, a 12 V stabiliser
+    check: Read the label on the screen's power brick (volts and amps)
+    pins: {VIN: 12v, GND: gnd, VOUT: 12v}
+
+  # ---------------------------------------------------------- control box
+  PICO:
+    name: Raspberry Pi Pico 2
+    zone: control_box
+    status: planned
+    doc: docs/io-list.md
+    pins:
+      VSYS: 5v
+      GND: gnd
+      3V3: {v: 3v3, multi: true}
+      USB: usb
+      GP0: 3v3
+      GP1: 3v3
+      GP2: {v: 3v3, multi: true, desc: SPI0 SCK}
+      GP3: {v: 3v3, multi: true, desc: SPI0 MOSI}
+      GP4: {v: 3v3, multi: true, desc: SPI0 MISO}
+      GP5: {v: 3v3, desc: CAN CS}
+      GP6: {v: 3v3, desc: CAN INT}
+      GP7: 3v3
+      GP8: 3v3
+      GP9: 3v3
+      GP10: 3v3
+      GP11: 3v3
+      GP12: 3v3
+      GP13: 3v3
+      GP14: 3v3
+      GP15: 3v3
+      GP16: 3v3
+      GP17: 3v3
+      GP18: 3v3
+      GP19: 3v3
+      GP20: 3v3
+      GP21: 3v3
+      GP22: {v: 3v3, desc: steering CAN CS}
+      GP26: {v: 3v3, multi: true, desc: I2C1 SDA}
+      GP27: {v: 3v3, multi: true, desc: I2C1 SCL}
+      GP28: {v: 3v3, desc: ADC2}
+  DEBUG:
+    name: Debug UART header
+    zone: control_box
+    status: planned
+    note: Inside the box. Vehicle lock workshop reset
+    pins: {RX: 3v3, TX: 3v3}
+  PICO_CAN:
+    name: MCP2515 CAN module (control box)
+    zone: control_box
+    status: planned
+    note: Seeed MCP2515 + SN65HVD230 (3.3 V). Crystal TBC on the bench
+    pins: {VCC: 3v3, GND: gnd, SCK: 3v3, SI: 3v3, SO: 3v3, CS: 3v3, INT: 3v3, CANH: can, CANL: can}
+  EPS_CAN:
+    name: MCP2515 CAN module (steering bus)
+    zone: control_box
+    status: planned
+    optional: true
+    note: Own 500 kbit/s bus to the steering ECU. Transmit only, INT not wired
+    doc: docs/power-steering-wrecker.md
+    pins: {VCC: 3v3, GND: gnd, SCK: 3v3, SI: 3v3, SO: 3v3, CS: 3v3, CANH: {v: can, term: true}, CANL: can}
+  MCP1:
+    name: MCP23017 I/O expander (0x20)
+    zone: control_box
+    status: planned
+    pins: {VDD: 3v3, GND: gnd, SDA: 3v3, SCL: 3v3, INTB: 3v3,
+           A0: 3v3, A1: 3v3, A2: 3v3, A3: 3v3, A4: 3v3, A5: 3v3, A6: 3v3, A7: 3v3,
+           B0: 3v3, B1: 3v3, B2: 3v3, B3: 3v3, B4: 3v3, B5: 3v3, B6: 3v3, B7: 3v3}
+  MCP2:
+    name: Second MCP23017 (0x21)
+    zone: control_box
+    status: planned
+    optional: true
+    note: More outputs for the steering enable and the drive lock relay. The first one is full
+    doc: docs/vehicle-lock.md
+    pins: {VDD: 3v3, GND: gnd, SDA: 3v3, SCL: 3v3, A0: 3v3, A1: 3v3}
+  ADS1:
+    name: ADS1115 ADC (0x48)
+    zone: control_box
+    status: planned
+    note: ALERT pin left free so GP22 can be the steering CAN chip select (read "ready" over I2C)
+    pins: {VDD: {v: 3v3, multi: true}, GND: gnd, SDA: 3v3, SCL: 3v3, A0: 3v3, A1: 3v3, A2: 3v3, A3: 3v3}
+  ADS2:
+    name: Second ADS1115 (0x49)
+    zone: control_box
+    status: planned
+    optional: true
+    note: Brake pedal regen only
+    doc: docs/brake-regen.md
+    pins: {VDD: 3v3, GND: gnd, SDA: 3v3, SCL: 3v3, A0: 3v3, A1: 3v3}
+  OPTO:
+    name: 8-ch opto board (PC817, 12 V in)
+    zone: control_box
+    status: planned
+    pins: {VCC: 3v3, GND: gnd, COM12: gnd,
+           IN1: 12v, IN2: 12v, IN3: {v: 12v, multi: true}, IN4: 12v, IN5: 12v, IN6: {v: 12v, multi: true}, IN7: 12v, IN8: 12v,
+           OUT1: 3v3, OUT2: 3v3, OUT3: 3v3, OUT4: 3v3, OUT5: 3v3, OUT6: 3v3, OUT7: 3v3, OUT8: 3v3}
+  RELAYS:
+    name: 8-ch relay board
+    zone: control_box
+    status: confirmed
+    note: Owned. JD-VCC jumper off, coils on 5 V, inputs from 3.3 V
+    check: Does the relay board click from 3.3 V logic? Active high or low?
+    pins: {VCC: 3v3, JDVCC: 5v, GND: gnd,
+           IN1: 3v3, IN2: 3v3, IN3: 3v3, IN4: 3v3, IN5: 3v3, IN6: 3v3, IN7: 3v3, IN8: 3v3,
+           COM1: 12v, COM2: 12v, COM3: 12v, COM4: 12v, COM5: 12v, COM6: 12v, COM7: 12v, COM8: 12v,
+           NO1: {v: 12v, multi: true}, NO2: 12v, NO3: 12v, NO4: 12v, NO5: 12v, NO6: 12v, NO7: {v: 12v, supply: true, multi: true, fuse_a: 10}, NO8: 12v}
+  RELAYS2:
+    name: 2-ch relay board
+    zone: control_box
+    status: planned
+    optional: true
+    note: Relay 9 steering enable, relay 10 drive lock (uses the NC contact)
+    pins: {VCC: 3v3, JDVCC: 5v, GND: gnd, IN1: 3v3, IN2: 3v3, COM1: 12v, NO1: 12v, COM2: sg, NC2: sg}
+  BTS1:
+    name: BTS7960 1 (front diff)
+    zone: control_box
+    status: confirmed
+    pins: &bts {VCC: 3v3, GND: gnd, RPWM: 3v3, LPWM: 3v3, EN: 3v3, IS: 3v3, B+: 12v, B-: gnd, M+: 12v, M-: 12v}
+  BTS2:
+    name: BTS7960 2 (2WD/4WD)
+    zone: control_box
+    status: planned
+    pins: *bts
+  BTS3:
+    name: BTS7960 3 (tray)
+    zone: control_box
+    status: planned
+    pins: *bts
+  MOSFET:
+    name: 5-ch MOSFET board (low side)
+    zone: control_box
+    status: planned
+    note: Logic-level MOSFETs that fully turn on from 3.3 V
+    pins: {GND: gnd, IN1: 3v3, IN2: 3v3, IN3: 3v3, IN4: 3v3, IN5: 3v3, OUT1: 12v, OUT2: 12v, OUT3: 12v, OUT4: 12v, OUT5: 12v}
+
+  # ---------------------------------------------------------- lights
+  LB1: {name: Front bar 1 (far left), zone: front, status: confirmed, pins: {pos: 12v, neg: 12v}}
+  LB2: {name: Front bar 2 (inner left), zone: front, status: confirmed, pins: {pos: 12v, neg: 12v}}
+  LB3: {name: Front bar 3 (inner right), zone: front, status: confirmed, pins: {pos: 12v, neg: 12v}}
+  LB4: {name: Front bar 4 (far right), zone: front, status: confirmed, pins: {pos: 12v, neg: 12v}}
+  LB_INT: {name: Interior 7 in bar, zone: cab, status: confirmed, pins: {pos: 12v, neg: 12v}}
+  FLOOD_L:
+    name: Rear flood left (4 in pod)
+    zone: rear
+    status: confirmed
+    note: Outside of the roll cage mounting plate. Also the reverse light
+    check: Light bars and pods dim with PWM? Test one on a cheap dimmer
+    pins: {pos: 12v, neg: gnd}
+  FLOOD_R: {name: Rear flood right (4 in pod), zone: rear, status: confirmed, pins: {pos: 12v, neg: gnd}}
+
+  # ---------------------------------------------------------- winch
+  BRK_WINCH:
+    name: 250 A breaker
+    zone: engine_bay
+    status: planned
+    pins: {in: 12v, out: 12v}
+  WINCH_ISO:
+    name: Winch isolator contactor
+    zone: engine_bay
+    status: planned
+    note: Only on while the winch is armed on the dash (relay 6)
+    check: Do the remote and hand switches need to work with the dash dead? If so the isolator needs a second coil feed from a hidden key switch
+    pins: {in: 12v, out: 12v, coil_pos: 12v, coil_neg: gnd}
+  WINCH_SOL:
+    name: XBull solenoid box
+    zone: front
+    status: confirmed
+    check: Photo the XBull solenoid box terminals and the remote plug pins
+    pins: {B+: 12v, M1: 12v, M2: 12v, GND: gnd, COIL_IN: {v: 12v, multi: true}, COIL_OUT: {v: 12v, multi: true}, REMOTE: 12v}
+  WINCH_MOTOR:
+    name: XBull 5000 lb winch motor
+    zone: front
+    status: confirmed
+    pins: {M1: 12v, M2: 12v}
+  WINCH_REMOTE:
+    name: XBull handheld remote
+    zone: front
+    status: confirmed
+    pins: {PLUG: 12v}
+  HSW_WINCH:
+    name: Hidden winch switch (at the winch)
+    zone: front
+    status: confirmed
+    note: Momentary (ON)-OFF-(ON)
+    pins: {FEED: 12v, IN: {v: 12v, multi: true}, OUT: {v: 12v, multi: true}}
+  HSW_CAB:
+    name: Hidden winch switch (in the cab)
+    zone: cab
+    status: confirmed
+    note: Momentary (ON)-OFF-(ON)
+    pins: {FEED: 12v, IN: {v: 12v, multi: true}, OUT: {v: 12v, multi: true}}
+
+  # ---------------------------------------------------------- drive
+  ACT_DIFF:
+    name: Front diff lock actuator (50 mm, pot)
+    zone: front
+    status: confirmed
+    pins: {M+: 12v, M-: 12v, POT_HI: 3v3, POT_W: 3v3, POT_LO: gnd}
+  ACT_4WD:
+    name: 2WD/4WD actuator
+    zone: front
+    status: tbc
+    note: 50 mm actuator, or drive the stock Kawasaki electric 4WD actuator instead
+    check: Is the stock electric 4WD actuator still on the front diff, and is the dash 2WD/4WD switch still wired to it? Photo its plug
+    doc: docs/teryx-drivetrain.md
+    pins: {M+: 12v, M-: 12v}
+  ACT_TRAY:
+    name: Tray lift actuator (400 mm)
+    zone: rear
+    status: confirmed
+    pins: {M+: 12v, M-: 12v}
+  LIM_DN: {name: Tray down limit (NC), zone: rear, status: planned, pins: {C: {v: 12v, multi: true}, NC: 12v}}
+  LIM_UP: {name: Tray up limit (NC), zone: rear, status: planned, pins: {C: {v: 12v, multi: true}, NC: 12v}}
+  BRAKE_SW:
+    name: Brake light switch (stock)
+    zone: cab
+    status: tbc
+    check: Find the brake light switch wire and meter it (12 V when pressed?)
+    pins: {OUT: {v: 12v, multi: true}}
+  PARK_SW:
+    name: Parking brake switch (stock)
+    zone: cab
+    status: tbc
+    note: Lights the red parking brake light in the meter
+    check: Find the parking brake switch wire at the meter plug. Does it switch ground or 12 V?
+    pins: {OUT: 12v}
+  BRAKE_PEDAL:
+    name: Brake pedal Hall sensor
+    zone: cab
+    status: planned
+    optional: true
+    note: Brake regen only, once the Shinegle check passes
+    doc: docs/brake-regen.md
+    pins: {V5: 5v, SIG: 5v, GND: gnd}
+  BRAKE_PRESS:
+    name: Brake line pressure sensor
+    zone: front
+    status: planned
+    optional: true
+    note: Optional cross-check for the pedal sensor, 0.5-4.5 V
+    doc: docs/brake-regen.md
+    pins: {V5: 5v, SIG: 5v, GND: gnd}
+  EPS_ECU:
+    name: Toyota Aqua EPS ECU (89650-52B51)
+    zone: cab
+    status: tbc
+    optional: true
+    note: Wrecker column, bench test with the Prius CAN frames first. ECU plug pinout TBC
+    check: Photo both EPS ECU plugs (pin numbers and wire colours) when the column is picked up
+    doc: docs/power-steering-wrecker.md
+    pins: {B+: 12v, GND: gnd, IG: 12v, CANH: {v: can, term: true}, CANL: can, MOTOR: 12v}
+  EPS_COL:
+    name: Aqua steering column (motor + torque sensor)
+    zone: cab
+    status: tbc
+    optional: true
+    note: Motor and torque sensor plugs go to the ECU on Toyota's own loom
+    check: Measure the space from the steering wheel to where the Teryx shaft goes to the rack
+    pins: {MOTOR: 12v}
+
+  # ---------------------------------------------------------- trailer
+  TRAILER:
+    name: 7-pin flat trailer socket (Narva 82043BL, reed switch)
+    zone: rear
+    status: planned
+    doc: docs/cameras.md
+    check: Which way does the Narva reed switch switch, and what triggers it?
+    pins: {P1_LEFT: 12v, P2_REV: 12v, P3_EARTH: gnd, P4_RIGHT: 12v, P5_BRAKES: 12v, P6_STOP: {v: 12v, multi: true}, P7_TAIL: 12v, REED_A: 12v, REED_B: 12v}
+  TCAM_PLUG:
+    name: Trailer camera 4-pin plug
+    zone: rear
+    status: planned
+    optional: true
+    note: Own small waterproof plug next to the 7-pin (pick from cameras.md)
+    pins: {V12: {v: 12v, multi: true}, GND: gnd, VID: {v: video, multi: true}, VID_GND: {v: video, multi: true}}
+  CAM_TRAILER:
+    name: Trailer camera (12 V AHD)
+    zone: trailer
+    status: planned
+    optional: true
+    pins: {V12: 12v, GND: gnd, VID: video, VID_GND: video}
+  TCAM_DONGLE:
+    name: UVC capture dongle (trailer camera)
+    zone: dash
+    status: planned
+    optional: true
+    pins: {VID: video, VID_GND: video, USB: usb}
+
+  # ---------------------------------------------------------- dash computer
+  PI5:
+    name: Raspberry Pi 5 8GB
+    zone: dash
+    status: confirmed
+    note: The 40-pin header and the PCIe port are kept for the AI HAT+ 2. CAN module wires go to header pins that come up through the HAT
+    doc: docs/wiring.md
+    pins:
+      5V: 5v
+      GND: gnd
+      HDMI0: hdmi
+      HDMI1: hdmi
+      USB3_A: usb
+      USB3_B: usb
+      USB2_A: usb
+      USB2_B: usb
+      CSI0: csi
+      CSI1: csi
+      PCIE: pcie
+      HAT_HDR: {v: 3v3, desc: 40-pin header to the 16 mm stacking header}
+      P1_3V3: 3v3
+      P3_SDA: 3v3
+      P5_SCL: 3v3
+      P19_MOSI: 3v3
+      P21_MISO: 3v3
+      P22_GPIO25: 3v3
+      P23_SCLK: 3v3
+      P24_CE0: 3v3
+  AIHAT:
+    name: AI HAT+ 2 (later)
+    zone: dash
+    status: placeholder
+    optional: true
+    note: Not buying yet. Room, cooling (about 4.5 W) and the PCIe port stay free for it
+    doc: docs/ai-hat-ideas.md
+    pins: {PCIE: pcie, HDR: 3v3}
+  PI_CAN:
+    name: MCP2515 CAN module (Pi)
+    zone: dash
+    status: planned
+    note: Seeed MCP2515 + SN65HVD230 on the Pi box wall
+    pins: {VCC: 3v3, GND: gnd, SCK: 3v3, SI: 3v3, SO: 3v3, CS: 3v3, INT: 3v3, CANH: {v: can, term: true}, CANL: can}
+  SCREEN:
+    name: 10.1 in touch screen
+    zone: dash
+    status: confirmed
+    note: 1280x800, HDMI + USB touch, 3.5 mm audio in
+    pins: {HDMI: hdmi, USB: usb, DC_IN: 12v, GND: gnd, AUDIO_IN: audio}
+  USB_HUB:
+    name: Powered USB hub
+    zone: dash
+    status: planned
+    note: For the slow USB things. Not picked yet, power feed TBC
+    check: Pick the powered USB hub (7 ports, 12 V or 5 V in)
+    pins: {UP: usb, P1: usb, P2: usb, P3: usb, P4: usb, P5: usb, P6: usb, P7: usb}
+  CAM_REAR:
+    name: Rear camera (2K)
+    zone: rear
+    status: tbc
+    check: Rear camera USB or RCA/AHD? Photo its plug
+    pins: {USB: usb}
+  CAM_FRONT:
+    name: Camera Module 3 Wide (front)
+    zone: dash
+    status: planned
+    note: Inside the screen housing, 200-300 mm ribbon
+    pins: {CSI: csi}
+  CAM_CABIN:
+    name: Cabin camera (sentry)
+    zone: dash
+    status: placeholder
+    optional: true
+    note: Being worked out in the 4G / sentry thread. Port TBC
+    pins: {CSI: csi}
+  GPS:
+    name: DFRobot TEL0138 USB GPS
+    zone: dash
+    status: planned
+    optional: true
+    pins: {USB: usb}
+  MODEM_4G:
+    name: 4G USB modem
+    zone: dash
+    status: placeholder
+    optional: true
+    note: Being worked out in the 4G / sentry thread
+    pins: {USB: usb}
+  SSD:
+    name: USB SSD (recordings)
+    zone: dash
+    status: placeholder
+    optional: true
+    note: Only if we record footage. Shares the hub's bandwidth; never NVMe on the PCIe port
+    pins: {USB: usb}
+  CARPLAY:
+    name: Carlinkit CPC200-CCPA
+    zone: dash
+    status: planned
+    optional: true
+    pins: {USB: usb}
+  USB_DAC:
+    name: USB audio out
+    zone: dash
+    status: planned
+    optional: true
+    pins: {USB: usb, OUT: audio}
+  AMP:
+    name: 12 V marine amp
+    zone: cab
+    status: planned
+    optional: true
+    doc: docs/audio.md
+    pins: {B+: 12v, GND: gnd, REM: 12v, IN: audio, SPK: spk}
+  SPEAKERS:
+    name: Marine speakers
+    zone: cab
+    status: planned
+    optional: true
+    pins: {IN: spk}
+  IMU:
+    name: IMU (roll / pitch)
+    zone: dash
+    status: planned
+    optional: true
+    pins: {VCC: 3v3, SDA: 3v3, SCL: 3v3, GND: gnd}
+
+# --------------------------------------------------------------------------
+# Wires. One line each: id, from, to, sheet (sys), size, fuse, status, note.
+# `fuse` is the fuse that protects this wire, if it isn't on the `from` pin.
+# Status left out = the lower of the two devices' statuses.
+wires:
+  # --- traction (72 V). Cable sizes not in any manual we have.
+  - {id: H01, from: PACK.pos, to: HV_ISO.in, sys: hv, status: from_manual, note: "Main pack + to the air-break switch. Size TBC, check for a main HV fuse"}
+  - {id: H02, from: HV_ISO.out, to: CONTACTOR.in, sys: hv, status: tbc}
+  - {id: H03, from: CONTACTOR.out, to: SG1202.B+, sys: hv, status: tbc}
+  - {id: H04, from: PACK.neg, to: SG1202.B-, sys: hv, status: from_manual}
+  - {id: H05, from: SG1202.U, to: MOTOR.U, sys: hv, status: from_manual}
+  - {id: H06, from: SG1202.V, to: MOTOR.V, sys: hv, status: from_manual}
+  - {id: H07, from: SG1202.W, to: MOTOR.W, sys: hv, status: from_manual}
+  - {id: H08, from: CONTACTOR.out, to: DCDC.in_pos, sys: hv, status: tbc, note: "Where the DC-DC takes its 72 V from is TBC"}
+  - {id: H09, from: PACK.neg, to: DCDC.in_neg, sys: hv, status: tbc}
+
+  # --- Shinegle low voltage
+  - {id: S01, from: KIT_KEY.out, to: ESTOP.in, sys: sg, status: planned, optional: true, note: "Without the e-stop, KIT_KEY goes straight to the lock relay or J1-1"}
+  - {id: S02, from: ESTOP.out, to: RELAYS2.COM2, sys: sg, status: planned, optional: true}
+  - {id: S03, from: RELAYS2.NC2, to: SG1202.J1-1, sys: sg, fuse: 10, mm2: 1.0, status: planned, note: "KSI through 10 A fuse (manual). NC contact so a dead control box never strands you"}
+  - {id: S04, from: KIT_KEY.out, to: FNR.COM, sys: sg, status: from_manual, note: "Manual feeds the direction switch from the key"}
+  - {id: S05, from: FNR.F, to: SG1202.J1-22, sys: sg, status: from_manual}
+  - {id: S06, from: FNR.R, to: SG1202.J1-33, sys: sg, status: from_manual}
+  - {id: S07, from: SG1202.J1-25, to: THROTTLE.V12, sys: sg, status: from_manual}
+  - {id: S08, from: THROTTLE.WIPER, to: SG1202.J1-16, sys: sg, status: from_manual}
+  - {id: S09, from: THROTTLE.GND, to: SG1202.J1-18, sys: sg, status: from_manual}
+  - {id: S10, from: THROTTLE.SW, to: SG1202.J1-9, sys: sg, status: from_manual}
+  - {id: S11, from: SG1202.J1-25, to: MOTOR.SPD_12V, sys: sg, status: from_manual, note: "Speed sensor plugs J6/J7"}
+  - {id: S12, from: MOTOR.SPD_A, to: SG1202.J1-31, sys: sg, status: from_manual}
+  - {id: S13, from: MOTOR.SPD_B, to: SG1202.J1-32, sys: sg, status: from_manual}
+  - {id: S14, from: MOTOR.SPD_GND, to: SG1202.J1-7, sys: sg, status: from_manual}
+  - {id: S15, from: MOTOR.TEMP1, to: SG1202.J1-8, sys: sg, status: from_manual, note: "Motor temp plugs J8/J9"}
+  - {id: S16, from: MOTOR.TEMP2, to: SG1202.J1-7, sys: sg, status: from_manual}
+  - {id: S17, from: SG1202.J1-6, to: SPEEDO.SPD, sys: sg, status: from_manual, optional: true, note: "Speed pulse. Could also feed the Pico if CAN isn't fitted"}
+  - {id: S18, from: SG1202.J3, to: PROG.PLUG, sys: sg, status: tbc, optional: true, note: "Setup only. J3 to J1-25/28/29/7 TBC"}
+
+  # --- 12 V power
+  - {id: P01, from: BAT12.pos, to: FB.IN, sys: power, mm2: 10, fuse: 60, status: planned, note: "60 A main fuse at the battery. Was 6 mm² in wiring.md, which the table only rates to 40 A"}
+  - {id: P02, from: FB.F16, to: KEY.BAT, sys: power, mm2: 1.0, status: planned}
+  - {id: P03, from: KEY.IGN, to: RAIL.BUS, sys: power, mm2: 1.0, fuse: 7.5, status: planned}
+  - {id: P04, from: FB.F12, to: RELAYS.COM8, sys: power, mm2: 1.0, status: planned}
+  - {id: P05, from: RELAYS.NO8, to: RAIL.BUS, sys: power, mm2: 1.0, fuse: 7.5, status: planned, note: "Power hold, in parallel with the key"}
+  - {id: P06, from: RAIL.BUS, to: TVS.K, sys: power, mm2: 1.0, status: planned}
+  - {id: P07, from: RAIL.BUS, to: PI_BUCK.VIN, sys: power, mm2: 1.5, status: planned}
+  - {id: P08, from: RAIL.BUS, to: PICO_BUCK.VIN, sys: power, mm2: 0.75, fuse: 2, status: planned, note: "2 A inline fuse"}
+  - {id: P09, from: PI_BUCK.VOUT, to: PI5.5V, sys: power, mm2: 1.5, status: planned, note: "Short and thick, under 30 cm. Set usb_max_current_enable=1"}
+  - {id: P10, from: PICO_BUCK.VOUT, to: PICO.VSYS, sys: power, mm2: 0.5, status: planned}
+  - {id: P11, from: PICO_BUCK.VOUT, to: RELAYS.JDVCC, sys: power, mm2: 0.5, status: planned, note: "Relay coils, about 0.6 A for 8"}
+  - {id: P12, from: PICO_BUCK.VOUT, to: RELAYS2.JDVCC, sys: power, mm2: 0.5, status: planned, optional: true}
+  - {id: P13, from: RAIL.BUS, to: SCREEN_PSU.VIN, sys: power, mm2: 1.0, fuse: 3, status: tbc, note: "Fuse size depends on the screen's draw"}
+  - {id: P14, from: SCREEN_PSU.VOUT, to: SCREEN.DC_IN, sys: power, mm2: 1.0, status: tbc}
+  - {id: P15, from: FB.F11, to: RELAYS.COM7, sys: power, mm2: 1.5, status: planned, note: "Accessory 12 V, on with ignition"}
+  - {id: P16, from: BAT12.pos, to: AMP.B+, sys: power, mm2: 4.0, fuse: 30, status: planned, optional: true, note: "Own fuse at the battery. 4 x 50 W can pull 20-30 A"}
+  - {id: P17, from: RAIL.BUS, to: AMP.REM, sys: power, mm2: 0.5, fuse: 2, status: planned, optional: true, note: "Remote turn-on, goes off with the rail"}
+  - {id: P18, from: DCDC.out_pos, to: BAT12.pos, sys: power, status: tbc, note: "DC-DC charge lead. Size and fuse depend on its rating"}
+  - {id: P19, from: BAT12.pos, to: EPS_ECU.B+, sys: power, mm2: 10, fuse: 60, status: planned, optional: true, note: "Own 60 A fuse and cable straight to the battery (Toyota fuses the Prius EPS at 60 A)"}
+
+  # --- grounds
+  - {id: G01, from: BAT12.neg, to: GND_STAR.G, sys: ground, mm2: 10, status: planned, note: "Same size as the main feed"}
+  - {id: G02, from: DCDC.out_neg, to: GND_STAR.G, sys: ground, status: tbc}
+  - {id: G03, from: TVS.A, to: GND_STAR.G, sys: ground, mm2: 1.0, status: planned}
+  - {id: G04, from: PI_BUCK.GND, to: GND_STAR.G, sys: ground, mm2: 1.5, status: planned}
+  - {id: G05, from: PI5.GND, to: PI_BUCK.GND, sys: ground, mm2: 1.5, status: planned}
+  - {id: G06, from: PICO_BUCK.GND, to: GND_STAR.G, sys: ground, mm2: 0.75, status: planned}
+  - {id: G07, from: PICO.GND, to: PICO_BUCK.GND, sys: ground, mm2: 0.5, status: planned, note: "All control box boards share the Pico ground"}
+  - {id: G08, from: SCREEN_PSU.GND, to: GND_STAR.G, sys: ground, mm2: 1.0, status: tbc}
+  - {id: G09, from: SCREEN.GND, to: SCREEN_PSU.GND, sys: ground, mm2: 1.0, status: tbc}
+  - {id: G10, from: AMP.GND, to: GND_STAR.G, sys: ground, mm2: 4.0, status: planned, optional: true}
+  - {id: G11, from: MOSFET.GND, to: GND_STAR.G, sys: ground, mm2: 2.5, status: planned, note: "Carries all five lights' current"}
+  - {id: G12, from: BTS1.B-, to: GND_STAR.G, sys: ground, mm2: 1.5, status: planned}
+  - {id: G13, from: BTS2.B-, to: GND_STAR.G, sys: ground, mm2: 1.5, status: planned}
+  - {id: G14, from: BTS3.B-, to: GND_STAR.G, sys: ground, mm2: 2.5, status: planned}
+  - {id: G15, from: FLOOD_L.neg, to: GND_STAR.G, sys: ground, mm2: 1.5, status: planned}
+  - {id: G16, from: FLOOD_R.neg, to: GND_STAR.G, sys: ground, mm2: 1.5, status: planned}
+  - {id: G17, from: WINCH_SOL.GND, to: BAT12.neg, sys: ground, mm2: 35, status: planned, rating_from: maker, note: "Winch return straight to the battery, cable from the winch kit"}
+  - {id: G18, from: WINCH_ISO.coil_neg, to: GND_STAR.G, sys: ground, mm2: 0.5, status: planned}
+  - {id: G19, from: OPTO.COM12, to: GND_STAR.G, sys: ground, mm2: 0.5, status: planned, note: "12 V side ground of the opto board"}
+  - {id: G20, from: TRAILER.P3_EARTH, to: GND_STAR.G, sys: ground, mm2: 2.5, status: planned}
+  - {id: G21, from: TCAM_PLUG.GND, to: GND_STAR.G, sys: ground, mm2: 0.5, status: planned, optional: true}
+  - {id: G22, from: EPS_ECU.GND, to: BAT12.neg, sys: ground, mm2: 10, status: planned, optional: true}
+  - {id: G23, from: CAM_TRAILER.GND, to: TCAM_PLUG.GND, sys: ground, mm2: 0.5, status: planned, optional: true, note: "Earth the camera at the hitch, not through the 7-pin earth"}
+
+  # --- CAN
+  - {id: C01, from: SG1202.CAN_H, to: PICO_CAN.CANH, sys: can, bus: main, mm2: 0.5, status: tbc, note: "Twisted pair. CAN is optional on the SG1202, check it's fitted. Bit rate TBC (try 250k then 500k)"}
+  - {id: C02, from: SG1202.CAN_L, to: PICO_CAN.CANL, sys: can, bus: main, mm2: 0.5, status: tbc}
+  - {id: C03, from: PICO_CAN.CANH, to: PI_CAN.CANH, sys: can, bus: main, mm2: 0.5, status: planned, note: "120 ohm at the Shinegle end and the Pi end. 60 ohm H to L with all off"}
+  - {id: C04, from: PICO_CAN.CANL, to: PI_CAN.CANL, sys: can, bus: main, mm2: 0.5, status: planned}
+  - {id: C05, from: EPS_CAN.CANH, to: EPS_ECU.CANH, sys: can, bus: steering, mm2: 0.5, status: planned, optional: true, note: "Own bus, 500 kbit/s, Toyota frames 0x0B4 and 0x2C4"}
+  - {id: C06, from: EPS_CAN.CANL, to: EPS_ECU.CANL, sys: can, bus: steering, mm2: 0.5, status: planned, optional: true}
+
+  # --- control box logic (Pico side)
+  - {id: L01, from: PICO.GP2, to: PICO_CAN.SCK, sys: logic, status: planned, note: "SPI under 10 cm"}
+  - {id: L02, from: PICO.GP3, to: PICO_CAN.SI, sys: logic, status: planned}
+  - {id: L03, from: PICO.GP4, to: PICO_CAN.SO, sys: logic, status: planned}
+  - {id: L04, from: PICO.GP5, to: PICO_CAN.CS, sys: logic, status: planned}
+  - {id: L05, from: PICO_CAN.INT, to: PICO.GP6, sys: logic, status: planned}
+  - {id: L06, from: PICO.GP2, to: EPS_CAN.SCK, sys: logic, status: planned, optional: true}
+  - {id: L07, from: PICO.GP3, to: EPS_CAN.SI, sys: logic, status: planned, optional: true}
+  - {id: L08, from: PICO.GP4, to: EPS_CAN.SO, sys: logic, status: planned, optional: true}
+  - {id: L09, from: PICO.GP22, to: EPS_CAN.CS, sys: logic, status: planned, optional: true, note: "GP22 freed from ADS1115 ALERT"}
+  - {id: L10, from: PICO.GP26, to: MCP1.SDA, sys: logic, status: planned, note: "4.7k pull-ups to 3.3 V, once for the whole bus"}
+  - {id: L11, from: PICO.GP27, to: MCP1.SCL, sys: logic, status: planned}
+  - {id: L12, from: PICO.GP26, to: ADS1.SDA, sys: logic, status: planned}
+  - {id: L13, from: PICO.GP27, to: ADS1.SCL, sys: logic, status: planned}
+  - {id: L14, from: PICO.GP26, to: MCP2.SDA, sys: logic, status: planned, optional: true}
+  - {id: L15, from: PICO.GP27, to: MCP2.SCL, sys: logic, status: planned, optional: true}
+  - {id: L16, from: PICO.GP26, to: ADS2.SDA, sys: logic, status: planned, optional: true}
+  - {id: L17, from: PICO.GP27, to: ADS2.SCL, sys: logic, status: planned, optional: true}
+  - {id: L18, from: MCP1.INTB, to: PICO.GP21, sys: logic, status: planned}
+  - {id: L19, from: MCP1.A0, to: RELAYS.IN1, sys: logic, status: planned, note: "light.rear"}
+  - {id: L20, from: MCP1.A1, to: RELAYS.IN2, sys: logic, status: planned, note: "trailer.tail"}
+  - {id: L21, from: MCP1.A2, to: RELAYS.IN3, sys: logic, status: planned, note: "trailer.brake"}
+  - {id: L22, from: MCP1.A3, to: RELAYS.IN4, sys: logic, status: planned, note: "winch.in"}
+  - {id: L23, from: MCP1.A4, to: RELAYS.IN5, sys: logic, status: planned, note: "winch.out"}
+  - {id: L24, from: MCP1.A5, to: RELAYS.IN6, sys: logic, status: planned, note: "winch.isolator"}
+  - {id: L25, from: MCP1.A6, to: RELAYS.IN7, sys: logic, status: planned, note: "aux.accessory"}
+  - {id: L26, from: MCP1.A7, to: RELAYS.IN8, sys: logic, status: planned, note: "power.hold"}
+  - {id: L27, from: MCP2.A0, to: RELAYS2.IN1, sys: logic, status: planned, optional: true, note: "steering enable"}
+  - {id: L28, from: MCP2.A1, to: RELAYS2.IN2, sys: logic, status: planned, optional: true, note: "drive lock (opens the KSI line while locked and parked)"}
+  - {id: L29, from: OPTO.OUT1, to: MCP1.B0, sys: logic, status: planned, note: "in.ignition"}
+  - {id: L30, from: OPTO.OUT2, to: MCP1.B1, sys: logic, status: planned, note: "in.brake"}
+  - {id: L31, from: OPTO.OUT3, to: MCP1.B2, sys: logic, status: planned, note: "in.reverse"}
+  - {id: L32, from: OPTO.OUT4, to: MCP1.B3, sys: logic, status: planned, note: "in.tray_down"}
+  - {id: L33, from: OPTO.OUT5, to: MCP1.B4, sys: logic, status: planned, note: "in.tray_up"}
+  - {id: L34, from: OPTO.OUT6, to: MCP1.B5, sys: logic, status: planned, note: "in.winch_remote"}
+  - {id: L35, from: OPTO.OUT7, to: MCP1.B6, sys: logic, status: planned, note: "in.park"}
+  - {id: L36, from: OPTO.OUT8, to: MCP1.B7, sys: logic, status: planned, note: "in.trailer"}
+  - {id: L37, from: PICO.3V3, to: MCP1.VDD, sys: logic, status: planned}
+  - {id: L38, from: PICO.3V3, to: ADS1.VDD, sys: logic, status: planned}
+  - {id: L39, from: PICO.3V3, to: PICO_CAN.VCC, sys: logic, status: planned}
+  - {id: L40, from: PICO.3V3, to: RELAYS.VCC, sys: logic, status: planned}
+  - {id: L41, from: PICO.3V3, to: OPTO.VCC, sys: logic, status: planned}
+  - {id: L42, from: PICO.3V3, to: MCP2.VDD, sys: logic, status: planned, optional: true}
+  - {id: L43, from: PICO.3V3, to: ADS2.VDD, sys: logic, status: planned, optional: true}
+  - {id: L44, from: PICO.3V3, to: EPS_CAN.VCC, sys: logic, status: planned, optional: true}
+  - {id: L45, from: PICO.3V3, to: RELAYS2.VCC, sys: logic, status: planned, optional: true}
+  - {id: L46, from: PICO.GP0, to: DEBUG.RX, sys: logic, status: planned, note: "UART0 TX"}
+  - {id: L47, from: DEBUG.TX, to: PICO.GP1, sys: logic, status: planned}
+  - {id: L48, from: PICO.USB, to: PI5.USB2_A, sys: logic, status: planned, note: "Data and reflash only, never power"}
+
+  # --- 12 V signals in
+  - {id: I01, from: KEY.IGN, to: OPTO.IN1, sys: inputs, mm2: 0.75, fuse: 7.5, via: "1 A diode", status: planned, note: "So the Pico sees key-off while relay 8 holds the rail. 0.75 mm² because the 7.5 A key fuse is upstream"}
+  - {id: I02, from: BRAKE_SW.OUT, to: OPTO.IN2, sys: inputs, mm2: 0.5, status: tbc}
+  - {id: I03, from: FNR.R, to: OPTO.IN3, sys: inputs, mm2: 0.5, via: "opto board", status: tbc, note: "The F-N-R switch is on the Shinegle key line. If J1-1 runs at 72 V, this needs a 72 V rated input, not the 12 V opto"}
+  - {id: I04, from: LIM_DN.NC, to: OPTO.IN4, sys: inputs, mm2: 0.5, status: planned, note: "Normally closed, a broken wire reads as at the limit"}
+  - {id: I05, from: LIM_UP.NC, to: OPTO.IN5, sys: inputs, mm2: 0.5, status: planned}
+  - {id: I06, from: HSW_WINCH.IN, to: OPTO.IN6, sys: inputs, mm2: 0.5, via: "1N4148", status: planned, note: "Each hand control taps in through its own small diode"}
+  - {id: I07, from: HSW_WINCH.OUT, to: OPTO.IN6, sys: inputs, mm2: 0.5, via: "1N4148", status: planned}
+  - {id: I08, from: HSW_CAB.IN, to: OPTO.IN6, sys: inputs, mm2: 0.5, via: "1N4148", status: planned}
+  - {id: I09, from: HSW_CAB.OUT, to: OPTO.IN6, sys: inputs, mm2: 0.5, via: "1N4148", status: planned}
+  - {id: I10, from: WINCH_SOL.COIL_IN, to: OPTO.IN6, sys: inputs, mm2: 0.5, via: "1N4148", status: tbc, note: "Remote taps: only if the remote's own lines can be reached. TBC"}
+  - {id: I11, from: PARK_SW.OUT, to: OPTO.IN7, sys: inputs, mm2: 0.5, status: tbc, note: "If the switch grounds, wire the opto input the other way round"}
+  - {id: I12, from: TRAILER.REED_A, to: OPTO.IN8, sys: inputs, mm2: 0.5, status: tbc}
+  - {id: I13, from: FB.F10, to: LIM_DN.C, sys: inputs, mm2: 0.5, fuse: 3, status: planned, note: "Limit switch and reed feed from a small fused 12 V"}
+  - {id: I14, from: LIM_DN.C, to: LIM_UP.C, sys: inputs, mm2: 0.5, status: planned}
+  - {id: I15, from: LIM_UP.C, to: TRAILER.REED_B, sys: inputs, mm2: 0.5, status: tbc}
+
+  # --- lights (low side MOSFETs)
+  - {id: LT01, from: FB.F1, to: LB1.pos, sys: lights, mm2: 1.5, status: planned}
+  - {id: LT02, from: FB.F2, to: LB2.pos, sys: lights, mm2: 1.5, status: planned}
+  - {id: LT03, from: FB.F3, to: LB3.pos, sys: lights, mm2: 1.5, status: planned}
+  - {id: LT04, from: FB.F4, to: LB4.pos, sys: lights, mm2: 1.5, status: planned}
+  - {id: LT05, from: FB.F5, to: LB_INT.pos, sys: lights, mm2: 1.0, status: planned}
+  - {id: LT06, from: LB1.neg, to: MOSFET.OUT1, sys: lights, mm2: 1.5, status: planned}
+  - {id: LT07, from: LB2.neg, to: MOSFET.OUT2, sys: lights, mm2: 1.5, status: planned}
+  - {id: LT08, from: LB3.neg, to: MOSFET.OUT3, sys: lights, mm2: 1.5, status: planned}
+  - {id: LT09, from: LB4.neg, to: MOSFET.OUT4, sys: lights, mm2: 1.5, status: planned}
+  - {id: LT10, from: LB_INT.neg, to: MOSFET.OUT5, sys: lights, mm2: 1.0, status: planned}
+  - {id: LT11, from: PICO.GP16, to: MOSFET.IN1, sys: lights, status: planned, note: "light.front_1 PWM"}
+  - {id: LT12, from: PICO.GP17, to: MOSFET.IN2, sys: lights, status: planned, note: "light.front_2 PWM"}
+  - {id: LT13, from: PICO.GP18, to: MOSFET.IN3, sys: lights, status: planned, note: "light.front_3 PWM"}
+  - {id: LT14, from: PICO.GP19, to: MOSFET.IN4, sys: lights, status: planned, note: "light.front_4 PWM"}
+  - {id: LT15, from: PICO.GP20, to: MOSFET.IN5, sys: lights, status: planned, note: "light.interior PWM"}
+  - {id: LT16, from: FB.F6, to: RELAYS.COM1, sys: lights, mm2: 1.5, status: planned}
+  - {id: LT17, from: RELAYS.NO1, to: FLOOD_L.pos, sys: lights, mm2: 1.5, fuse: 10, status: planned, note: "light.rear, auto on in reverse"}
+  - {id: LT18, from: RELAYS.NO1, to: FLOOD_R.pos, sys: lights, mm2: 1.5, fuse: 10, status: planned}
+
+  # --- winch
+  - {id: WN01, from: BAT12.pos, to: BRK_WINCH.in, sys: winch, mm2: 35, fuse: 250, rating_from: maker, status: planned, note: "Cable that came with the winch"}
+  - {id: WN02, from: BRK_WINCH.out, to: WINCH_ISO.in, sys: winch, mm2: 35, fuse: 250, rating_from: maker, status: planned}
+  - {id: WN03, from: WINCH_ISO.out, to: WINCH_SOL.B+, sys: winch, mm2: 35, fuse: 250, rating_from: maker, status: planned}
+  - {id: WN04, from: WINCH_SOL.M1, to: WINCH_MOTOR.M1, sys: winch, mm2: 35, rating_from: maker, status: confirmed}
+  - {id: WN05, from: WINCH_SOL.M2, to: WINCH_MOTOR.M2, sys: winch, mm2: 35, rating_from: maker, status: confirmed}
+  - {id: WN06, from: WINCH_SOL.REMOTE, to: WINCH_REMOTE.PLUG, sys: winch, status: confirmed, note: "XBull remote stays as a backup"}
+  - {id: WN07, from: FB.F9, to: RELAYS.COM4, sys: winch, mm2: 0.5, status: planned}
+  - {id: WN08, from: FB.F9, to: RELAYS.COM5, sys: winch, mm2: 0.5, status: planned}
+  - {id: WN09, from: FB.F9, to: RELAYS.COM6, sys: winch, mm2: 0.5, status: planned}
+  - {id: WN10, from: RELAYS.NO4, to: WINCH_SOL.COIL_IN, sys: winch, mm2: 0.5, fuse: 3, via: "3 A diode (1N5408)", status: planned, note: "winch.in. Never the motor current through the relay board"}
+  - {id: WN11, from: RELAYS.NO5, to: WINCH_SOL.COIL_OUT, sys: winch, mm2: 0.5, fuse: 3, via: "3 A diode (1N5408)", status: planned, note: "winch.out, interlocked with in"}
+  - {id: WN12, from: RELAYS.NO6, to: WINCH_ISO.coil_pos, sys: winch, mm2: 0.5, fuse: 3, status: planned, note: "winch.isolator, only while armed"}
+  - {id: WN13, from: FB.F10, to: HSW_WINCH.FEED, sys: winch, mm2: 0.5, status: planned}
+  - {id: WN14, from: FB.F10, to: HSW_CAB.FEED, sys: winch, mm2: 0.5, status: planned}
+  - {id: WN15, from: HSW_WINCH.IN, to: WINCH_SOL.COIL_IN, sys: winch, mm2: 0.5, fuse: 3, via: "3 A diode (1N5408)", status: planned}
+  - {id: WN16, from: HSW_WINCH.OUT, to: WINCH_SOL.COIL_OUT, sys: winch, mm2: 0.5, fuse: 3, via: "3 A diode (1N5408)", status: planned}
+  - {id: WN17, from: HSW_CAB.IN, to: WINCH_SOL.COIL_IN, sys: winch, mm2: 0.5, fuse: 3, via: "3 A diode (1N5408)", status: planned}
+  - {id: WN18, from: HSW_CAB.OUT, to: WINCH_SOL.COIL_OUT, sys: winch, mm2: 0.5, fuse: 3, via: "3 A diode (1N5408)", status: planned}
+
+  # --- drive
+  - {id: D01, from: PICO.GP7, to: BTS1.RPWM, sys: drive, status: planned, note: "act.diff"}
+  - {id: D02, from: PICO.GP8, to: BTS1.LPWM, sys: drive, status: planned}
+  - {id: D03, from: PICO.GP9, to: BTS1.EN, sys: drive, status: planned, note: "R_EN and L_EN joined"}
+  - {id: D04, from: BTS1.IS, to: PICO.GP28, sys: drive, via: "2 diodes + 1k to ground", status: planned, note: "an.diff_current"}
+  - {id: D05, from: FB.F13, to: BTS1.B+, sys: drive, mm2: 1.5, status: planned}
+  - {id: D06, from: BTS1.M+, to: ACT_DIFF.M+, sys: drive, mm2: 1.5, fuse: 10, status: planned, note: "Wrong way? Change DIFF_LOCK_DIR in firmware, not the wires"}
+  - {id: D07, from: BTS1.M-, to: ACT_DIFF.M-, sys: drive, mm2: 1.5, fuse: 10, status: planned}
+  - {id: D08, from: ADS1.VDD, to: ACT_DIFF.POT_HI, sys: drive, status: planned, note: "Pot on 3.3 V, never 12 V"}
+  - {id: D09, from: ACT_DIFF.POT_W, to: ADS1.A0, sys: drive, status: planned, note: "an.diff_pos"}
+  - {id: D10, from: ACT_DIFF.POT_LO, to: ADS1.GND, sys: drive, status: planned}
+  - {id: D11, from: PICO.GP10, to: BTS2.RPWM, sys: drive, status: planned, note: "act.4wd"}
+  - {id: D12, from: PICO.GP11, to: BTS2.LPWM, sys: drive, status: planned}
+  - {id: D13, from: PICO.GP12, to: BTS2.EN, sys: drive, status: planned}
+  - {id: D14, from: BTS2.IS, to: ADS1.A2, sys: drive, via: "2 diodes + 1k to ground", status: planned, note: "an.4wd_current"}
+  - {id: D15, from: FB.F14, to: BTS2.B+, sys: drive, mm2: 1.5, status: planned}
+  - {id: D16, from: BTS2.M+, to: ACT_4WD.M+, sys: drive, mm2: 1.5, fuse: 10, status: tbc}
+  - {id: D17, from: BTS2.M-, to: ACT_4WD.M-, sys: drive, mm2: 1.5, fuse: 10, status: tbc}
+  - {id: D18, from: PICO.GP13, to: BTS3.RPWM, sys: drive, status: planned, note: "act.tray"}
+  - {id: D19, from: PICO.GP14, to: BTS3.LPWM, sys: drive, status: planned}
+  - {id: D20, from: PICO.GP15, to: BTS3.EN, sys: drive, status: planned}
+  - {id: D21, from: BTS3.IS, to: ADS1.A3, sys: drive, via: "2 diodes + 1k to ground", status: planned, note: "an.tray_current"}
+  - {id: D22, from: FB.F15, to: BTS3.B+, sys: drive, mm2: 2.5, status: planned}
+  - {id: D23, from: BTS3.M+, to: ACT_TRAY.M+, sys: drive, mm2: 2.5, fuse: 15, status: planned}
+  - {id: D24, from: BTS3.M-, to: ACT_TRAY.M-, sys: drive, mm2: 2.5, fuse: 15, status: planned}
+  - {id: D25, from: PICO.3V3, to: BTS1.VCC, sys: drive, status: planned}
+  - {id: D26, from: PICO.3V3, to: BTS2.VCC, sys: drive, status: planned}
+  - {id: D27, from: PICO.3V3, to: BTS3.VCC, sys: drive, status: planned}
+  - {id: D28, from: BAT12.pos, to: ADS1.A1, sys: drive, via: "divider 10k / 2.2k + 3.3 V zener", fuse: 1, mm2: 0.5, status: planned, note: "an.aux_12v. Fuse the sense lead"}
+  - {id: D29, from: PI_BUCK.VOUT, to: BRAKE_PEDAL.V5, sys: drive, status: planned, optional: true, note: "Or the Pico buck. 5 V sensor"}
+  - {id: D30, from: BRAKE_PEDAL.SIG, to: ADS2.A0, sys: drive, via: "divider 10k / 20k", status: planned, optional: true, note: "an.brake_pedal, 4.5 V reads 3.0 V"}
+  - {id: D34, from: BRAKE_PRESS.SIG, to: ADS2.A1, sys: drive, via: "divider 10k / 20k", status: planned, optional: true, note: "an.brake_pressure"}
+  - {id: D35, from: PI_BUCK.VOUT, to: BRAKE_PRESS.V5, sys: drive, status: planned, optional: true}
+  - {id: D31, from: RAIL.BUS, to: RELAYS2.COM1, sys: drive, mm2: 0.5, fuse: 3, status: planned, optional: true, note: "Steering ignition feed through relay 9, so the lock and RC kill can turn assist off"}
+  - {id: D32, from: RELAYS2.NO1, to: EPS_ECU.IG, sys: drive, mm2: 0.5, fuse: 3, status: tbc, optional: true}
+  - {id: D33, from: EPS_ECU.MOTOR, to: EPS_COL.MOTOR, sys: drive, status: tbc, optional: true, note: "Toyota's own plug, keep it from the wrecker"}
+
+  # --- trailer
+  - {id: T01, from: FB.F7, to: RELAYS.COM2, sys: trailer, mm2: 1.0, status: planned}
+  - {id: T02, from: RELAYS.NO2, to: TRAILER.P7_TAIL, sys: trailer, mm2: 1.0, fuse: 5, status: planned, note: "trailer.tail"}
+  - {id: T03, from: FB.F8, to: RELAYS.COM3, sys: trailer, mm2: 1.0, status: planned}
+  - {id: T04, from: RELAYS.NO3, to: TRAILER.P6_STOP, sys: trailer, mm2: 1.0, fuse: 5, status: planned, note: "trailer.brake"}
+  - {id: T05, from: BRAKE_SW.OUT, to: TRAILER.P6_STOP, sys: trailer, mm2: 1.0, via: "diode (backup)", status: tbc, note: "Trailer brake lights still work with the control box off"}
+  - {id: T06, from: RELAYS.NO1, to: TRAILER.P2_REV, sys: trailer, mm2: 1.0, fuse: 10, status: tbc, optional: true, note: "Reversing pin. Relay 1 also runs the floods by hand, so trailer reverse lights would come on with them"}
+  - {id: T07, from: RELAYS.NO7, to: TCAM_PLUG.V12, sys: trailer, mm2: 0.5, fuse: 2, status: planned, optional: true, note: "2 A inline fuse. Runs while driving, not just reversing"}
+  - {id: T08, from: TCAM_PLUG.V12, to: CAM_TRAILER.V12, sys: trailer, mm2: 0.5, fuse: 2, status: planned, optional: true}
+  - {id: T09, from: CAM_TRAILER.VID, to: TCAM_PLUG.VID, sys: trailer, status: planned, optional: true}
+  - {id: T10, from: CAM_TRAILER.VID_GND, to: TCAM_PLUG.VID_GND, sys: trailer, status: planned, optional: true}
+  - {id: T11, from: TCAM_PLUG.VID, to: TCAM_DONGLE.VID, sys: trailer, status: planned, optional: true, note: "Shielded video cable"}
+  - {id: T12, from: TCAM_PLUG.VID_GND, to: TCAM_DONGLE.VID_GND, sys: trailer, status: planned, optional: true}
+
+  # --- dash computer
+  - {id: X01, from: PI5.HDMI0, to: SCREEN.HDMI, sys: dash, status: planned}
+  - {id: X02, from: SCREEN.USB, to: USB_HUB.P1, sys: dash, status: planned, note: "Touch"}
+  - {id: X03, from: CAM_REAR.USB, to: PI5.USB3_A, sys: dash, status: tbc, note: "Or a UVC capture dongle if it's an RCA/AHD camera"}
+  - {id: X04, from: TCAM_DONGLE.USB, to: PI5.USB3_B, sys: dash, status: planned, optional: true, note: "Other USB controller from the rear camera"}
+  - {id: X05, from: USB_HUB.UP, to: PI5.USB2_B, sys: dash, status: planned}
+  - {id: X06, from: GPS.USB, to: USB_HUB.P2, sys: dash, status: planned, optional: true}
+  - {id: X07, from: CARPLAY.USB, to: USB_HUB.P3, sys: dash, status: planned, optional: true}
+  - {id: X08, from: USB_DAC.USB, to: USB_HUB.P4, sys: dash, status: planned, optional: true}
+  - {id: X09, from: MODEM_4G.USB, to: USB_HUB.P5, sys: dash, status: placeholder, optional: true}
+  - {id: X10, from: SSD.USB, to: USB_HUB.P6, sys: dash, status: placeholder, optional: true}
+  - {id: X11, from: CAM_FRONT.CSI, to: PI5.CSI0, sys: dash, status: planned}
+  - {id: X12, from: CAM_CABIN.CSI, to: PI5.CSI1, sys: dash, status: placeholder, optional: true}
+  - {id: X13, from: AIHAT.PCIE, to: PI5.PCIE, sys: dash, status: placeholder, optional: true, note: "Keep the PCIe port free for this"}
+  - {id: X14, from: AIHAT.HDR, to: PI5.HAT_HDR, sys: dash, status: placeholder, optional: true, note: "16 mm stacking header over the Active Cooler"}
+  - {id: X15, from: PI5.P1_3V3, to: PI_CAN.VCC, sys: dash, status: planned}
+  - {id: X16, from: PI5.P23_SCLK, to: PI_CAN.SCK, sys: dash, status: planned}
+  - {id: X17, from: PI5.P19_MOSI, to: PI_CAN.SI, sys: dash, status: planned}
+  - {id: X18, from: PI_CAN.SO, to: PI5.P21_MISO, sys: dash, status: planned}
+  - {id: X19, from: PI5.P24_CE0, to: PI_CAN.CS, sys: dash, status: planned}
+  - {id: X20, from: PI_CAN.INT, to: PI5.P22_GPIO25, sys: dash, status: planned}
+  - {id: X21, from: USB_DAC.OUT, to: AMP.IN, sys: dash, status: planned, optional: true}
+  - {id: X22, from: AMP.SPK, to: SPEAKERS.IN, sys: dash, status: planned, optional: true}
+  - {id: X23, from: PI5.P3_SDA, to: IMU.SDA, sys: dash, status: planned, optional: true}
+  - {id: X24, from: PI5.P5_SCL, to: IMU.SCL, sys: dash, status: planned, optional: true}

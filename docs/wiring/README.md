@@ -1,0 +1,560 @@
+# Teryx wiring (made from `config/wiring.yaml`)
+
+Don't edit this file or the SVGs here. Edit [`config/wiring.yaml`](../../config/wiring.yaml), then run
+`python -m teryx wiring`. A test fails if they get out of step, and it also checks the wiring
+itself: every fused feed has a fuse, wires are thick enough for their fuse, no 12 V or 72 V
+wire lands on a 3.3 V pin, each CAN bus has exactly two 120 ohm ends, the Pico pins match
+`config/io-map.yaml`, and the Pi's PCIe port and header stay free for the AI HAT+ 2.
+
+Why things are wired this way (power hold, diodes, CAN rules): [`docs/wiring.md`](../wiring.md).
+Viewer with search: [`index.html`](index.html), also online at
+<https://electrumnz.github.io/TERYXDACTL/wiring/>.
+
+**81 devices, 245 wires.** By status: 19 from_manual, 3 confirmed, 192 planned, 26 tbc, 5 placeholder.
+Nothing has been checked on the real Teryx yet.
+
+Wire sizes follow the conservative table in the YAML (from
+[speedingparts.eu](https://info.speedingparts.eu/what-cable-size-should-you-use-in-a-12v-automotive-system),
+runs up to about 5 m). Go one size up for bundled or hot runs.
+
+## Sheets
+
+### Traction: 72 V pack, controller, motor, DC-DC
+
+![hv](sheet-hv.svg)
+
+### Shinegle low voltage: key, F-N-R, throttle, sensors, programmer
+
+![sg](sheet-sg.svg)
+
+### 12 V power: battery, fuses, key, dash rail, bucks
+
+![power](sheet-power.svg)
+
+### Grounds (chassis, star point)
+
+![ground](sheet-ground.svg)
+
+### CAN buses: main Teryx bus and the steering bus
+
+![can](sheet-can.svg)
+
+### Control box inside: Pico 2 and its boards
+
+![logic](sheet-logic.svg)
+
+### 12 V signals into the control box (opto board)
+
+![inputs](sheet-inputs.svg)
+
+### Lights
+
+![lights](sheet-lights.svg)
+
+### Winch
+
+![winch](sheet-winch.svg)
+
+### Drive: 4WD, diff lock, tray, power steering
+
+![drive](sheet-drive.svg)
+
+### Trailer plug and trailer camera
+
+![trailer](sheet-trailer.svg)
+
+### Dash computer: Pi 5, screen, cameras, USB, audio
+
+![dash](sheet-dash.svg)
+
+## Things to check or photograph on the Teryx
+
+- [ ] **Traction battery pack** (PACK): Battery pack make, size (kWh), and where its main fuse is. Photo the label
+- [ ] **150 A air-break switch** (HV_ISO): Is the air-break switch fitted, and where? Photo it
+- [ ] **Main contactor** (CONTACTOR): Is there a main contactor between the pack and the controller? Photo it and trace its two small coil wires
+- [ ] **DC-DC converter 72 V to 12 V** (DCDC): DC-DC label (amps out), where its 72 V feed comes from, and whether it is isolated (does its 12 V negative join the pack negative?)
+- [ ] **Shinegle kit key switch** (KIT_KEY): Is the kit key the same switch as the Teryx key? Meter what voltage reaches J1-1 with the key on (12 V or 72 V)
+- [ ] **Blade fuse block** (FB): Pick the fuse block (18-20 way, or two 12-way side by side)
+- [ ] **Screen 12 V supply** (SCREEN_PSU): Read the label on the screen's power brick (volts and amps)
+- [ ] **8-ch relay board** (RELAYS): Does the relay board click from 3.3 V logic? Active high or low?
+- [ ] **Rear flood left (4 in pod)** (FLOOD_L): Light bars and pods dim with PWM? Test one on a cheap dimmer
+- [ ] **Winch isolator contactor** (WINCH_ISO): Do the remote and hand switches need to work with the dash dead? If so the isolator needs a second coil feed from a hidden key switch
+- [ ] **XBull solenoid box** (WINCH_SOL): Photo the XBull solenoid box terminals and the remote plug pins
+- [ ] **2WD/4WD actuator** (ACT_4WD): Is the stock electric 4WD actuator still on the front diff, and is the dash 2WD/4WD switch still wired to it? Photo its plug
+- [ ] **Brake light switch (stock)** (BRAKE_SW): Find the brake light switch wire and meter it (12 V when pressed?)
+- [ ] **Parking brake switch (stock)** (PARK_SW): Find the parking brake switch wire at the meter plug. Does it switch ground or 12 V?
+- [ ] **Toyota Aqua EPS ECU (89650-52B51)** (EPS_ECU): Photo both EPS ECU plugs (pin numbers and wire colours) when the column is picked up
+- [ ] **Aqua steering column (motor + torque sensor)** (EPS_COL): Measure the space from the steering wheel to where the Teryx shaft goes to the rack
+- [ ] **7-pin flat trailer socket (Narva 82043BL, reed switch)** (TRAILER): Which way does the Narva reed switch switch, and what triggers it?
+- [ ] **Powered USB hub** (USB_HUB): Pick the powered USB hub (7 ports, 12 V or 5 V in)
+- [ ] **Rear camera (2K)** (CAM_REAR): Rear camera USB or RCA/AHD? Photo its plug
+
+Wires marked TBC, with what's unknown:
+
+- H08 CONTACTOR.out to DCDC.in_pos: Where the DC-DC takes its 72 V from is TBC
+- S18 SG1202.J3 to PROG.PLUG: Setup only. J3 to J1-25/28/29/7 TBC
+- P13 RAIL.BUS to SCREEN_PSU.VIN: Fuse size depends on the screen's draw
+- P18 DCDC.out_pos to BAT12.pos: DC-DC charge lead. Size and fuse depend on its rating
+- C01 SG1202.CAN_H to PICO_CAN.CANH: Twisted pair. CAN is optional on the SG1202, check it's fitted. Bit rate TBC (try 250k then 500k)
+- I03 FNR.R to OPTO.IN3: The F-N-R switch is on the Shinegle key line. If J1-1 runs at 72 V, this needs a 72 V rated input, not the 12 V opto
+- I10 WINCH_SOL.COIL_IN to OPTO.IN6: Remote taps: only if the remote's own lines can be reached. TBC
+- I11 PARK_SW.OUT to OPTO.IN7: If the switch grounds, wire the opto input the other way round
+- D33 EPS_ECU.MOTOR to EPS_COL.MOTOR: Toyota's own plug, keep it from the wrecker
+- T05 BRAKE_SW.OUT to TRAILER.P6_STOP: Trailer brake lights still work with the control box off
+- T06 RELAYS.NO1 to TRAILER.P2_REV: Reversing pin. Relay 1 also runs the floods by hand, so trailer reverse lights would come on with them
+- X03 CAM_REAR.USB to PI5.USB3_A: Or a UVC capture dongle if it's an RCA/AHD camera
+
+## Fuse block
+
+| Slot | Fuse | Feeds | Wires |
+|---|---|---|---|
+| F1 | 10 A | front bar 1 | LT01 |
+| F2 | 10 A | front bar 2 | LT02 |
+| F3 | 10 A | front bar 3 | LT03 |
+| F4 | 10 A | front bar 4 | LT04 |
+| F5 | 5 A | interior bar | LT05 |
+| F6 | 10 A | relay 1 rear floods | LT16 |
+| F7 | 5 A | relay 2 trailer tail | T01 |
+| F8 | 5 A | relay 3 trailer stop | T03 |
+| F9 | 3 A | relays 4-6 winch coils | WN07, WN08, WN09 |
+| F10 | 3 A | winch hand switches | I13, WN13, WN14 |
+| F11 | 10 A | relay 7 accessory | P15 |
+| F12 | 7.5 A | relay 8 power hold | P04 |
+| F13 | 10 A | BTS7960 1 diff | D05 |
+| F14 | 10 A | BTS7960 2 4WD | D15 |
+| F15 | 15 A | BTS7960 3 tray | D22 |
+| F16 | 7.5 A | key switch | P02 |
+
+Fuses not in the block (inline, at the battery or on a board):
+
+| Wire | Fuse | From | To |
+|---|---|---|---|
+| S03 | 10 A | RELAYS2.NC2 | SG1202.J1-1 |
+| P01 | 60 A | BAT12.pos | FB.IN |
+| P03 | 7.5 A | KEY.IGN | RAIL.BUS |
+| P05 | 7.5 A | RELAYS.NO8 | RAIL.BUS |
+| P08 | 2 A | RAIL.BUS | PICO_BUCK.VIN |
+| P13 | 3 A | RAIL.BUS | SCREEN_PSU.VIN |
+| P16 | 30 A | BAT12.pos | AMP.B+ |
+| P17 | 2 A | RAIL.BUS | AMP.REM |
+| P19 | 60 A | BAT12.pos | EPS_ECU.B+ |
+| I01 | 7.5 A | KEY.IGN | OPTO.IN1 |
+| LT17 | 10 A | RELAYS.NO1 | FLOOD_L.pos |
+| LT18 | 10 A | RELAYS.NO1 | FLOOD_R.pos |
+| WN01 | 250 A | BAT12.pos | BRK_WINCH.in |
+| WN02 | 250 A | BRK_WINCH.out | WINCH_ISO.in |
+| WN03 | 250 A | WINCH_ISO.out | WINCH_SOL.B+ |
+| WN10 | 3 A | RELAYS.NO4 | WINCH_SOL.COIL_IN |
+| WN11 | 3 A | RELAYS.NO5 | WINCH_SOL.COIL_OUT |
+| WN12 | 3 A | RELAYS.NO6 | WINCH_ISO.coil_pos |
+| WN15 | 3 A | HSW_WINCH.IN | WINCH_SOL.COIL_IN |
+| WN16 | 3 A | HSW_WINCH.OUT | WINCH_SOL.COIL_OUT |
+| WN17 | 3 A | HSW_CAB.IN | WINCH_SOL.COIL_IN |
+| WN18 | 3 A | HSW_CAB.OUT | WINCH_SOL.COIL_OUT |
+| D06 | 10 A | BTS1.M+ | ACT_DIFF.M+ |
+| D07 | 10 A | BTS1.M- | ACT_DIFF.M- |
+| D16 | 10 A | BTS2.M+ | ACT_4WD.M+ |
+| D17 | 10 A | BTS2.M- | ACT_4WD.M- |
+| D23 | 15 A | BTS3.M+ | ACT_TRAY.M+ |
+| D24 | 15 A | BTS3.M- | ACT_TRAY.M- |
+| D28 | 1 A | BAT12.pos | ADS1.A1 |
+| D31 | 3 A | RAIL.BUS | RELAYS2.COM1 |
+| D32 | 3 A | RELAYS2.NO1 | EPS_ECU.IG |
+| T02 | 5 A | RELAYS.NO2 | TRAILER.P7_TAIL |
+| T04 | 5 A | RELAYS.NO3 | TRAILER.P6_STOP |
+| T06 | 10 A | RELAYS.NO1 | TRAILER.P2_REV |
+| T07 | 2 A | RELAYS.NO7 | TCAM_PLUG.V12 |
+| T08 | 2 A | TCAM_PLUG.V12 | CAM_TRAILER.V12 |
+
+## Wire schedule
+
+### Traction: 72 V pack, controller, motor, DC-DC
+
+| Wire | From | To | Size | Fuse | Via | Status | Note |
+|---|---|---|---|---|---|---|---|
+| H01 | PACK.pos | HV_ISO.in |  |  |  | from_manual | Main pack + to the air-break switch. Size TBC, check for a main HV fuse |
+| H02 | HV_ISO.out | CONTACTOR.in |  |  |  | tbc |  |
+| H03 | CONTACTOR.out | SG1202.B+ |  |  |  | tbc |  |
+| H04 | PACK.neg | SG1202.B- |  |  |  | from_manual |  |
+| H05 | SG1202.U | MOTOR.U |  |  |  | from_manual |  |
+| H06 | SG1202.V | MOTOR.V |  |  |  | from_manual |  |
+| H07 | SG1202.W | MOTOR.W |  |  |  | from_manual |  |
+| H08 | CONTACTOR.out | DCDC.in_pos |  |  |  | tbc | Where the DC-DC takes its 72 V from is TBC |
+| H09 | PACK.neg | DCDC.in_neg |  |  |  | tbc |  |
+
+### Shinegle low voltage: key, F-N-R, throttle, sensors, programmer
+
+| Wire | From | To | Size | Fuse | Via | Status | Note |
+|---|---|---|---|---|---|---|---|
+| S01 | KIT_KEY.out | ESTOP.in |  |  |  | planned (optional) | Without the e-stop, KIT_KEY goes straight to the lock relay or J1-1 |
+| S02 | ESTOP.out | RELAYS2.COM2 |  |  |  | planned (optional) |  |
+| S03 | RELAYS2.NC2 | SG1202.J1-1 | 1 mm² | 10 A |  | planned | KSI through 10 A fuse (manual). NC contact so a dead control box never strands you |
+| S04 | KIT_KEY.out | FNR.COM |  |  |  | from_manual | Manual feeds the direction switch from the key |
+| S05 | FNR.F | SG1202.J1-22 |  |  |  | from_manual |  |
+| S06 | FNR.R | SG1202.J1-33 |  |  |  | from_manual |  |
+| S07 | SG1202.J1-25 | THROTTLE.V12 |  |  |  | from_manual |  |
+| S08 | THROTTLE.WIPER | SG1202.J1-16 |  |  |  | from_manual |  |
+| S09 | THROTTLE.GND | SG1202.J1-18 |  |  |  | from_manual |  |
+| S10 | THROTTLE.SW | SG1202.J1-9 |  |  |  | from_manual |  |
+| S11 | SG1202.J1-25 | MOTOR.SPD_12V |  |  |  | from_manual | Speed sensor plugs J6/J7 |
+| S12 | MOTOR.SPD_A | SG1202.J1-31 |  |  |  | from_manual |  |
+| S13 | MOTOR.SPD_B | SG1202.J1-32 |  |  |  | from_manual |  |
+| S14 | MOTOR.SPD_GND | SG1202.J1-7 |  |  |  | from_manual |  |
+| S15 | MOTOR.TEMP1 | SG1202.J1-8 |  |  |  | from_manual | Motor temp plugs J8/J9 |
+| S16 | MOTOR.TEMP2 | SG1202.J1-7 |  |  |  | from_manual |  |
+| S17 | SG1202.J1-6 | SPEEDO.SPD |  |  |  | from_manual (optional) | Speed pulse. Could also feed the Pico if CAN isn't fitted |
+| S18 | SG1202.J3 | PROG.PLUG |  |  |  | tbc (optional) | Setup only. J3 to J1-25/28/29/7 TBC |
+
+### 12 V power: battery, fuses, key, dash rail, bucks
+
+| Wire | From | To | Size | Fuse | Via | Status | Note |
+|---|---|---|---|---|---|---|---|
+| P01 | BAT12.pos | FB.IN | 10 mm² | 60 A |  | planned | 60 A main fuse at the battery. Was 6 mm² in wiring.md, which the table only rates to 40 A |
+| P02 | FB.F16 | KEY.BAT | 1 mm² | 7.5 A |  | planned |  |
+| P03 | KEY.IGN | RAIL.BUS | 1 mm² | 7.5 A |  | planned |  |
+| P04 | FB.F12 | RELAYS.COM8 | 1 mm² | 7.5 A |  | planned |  |
+| P05 | RELAYS.NO8 | RAIL.BUS | 1 mm² | 7.5 A |  | planned | Power hold, in parallel with the key |
+| P06 | RAIL.BUS | TVS.K | 1 mm² | 7.5 A |  | planned |  |
+| P07 | RAIL.BUS | PI_BUCK.VIN | 1.5 mm² | 7.5 A |  | planned |  |
+| P08 | RAIL.BUS | PICO_BUCK.VIN | 0.75 mm² | 2 A |  | planned | 2 A inline fuse |
+| P09 | PI_BUCK.VOUT | PI5.5V | 1.5 mm² |  |  | planned | Short and thick, under 30 cm. Set usb_max_current_enable=1 |
+| P10 | PICO_BUCK.VOUT | PICO.VSYS | 0.5 mm² |  |  | planned |  |
+| P11 | PICO_BUCK.VOUT | RELAYS.JDVCC | 0.5 mm² |  |  | planned | Relay coils, about 0.6 A for 8 |
+| P12 | PICO_BUCK.VOUT | RELAYS2.JDVCC | 0.5 mm² |  |  | planned (optional) |  |
+| P13 | RAIL.BUS | SCREEN_PSU.VIN | 1 mm² | 3 A |  | tbc | Fuse size depends on the screen's draw |
+| P14 | SCREEN_PSU.VOUT | SCREEN.DC_IN | 1 mm² |  |  | tbc |  |
+| P15 | FB.F11 | RELAYS.COM7 | 1.5 mm² | 10 A |  | planned | Accessory 12 V, on with ignition |
+| P16 | BAT12.pos | AMP.B+ | 4 mm² | 30 A |  | planned (optional) | Own fuse at the battery. 4 x 50 W can pull 20-30 A |
+| P17 | RAIL.BUS | AMP.REM | 0.5 mm² | 2 A |  | planned (optional) | Remote turn-on, goes off with the rail |
+| P18 | DCDC.out_pos | BAT12.pos |  |  |  | tbc | DC-DC charge lead. Size and fuse depend on its rating |
+| P19 | BAT12.pos | EPS_ECU.B+ | 10 mm² | 60 A |  | planned (optional) | Own 60 A fuse and cable straight to the battery (Toyota fuses the Prius EPS at 60 A) |
+
+### Grounds (chassis, star point)
+
+| Wire | From | To | Size | Fuse | Via | Status | Note |
+|---|---|---|---|---|---|---|---|
+| G01 | BAT12.neg | GND_STAR.G | 10 mm² |  |  | planned | Same size as the main feed |
+| G02 | DCDC.out_neg | GND_STAR.G |  |  |  | tbc |  |
+| G03 | TVS.A | GND_STAR.G | 1 mm² |  |  | planned |  |
+| G04 | PI_BUCK.GND | GND_STAR.G | 1.5 mm² |  |  | planned |  |
+| G05 | PI5.GND | PI_BUCK.GND | 1.5 mm² |  |  | planned |  |
+| G06 | PICO_BUCK.GND | GND_STAR.G | 0.75 mm² |  |  | planned |  |
+| G07 | PICO.GND | PICO_BUCK.GND | 0.5 mm² |  |  | planned | All control box boards share the Pico ground |
+| G08 | SCREEN_PSU.GND | GND_STAR.G | 1 mm² |  |  | tbc |  |
+| G09 | SCREEN.GND | SCREEN_PSU.GND | 1 mm² |  |  | tbc |  |
+| G10 | AMP.GND | GND_STAR.G | 4 mm² |  |  | planned (optional) |  |
+| G11 | MOSFET.GND | GND_STAR.G | 2.5 mm² |  |  | planned | Carries all five lights' current |
+| G12 | BTS1.B- | GND_STAR.G | 1.5 mm² |  |  | planned |  |
+| G13 | BTS2.B- | GND_STAR.G | 1.5 mm² |  |  | planned |  |
+| G14 | BTS3.B- | GND_STAR.G | 2.5 mm² |  |  | planned |  |
+| G15 | FLOOD_L.neg | GND_STAR.G | 1.5 mm² |  |  | planned |  |
+| G16 | FLOOD_R.neg | GND_STAR.G | 1.5 mm² |  |  | planned |  |
+| G17 | WINCH_SOL.GND | BAT12.neg | 35 mm² |  |  | planned | Winch return straight to the battery, cable from the winch kit |
+| G18 | WINCH_ISO.coil_neg | GND_STAR.G | 0.5 mm² |  |  | planned |  |
+| G19 | OPTO.COM12 | GND_STAR.G | 0.5 mm² |  |  | planned | 12 V side ground of the opto board |
+| G20 | TRAILER.P3_EARTH | GND_STAR.G | 2.5 mm² |  |  | planned |  |
+| G21 | TCAM_PLUG.GND | GND_STAR.G | 0.5 mm² |  |  | planned (optional) |  |
+| G22 | EPS_ECU.GND | BAT12.neg | 10 mm² |  |  | planned (optional) |  |
+| G23 | CAM_TRAILER.GND | TCAM_PLUG.GND | 0.5 mm² |  |  | planned (optional) | Earth the camera at the hitch, not through the 7-pin earth |
+
+### CAN buses: main Teryx bus and the steering bus
+
+| Wire | From | To | Size | Fuse | Via | Status | Note |
+|---|---|---|---|---|---|---|---|
+| C01 | SG1202.CAN_H | PICO_CAN.CANH | 0.5 mm² |  |  | tbc | Twisted pair. CAN is optional on the SG1202, check it's fitted. Bit rate TBC (try 250k then 500k) |
+| C02 | SG1202.CAN_L | PICO_CAN.CANL | 0.5 mm² |  |  | tbc |  |
+| C03 | PICO_CAN.CANH | PI_CAN.CANH | 0.5 mm² |  |  | planned | 120 ohm at the Shinegle end and the Pi end. 60 ohm H to L with all off |
+| C04 | PICO_CAN.CANL | PI_CAN.CANL | 0.5 mm² |  |  | planned |  |
+| C05 | EPS_CAN.CANH | EPS_ECU.CANH | 0.5 mm² |  |  | planned (optional) | Own bus, 500 kbit/s, Toyota frames 0x0B4 and 0x2C4 |
+| C06 | EPS_CAN.CANL | EPS_ECU.CANL | 0.5 mm² |  |  | planned (optional) |  |
+
+### Control box inside: Pico 2 and its boards
+
+| Wire | From | To | Size | Fuse | Via | Status | Note |
+|---|---|---|---|---|---|---|---|
+| L01 | PICO.GP2 | PICO_CAN.SCK |  |  |  | planned | SPI under 10 cm |
+| L02 | PICO.GP3 | PICO_CAN.SI |  |  |  | planned |  |
+| L03 | PICO.GP4 | PICO_CAN.SO |  |  |  | planned |  |
+| L04 | PICO.GP5 | PICO_CAN.CS |  |  |  | planned |  |
+| L05 | PICO_CAN.INT | PICO.GP6 |  |  |  | planned |  |
+| L06 | PICO.GP2 | EPS_CAN.SCK |  |  |  | planned (optional) |  |
+| L07 | PICO.GP3 | EPS_CAN.SI |  |  |  | planned (optional) |  |
+| L08 | PICO.GP4 | EPS_CAN.SO |  |  |  | planned (optional) |  |
+| L09 | PICO.GP22 | EPS_CAN.CS |  |  |  | planned (optional) | GP22 freed from ADS1115 ALERT |
+| L10 | PICO.GP26 | MCP1.SDA |  |  |  | planned | 4.7k pull-ups to 3.3 V, once for the whole bus |
+| L11 | PICO.GP27 | MCP1.SCL |  |  |  | planned |  |
+| L12 | PICO.GP26 | ADS1.SDA |  |  |  | planned |  |
+| L13 | PICO.GP27 | ADS1.SCL |  |  |  | planned |  |
+| L14 | PICO.GP26 | MCP2.SDA |  |  |  | planned (optional) |  |
+| L15 | PICO.GP27 | MCP2.SCL |  |  |  | planned (optional) |  |
+| L16 | PICO.GP26 | ADS2.SDA |  |  |  | planned (optional) |  |
+| L17 | PICO.GP27 | ADS2.SCL |  |  |  | planned (optional) |  |
+| L18 | MCP1.INTB | PICO.GP21 |  |  |  | planned |  |
+| L19 | MCP1.A0 | RELAYS.IN1 |  |  |  | planned | light.rear |
+| L20 | MCP1.A1 | RELAYS.IN2 |  |  |  | planned | trailer.tail |
+| L21 | MCP1.A2 | RELAYS.IN3 |  |  |  | planned | trailer.brake |
+| L22 | MCP1.A3 | RELAYS.IN4 |  |  |  | planned | winch.in |
+| L23 | MCP1.A4 | RELAYS.IN5 |  |  |  | planned | winch.out |
+| L24 | MCP1.A5 | RELAYS.IN6 |  |  |  | planned | winch.isolator |
+| L25 | MCP1.A6 | RELAYS.IN7 |  |  |  | planned | aux.accessory |
+| L26 | MCP1.A7 | RELAYS.IN8 |  |  |  | planned | power.hold |
+| L27 | MCP2.A0 | RELAYS2.IN1 |  |  |  | planned (optional) | steering enable |
+| L28 | MCP2.A1 | RELAYS2.IN2 |  |  |  | planned (optional) | drive lock (opens the KSI line while locked and parked) |
+| L29 | OPTO.OUT1 | MCP1.B0 |  |  |  | planned | in.ignition |
+| L30 | OPTO.OUT2 | MCP1.B1 |  |  |  | planned | in.brake |
+| L31 | OPTO.OUT3 | MCP1.B2 |  |  |  | planned | in.reverse |
+| L32 | OPTO.OUT4 | MCP1.B3 |  |  |  | planned | in.tray_down |
+| L33 | OPTO.OUT5 | MCP1.B4 |  |  |  | planned | in.tray_up |
+| L34 | OPTO.OUT6 | MCP1.B5 |  |  |  | planned | in.winch_remote |
+| L35 | OPTO.OUT7 | MCP1.B6 |  |  |  | planned | in.park |
+| L36 | OPTO.OUT8 | MCP1.B7 |  |  |  | planned | in.trailer |
+| L37 | PICO.3V3 | MCP1.VDD |  |  |  | planned |  |
+| L38 | PICO.3V3 | ADS1.VDD |  |  |  | planned |  |
+| L39 | PICO.3V3 | PICO_CAN.VCC |  |  |  | planned |  |
+| L40 | PICO.3V3 | RELAYS.VCC |  |  |  | planned |  |
+| L41 | PICO.3V3 | OPTO.VCC |  |  |  | planned |  |
+| L42 | PICO.3V3 | MCP2.VDD |  |  |  | planned (optional) |  |
+| L43 | PICO.3V3 | ADS2.VDD |  |  |  | planned (optional) |  |
+| L44 | PICO.3V3 | EPS_CAN.VCC |  |  |  | planned (optional) |  |
+| L45 | PICO.3V3 | RELAYS2.VCC |  |  |  | planned (optional) |  |
+| L46 | PICO.GP0 | DEBUG.RX |  |  |  | planned | UART0 TX |
+| L47 | DEBUG.TX | PICO.GP1 |  |  |  | planned |  |
+| L48 | PICO.USB | PI5.USB2_A |  |  |  | planned | Data and reflash only, never power |
+
+### 12 V signals into the control box (opto board)
+
+| Wire | From | To | Size | Fuse | Via | Status | Note |
+|---|---|---|---|---|---|---|---|
+| I01 | KEY.IGN | OPTO.IN1 | 0.75 mm² | 7.5 A | 1 A diode | planned | So the Pico sees key-off while relay 8 holds the rail. 0.75 mm² because the 7.5 A key fuse is upstream |
+| I02 | BRAKE_SW.OUT | OPTO.IN2 | 0.5 mm² |  |  | tbc |  |
+| I03 | FNR.R | OPTO.IN3 | 0.5 mm² |  | opto board | tbc | The F-N-R switch is on the Shinegle key line. If J1-1 runs at 72 V, this needs a 72 V rated input, not the 12 V opto |
+| I04 | LIM_DN.NC | OPTO.IN4 | 0.5 mm² |  |  | planned | Normally closed, a broken wire reads as at the limit |
+| I05 | LIM_UP.NC | OPTO.IN5 | 0.5 mm² |  |  | planned |  |
+| I06 | HSW_WINCH.IN | OPTO.IN6 | 0.5 mm² |  | 1N4148 | planned | Each hand control taps in through its own small diode |
+| I07 | HSW_WINCH.OUT | OPTO.IN6 | 0.5 mm² |  | 1N4148 | planned |  |
+| I08 | HSW_CAB.IN | OPTO.IN6 | 0.5 mm² |  | 1N4148 | planned |  |
+| I09 | HSW_CAB.OUT | OPTO.IN6 | 0.5 mm² |  | 1N4148 | planned |  |
+| I10 | WINCH_SOL.COIL_IN | OPTO.IN6 | 0.5 mm² |  | 1N4148 | tbc | Remote taps: only if the remote's own lines can be reached. TBC |
+| I11 | PARK_SW.OUT | OPTO.IN7 | 0.5 mm² |  |  | tbc | If the switch grounds, wire the opto input the other way round |
+| I12 | TRAILER.REED_A | OPTO.IN8 | 0.5 mm² |  |  | tbc |  |
+| I13 | FB.F10 | LIM_DN.C | 0.5 mm² | 3 A |  | planned | Limit switch and reed feed from a small fused 12 V |
+| I14 | LIM_DN.C | LIM_UP.C | 0.5 mm² |  |  | planned |  |
+| I15 | LIM_UP.C | TRAILER.REED_B | 0.5 mm² |  |  | tbc |  |
+
+### Lights
+
+| Wire | From | To | Size | Fuse | Via | Status | Note |
+|---|---|---|---|---|---|---|---|
+| LT01 | FB.F1 | LB1.pos | 1.5 mm² | 10 A |  | planned |  |
+| LT02 | FB.F2 | LB2.pos | 1.5 mm² | 10 A |  | planned |  |
+| LT03 | FB.F3 | LB3.pos | 1.5 mm² | 10 A |  | planned |  |
+| LT04 | FB.F4 | LB4.pos | 1.5 mm² | 10 A |  | planned |  |
+| LT05 | FB.F5 | LB_INT.pos | 1 mm² | 5 A |  | planned |  |
+| LT06 | LB1.neg | MOSFET.OUT1 | 1.5 mm² |  |  | planned |  |
+| LT07 | LB2.neg | MOSFET.OUT2 | 1.5 mm² |  |  | planned |  |
+| LT08 | LB3.neg | MOSFET.OUT3 | 1.5 mm² |  |  | planned |  |
+| LT09 | LB4.neg | MOSFET.OUT4 | 1.5 mm² |  |  | planned |  |
+| LT10 | LB_INT.neg | MOSFET.OUT5 | 1 mm² |  |  | planned |  |
+| LT11 | PICO.GP16 | MOSFET.IN1 |  |  |  | planned | light.front_1 PWM |
+| LT12 | PICO.GP17 | MOSFET.IN2 |  |  |  | planned | light.front_2 PWM |
+| LT13 | PICO.GP18 | MOSFET.IN3 |  |  |  | planned | light.front_3 PWM |
+| LT14 | PICO.GP19 | MOSFET.IN4 |  |  |  | planned | light.front_4 PWM |
+| LT15 | PICO.GP20 | MOSFET.IN5 |  |  |  | planned | light.interior PWM |
+| LT16 | FB.F6 | RELAYS.COM1 | 1.5 mm² | 10 A |  | planned |  |
+| LT17 | RELAYS.NO1 | FLOOD_L.pos | 1.5 mm² | 10 A |  | planned | light.rear, auto on in reverse |
+| LT18 | RELAYS.NO1 | FLOOD_R.pos | 1.5 mm² | 10 A |  | planned |  |
+
+### Winch
+
+| Wire | From | To | Size | Fuse | Via | Status | Note |
+|---|---|---|---|---|---|---|---|
+| WN01 | BAT12.pos | BRK_WINCH.in | 35 mm² | 250 A |  | planned | Cable that came with the winch |
+| WN02 | BRK_WINCH.out | WINCH_ISO.in | 35 mm² | 250 A |  | planned |  |
+| WN03 | WINCH_ISO.out | WINCH_SOL.B+ | 35 mm² | 250 A |  | planned |  |
+| WN04 | WINCH_SOL.M1 | WINCH_MOTOR.M1 | 35 mm² |  |  | confirmed |  |
+| WN05 | WINCH_SOL.M2 | WINCH_MOTOR.M2 | 35 mm² |  |  | confirmed |  |
+| WN06 | WINCH_SOL.REMOTE | WINCH_REMOTE.PLUG |  |  |  | confirmed | XBull remote stays as a backup |
+| WN07 | FB.F9 | RELAYS.COM4 | 0.5 mm² | 3 A |  | planned |  |
+| WN08 | FB.F9 | RELAYS.COM5 | 0.5 mm² | 3 A |  | planned |  |
+| WN09 | FB.F9 | RELAYS.COM6 | 0.5 mm² | 3 A |  | planned |  |
+| WN10 | RELAYS.NO4 | WINCH_SOL.COIL_IN | 0.5 mm² | 3 A | 3 A diode (1N5408) | planned | winch.in. Never the motor current through the relay board |
+| WN11 | RELAYS.NO5 | WINCH_SOL.COIL_OUT | 0.5 mm² | 3 A | 3 A diode (1N5408) | planned | winch.out, interlocked with in |
+| WN12 | RELAYS.NO6 | WINCH_ISO.coil_pos | 0.5 mm² | 3 A |  | planned | winch.isolator, only while armed |
+| WN13 | FB.F10 | HSW_WINCH.FEED | 0.5 mm² | 3 A |  | planned |  |
+| WN14 | FB.F10 | HSW_CAB.FEED | 0.5 mm² | 3 A |  | planned |  |
+| WN15 | HSW_WINCH.IN | WINCH_SOL.COIL_IN | 0.5 mm² | 3 A | 3 A diode (1N5408) | planned |  |
+| WN16 | HSW_WINCH.OUT | WINCH_SOL.COIL_OUT | 0.5 mm² | 3 A | 3 A diode (1N5408) | planned |  |
+| WN17 | HSW_CAB.IN | WINCH_SOL.COIL_IN | 0.5 mm² | 3 A | 3 A diode (1N5408) | planned |  |
+| WN18 | HSW_CAB.OUT | WINCH_SOL.COIL_OUT | 0.5 mm² | 3 A | 3 A diode (1N5408) | planned |  |
+
+### Drive: 4WD, diff lock, tray, power steering
+
+| Wire | From | To | Size | Fuse | Via | Status | Note |
+|---|---|---|---|---|---|---|---|
+| D01 | PICO.GP7 | BTS1.RPWM |  |  |  | planned | act.diff |
+| D02 | PICO.GP8 | BTS1.LPWM |  |  |  | planned |  |
+| D03 | PICO.GP9 | BTS1.EN |  |  |  | planned | R_EN and L_EN joined |
+| D04 | BTS1.IS | PICO.GP28 |  |  | 2 diodes + 1k to ground | planned | an.diff_current |
+| D05 | FB.F13 | BTS1.B+ | 1.5 mm² | 10 A |  | planned |  |
+| D06 | BTS1.M+ | ACT_DIFF.M+ | 1.5 mm² | 10 A |  | planned | Wrong way? Change DIFF_LOCK_DIR in firmware, not the wires |
+| D07 | BTS1.M- | ACT_DIFF.M- | 1.5 mm² | 10 A |  | planned |  |
+| D08 | ADS1.VDD | ACT_DIFF.POT_HI |  |  |  | planned | Pot on 3.3 V, never 12 V |
+| D09 | ACT_DIFF.POT_W | ADS1.A0 |  |  |  | planned | an.diff_pos |
+| D10 | ACT_DIFF.POT_LO | ADS1.GND |  |  |  | planned |  |
+| D11 | PICO.GP10 | BTS2.RPWM |  |  |  | planned | act.4wd |
+| D12 | PICO.GP11 | BTS2.LPWM |  |  |  | planned |  |
+| D13 | PICO.GP12 | BTS2.EN |  |  |  | planned |  |
+| D14 | BTS2.IS | ADS1.A2 |  |  | 2 diodes + 1k to ground | planned | an.4wd_current |
+| D15 | FB.F14 | BTS2.B+ | 1.5 mm² | 10 A |  | planned |  |
+| D16 | BTS2.M+ | ACT_4WD.M+ | 1.5 mm² | 10 A |  | tbc |  |
+| D17 | BTS2.M- | ACT_4WD.M- | 1.5 mm² | 10 A |  | tbc |  |
+| D18 | PICO.GP13 | BTS3.RPWM |  |  |  | planned | act.tray |
+| D19 | PICO.GP14 | BTS3.LPWM |  |  |  | planned |  |
+| D20 | PICO.GP15 | BTS3.EN |  |  |  | planned |  |
+| D21 | BTS3.IS | ADS1.A3 |  |  | 2 diodes + 1k to ground | planned | an.tray_current |
+| D22 | FB.F15 | BTS3.B+ | 2.5 mm² | 15 A |  | planned |  |
+| D23 | BTS3.M+ | ACT_TRAY.M+ | 2.5 mm² | 15 A |  | planned |  |
+| D24 | BTS3.M- | ACT_TRAY.M- | 2.5 mm² | 15 A |  | planned |  |
+| D25 | PICO.3V3 | BTS1.VCC |  |  |  | planned |  |
+| D26 | PICO.3V3 | BTS2.VCC |  |  |  | planned |  |
+| D27 | PICO.3V3 | BTS3.VCC |  |  |  | planned |  |
+| D28 | BAT12.pos | ADS1.A1 | 0.5 mm² | 1 A | divider 10k / 2.2k + 3.3 V zener | planned | an.aux_12v. Fuse the sense lead |
+| D29 | PI_BUCK.VOUT | BRAKE_PEDAL.V5 |  |  |  | planned (optional) | Or the Pico buck. 5 V sensor |
+| D30 | BRAKE_PEDAL.SIG | ADS2.A0 |  |  | divider 10k / 20k | planned (optional) | an.brake_pedal, 4.5 V reads 3.0 V |
+| D34 | BRAKE_PRESS.SIG | ADS2.A1 |  |  | divider 10k / 20k | planned (optional) | an.brake_pressure |
+| D35 | PI_BUCK.VOUT | BRAKE_PRESS.V5 |  |  |  | planned (optional) |  |
+| D31 | RAIL.BUS | RELAYS2.COM1 | 0.5 mm² | 3 A |  | planned (optional) | Steering ignition feed through relay 9, so the lock and RC kill can turn assist off |
+| D32 | RELAYS2.NO1 | EPS_ECU.IG | 0.5 mm² | 3 A |  | tbc (optional) |  |
+| D33 | EPS_ECU.MOTOR | EPS_COL.MOTOR |  |  |  | tbc (optional) | Toyota's own plug, keep it from the wrecker |
+
+### Trailer plug and trailer camera
+
+| Wire | From | To | Size | Fuse | Via | Status | Note |
+|---|---|---|---|---|---|---|---|
+| T01 | FB.F7 | RELAYS.COM2 | 1 mm² | 5 A |  | planned |  |
+| T02 | RELAYS.NO2 | TRAILER.P7_TAIL | 1 mm² | 5 A |  | planned | trailer.tail |
+| T03 | FB.F8 | RELAYS.COM3 | 1 mm² | 5 A |  | planned |  |
+| T04 | RELAYS.NO3 | TRAILER.P6_STOP | 1 mm² | 5 A |  | planned | trailer.brake |
+| T05 | BRAKE_SW.OUT | TRAILER.P6_STOP | 1 mm² |  | diode (backup) | tbc | Trailer brake lights still work with the control box off |
+| T06 | RELAYS.NO1 | TRAILER.P2_REV | 1 mm² | 10 A |  | tbc (optional) | Reversing pin. Relay 1 also runs the floods by hand, so trailer reverse lights would come on with them |
+| T07 | RELAYS.NO7 | TCAM_PLUG.V12 | 0.5 mm² | 2 A |  | planned (optional) | 2 A inline fuse. Runs while driving, not just reversing |
+| T08 | TCAM_PLUG.V12 | CAM_TRAILER.V12 | 0.5 mm² | 2 A |  | planned (optional) |  |
+| T09 | CAM_TRAILER.VID | TCAM_PLUG.VID |  |  |  | planned (optional) |  |
+| T10 | CAM_TRAILER.VID_GND | TCAM_PLUG.VID_GND |  |  |  | planned (optional) |  |
+| T11 | TCAM_PLUG.VID | TCAM_DONGLE.VID |  |  |  | planned (optional) | Shielded video cable |
+| T12 | TCAM_PLUG.VID_GND | TCAM_DONGLE.VID_GND |  |  |  | planned (optional) |  |
+
+### Dash computer: Pi 5, screen, cameras, USB, audio
+
+| Wire | From | To | Size | Fuse | Via | Status | Note |
+|---|---|---|---|---|---|---|---|
+| X01 | PI5.HDMI0 | SCREEN.HDMI |  |  |  | planned |  |
+| X02 | SCREEN.USB | USB_HUB.P1 |  |  |  | planned | Touch |
+| X03 | CAM_REAR.USB | PI5.USB3_A |  |  |  | tbc | Or a UVC capture dongle if it's an RCA/AHD camera |
+| X04 | TCAM_DONGLE.USB | PI5.USB3_B |  |  |  | planned (optional) | Other USB controller from the rear camera |
+| X05 | USB_HUB.UP | PI5.USB2_B |  |  |  | planned |  |
+| X06 | GPS.USB | USB_HUB.P2 |  |  |  | planned (optional) |  |
+| X07 | CARPLAY.USB | USB_HUB.P3 |  |  |  | planned (optional) |  |
+| X08 | USB_DAC.USB | USB_HUB.P4 |  |  |  | planned (optional) |  |
+| X09 | MODEM_4G.USB | USB_HUB.P5 |  |  |  | placeholder (optional) |  |
+| X10 | SSD.USB | USB_HUB.P6 |  |  |  | placeholder (optional) |  |
+| X11 | CAM_FRONT.CSI | PI5.CSI0 |  |  |  | planned |  |
+| X12 | CAM_CABIN.CSI | PI5.CSI1 |  |  |  | placeholder (optional) |  |
+| X13 | AIHAT.PCIE | PI5.PCIE |  |  |  | placeholder (optional) | Keep the PCIe port free for this |
+| X14 | AIHAT.HDR | PI5.HAT_HDR |  |  |  | placeholder (optional) | 16 mm stacking header over the Active Cooler |
+| X15 | PI5.P1_3V3 | PI_CAN.VCC |  |  |  | planned |  |
+| X16 | PI5.P23_SCLK | PI_CAN.SCK |  |  |  | planned |  |
+| X17 | PI5.P19_MOSI | PI_CAN.SI |  |  |  | planned |  |
+| X18 | PI_CAN.SO | PI5.P21_MISO |  |  |  | planned |  |
+| X19 | PI5.P24_CE0 | PI_CAN.CS |  |  |  | planned |  |
+| X20 | PI_CAN.INT | PI5.P22_GPIO25 |  |  |  | planned |  |
+| X21 | USB_DAC.OUT | AMP.IN |  |  |  | planned (optional) |  |
+| X22 | AMP.SPK | SPEAKERS.IN |  |  |  | planned (optional) |  |
+| X23 | PI5.P3_SDA | IMU.SDA |  |  |  | planned (optional) |  |
+| X24 | PI5.P5_SCL | IMU.SCL |  |  |  | planned (optional) |  |
+
+## Devices
+
+| ID | Device | Where | Status | Notes |
+|---|---|---|---|---|
+| PACK | Traction battery pack | hv | tbc | 72 V. Size TBC (the range maths assumes 7.5 kWh) |
+| HV_ISO | 150 A air-break switch | hv | from_manual | SG12X2 manual Fig. 2 puts B+ through it |
+| CONTACTOR | Main contactor | hv | tbc | SG1810 fault 13 is "main contactor or brake fault", so there is probably one. Coil wiring not in any manual we have |
+| SG1202 | Shinegle SG1202 controller | hv | from_manual | Full J1 pinout in config/shinegle-sg1202.yaml and docs/img/sg1202-wiring.svg See [`docs/shinegle-controller.md`](../../docs/shinegle-controller.md). |
+| MOTOR | 7.5 kW AC motor | hv | confirmed |  |
+| DCDC | DC-DC converter 72 V to 12 V | hv | tbc | Charges the 12 V battery. Rating TBC; it decides how long winch + steering can run |
+| KIT_KEY | Shinegle kit key switch | cab | tbc | The kit comes with its own key switch. Is it the Teryx key, or a second one? |
+| ESTOP | E-stop button | cab | planned (optional) | For RC mode. In series with KSI so it cuts drive with no software See [`docs/power-steering-rc.md`](../../docs/power-steering-rc.md). |
+| FNR | F-N-R switch | cab | planned | Physical switch straight to the controller. The reverse side is also tapped for the control box |
+| THROTTLE | Throttle pedal (kit accelerator) | cab | from_manual |  |
+| SPEEDO | Shinegle dash / speed panel | cab | from_manual (optional) |  |
+| PROG | SG1810 handheld programmer | cab | from_manual (optional) | Only plugged in for setup. Carries 12 V, never into USB See [`docs/shinegle-sg1810-programmer.md`](../../docs/shinegle-sg1810-programmer.md). |
+| BAT12 | 12 V aux battery | engine_bay | confirmed | Kept after the conversion. Charged by the DC-DC |
+| GND_STAR | Ground point (star) | engine_bay | planned | One solid chassis ground near the fuse block. Every 12 V ground goes here |
+| FB | Blade fuse block | cab | tbc | Needs 16 ways. The 12-way on the parts list is too small, so use an 18 to 20-way or two 12-ways |
+| KEY | Teryx key switch | cab | confirmed |  |
+| RAIL | Dash 12 V rail | dash | planned | Key OR relay 8 (power hold). Stays up after key-off until the Pico lets go See [`docs/wiring.md`](../../docs/wiring.md). |
+| TVS | 1.5KE18A TVS diode | dash | planned | Clamps spikes on the dash rail |
+| PI_BUCK | Pololu D36V50F5 5 V 5.5 A | dash | planned | Pi 5 power. About 16 W of its 27 W with the AI HAT+ 2 fitted |
+| PICO_BUCK | Mini560 5 V buck (control box) | control_box | planned |  |
+| SCREEN_PSU | Screen 12 V supply | dash | tbc | Depends on the screen's power brick. If it is 12 V, a 12 V stabiliser |
+| PICO | Raspberry Pi Pico 2 | control_box | planned | See [`docs/io-list.md`](../../docs/io-list.md). |
+| DEBUG | Debug UART header | control_box | planned | Inside the box. Vehicle lock workshop reset |
+| PICO_CAN | MCP2515 CAN module (control box) | control_box | planned | Seeed MCP2515 + SN65HVD230 (3.3 V). Crystal TBC on the bench |
+| EPS_CAN | MCP2515 CAN module (steering bus) | control_box | planned (optional) | Own 500 kbit/s bus to the steering ECU. Transmit only, INT not wired See [`docs/power-steering-wrecker.md`](../../docs/power-steering-wrecker.md). |
+| MCP1 | MCP23017 I/O expander (0x20) | control_box | planned |  |
+| MCP2 | Second MCP23017 (0x21) | control_box | planned (optional) | More outputs for the steering enable and the drive lock relay. The first one is full See [`docs/vehicle-lock.md`](../../docs/vehicle-lock.md). |
+| ADS1 | ADS1115 ADC (0x48) | control_box | planned | ALERT pin left free so GP22 can be the steering CAN chip select (read "ready" over I2C) |
+| ADS2 | Second ADS1115 (0x49) | control_box | planned (optional) | Brake pedal regen only See [`docs/brake-regen.md`](../../docs/brake-regen.md). |
+| OPTO | 8-ch opto board (PC817, 12 V in) | control_box | planned |  |
+| RELAYS | 8-ch relay board | control_box | confirmed | Owned. JD-VCC jumper off, coils on 5 V, inputs from 3.3 V |
+| RELAYS2 | 2-ch relay board | control_box | planned (optional) | Relay 9 steering enable, relay 10 drive lock (uses the NC contact) |
+| BTS1 | BTS7960 1 (front diff) | control_box | confirmed |  |
+| BTS2 | BTS7960 2 (2WD/4WD) | control_box | planned |  |
+| BTS3 | BTS7960 3 (tray) | control_box | planned |  |
+| MOSFET | 5-ch MOSFET board (low side) | control_box | planned | Logic-level MOSFETs that fully turn on from 3.3 V |
+| LB1 | Front bar 1 (far left) | front | confirmed |  |
+| LB2 | Front bar 2 (inner left) | front | confirmed |  |
+| LB3 | Front bar 3 (inner right) | front | confirmed |  |
+| LB4 | Front bar 4 (far right) | front | confirmed |  |
+| LB_INT | Interior 7 in bar | cab | confirmed |  |
+| FLOOD_L | Rear flood left (4 in pod) | rear | confirmed | Outside of the roll cage mounting plate. Also the reverse light |
+| FLOOD_R | Rear flood right (4 in pod) | rear | confirmed |  |
+| BRK_WINCH | 250 A breaker | engine_bay | planned |  |
+| WINCH_ISO | Winch isolator contactor | engine_bay | planned | Only on while the winch is armed on the dash (relay 6) |
+| WINCH_SOL | XBull solenoid box | front | confirmed |  |
+| WINCH_MOTOR | XBull 5000 lb winch motor | front | confirmed |  |
+| WINCH_REMOTE | XBull handheld remote | front | confirmed |  |
+| HSW_WINCH | Hidden winch switch (at the winch) | front | confirmed | Momentary (ON)-OFF-(ON) |
+| HSW_CAB | Hidden winch switch (in the cab) | cab | confirmed | Momentary (ON)-OFF-(ON) |
+| ACT_DIFF | Front diff lock actuator (50 mm, pot) | front | confirmed |  |
+| ACT_4WD | 2WD/4WD actuator | front | tbc | 50 mm actuator, or drive the stock Kawasaki electric 4WD actuator instead See [`docs/teryx-drivetrain.md`](../../docs/teryx-drivetrain.md). |
+| ACT_TRAY | Tray lift actuator (400 mm) | rear | confirmed |  |
+| LIM_DN | Tray down limit (NC) | rear | planned |  |
+| LIM_UP | Tray up limit (NC) | rear | planned |  |
+| BRAKE_SW | Brake light switch (stock) | cab | tbc |  |
+| PARK_SW | Parking brake switch (stock) | cab | tbc | Lights the red parking brake light in the meter |
+| BRAKE_PEDAL | Brake pedal Hall sensor | cab | planned (optional) | Brake regen only, once the Shinegle check passes See [`docs/brake-regen.md`](../../docs/brake-regen.md). |
+| BRAKE_PRESS | Brake line pressure sensor | front | planned (optional) | Optional cross-check for the pedal sensor, 0.5-4.5 V See [`docs/brake-regen.md`](../../docs/brake-regen.md). |
+| EPS_ECU | Toyota Aqua EPS ECU (89650-52B51) | cab | tbc (optional) | Wrecker column, bench test with the Prius CAN frames first. ECU plug pinout TBC See [`docs/power-steering-wrecker.md`](../../docs/power-steering-wrecker.md). |
+| EPS_COL | Aqua steering column (motor + torque sensor) | cab | tbc (optional) | Motor and torque sensor plugs go to the ECU on Toyota's own loom |
+| TRAILER | 7-pin flat trailer socket (Narva 82043BL, reed switch) | rear | planned | See [`docs/cameras.md`](../../docs/cameras.md). |
+| TCAM_PLUG | Trailer camera 4-pin plug | rear | planned (optional) | Own small waterproof plug next to the 7-pin (pick from cameras.md) |
+| CAM_TRAILER | Trailer camera (12 V AHD) | trailer | planned (optional) |  |
+| TCAM_DONGLE | UVC capture dongle (trailer camera) | dash | planned (optional) |  |
+| PI5 | Raspberry Pi 5 8GB | dash | confirmed | The 40-pin header and the PCIe port are kept for the AI HAT+ 2. CAN module wires go to header pins that come up through the HAT See [`docs/wiring.md`](../../docs/wiring.md). |
+| AIHAT | AI HAT+ 2 (later) | dash | placeholder (optional) | Not buying yet. Room, cooling (about 4.5 W) and the PCIe port stay free for it See [`docs/ai-hat-ideas.md`](../../docs/ai-hat-ideas.md). |
+| PI_CAN | MCP2515 CAN module (Pi) | dash | planned | Seeed MCP2515 + SN65HVD230 on the Pi box wall |
+| SCREEN | 10.1 in touch screen | dash | confirmed | 1280x800, HDMI + USB touch, 3.5 mm audio in |
+| USB_HUB | Powered USB hub | dash | planned | For the slow USB things. Not picked yet, power feed TBC |
+| CAM_REAR | Rear camera (2K) | rear | tbc |  |
+| CAM_FRONT | Camera Module 3 Wide (front) | dash | planned | Inside the screen housing, 200-300 mm ribbon |
+| CAM_CABIN | Cabin camera (sentry) | dash | placeholder (optional) | Being worked out in the 4G / sentry thread. Port TBC |
+| GPS | DFRobot TEL0138 USB GPS | dash | planned (optional) |  |
+| MODEM_4G | 4G USB modem | dash | placeholder (optional) | Being worked out in the 4G / sentry thread |
+| SSD | USB SSD (recordings) | dash | placeholder (optional) | Only if we record footage. Shares the hub's bandwidth; never NVMe on the PCIe port |
+| CARPLAY | Carlinkit CPC200-CCPA | dash | planned (optional) |  |
+| USB_DAC | USB audio out | dash | planned (optional) |  |
+| AMP | 12 V marine amp | cab | planned (optional) | See [`docs/audio.md`](../../docs/audio.md). |
+| SPEAKERS | Marine speakers | cab | planned (optional) |  |
+| IMU | IMU (roll / pitch) | dash | planned (optional) |  |

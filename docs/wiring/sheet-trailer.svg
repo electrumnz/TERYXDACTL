@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1320 729" width="1320" height="729" font-family="Arial, Helvetica, sans-serif" data-sheet="trailer">
+<rect width="1320" height="729" fill="#ffffff"/>
+<text x="40" y="40" font-size="22" text-anchor="start" font-weight="bold" fill="#1f2328">Trailer plug and trailer camera</text>
+<text x="40" y="62" font-size="12" text-anchor="start" font-weight="normal" fill="#57606a">Teryx OS wiring, sheet &#x27;trailer&#x27;. Made from config/wiring.yaml by `python -m teryx wiring`. Don&#x27;t edit this file.</text>
+<line x1="40" y1="92" x2="74" y2="92" stroke="#1a7f37" stroke-width="2.5"/>
+<text x="80" y="96" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">Measured on the Teryx</text>
+<line x1="250" y1="92" x2="284" y2="92" stroke="#0969da" stroke-width="2.5"/>
+<text x="290" y="96" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">Manual / confirmed</text>
+<line x1="460" y1="92" x2="494" y2="92" stroke="#424a53" stroke-width="2.5"/>
+<text x="500" y="96" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">Our design, not built yet</text>
+<line x1="670" y1="92" x2="704" y2="92" stroke="#bf8700" stroke-width="2.5" stroke-dasharray="7 4"/>
+<text x="710" y="96" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">TBC: needs checking</text>
+<line x1="880" y1="92" x2="914" y2="92" stroke="#8250df" stroke-width="2.5" stroke-dasharray="2 4"/>
+<text x="920" y="96" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">Placeholder / later</text>
+<text x="40" y="120" font-size="11" text-anchor="start" font-weight="normal" fill="#57606a">Labels: wire id, size, fuse (if the wire has its own), and anything in between. Faded = optional. Hover for notes. Full table: docs/wiring/README.md</text>
+<g data-wire="T01" data-from="FB.F7" data-to="RELAYS.COM2" data-status="planned"><title>T01: FB.F7 -&gt; RELAYS.COM2</title><path d="M920,197 C835,197 835,197 750,197" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="T02" data-from="RELAYS.NO2" data-to="TRAILER.P7_TAIL" data-status="planned"><title>T02: RELAYS.NO2 -&gt; TRAILER.P7_TAIL - trailer.tail</title><path d="M480,257 C395,257 395,252 310,252" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="T03" data-from="FB.F8" data-to="RELAYS.COM3" data-status="planned"><title>T03: FB.F8 -&gt; RELAYS.COM3</title><path d="M920,217 C835,217 835,217 750,217" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="T04" data-from="RELAYS.NO3" data-to="TRAILER.P6_STOP" data-status="planned"><title>T04: RELAYS.NO3 -&gt; TRAILER.P6_STOP - trailer.brake</title><path d="M480,277 C395,277 395,232 310,232" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="T05" data-from="BRAKE_SW.OUT" data-to="TRAILER.P6_STOP" data-status="tbc"><title>T05: BRAKE_SW.OUT -&gt; TRAILER.P6_STOP - Trailer brake lights still work with the control box off</title><path d="M480,388 C395,388 395,232 310,232" fill="none" stroke="#bf8700" stroke-width="2.2" stroke-dasharray="7 4"/></g>
+<g data-wire="T06" data-from="RELAYS.NO1" data-to="TRAILER.P2_REV" data-status="tbc"><title>T06: RELAYS.NO1 -&gt; TRAILER.P2_REV - Reversing pin. Relay 1 also runs the floods by hand, so trailer reverse lights would come on with them</title><path d="M480,237 C395,237 395,212 310,212" fill="none" stroke="#bf8700" stroke-width="2.2" stroke-dasharray="7 4" stroke-opacity="0.65"/></g>
+<g data-wire="T07" data-from="RELAYS.NO7" data-to="TCAM_PLUG.V12" data-status="planned"><title>T07: RELAYS.NO7 -&gt; TCAM_PLUG.V12 - 2 A inline fuse. Runs while driving, not just reversing</title><path d="M480,297 C395,297 395,343 310,343" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="T08" data-from="TCAM_PLUG.V12" data-to="CAM_TRAILER.V12" data-status="planned"><title>T08: TCAM_PLUG.V12 -&gt; CAM_TRAILER.V12</title><path d="M310,343 C395,343 395,479 480,479" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="T09" data-from="CAM_TRAILER.VID" data-to="TCAM_PLUG.VID" data-status="planned"><title>T09: CAM_TRAILER.VID -&gt; TCAM_PLUG.VID</title><path d="M480,499 C395,499 395,363 310,363" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="T10" data-from="CAM_TRAILER.VID_GND" data-to="TCAM_PLUG.VID_GND" data-status="planned"><title>T10: CAM_TRAILER.VID_GND -&gt; TCAM_PLUG.VID_GND</title><path d="M480,519 C395,519 395,383 310,383" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="T11" data-from="TCAM_PLUG.VID" data-to="TCAM_DONGLE.VID" data-status="planned"><title>T11: TCAM_PLUG.VID -&gt; TCAM_DONGLE.VID - Shielded video cable</title><path d="M310,363 C395,363 395,625 480,625" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="T12" data-from="TCAM_PLUG.VID_GND" data-to="TCAM_DONGLE.VID_GND" data-status="planned"><title>T12: TCAM_PLUG.VID_GND -&gt; TCAM_DONGLE.VID_GND</title><path d="M310,383 C395,383 395,645 480,645" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-device="TRAILER" data-status="planned"><title>TRAILER: 7-pin flat trailer socket (Narva 82043BL, reed switch)</title><rect x="40" y="150" width="270" height="124" rx="6" fill="#f4f4f4" stroke="#424a53" stroke-width="1.5"/>
+<text x="50" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">7-pin flat trailer socket (Narva</text>
+<text x="50" y="183" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">82043BL, reed switch)</text>
+<text x="50" y="198" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">TRAILER · planned</text>
+<line x1="40" y1="212" x2="310" y2="212" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="216" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P2_REV</text>
+<line x1="40" y1="232" x2="310" y2="232" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="236" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P6_STOP</text>
+<line x1="40" y1="252" x2="310" y2="252" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="256" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P7_TAIL</text>
+</g>
+<g data-device="TCAM_PLUG" data-status="planned"><title>TCAM_PLUG: Trailer camera 4-pin plug - Own small waterproof plug next to the 7-pin (pick from cameras.md)</title><rect x="40" y="296" width="270" height="109" rx="6" fill="#f4f4f4" stroke="#424a53" stroke-width="1.5"/>
+<text x="50" y="314" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Trailer camera 4-pin plug</text>
+<text x="50" y="329" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">TCAM_PLUG · planned · optional</text>
+<line x1="40" y1="343" x2="310" y2="343" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="347" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">V12</text>
+<line x1="40" y1="363" x2="310" y2="363" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="367" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VID</text>
+<line x1="40" y1="383" x2="310" y2="383" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="387" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VID_GND</text>
+</g>
+<g data-device="RELAYS" data-status="confirmed"><title>RELAYS: 8-ch relay board - Owned. JD-VCC jumper off, coils on 5 V, inputs from 3.3 V</title><rect x="480" y="150" width="270" height="169" rx="6" fill="#f6f1ff" stroke="#0969da" stroke-width="1.5"/>
+<text x="490" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">8-ch relay board</text>
+<text x="490" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">RELAYS · confirmed</text>
+<line x1="480" y1="197" x2="750" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">COM2</text>
+<line x1="480" y1="217" x2="750" y2="217" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">COM3</text>
+<line x1="480" y1="237" x2="750" y2="237" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="241" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">NO1</text>
+<line x1="480" y1="257" x2="750" y2="257" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="261" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">NO2</text>
+<line x1="480" y1="277" x2="750" y2="277" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="281" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">NO3</text>
+<line x1="480" y1="297" x2="750" y2="297" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="301" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">NO7</text>
+</g>
+<g data-device="BRAKE_SW" data-status="tbc"><title>BRAKE_SW: Brake light switch (stock)</title><rect x="480" y="341" width="270" height="69" rx="6" fill="#f0f6ff" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
+<text x="490" y="359" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Brake light switch (stock)</text>
+<text x="490" y="374" font-size="10" text-anchor="start" font-weight="normal" fill="#bf8700">BRAKE_SW · tbc</text>
+<line x1="480" y1="388" x2="750" y2="388" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="392" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT</text>
+</g>
+<g data-device="CAM_TRAILER" data-status="planned"><title>CAM_TRAILER: Trailer camera (12 V AHD)</title><rect x="480" y="432" width="270" height="109" rx="6" fill="#f4f4f4" stroke="#424a53" stroke-width="1.5"/>
+<text x="490" y="450" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Trailer camera (12 V AHD)</text>
+<text x="490" y="465" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">CAM_TRAILER · planned · optional</text>
+<line x1="480" y1="479" x2="750" y2="479" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="483" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">V12</text>
+<line x1="480" y1="499" x2="750" y2="499" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="503" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VID</text>
+<line x1="480" y1="519" x2="750" y2="519" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="523" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VID_GND</text>
+</g>
+<g data-device="TCAM_DONGLE" data-status="planned"><title>TCAM_DONGLE: UVC capture dongle (trailer camera)</title><rect x="480" y="563" width="270" height="104" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
+<text x="490" y="581" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">UVC capture dongle (trailer</text>
+<text x="490" y="596" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">camera)</text>
+<text x="490" y="611" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">TCAM_DONGLE · planned · optional</text>
+<line x1="480" y1="625" x2="750" y2="625" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="629" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VID</text>
+<line x1="480" y1="645" x2="750" y2="645" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="649" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VID_GND</text>
+</g>
+<g data-device="FB" data-status="tbc"><title>FB: Blade fuse block - Needs 16 ways. The 12-way on the parts list is too small, so use an 18 to 20-way or two 12-ways</title><rect x="920" y="150" width="270" height="89" rx="6" fill="#f0f6ff" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
+<text x="930" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Blade fuse block</text>
+<text x="930" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#bf8700">FB · tbc</text>
+<line x1="920" y1="197" x2="1190" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F7  relay 2 trailer tail</text>
+<line x1="920" y1="217" x2="1190" y2="217" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F8  relay 3 trailer stop</text>
+</g>
+<text x="912" y="194" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T01  1 mm²</text>
+<text x="472" y="254" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T02  1 mm²  5 A</text>
+<text x="912" y="214" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T03  1 mm²</text>
+<text x="472" y="274" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T04  1 mm²  5 A</text>
+<text x="472" y="385" font-size="9.5" text-anchor="end" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">T05  1 mm²  via diode (backup)</text>
+<text x="472" y="234" font-size="9.5" text-anchor="end" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">T06  1 mm²  10 A</text>
+<text x="472" y="294" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T07  0.5 mm²  2 A</text>
+<text x="472" y="476" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T08  0.5 mm²  2 A</text>
+<text x="472" y="496" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T09</text>
+<text x="472" y="516" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T10</text>
+<text x="472" y="622" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T11</text>
+<text x="472" y="642" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T12</text>
+</svg>
