@@ -963,6 +963,16 @@ void ctl_tick(controller_t *c, const cb_in_t *in, cb_out_t *out, cb_send_fn send
     if (ign) out->relays |= BIT(R_ACCESSORY);
     if (c->power_hold) out->relays |= BIT(R_POWER_HOLD);
     out->drive_inhibit = locked;
+    // Relay 10 opens the Shinegle key line (its NC contact) while locked, so a
+    // locked Teryx can't drive even if the dash is hacked or gone. Relay 9 feeds the
+    // power steering ignition, and the Pico sends it the Toyota speed frames.
+    if (locked) out->relays2 |= BIT(R2_DRIVE_LOCK);
+    if (ign && !locked) {
+        out->relays2 |= BIT(R2_STEER_ENABLE);
+        out->eps_on = true;
+        out->eps_speed_known = ctl_speed_valid(c, now);
+        out->eps_speed_x10 = c->speed_x10;
+    }
     if (c->lock.dirty) {
         out->save_lock = true;
         c->lock.dirty = false;
@@ -994,6 +1004,8 @@ void ctl_tick(controller_t *c, const cb_in_t *in, cb_out_t *out, cb_send_fn send
             memset(out->act_dir, 0, sizeof(out->act_dir));
             memset(out->act_duty, 0, sizeof(out->act_duty));
             out->relays = keep;
+            out->relays2 &= BIT(R2_DRIVE_LOCK);
+            out->eps_on = false;
             out->enter_bootloader = true;
         }
         c->bootloader_pending = false;

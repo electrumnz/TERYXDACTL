@@ -20,6 +20,7 @@
 #include "ads1115.h"
 #include "mcp23017.h"
 #include "mcp2515.h"
+#include "../core/eps.h"
 #include "pca9685.h"
 
 #define I2C_PORT i2c1
@@ -27,6 +28,10 @@
 
 static controller_t ctl;
 static mcp2515_t can = {.spi = spi0, .cs_pin = PIN_CAN_CS, .int_pin = PIN_CAN_INT};
+// Steering bus: second MCP2515 on the same SPI, own chip select, transmit only.
+static mcp2515_t eps_can = {.spi = spi0, .cs_pin = PIN_EPS_CAN_CS, .int_pin = PIN_CAN_INT};
+static bool eps_up;
+static uint32_t eps_last_ms;
 static bool can_up;
 
 // ---- CAN transmit queue (the MCP2515 only has 3 TX buffers) -----------------
@@ -208,7 +213,7 @@ static void lamps_write(const cb_out_t *o, uint32_t now) {
 }
 
 // ---- I2C parts -------------------------------------------------------------------
-static bool exp_ok, ads_ok;
+static bool exp_ok, exp2_ok, ads_ok;
 static int io_fail;
 static uint8_t din_last;
 static int ads_ch;
@@ -224,6 +229,8 @@ static void ads_kick(void) {
 static void io_init(void) {
     uint8_t off = relay_bits_to_pins(0);
     exp_ok = mcp23017_init(I2C_PORT, MCP23017_ADDR, off);
+    // Second expander is optional (relays 9-10). Missing = no steering relay, no drive lock relay.
+    exp2_ok = mcp23017_init(I2C_PORT, MCP23017_2_ADDR, off);
     ads_ch = 0;
     ads_kick();
 }
@@ -298,7 +305,11 @@ int main(void) {
     gpio_init(PIN_CAN_CS);
     gpio_put(PIN_CAN_CS, 1);
     gpio_set_dir(PIN_CAN_CS, GPIO_OUT);
+    gpio_init(PIN_EPS_CAN_CS);
+    gpio_put(PIN_EPS_CAN_CS, 1);
+    gpio_set_dir(PIN_EPS_CAN_CS, GPIO_OUT);
     can_up = mcp2515_init(&can, MCP2515_OSC_HZ, CAN_BITRATE);
+    eps_up = mcp2515_init(&eps_can, MCP2515_OSC_HZ, EPS_BITRATE);
 
     i2c_init(I2C_PORT, I2C_BAUD);
     gpio_set_function(PIN_I2C_SDA, GPIO_FUNC_I2C);
@@ -338,7 +349,7 @@ int main(void) {
     watchdog_enable(WATCHDOG_MS, true);  // rule 9
 
     absolute_time_t next = get_absolute_time();
-    uint8_t relays_written = 0xFF;
+    uint8_t relays_written = 0xFF, relays2_written = 0xFF;
     uint32_t last_can_check = now;
     while (true) {
         watchdog_update();
@@ -363,6 +374,17 @@ int main(void) {
                 // Write on change, and about once a second anyway in case of a glitch.
                 if (mcp23017_write_a(I2C_PORT, MCP23017_ADDR, pins)) relays_written = pins;
             }
+            uint8_t pins2 = relay_bits_to_pins(out.relays2);
+            if (exp2_ok && (pins2 != relays2_written || (now & 0x3FF) < TICK_MS)) {
+                if (mcp23017_write_a(I2C_PORT, MCP23017_2_ADDR, pins2)) relays2_written = pins2;
+                else exp2_ok = false;
+            }
+            if (out.eps_on && eps_up && now - eps_last_ms >= EPS_PERIOD_MS) {
+                eps_last_ms = now;
+                can_frame_t ef[2];
+                int nf = eps_frames(out.eps_speed_x10, out.eps_speed_known, ef);
+                for (int i = 0; i < nf; i++) mcp2515_send(&eps_can, &ef[i]);
+            }
 
             if (out.save_lock) lock_save(&ctl.lock.saved);
             uart_console(&ctl);
@@ -385,6 +407,8 @@ int main(void) {
         if (now - last_can_check > 1000u) {
             last_can_check = now;
             if (!can_up || mcp2515_bus_off(&can)) can_up = mcp2515_init(&can, MCP2515_OSC_HZ, CAN_BITRATE);
+            if (!eps_up || mcp2515_bus_off(&eps_can)) eps_up = mcp2515_init(&eps_can, MCP2515_OSC_HZ, EPS_BITRATE);
+            if (!exp2_ok && (exp2_ok = mcp23017_init(I2C_PORT, MCP23017_2_ADDR, relay_bits_to_pins(0)))) relays2_written = 0xFF;
         }
         tight_loop_contents();
     }

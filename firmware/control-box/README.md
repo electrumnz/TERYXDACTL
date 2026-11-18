@@ -129,7 +129,8 @@ These are in the firmware and need adding to the test environment's
   layer, but nothing sends it to the Shinegle until its CAN is decoded.
 - Vehicle lock (`docs/vehicle-lock.md`, in `messages.py` too): `0x705` lock command,
   `0x716` lock state, `0x714` status 3 "locked". `cb_out_t.drive_inhibit` is set while locked,
-  but like throttle hold nothing reaches the Shinegle yet. `cb_out_t.save_lock` asks the
+  and relay 10 (second MCP23017 at 0x21, `R2_DRIVE_LOCK`) opens the Shinegle KSI line through
+  its NC contact, so a locked Teryx can't drive with no software in the way. `cb_out_t.save_lock` asks the
   hardware layer to write the lock sector. Debug UART (GP0/GP1, 115200) now runs the
   `LOCK RESET` workshop command.
 - Remote lock and Sentry (`docs/remote-access.md`, `docs/sentry.md`): `0x705` command 7
@@ -162,3 +163,10 @@ These are in the firmware and need adding to the test environment's
 - The RP2350 boot ROM supports A/B firmware slots with "try before you buy"
   (a new image must confirm itself or the Pico falls back). That would make a
   bad update recover on its own. Worth adding once the basics are proven.
+
+- Power steering (`docs/power-steering-wrecker.md`): relay 9 (`R2_STEER_ENABLE`) feeds the
+  Toyota EPS ignition with the key on and not locked, and the second MCP2515 (CS on GP22,
+  500 kbit/s, transmit only) sends the Toyota RPM (0x2C4) and speed (0x0B4) frames every
+  20 ms (`src/core/eps.c`, same bytes as `teryx/eps_toyota.py`). Below 16.3 km/h, or with no
+  speed, it reports 16.3 km/h for full assist. Stop sending and the column goes to limp mode.
+  If the second MCP23017 or CAN board isn't fitted, the Pico just carries on without them.

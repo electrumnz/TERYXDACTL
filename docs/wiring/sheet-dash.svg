@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 1414" width="1760" height="1414" font-family="Arial, Helvetica, sans-serif" data-sheet="dash">
-<rect width="1760" height="1414" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 1454" width="1760" height="1454" font-family="Arial, Helvetica, sans-serif" data-sheet="dash">
+<rect width="1760" height="1454" fill="#ffffff"/>
 <text x="40" y="40" font-size="22" text-anchor="start" font-weight="bold" fill="#1f2328">Dash computer: Pi 5, screen, cameras, USB, audio</text>
 <text x="40" y="62" font-size="12" text-anchor="start" font-weight="normal" fill="#57606a">Teryx OS wiring, sheet &#x27;dash&#x27;. Made from config/wiring.yaml by `python -m teryx wiring`. Don&#x27;t edit this file.</text>
 <line x1="40" y1="92" x2="74" y2="92" stroke="#1a7f37" stroke-width="2.5"/>
@@ -15,34 +15,37 @@
 <text x="40" y="120" font-size="11" text-anchor="start" font-weight="normal" fill="#57606a">Labels: wire id, size, fuse (if the wire has its own), and anything in between. Faded = optional. Hover for notes. Full table: docs/wiring/README.md</text>
 <g data-wire="X01" data-from="PI5.HDMI0" data-to="SCREEN.HDMI" data-status="planned"><title>X01: PI5.HDMI0 -&gt; SCREEN.HDMI</title><path d="M310,217 C395,217 395,197 480,197" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
 <g data-wire="X02" data-from="SCREEN.USB" data-to="PI5.USB2_B" data-status="planned"><title>X02: SCREEN.USB -&gt; PI5.USB2_B - Touch. Screen only does touch over USB. Right-angle lead, cable-tied to the box</title><path d="M480,217 C395,217 395,257 310,257" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="X03" data-from="CAM_REAR.VID" data-to="TCAM_DONGLE.VID_R" data-status="tbc"><title>X03: CAM_REAR.VID -&gt; TCAM_DONGLE.VID_R - Shielded video lead, soldered</title><path d="M920,197 C835,197 835,520 750,520" fill="none" stroke="#bf8700" stroke-width="1.4" stroke-dasharray="7 4"/></g>
-<g data-wire="X03b" data-from="CAM_REAR.VID_GND" data-to="TCAM_DONGLE.VID_R_GND" data-status="tbc"><title>X03b: CAM_REAR.VID_GND -&gt; TCAM_DONGLE.VID_R_GND</title><path d="M920,217 C835,217 835,540 750,540" fill="none" stroke="#bf8700" stroke-width="1.4" stroke-dasharray="7 4"/></g>
+<g data-wire="X03" data-from="CAM_REAR.VID" data-to="TCAM_DONGLE.VID_R" data-status="tbc"><title>X03: CAM_REAR.VID -&gt; TCAM_DONGLE.VID_R - Shielded video lead, soldered</title><path d="M920,217 C835,217 835,520 750,520" fill="none" stroke="#bf8700" stroke-width="1.4" stroke-dasharray="7 4"/></g>
+<g data-wire="X05" data-from="RELAYS.NO7" data-to="CAM_REAR.V12" data-status="tbc"><title>X05: RELAYS.NO7 -&gt; CAM_REAR.V12 - 2 A inline fuse. On with the key, like the trailer camera</title><path d="M1360,409 C1275,409 1275,197 1190,197" fill="none" stroke="#bf8700" stroke-width="1.4" stroke-dasharray="7 4"/></g>
+<g data-wire="X03b" data-from="CAM_REAR.VID_GND" data-to="TCAM_DONGLE.VID_R_GND" data-status="tbc"><title>X03b: CAM_REAR.VID_GND -&gt; TCAM_DONGLE.VID_R_GND</title><path d="M920,237 C835,237 835,540 750,540" fill="none" stroke="#bf8700" stroke-width="1.4" stroke-dasharray="7 4"/></g>
 <g data-wire="X04" data-from="TCAM_DONGLE.CSI" data-to="PI5.CSI1" data-status="tbc"><title>X04: TCAM_DONGLE.CSI -&gt; PI5.CSI1 - Camera ribbon, 2nd port</title><path d="M480,560 C395,560 395,297 310,297" fill="none" stroke="#bf8700" stroke-width="1.4" stroke-dasharray="7 4"/></g>
 <g data-wire="X07" data-from="CARPLAY.USB" data-to="PI5.USB2_A" data-status="planned"><title>X07: CARPLAY.USB -&gt; PI5.USB2_A - CarPlay dongle is USB only. Right-angle lead, dongle zip-tied down inside the box</title><path d="M480,308 C395,308 395,237 310,237" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
 <g data-wire="X11" data-from="CAM_FRONT.CSI" data-to="PI5.CSI0" data-status="planned"><title>X11: CAM_FRONT.CSI -&gt; PI5.CSI0</title><path d="M480,399 C395,399 395,277 310,277" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
 <g data-wire="X13" data-from="AIHAT.PCIE" data-to="PI5.PCIE" data-status="placeholder"><title>X13: AIHAT.PCIE -&gt; PI5.PCIE - Keep the PCIe port free for this</title><path d="M480,651 C395,651 395,317 310,317" fill="none" stroke="#8250df" stroke-width="1.4" stroke-dasharray="2 4" stroke-opacity="0.65"/></g>
 <g data-wire="X14" data-from="AIHAT.HDR" data-to="PI5.HAT_HDR" data-status="placeholder"><title>X14: AIHAT.HDR -&gt; PI5.HAT_HDR - 16 mm stacking header over the Active Cooler</title><path d="M480,671 C395,671 395,337 310,337" fill="none" stroke="#8250df" stroke-width="1.4" stroke-dasharray="2 4" stroke-opacity="0.65"/></g>
-<g data-wire="X15" data-from="PI5.P1_3V3" data-to="PI_CAN.VCC" data-status="planned"><title>X15: PI5.P1_3V3 -&gt; PI_CAN.VCC</title><path d="M310,357 C395,357 395,1230 480,1230" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="X16" data-from="PI5.P23_SCLK" data-to="PI_CAN.SCK" data-status="planned"><title>X16: PI5.P23_SCLK -&gt; PI_CAN.SCK</title><path d="M310,597 C395,597 395,1250 480,1250" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="X17" data-from="PI5.P19_MOSI" data-to="PI_CAN.SI" data-status="planned"><title>X17: PI5.P19_MOSI -&gt; PI_CAN.SI</title><path d="M310,537 C395,537 395,1270 480,1270" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="X18" data-from="PI_CAN.SO" data-to="PI5.P21_MISO" data-status="planned"><title>X18: PI_CAN.SO -&gt; PI5.P21_MISO</title><path d="M480,1290 C395,1290 395,557 310,557" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="X19" data-from="PI5.P24_CE0" data-to="PI_CAN.CS" data-status="planned"><title>X19: PI5.P24_CE0 -&gt; PI_CAN.CS</title><path d="M310,617 C395,617 395,1310 480,1310" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="X20" data-from="PI_CAN.INT" data-to="PI5.P22_GPIO25" data-status="planned"><title>X20: PI_CAN.INT -&gt; PI5.P22_GPIO25</title><path d="M480,1330 C395,1330 395,577 310,577" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="X21" data-from="DAC_HAT.OUT" data-to="AMP.IN" data-status="planned"><title>X21: DAC_HAT.OUT -&gt; AMP.IN - RCA to RCA lead out through the Pi box&#x27;s spare PG7 gland</title><path d="M750,1028 C835,1028 835,323 920,323" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="X32" data-from="PI5.P8_TXD" data-to="MODEM_4G.R" data-status="placeholder"><title>X32: PI5.P8_TXD -&gt; MODEM_4G.R - Soldered lead, 115200 baud</title><path d="M310,437 C395,437 395,1139 480,1139" fill="none" stroke="#8250df" stroke-width="1.4" stroke-dasharray="2 4" stroke-opacity="0.65"/></g>
-<g data-wire="X33" data-from="MODEM_4G.T" data-to="PI5.P10_RXD" data-status="placeholder"><title>X33: MODEM_4G.T -&gt; PI5.P10_RXD - Soldered lead. Measure T first: 3.3 V ok, else BSS138</title><path d="M480,1119 C395,1119 395,457 310,457" fill="none" stroke="#8250df" stroke-width="1.4" stroke-dasharray="2 4" stroke-opacity="0.65"/></g>
-<g data-wire="X25" data-from="PI5.P12_GPIO18" data-to="DAC_HAT.BCK" data-status="planned"><title>X25: PI5.P12_GPIO18 -&gt; DAC_HAT.BCK - jumper lead</title><path d="M310,477 C395,477 395,888 480,888" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="X26" data-from="PI5.P35_GPIO19" data-to="DAC_HAT.LRCK" data-status="planned"><title>X26: PI5.P35_GPIO19 -&gt; DAC_HAT.LRCK - jumper lead</title><path d="M310,497 C395,497 395,908 480,908" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="X27" data-from="PI5.P40_GPIO21" data-to="DAC_HAT.DIN" data-status="planned"><title>X27: PI5.P40_GPIO21 -&gt; DAC_HAT.DIN - jumper lead</title><path d="M310,517 C395,517 395,928 480,928" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="X28" data-from="PI5.P3_SDA" data-to="DAC_HAT.SDA" data-status="planned"><title>X28: PI5.P3_SDA -&gt; DAC_HAT.SDA - jumper lead</title><path d="M310,397 C395,397 395,948 480,948" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="X29" data-from="PI5.P5_SCL" data-to="DAC_HAT.SCL" data-status="planned"><title>X29: PI5.P5_SCL -&gt; DAC_HAT.SCL - jumper lead</title><path d="M310,417 C395,417 395,968 480,968" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="X30" data-from="PI5.P2_5V" data-to="DAC_HAT.V5" data-status="planned"><title>X30: PI5.P2_5V -&gt; DAC_HAT.V5 - jumper lead</title><path d="M310,377 C395,377 395,988 480,988" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="X31" data-from="DAC_HAT.GND" data-to="PI5.GND" data-status="planned"><title>X31: DAC_HAT.GND -&gt; PI5.GND - jumper lead</title><path d="M480,1008 C395,1008 395,197 310,197" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="X22" data-from="AMP.SPK" data-to="SPEAKERS.IN" data-status="planned"><title>X22: AMP.SPK -&gt; SPEAKERS.IN</title><path d="M1190,343 C1275,343 1275,212 1360,212" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="X34" data-from="AMP.SUB" data-to="SUB.IN" data-status="planned"><title>X34: AMP.SUB -&gt; SUB.IN - Amp ch 3 + 4 bridged (ch 3 + and ch 4 -, check the amp&#x27;s label)</title><path d="M1190,363 C1275,363 1275,318 1360,318" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="X23" data-from="PI5.P3_SDA" data-to="IMU.SDA" data-status="planned"><title>X23: PI5.P3_SDA -&gt; IMU.SDA</title><path d="M310,397 C395,397 395,762 480,762" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="X24" data-from="PI5.P5_SCL" data-to="IMU.SCL" data-status="planned"><title>X24: PI5.P5_SCL -&gt; IMU.SCL</title><path d="M310,417 C395,417 395,782 480,782" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-device="PI5" data-status="confirmed"><title>PI5: Raspberry Pi 5 8GB - The 40-pin header and the PCIe port are kept for the AI HAT+ 2. CAN module wires go to header pins that come up through the HAT</title><rect x="40" y="150" width="270" height="489" rx="6" fill="#eef9f1" stroke="#0969da" stroke-width="1.5"/>
+<g data-wire="X15" data-from="PI5.P1_3V3" data-to="PI_CAN.VCC" data-status="planned"><title>X15: PI5.P1_3V3 -&gt; PI_CAN.VCC</title><path d="M310,357 C395,357 395,1270 480,1270" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="X16" data-from="PI5.P23_SCLK" data-to="PI_CAN.SCK" data-status="planned"><title>X16: PI5.P23_SCLK -&gt; PI_CAN.SCK</title><path d="M310,617 C395,617 395,1290 480,1290" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="X17" data-from="PI5.P19_MOSI" data-to="PI_CAN.SI" data-status="planned"><title>X17: PI5.P19_MOSI -&gt; PI_CAN.SI</title><path d="M310,557 C395,557 395,1310 480,1310" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="X18" data-from="PI_CAN.SO" data-to="PI5.P21_MISO" data-status="planned"><title>X18: PI_CAN.SO -&gt; PI5.P21_MISO</title><path d="M480,1330 C395,1330 395,577 310,577" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="X19" data-from="PI5.P24_CE0" data-to="PI_CAN.CS" data-status="planned"><title>X19: PI5.P24_CE0 -&gt; PI_CAN.CS</title><path d="M310,637 C395,637 395,1350 480,1350" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="X20" data-from="PI_CAN.INT" data-to="PI5.P22_GPIO25" data-status="planned"><title>X20: PI_CAN.INT -&gt; PI5.P22_GPIO25</title><path d="M480,1370 C395,1370 395,597 310,597" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="X21" data-from="DAC_HAT.OUT" data-to="AMP.IN" data-status="planned"><title>X21: DAC_HAT.OUT -&gt; AMP.IN - RCA to RCA lead out through the Pi box&#x27;s spare PG7 gland</title><path d="M750,1068 C835,1068 835,343 920,343" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="X32" data-from="PI5.P8_TXD" data-to="MODEM_4G.R" data-status="placeholder"><title>X32: PI5.P8_TXD -&gt; MODEM_4G.R - Soldered lead, 115200 baud</title><path d="M310,457 C395,457 395,1179 480,1179" fill="none" stroke="#8250df" stroke-width="1.4" stroke-dasharray="2 4" stroke-opacity="0.65"/></g>
+<g data-wire="X33" data-from="MODEM_4G.T" data-to="PI5.P10_RXD" data-status="placeholder"><title>X33: MODEM_4G.T -&gt; PI5.P10_RXD - Soldered lead. Measure T first: 3.3 V ok, else BSS138</title><path d="M480,1159 C395,1159 395,477 310,477" fill="none" stroke="#8250df" stroke-width="1.4" stroke-dasharray="2 4" stroke-opacity="0.65"/></g>
+<g data-wire="X25" data-from="PI5.P12_GPIO18" data-to="DAC_HAT.BCK" data-status="planned"><title>X25: PI5.P12_GPIO18 -&gt; DAC_HAT.BCK - jumper lead</title><path d="M310,497 C395,497 395,928 480,928" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="X26" data-from="PI5.P35_GPIO19" data-to="DAC_HAT.LRCK" data-status="planned"><title>X26: PI5.P35_GPIO19 -&gt; DAC_HAT.LRCK - jumper lead</title><path d="M310,517 C395,517 395,948 480,948" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="X27" data-from="PI5.P40_GPIO21" data-to="DAC_HAT.DIN" data-status="planned"><title>X27: PI5.P40_GPIO21 -&gt; DAC_HAT.DIN - jumper lead</title><path d="M310,537 C395,537 395,968 480,968" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="X28" data-from="PI5.P3_SDA" data-to="DAC_HAT.SDA" data-status="planned"><title>X28: PI5.P3_SDA -&gt; DAC_HAT.SDA - jumper lead</title><path d="M310,417 C395,417 395,988 480,988" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="X29" data-from="PI5.P5_SCL" data-to="DAC_HAT.SCL" data-status="planned"><title>X29: PI5.P5_SCL -&gt; DAC_HAT.SCL - jumper lead</title><path d="M310,437 C395,437 395,1008 480,1008" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="X30" data-from="PI5.P2_5V" data-to="DAC_HAT.V5" data-status="planned"><title>X30: PI5.P2_5V -&gt; DAC_HAT.V5 - jumper lead</title><path d="M310,397 C395,397 395,1028 480,1028" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="X31" data-from="DAC_HAT.GND" data-to="PI5.GND" data-status="planned"><title>X31: DAC_HAT.GND -&gt; PI5.GND - jumper lead</title><path d="M480,1048 C395,1048 395,197 310,197" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="X22" data-from="AMP.SPK" data-to="SPEAKERS.IN" data-status="planned"><title>X22: AMP.SPK -&gt; SPEAKERS.IN</title><path d="M1190,363 C1275,363 1275,212 1360,212" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="X34" data-from="AMP.SUB" data-to="SUB.IN" data-status="planned"><title>X34: AMP.SUB -&gt; SUB.IN - Amp ch 3 + 4 bridged (ch 3 + and ch 4 -, check the amp&#x27;s label)</title><path d="M1190,383 C1275,383 1275,318 1360,318" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="X23" data-from="PI5.P3_SDA" data-to="IMU.SDA" data-status="planned"><title>X23: PI5.P3_SDA -&gt; IMU.SDA</title><path d="M310,417 C395,417 395,782 480,782" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="X35" data-from="PI5.P17_3V3" data-to="IMU.VCC" data-status="planned"><title>X35: PI5.P17_3V3 -&gt; IMU.VCC</title><path d="M310,377 C395,377 395,762 480,762" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="X36" data-from="IMU.GND" data-to="PI5.GND" data-status="planned"><title>X36: IMU.GND -&gt; PI5.GND</title><path d="M480,822 C395,822 395,197 310,197" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="X24" data-from="PI5.P5_SCL" data-to="IMU.SCL" data-status="planned"><title>X24: PI5.P5_SCL -&gt; IMU.SCL</title><path d="M310,437 C395,437 395,802 480,802" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-device="PI5" data-status="confirmed"><title>PI5: Raspberry Pi 5 8GB - The 40-pin header and the PCIe port are kept for the AI HAT+ 2. CAN module wires go to header pins that come up through the HAT</title><rect x="40" y="150" width="270" height="509" rx="6" fill="#eef9f1" stroke="#0969da" stroke-width="1.5"/>
 <text x="50" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Raspberry Pi 5 8GB</text>
 <text x="50" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">PI5 · confirmed</text>
 <line x1="40" y1="197" x2="310" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
@@ -64,31 +67,33 @@
 <line x1="40" y1="357" x2="310" y2="357" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="175" y="361" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P1_3V3</text>
 <line x1="40" y1="377" x2="310" y2="377" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="381" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P2_5V</text>
+<text x="175" y="381" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P17_3V3</text>
 <line x1="40" y1="397" x2="310" y2="397" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="401" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P3_SDA</text>
+<text x="175" y="401" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P2_5V</text>
 <line x1="40" y1="417" x2="310" y2="417" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="421" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P5_SCL</text>
+<text x="175" y="421" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P3_SDA</text>
 <line x1="40" y1="437" x2="310" y2="437" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="441" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P8_TXD</text>
+<text x="175" y="441" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P5_SCL</text>
 <line x1="40" y1="457" x2="310" y2="457" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="461" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P10_RXD</text>
+<text x="175" y="461" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P8_TXD</text>
 <line x1="40" y1="477" x2="310" y2="477" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="481" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P12_GPIO18</text>
+<text x="175" y="481" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P10_RXD</text>
 <line x1="40" y1="497" x2="310" y2="497" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="501" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P35_GPIO19</text>
+<text x="175" y="501" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P12_GPIO18</text>
 <line x1="40" y1="517" x2="310" y2="517" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="521" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P40_GPIO21</text>
+<text x="175" y="521" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P35_GPIO19</text>
 <line x1="40" y1="537" x2="310" y2="537" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="541" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P19_MOSI</text>
+<text x="175" y="541" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P40_GPIO21</text>
 <line x1="40" y1="557" x2="310" y2="557" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="561" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P21_MISO</text>
+<text x="175" y="561" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P19_MOSI</text>
 <line x1="40" y1="577" x2="310" y2="577" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="581" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P22_GPIO25</text>
+<text x="175" y="581" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P21_MISO</text>
 <line x1="40" y1="597" x2="310" y2="597" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="601" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P23_SCLK</text>
+<text x="175" y="601" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P22_GPIO25</text>
 <line x1="40" y1="617" x2="310" y2="617" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="621" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P24_CE0</text>
+<text x="175" y="621" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P23_SCLK</text>
+<line x1="40" y1="637" x2="310" y2="637" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="641" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P24_CE0</text>
 </g>
 <g data-device="SCREEN" data-status="confirmed"><title>SCREEN: 10.1 in touch screen - 1280x800, HDMI + USB touch, 3.5 mm audio in</title><rect x="480" y="150" width="270" height="89" rx="6" fill="#eef9f1" stroke="#0969da" stroke-width="1.5"/>
 <text x="490" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">10.1 in touch screen</text>
@@ -130,77 +135,83 @@
 <line x1="480" y1="671" x2="750" y2="671" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="675" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">HDR</text>
 </g>
-<g data-device="IMU" data-status="planned"><title>IMU: IMU (roll / pitch)</title><rect x="480" y="715" width="270" height="89" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
+<g data-device="IMU" data-status="planned"><title>IMU: IMU (roll / pitch)</title><rect x="480" y="715" width="270" height="129" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
 <text x="490" y="733" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">IMU (roll / pitch)</text>
 <text x="490" y="748" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">IMU · planned · optional</text>
 <line x1="480" y1="762" x2="750" y2="762" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="766" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SDA</text>
+<text x="615" y="766" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VCC</text>
 <line x1="480" y1="782" x2="750" y2="782" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="786" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SCL</text>
+<text x="615" y="786" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SDA</text>
+<line x1="480" y1="802" x2="750" y2="802" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="806" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SCL</text>
+<line x1="480" y1="822" x2="750" y2="822" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="826" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GND</text>
 </g>
-<g data-device="DAC_HAT" data-status="planned"><title>DAC_HAT: Raspberry Pi DAC+ (on jumper leads) - PCM5122 DAC HAT (ex IQaudio DAC+), RCA line out to the amp. Sits on standoffs in the right-hand end of the Pi box, off the Pi, so the top of the Pi stays free for the AI HAT+ 2. Joined by 7 male-to-female jumper leads (about 20 cm), not a full 40-way ribbon: a ribbon would cover the header pins the CAN board, 4G board and IMU leads plug onto. Uses GPIO 18, 19, 21 (I2S), 2 and 3 (I2C, shared with the IMU: DAC 0x4D, IMU 0x68), 5 V and GND. Nothing else on the Pi uses 18-21 (CAN is SPI0 + GPIO 25, 4G is UART GPIO 14/15). The ID EEPROM pins 27/28 are left off, so it never fights the AI HAT&#x27;s EEPROM; set the overlay by hand: scripts/audio-setup.sh --i2s iqaudio-dacplus. A dab of hot glue on the leads at both ends against vibration. Later the leads move onto the AI HAT&#x27;s stacking header pins</title><rect x="480" y="826" width="270" height="224" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
-<text x="490" y="844" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Raspberry Pi DAC+ (on jumper</text>
-<text x="490" y="859" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">leads)</text>
-<text x="490" y="874" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">DAC_HAT · planned · optional</text>
-<line x1="480" y1="888" x2="750" y2="888" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="892" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">BCK</text>
-<line x1="480" y1="908" x2="750" y2="908" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="912" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">LRCK</text>
+<g data-device="DAC_HAT" data-status="planned"><title>DAC_HAT: Raspberry Pi DAC+ (on jumper leads) - PCM5122 DAC HAT (ex IQaudio DAC+), RCA line out to the amp. Sits on standoffs in the right-hand end of the Pi box, off the Pi, so the top of the Pi stays free for the AI HAT+ 2. Joined by 7 male-to-female jumper leads (about 20 cm), not a full 40-way ribbon: a ribbon would cover the header pins the CAN board, 4G board and IMU leads plug onto. Uses GPIO 18, 19, 21 (I2S), 2 and 3 (I2C, shared with the IMU: DAC 0x4D, IMU 0x68), 5 V and GND. Nothing else on the Pi uses 18-21 (CAN is SPI0 + GPIO 25, 4G is UART GPIO 14/15). The ID EEPROM pins 27/28 are left off, so it never fights the AI HAT&#x27;s EEPROM; set the overlay by hand: scripts/audio-setup.sh --i2s iqaudio-dacplus. A dab of hot glue on the leads at both ends against vibration. Later the leads move onto the AI HAT&#x27;s stacking header pins</title><rect x="480" y="866" width="270" height="224" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
+<text x="490" y="884" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Raspberry Pi DAC+ (on jumper</text>
+<text x="490" y="899" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">leads)</text>
+<text x="490" y="914" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">DAC_HAT · planned · optional</text>
 <line x1="480" y1="928" x2="750" y2="928" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="932" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">DIN</text>
+<text x="615" y="932" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">BCK</text>
 <line x1="480" y1="948" x2="750" y2="948" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="952" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SDA</text>
+<text x="615" y="952" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">LRCK</text>
 <line x1="480" y1="968" x2="750" y2="968" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="972" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SCL</text>
+<text x="615" y="972" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">DIN</text>
 <line x1="480" y1="988" x2="750" y2="988" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="992" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">V5</text>
+<text x="615" y="992" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SDA</text>
 <line x1="480" y1="1008" x2="750" y2="1008" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1012" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GND</text>
+<text x="615" y="1012" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SCL</text>
 <line x1="480" y1="1028" x2="750" y2="1028" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1032" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT</text>
+<text x="615" y="1032" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">V5</text>
+<line x1="480" y1="1048" x2="750" y2="1048" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="1052" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GND</text>
+<line x1="480" y1="1068" x2="750" y2="1068" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="1072" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT</text>
 </g>
-<g data-device="MODEM_4G" data-status="placeholder"><title>MODEM_4G: SIMCom A7670SA 4G board - 6-pin header S G V K T R G. V takes 5-10 V from the spare Mini560 5 V buck. NEVER raw 12 V (10 V max, and the car runs 14.4 V with spikes). K is tied to ground on the board, so it starts by itself. T/R are 115200 baud TTL to the Pi&#x27;s GPIO 15/14; measure T before connecting (3.3 V ok, else BSS138). Micro USB also on board. Its GNSS (FASE version, u.FL GPS socket on Sam&#x27;s board) is the dash GPS too, so there is no separate USB GPS. Check on arrival that it gets a fix with the SIM out / 4G off. No USB: it&#x27;s on the header pins (soldered leads), so texts, GPS and slow data only, no live video over 4G</title><rect x="480" y="1072" width="270" height="89" rx="6" fill="#eef9f1" stroke="#8250df" stroke-width="1.5" stroke-dasharray="2 4"/>
-<text x="490" y="1090" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">SIMCom A7670SA 4G board</text>
-<text x="490" y="1105" font-size="10" text-anchor="start" font-weight="normal" fill="#8250df">MODEM_4G · placeholder · optional</text>
-<line x1="480" y1="1119" x2="750" y2="1119" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1123" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">T</text>
-<line x1="480" y1="1139" x2="750" y2="1139" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1143" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">R</text>
+<g data-device="MODEM_4G" data-status="placeholder"><title>MODEM_4G: SIMCom A7670SA 4G board - 6-pin header S G V K T R G. V takes 5-10 V from the spare Mini560 5 V buck. NEVER raw 12 V (10 V max, and the car runs 14.4 V with spikes). K is tied to ground on the board, so it starts by itself. T/R are 115200 baud TTL to the Pi&#x27;s GPIO 15/14; measure T before connecting (3.3 V ok, else BSS138). Micro USB also on board. Its GNSS (FASE version, u.FL GPS socket on Sam&#x27;s board) is the dash GPS too, so there is no separate USB GPS. Check on arrival that it gets a fix with the SIM out / 4G off. No USB: it&#x27;s on the header pins (soldered leads), so texts, GPS and slow data only, no live video over 4G</title><rect x="480" y="1112" width="270" height="89" rx="6" fill="#eef9f1" stroke="#8250df" stroke-width="1.5" stroke-dasharray="2 4"/>
+<text x="490" y="1130" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">SIMCom A7670SA 4G board</text>
+<text x="490" y="1145" font-size="10" text-anchor="start" font-weight="normal" fill="#8250df">MODEM_4G · placeholder · optional</text>
+<line x1="480" y1="1159" x2="750" y2="1159" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="1163" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">T</text>
+<line x1="480" y1="1179" x2="750" y2="1179" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="1183" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">R</text>
 </g>
-<g data-device="PI_CAN" data-status="planned"><title>PI_CAN: MCP2515 CAN module (Pi) - Seeed MCP2515 + SN65HVD230 on the Pi box wall</title><rect x="480" y="1183" width="270" height="169" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
-<text x="490" y="1201" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">MCP2515 CAN module (Pi)</text>
-<text x="490" y="1216" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">PI_CAN · planned</text>
-<line x1="480" y1="1230" x2="750" y2="1230" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1234" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VCC</text>
-<line x1="480" y1="1250" x2="750" y2="1250" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1254" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SCK</text>
+<g data-device="PI_CAN" data-status="planned"><title>PI_CAN: MCP2515 CAN module (Pi) - Seeed MCP2515 + SN65HVD230 on the Pi box wall</title><rect x="480" y="1223" width="270" height="169" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
+<text x="490" y="1241" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">MCP2515 CAN module (Pi)</text>
+<text x="490" y="1256" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">PI_CAN · planned</text>
 <line x1="480" y1="1270" x2="750" y2="1270" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1274" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SI</text>
+<text x="615" y="1274" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VCC</text>
 <line x1="480" y1="1290" x2="750" y2="1290" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1294" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SO</text>
+<text x="615" y="1294" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SCK</text>
 <line x1="480" y1="1310" x2="750" y2="1310" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1314" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">CS</text>
+<text x="615" y="1314" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SI</text>
 <line x1="480" y1="1330" x2="750" y2="1330" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1334" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">INT</text>
+<text x="615" y="1334" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SO</text>
+<line x1="480" y1="1350" x2="750" y2="1350" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="1354" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">CS</text>
+<line x1="480" y1="1370" x2="750" y2="1370" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="1374" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">INT</text>
 </g>
-<g data-device="CAM_REAR" data-status="tbc"><title>CAM_REAR: Rear camera (200 degree, Sam&#x27;s) - Sam thinks it&#x27;s AHD. Set to CVBS/PAL mode, soldered shielded video lead to the analogue-to-ribbon board. Rear or trailer is picked in software when the trailer plug is in. 12 V feed TBC</title><rect x="920" y="150" width="270" height="89" rx="6" fill="#f4f4f4" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
+<g data-device="CAM_REAR" data-status="tbc"><title>CAM_REAR: Rear camera (200 degree, Sam&#x27;s) - Sam thinks it&#x27;s AHD. Set to CVBS/PAL mode, soldered shielded video lead to the analogue-to-ribbon board. Rear or trailer is picked in software when the trailer plug is in. 12 V from the accessory relay (relay 7) through its own 2 A inline fuse</title><rect x="920" y="150" width="270" height="109" rx="6" fill="#f4f4f4" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
 <text x="930" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Rear camera (200 degree, Sam&#x27;s)</text>
 <text x="930" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#bf8700">CAM_REAR · tbc</text>
 <line x1="920" y1="197" x2="1190" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VID</text>
+<text x="1055" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">V12</text>
 <line x1="920" y1="217" x2="1190" y2="217" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VID_GND</text>
+<text x="1055" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VID</text>
+<line x1="920" y1="237" x2="1190" y2="237" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="241" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VID_GND</text>
 </g>
-<g data-device="AMP" data-status="confirmed"><title>AMP: 4-ch class D amp (AliExpress, 4 x 63 W RMS at 4 ohm) - Sam&#x27;s pick. 4 x 63 W RMS at 4 ohm, or 2 x 200 W RMS bridged at 4 ohm; built-in 90 Hz high and low pass; 8-16 V; up to 33 A flat out (16.5 A on music); 145 x 100 x 45 mm. Channels 1 and 2 drive the Kenwoods (set the HPF on). Channels 3 and 4 bridged (200 W at 4 ohm) drive the Kicker KM104 sub (LPF on, gain set so it stays under the sub&#x27;s 150 W RMS)</title><rect x="920" y="261" width="270" height="124" rx="6" fill="#f0f6ff" stroke="#0969da" stroke-width="1.5"/>
-<text x="930" y="279" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">4-ch class D amp (AliExpress, 4 x</text>
-<text x="930" y="294" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">63 W RMS at 4 ohm)</text>
-<text x="930" y="309" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">AMP · confirmed · optional</text>
-<line x1="920" y1="323" x2="1190" y2="323" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="327" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN</text>
+<g data-device="AMP" data-status="confirmed"><title>AMP: 4-ch class D amp (AliExpress, 4 x 63 W RMS at 4 ohm) - Sam&#x27;s pick. 4 x 63 W RMS at 4 ohm, or 2 x 200 W RMS bridged at 4 ohm; built-in 90 Hz high and low pass; 8-16 V; up to 33 A flat out (16.5 A on music); 145 x 100 x 45 mm. Channels 1 and 2 drive the Kenwoods (set the HPF on). Channels 3 and 4 bridged (200 W at 4 ohm) drive the Kicker KM104 sub (LPF on, gain set so it stays under the sub&#x27;s 150 W RMS)</title><rect x="920" y="281" width="270" height="124" rx="6" fill="#f0f6ff" stroke="#0969da" stroke-width="1.5"/>
+<text x="930" y="299" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">4-ch class D amp (AliExpress, 4 x</text>
+<text x="930" y="314" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">63 W RMS at 4 ohm)</text>
+<text x="930" y="329" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">AMP · confirmed · optional</text>
 <line x1="920" y1="343" x2="1190" y2="343" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="347" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SPK</text>
+<text x="1055" y="347" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN</text>
 <line x1="920" y1="363" x2="1190" y2="363" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="367" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SUB</text>
+<text x="1055" y="367" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SPK</text>
+<line x1="920" y1="383" x2="1190" y2="383" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="387" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SUB</text>
 </g>
 <g data-device="SPEAKERS" data-status="confirmed"><title>SPEAKERS: Kenwood KFC-2053MRB 8 in marine speakers (pair) - Sam has these. 8 in 2-way, 4 ohm, about 50 W RMS each (100 W the pair), 180 mm cut-out, about 86 mm mounting depth (Kenwood spec page). One amp channel each; speaker cable 1.5 mm² is plenty. In sealed printed pods on the roll cage (cad/parts/speaker_pod.scad, docs/speaker-pods.md); the cable goes in through a PG7 gland underneath each pod</title><rect x="1360" y="150" width="270" height="84" rx="6" fill="#f0f6ff" stroke="#0969da" stroke-width="1.5"/>
 <text x="1370" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Kenwood KFC-2053MRB 8 in marine</text>
@@ -216,33 +227,42 @@
 <line x1="1360" y1="318" x2="1630" y2="318" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="1495" y="322" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN</text>
 </g>
+<g data-device="RELAYS" data-status="planned"><title>RELAYS: 16-ch relay board, channels 1-8 - One 16-channel board of mechanical 5 V relays with opto and JD-VCC jumper (AliExpress cart), in an aux box next to the control box. RELAYS2 is channels 9-16 of the same board. The solid state G3MB-202P board Sam has is AC only and won&#x27;t turn off on 12 V DC. JD-VCC jumper off, coils on 5 V, inputs from 3.3 V</title><rect x="1360" y="362" width="270" height="69" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="1370" y="380" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">16-ch relay board, channels 1-8</text>
+<text x="1370" y="395" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">RELAYS · planned</text>
+<line x1="1360" y1="409" x2="1630" y2="409" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="413" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">NO7</text>
+</g>
 <text x="318" y="214" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X01</text>
 <text x="472" y="214" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X02</text>
-<text x="912" y="194" font-size="9.5" text-anchor="end" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">X03</text>
-<text x="912" y="214" font-size="9.5" text-anchor="end" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">X03b</text>
+<text x="912" y="214" font-size="9.5" text-anchor="end" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">X03</text>
+<text x="1352" y="406" font-size="9.5" text-anchor="end" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">X05  0.5 mm²  2 A</text>
+<text x="912" y="234" font-size="9.5" text-anchor="end" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">X03b</text>
 <text x="472" y="557" font-size="9.5" text-anchor="end" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">X04</text>
 <text x="472" y="305" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X07</text>
 <text x="472" y="396" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X11</text>
 <text x="472" y="648" font-size="9.5" text-anchor="end" font-weight="normal" fill="#8250df" stroke="#ffffff" stroke-width="3" paint-order="stroke">X13</text>
 <text x="472" y="668" font-size="9.5" text-anchor="end" font-weight="normal" fill="#8250df" stroke="#ffffff" stroke-width="3" paint-order="stroke">X14</text>
 <text x="318" y="354" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X15</text>
-<text x="318" y="594" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X16</text>
-<text x="318" y="534" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X17</text>
-<text x="472" y="1287" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X18</text>
-<text x="318" y="614" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X19</text>
-<text x="472" y="1327" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X20</text>
-<text x="758" y="1025" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X21</text>
-<text x="318" y="434" font-size="9.5" text-anchor="start" font-weight="normal" fill="#8250df" stroke="#ffffff" stroke-width="3" paint-order="stroke">X32</text>
-<text x="472" y="1116" font-size="9.5" text-anchor="end" font-weight="normal" fill="#8250df" stroke="#ffffff" stroke-width="3" paint-order="stroke">X33</text>
-<text x="318" y="474" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X25</text>
-<text x="318" y="494" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X26</text>
-<text x="318" y="514" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X27</text>
-<text x="472" y="945" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X28</text>
-<text x="472" y="965" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X29</text>
-<text x="318" y="374" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X30</text>
-<text x="472" y="1005" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X31</text>
-<text x="1198" y="340" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X22</text>
-<text x="1198" y="360" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X34</text>
-<text x="472" y="759" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X23</text>
-<text x="472" y="779" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X24</text>
+<text x="318" y="614" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X16</text>
+<text x="318" y="554" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X17</text>
+<text x="472" y="1327" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X18</text>
+<text x="318" y="634" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X19</text>
+<text x="472" y="1367" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X20</text>
+<text x="758" y="1065" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X21</text>
+<text x="318" y="454" font-size="9.5" text-anchor="start" font-weight="normal" fill="#8250df" stroke="#ffffff" stroke-width="3" paint-order="stroke">X32</text>
+<text x="472" y="1156" font-size="9.5" text-anchor="end" font-weight="normal" fill="#8250df" stroke="#ffffff" stroke-width="3" paint-order="stroke">X33</text>
+<text x="318" y="494" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X25</text>
+<text x="318" y="514" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X26</text>
+<text x="318" y="534" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X27</text>
+<text x="472" y="985" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X28</text>
+<text x="472" y="1005" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X29</text>
+<text x="318" y="394" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X30</text>
+<text x="472" y="1045" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X31</text>
+<text x="1198" y="360" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X22</text>
+<text x="1198" y="380" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X34</text>
+<text x="472" y="779" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X23</text>
+<text x="318" y="374" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X35</text>
+<text x="472" y="819" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X36</text>
+<text x="472" y="799" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X24</text>
 </svg>

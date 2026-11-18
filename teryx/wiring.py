@@ -46,6 +46,9 @@ ZONE_FILL = {
 
 
 # ----------------------------------------------------------------- loading
+POWER_IN_PINS = {"VCC", "VDD", "VIN", "VSYS", "JDVCC", "V12", "V5", "B+", "DC_IN", "IN"}
+
+
 def load(path: Path = SOURCE) -> dict:
     import yaml
     d = yaml.safe_load(path.read_text(encoding="utf-8"))
@@ -154,6 +157,12 @@ def check(d: dict | None = None) -> list[str]:
         if len(wids) > 1 and not devs[dev_id]["pins"][pin]["multi"]:
             errs.append(f"{dev_id}.{pin} has {len(wids)} wires ({', '.join(wids)}). "
                         f"Mark the pin `multi: true` if that's meant")
+
+    # Every board's power input has to be wired, or it won't run (BTS7960 4-9 VCC was missed once)
+    for dev_id, dev in devs.items():
+        for pin in dev["pins"]:
+            if pin in POWER_IN_PINS and (dev_id, pin) not in uses:
+                errs.append(f"{dev_id}.{pin}: power input with no wire, so the board won't run")
 
     # CAN: exactly two terminators per bus
     buses: dict[str, set[str]] = defaultdict(set)

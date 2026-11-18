@@ -1043,6 +1043,31 @@ static void test_lock_set_and_lock_rules(void) {
     run(200);
     CHECK(lock_frame()[0] == LOCK_LOCKED && (lock_frame()[4] & LOCK_FLAG_INHIBIT));
     CHECK(R.out.drive_inhibit);
+    // Relay 10 opens the key line, steering assist and its frames stop.
+    CHECK(R.out.relays2 & BIT(R2_DRIVE_LOCK));
+    CHECK(!(R.out.relays2 & BIT(R2_STEER_ENABLE)) && !R.out.eps_on);
+}
+
+// ---- Power steering (docs/power-steering-wrecker.md) ------------------------------
+#include "eps.h"
+
+static void test_eps(void) {
+    // Same bytes as teryx/eps_toyota.py (checked against the retrofit thread).
+    can_frame_t f[2];
+    CHECK(eps_frames(0, false, f) == 2);
+    const uint8_t rpm[8] = {0x06, 0x8A, 0x00, 0x19, 0x00, 0x00, 0x92, 0x09};
+    CHECK(f[0].id == 0x2C4 && memcmp(f[0].data, rpm, 8) == 0);
+    CHECK(f[1].id == 0x0B4 && f[1].data[5] == 0x06 && f[1].data[6] == 0x5E);   // floor 16.3 km/h
+    CHECK(f[1].data[4] == 0x8D && f[1].data[7] == 0xAD);
+    eps_frames(300, true, f);                                                     // 30 km/h
+    CHECK(((f[1].data[5] << 8) | f[1].data[6]) == 3000);
+    eps_frames(50, true, f);                                                      // 5 km/h: floor
+    CHECK(((f[1].data[5] << 8) | f[1].data[6]) == 1630);
+
+    rig_init();
+    run(300);   // key on, not locked
+    CHECK(R.out.relays2 & BIT(R2_STEER_ENABLE));
+    CHECK(R.out.eps_on && !(R.out.relays2 & BIT(R2_DRIVE_LOCK)));
 }
 
 static void lock_up(void) {
@@ -1303,6 +1328,7 @@ int main(void) {
         {"lock: wrong tries and lockout", test_lock_wrong_tries},
         {"lock: remote lock waits until stopped", test_lock_remote},
         {"lock: change PIN, recovery code, workshop reset", test_lock_change_pin_and_recovery},
+        {"power steering: relay 9 and Toyota frames", test_eps},
     };
     for (size_t i = 0; i < sizeof(tests) / sizeof(tests[0]); i++) {
         int before = failures;

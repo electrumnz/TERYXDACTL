@@ -40,16 +40,18 @@ export const DEFAULTS = {
     autoOnReverse: true,
     trailerInReverse: true, // in reverse, show the trailer camera if a trailer is plugged in
     current: "rear",       // last camera picked on the Cameras screen
-    // One entry per camera (see CAMS in screens/camera.js). deviceId is the browser's id for the
-    // video device (USB camera or USB AV capture dongle); v4l2Device is the same camera for the
-    // server stream fallback (/dev/videoN). Rear cameras are usually mirrored so left is left.
+    // One entry per camera (see CAMS in screens/camera.js). No USB cameras (docs/cameras.md):
+    // v4l2Device is "csi0" for the Pi Camera Module 3 on the first ribbon port, or "adv:N" for
+    // input N of the analogue video board on the second ribbon port (rear 0, trailer 1, cabin 2).
+    // Both come through the server stream. deviceId is only for a browser camera on the bench.
+    // Rear cameras are usually mirrored so left is left.
     cams: {
-      rear:    { fitted: true,  name: "Rear",    deviceId: "", v4l2Device: "/dev/video0", mirror: true,  guides: true },
-      front:   { fitted: false, name: "Front",   deviceId: "", v4l2Device: "", mirror: false, guides: false },
-      trailer: { fitted: false, name: "Trailer", deviceId: "", v4l2Device: "", mirror: true,  guides: true },
-      // Small camera on the dash looking at the driver's seat, on the Pi's second ribbon port.
-      // Records with the others, and takes the face shot when someone tries the key while locked.
-      cabin:   { fitted: false, name: "Cabin",   deviceId: "", v4l2Device: "csi1", mirror: false, guides: false },
+      rear:    { fitted: true,  name: "Rear",    deviceId: "", v4l2Device: "adv:0", mirror: true,  guides: true },
+      front:   { fitted: true,  name: "Front",   deviceId: "", v4l2Device: "csi0", mirror: false, guides: false },
+      trailer: { fitted: false, name: "Trailer", deviceId: "", v4l2Device: "adv:1", mirror: true,  guides: true },
+      // Small analogue camera looking at the seats, on the video board's spare input (later).
+      // Takes the face shot when someone tries the key while locked.
+      cabin:   { fitted: false, name: "Cabin",   deviceId: "", v4l2Device: "adv:2", mirror: false, guides: false },
     },
   },
   // Sentry and dashcam (docs/sentry.md). Read by the dash server (sentry.py) too.

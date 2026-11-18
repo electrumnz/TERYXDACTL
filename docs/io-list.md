@@ -109,7 +109,7 @@ Prices and links checked live: [`shopping-list.md`](shopping-list.md).
 | GP19 | PWM | Front bar 4 (far right) MOSFET |
 | GP20 | PWM | Interior 7" bar MOSFET |
 | GP21 | IRQ in | MCP23017 INTB (inputs changed) |
-| GP22 | IRQ in | ADS1115 ALERT/RDY |
+| GP22 | SPI CS out | Steering CAN board (MCP2515 #2) chip select. ADS1115 ALERT left free, "ready" is read over I2C |
 | GP26 | I2C1 SDA | MCP23017 + ADS1115 |
 | GP27 | I2C1 SCL | MCP23017 + ADS1115 |
 | GP28 | ADC2 | BTS7960 #1 current sense (IS) |

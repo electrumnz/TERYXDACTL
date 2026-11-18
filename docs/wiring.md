@@ -48,16 +48,17 @@ flowchart LR
   FB -- "5A ×2" --> R23["Relays 2-3 trailer"]
   FB -- "10A" --> R7["Relay 7 accessory 12V"]
   FB -- "10A / 10A / 15A" --> BTS["BTS7960 ×3<br/>diff, 4WD, tray"]
-  FB -- "3A" --> R456["Relays 4-6 winch coils"]
+  FB -- "5A" --> R456["Relays 4-5 winch coils"]
 ```
 
 **The dash 12V rail.** The key switch and the contacts of relay 8 are wired in
 parallel onto one rail. Key on powers the rail, the Pico boots and closes
 relay 8 straight away, so after key-off the rail stays up until the Pico has
-told the Pi to shut down and then lets go. A diode isn't needed because both
-feeds are switches onto the same rail, but put a 1A diode from the key wire
-into the opto board's `in.ignition` input so the Pico can still see the key is
-off while relay 8 holds the rail.
+told the Pi to shut down and then lets go. **The key feed needs a diode
+(10A Schottky, band towards the rail).** Without it, relay 8 feeds the rail
+back up the key wire after key-off, the `in.ignition` input still sees 12V and
+the Pico never shuts down. Take `in.ignition` from the key side of that diode
+(through its own 1A diode into the opto board).
 
 **Relay 8 needs a coil supply that's on while the rail is up.** Feed the relay
 board's JD-VCC from the Pico's 5V buck, which is on the rail, so the relay
@@ -67,7 +68,7 @@ holds itself in.
 |---|---|---|---|---|
 | Battery + | Winch solenoid box | 35mm² (2 AWG) | 250A breaker | Use the cable that came with the winch |
 | Battery + | Fuse block | 10mm² (8 AWG) | 60A main | Total of all small loads, light bars on full ≈ 35A. Was 6mm², but 6mm² is only good for a 40A fuse ([table](https://info.speedingparts.eu/what-cable-size-should-you-use-in-a-12v-automotive-system)) |
-| Key switch | Dash 12V rail | 1mm² | 7.5A | |
+| Key switch | Dash 12V rail | 1mm² | 7.5A | Through a 10A Schottky diode (see above) |
 | Fuse block | Relay 8 common | 1mm² | 7.5A | Relay 8 NO contact → dash 12V rail |
 | Dash 12V rail | Pi buck in | 1.5mm² | (rail fuse) | Buck out → Pi USB-C or 5V/GND pins, keep under 30cm |
 | Dash 12V rail | Pico buck in (5V 2A) | 0.75mm² | 2A inline | Buck out → Pico VSYS + GND, and 5V to relay board JD-VCC (8 coils ≈ 0.6A) |
@@ -119,7 +120,7 @@ flowchart LR
 | GP6 | MCP2515 INT | |
 | GP26 / GP27 | MCP23017 + ADS1115 SDA / SCL | 4.7kΩ pull-ups to 3.3V (once, not on every board) |
 | GP21 | MCP23017 INTB | |
-| GP22 | ADS1115 ALERT/RDY | |
+| GP22 | Steering CAN chip select | ADS1115 ALERT left free |
 | 3V3(OUT) | MCP2515 module VCC (if 3.3V type), MCP23017 VDD, ADS1115 VDD | If the MCP2515 module is a 5V TJA1050 type, power its transceiver from 5V but keep the MCP2515 chip's SPI at 3.3V, or use a SN65HVD230 (3.3V) module instead |
 | GND | All boards | |
 

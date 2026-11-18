@@ -195,10 +195,10 @@ devices:
       IN: {v: 12v, multi: true}
       F1:  {v: 12v, supply: true, fuse_a: 15,  multi: true, desc: front bars 1 + 4 (outer pair)}
       F2:  {v: 12v, supply: true, fuse_a: 15,  multi: true, desc: front bars 2 + 3 (inner pair)}
-      F3:  {v: 12v, supply: true, fuse_a: 10,  multi: true, desc: "rear floods (MOSFET 7-8) + relay 1 trailer reverse pin"}
+      F3:  {v: 12v, supply: true, fuse_a: 15,  multi: true, desc: "rear floods (MOSFET 7-8) + relay 1 trailer reverse pin"}
       F4:  {v: 12v, supply: true, fuse_a: 7.5, desc: BTS7960 8 trailer tail + stop}
-      F5:  {v: 12v, supply: true, fuse_a: 3,   multi: true, desc: relays 4-5 winch coils}
-      F6:  {v: 12v, supply: true, fuse_a: 3,   multi: true, desc: "winch hand switches, tray limits, trailer reed"}
+      F5:  {v: 12v, supply: true, fuse_a: 5,   multi: true, desc: relays 4-5 winch coils}
+      F6:  {v: 12v, supply: true, fuse_a: 5,   multi: true, desc: "winch hand switches, tray limits, trailer reed"}
       F7:  {v: 12v, supply: true, fuse_a: 10,  multi: true, desc: "extras - interior bar + relay 7 accessory (phone charger, trailer cam)"}
       F8:  {v: 12v, supply: true, fuse_a: 7.5, desc: relay 8 power hold}
       F9:  {v: 12v, supply: true, fuse_a: 10,  desc: BTS7960 1 diff}
@@ -209,14 +209,15 @@ devices:
     name: Small 6-way blade fuse block (stock lights + beacon)
     zone: cab
     status: planned
-    note: "Next to the 12-way, which is full. Fed off the 12-way's feed stud through its own 30 A fuse. 1 way spare"
+    note: "Next to the 12-way, which is full. Fed off the 12-way's feed stud through its own 30 A fuse. All 6 ways used (way 6 feeds the stock brake switch so the brake lights are on a known fuse, always live)"
     pins:
       IN: 12v
       F1: {v: 12v, supply: true, fuse_a: 10, desc: BTS7960 4 left headlight}
       F2: {v: 12v, supply: true, fuse_a: 10, desc: BTS7960 5 right headlight}
       F3: {v: 12v, supply: true, fuse_a: 10, multi: true, desc: BTS7960 6-7 tail + brake lights}
       F4: {v: 12v, supply: true, fuse_a: 5, desc: roof beacon}
-      F5: {v: 12v, supply: true, fuse_a: 10, desc: backup lights toggle (low beams + tails)}
+      F5: {v: 12v, supply: true, fuse_a: 10, desc: backup lights toggle (low beams + tails + trailer tail)}
+      F6: {v: 12v, supply: true, fuse_a: 10, desc: brake light switch feed (brake lights + trailer stop backup)}
   KEY:
     name: Teryx key switch
     zone: cab
@@ -242,7 +243,7 @@ devices:
     note: Pi 5 power. About 16 W of its 27 W with the AI HAT+ 2 fitted
     pins: {VIN: 12v, GND: gnd, VOUT: {v: 5v, multi: true}}
   PICO_BUCK:
-    name: Mini560 5 V buck (control box)
+    name: 5 V 5 A buck (Sam's, control box)
     zone: control_box
     status: planned
     pins: {VIN: 12v, GND: gnd, VOUT: {v: 5v, multi: true}}
@@ -417,7 +418,7 @@ devices:
     zone: control_box
     status: planned
     note: "Sam's board: 8-channel opto-isolated MOSFET driver, DC 3.7-27 V, 10 A per channel, PWM input 3-20 V, 0-20 kHz. 1-4 front bars, 5 cabin bar, 6 trailer bar, 7-8 rear floods. Low side switching, so each light's + comes from its fuse and its - goes to an OUT pin"
-    check: The listing must say 3.3 V input, PNP / high-level trigger (firmware drives the pins high for on; pins sit low at boot so lights stay off), at least 24 V load and 10 A per channel. If it only says 5 A, use single LR7843 modules instead
+    check: The listing must say 3.3 V input, PNP / high-level trigger (firmware drives the pins high for on; pins sit low at boot so lights stay off), at least 24 V load and 10 A per channel. If it only says 5 A, use single LR7843 modules instead. Low side switching only works if each light's - wire isn't joined to its metal body. Meter a bar's - lead to its housing (and the floods and trailer bar), it must read open. If one reads shorted, that light needs a high side switch
     pins: {GND: gnd, IN1: 3v3, IN2: 3v3, IN3: 3v3, IN4: 3v3, IN5: 3v3, OUT1: 12v, OUT2: 12v, OUT3: 12v, OUT4: 12v, OUT5: 12v, IN6: 3v3, OUT6: 12v,
            IN7: 3v3, OUT7: 12v, IN8: 3v3, OUT8: 12v}
   # ---------------------------------------------------------- lights
@@ -455,7 +456,7 @@ devices:
     name: Backup lights toggle (hidden)
     zone: cab
     status: planned
-    note: "The Teryx has no headlight switch, so the dash and the Pico do everything. This hidden toggle is the backup if the control box dies: it feeds both low beams and both tails at full through diodes. Leave it off normally. The Pico also turns low beams and tails on by itself if the dash goes quiet with the key on"
+    note: "The Teryx has no headlight switch, so the dash and the Pico do everything. This hidden toggle is the backup if the control box dies: it feeds both low beams, both tails and the trailer tail at full through diodes. Leave it off normally. The Pico also turns low beams and tails on by itself if the dash goes quiet with the key on"
     pins: {IN: 12v, OUT: {v: 12v, multi: true}}
   BEACON:
     name: Roof beacon (amber + white LED, steady-on)
@@ -527,8 +528,8 @@ devices:
     zone: cab
     status: tbc
     note: "Also feeds both brake filaments and the trailer stop pin through diodes, so the brake lights work at full even with the control box off"
-    check: Find the brake light switch wire and meter it (12 V when pressed?)
-    pins: {OUT: {v: 12v, multi: true}}
+    check: "Find the brake light switch's two wires and meter them. Feed one from the 6-way (way 6), the other is OUT. If the stock loom still feeds the switch, cut that feed so it's only on our fuse. The switch now carries both brake filaments plus the trailer stop lamps (about 8 A with bulbs): if its contacts look small, put a 12 V automotive relay after it"
+    pins: {IN: 12v, OUT: {v: 12v, multi: true}}
   PARK_SW:
     name: Parking brake switch (stock)
     zone: cab
@@ -577,7 +578,7 @@ devices:
     status: planned
     doc: docs/cameras.md
     check: Which way does the Narva reed switch switch, and what triggers it?
-    pins: {P1_LEFT: 12v, P2_REV: 12v, P3_EARTH: gnd, P4_RIGHT: 12v, P5_BRAKES: 12v, P6_STOP: {v: 12v, multi: true}, P7_TAIL: 12v, REED_A: 12v, REED_B: 12v}
+    pins: {P1_LEFT: 12v, P2_REV: 12v, P3_EARTH: gnd, P4_RIGHT: 12v, P5_BRAKES: 12v, P6_STOP: {v: 12v, multi: true}, P7_TAIL: {v: 12v, multi: true}, REED_A: 12v, REED_B: 12v}
   TCAM_PLUG:
     name: Trailer EU 7-pin round plug (camera + light bar, Sam's)
     zone: rear
@@ -620,6 +621,7 @@ devices:
       PCIE: pcie
       HAT_HDR: {v: 3v3, desc: 40-pin header to the 16 mm stacking header}
       P1_3V3: 3v3
+      P17_3V3: 3v3
       P2_5V: 5v
       P3_SDA: {v: 3v3, multi: true}
       P5_SCL: {v: 3v3, multi: true}
@@ -665,9 +667,9 @@ devices:
     name: Rear camera (200 degree, Sam's)
     zone: rear
     status: tbc
-    note: "Sam thinks it's AHD. Set to CVBS/PAL mode, soldered shielded video lead to the analogue-to-ribbon board. Rear or trailer is picked in software when the trailer plug is in. 12 V feed TBC"
+    note: "Sam thinks it's AHD. Set to CVBS/PAL mode, soldered shielded video lead to the analogue-to-ribbon board. Rear or trailer is picked in software when the trailer plug is in. 12 V from the accessory relay (relay 7) through its own 2 A inline fuse"
     check: "Rear camera: AHD with a CVBS mode? Photo its plug and label"
-    pins: {VID: video, VID_GND: video}
+    pins: {V12: 12v, GND: gnd, VID: video, VID_GND: video}
   CAM_FRONT:
     name: Camera Module 3 Wide (front)
     zone: dash
@@ -680,7 +682,14 @@ devices:
     status: placeholder
     optional: true
     note: "6-pin header S G V K T R G. V takes 5-10 V from the spare Mini560 5 V buck. NEVER raw 12 V (10 V max, and the car runs 14.4 V with spikes). K is tied to ground on the board, so it starts by itself. T/R are 115200 baud TTL to the Pi's GPIO 15/14; measure T before connecting (3.3 V ok, else BSS138). Micro USB also on board. Its GNSS (FASE version, u.FL GPS socket on Sam's board) is the dash GPS too, so there is no separate USB GPS. Check on arrival that it gets a fix with the SIM out / 4G off. No USB: it's on the header pins (soldered leads), so texts, GPS and slow data only, no live video over 4G"
-    pins: {T: 3v3, R: 3v3}
+    pins: {V: 5v, G: gnd, T: 3v3, R: 3v3}
+  MODEM_BUCK:
+    name: Mini560 5 V buck (4G board)
+    zone: dash
+    status: planned
+    optional: true
+    note: "Feeds the 4G board's V pin (5 V, 2 A peaks when it transmits). In the Pi box, on the dash rail, so the 4G board is on when the Pi is"
+    pins: {VIN: 12v, GND: gnd, VOUT: 5v}
   CARPLAY:
     name: Carlinkit CPC200-CCPA
     zone: dash
@@ -763,7 +772,7 @@ wires:
   # --- 12 V power
   - {id: P01, from: BAT12.pos, to: FB.IN, sys: power, mm2: 10, fuse: 60, status: planned, note: "60 A main fuse at the battery. Was 6 mm² in wiring.md, which the table only rates to 40 A"}
   - {id: P02, from: FB.F12, to: KEY.BAT, sys: power, mm2: 1.0, status: planned}
-  - {id: P03, from: KEY.IGN, to: RAIL.BUS, sys: power, mm2: 1.0, fuse: 7.5, status: planned}
+  - {id: P03, from: KEY.IGN, to: RAIL.BUS, sys: power, mm2: 1.0, fuse: 7.5, via: "Schottky diode 10 A", status: planned, note: "Diode so relay 8 can't feed back into the key wire after key-off. Without it the Pico would see the key still on and never shut down"}
   - {id: P04, from: FB.F8, to: RELAYS.COM8, sys: power, mm2: 1.0, status: planned}
   - {id: P05, from: RELAYS.NO8, to: RAIL.BUS, sys: power, mm2: 1.0, fuse: 7.5, status: planned, note: "Power hold, in parallel with the key"}
   - {id: P06, from: RAIL.BUS, to: TVS.K, sys: power, mm2: 1.0, status: planned}
@@ -810,6 +819,8 @@ wires:
   - {id: G13, from: BTS2.B-, to: GND_STAR.G, sys: ground, mm2: 1.5, status: planned}
   - {id: G14, from: BTS3.B-, to: GND_STAR.G, sys: ground, mm2: 2.5, status: planned}
   - {id: G17, from: WINCH_SOL.GND, to: BAT12.neg, sys: ground, mm2: 35, status: planned, rating_from: maker, note: "Winch return straight to the battery, cable from the winch kit"}
+  - {id: G37, from: RELAYS.GND, to: PICO_BUCK.GND, sys: ground, mm2: 0.5, status: planned, note: "Relay coil return (JD-VCC side)"}
+  - {id: G38, from: RELAYS2.GND, to: PICO_BUCK.GND, sys: ground, mm2: 0.5, status: planned, optional: true}
   - {id: G19, from: OPTO.COM12, to: GND_STAR.G, sys: ground, mm2: 0.5, status: planned, note: "12 V side ground of the opto board"}
   - {id: G20, from: TRAILER.P3_EARTH, to: GND_STAR.G, sys: ground, mm2: 2.5, status: planned}
   - {id: G21, from: TCAM_PLUG.GND, to: GND_STAR.G, sys: ground, mm2: 0.5, status: planned, optional: true}
@@ -871,7 +882,7 @@ wires:
   - {id: L47, from: DEBUG.TX, to: PICO.GP1, sys: logic, status: planned}
 
   # --- 12 V signals in
-  - {id: I01, from: KEY.IGN, to: OPTO.IN1, sys: inputs, mm2: 0.75, fuse: 7.5, via: "1 A diode", status: planned, note: "So the Pico sees key-off while relay 8 holds the rail. 0.75 mm² because the 7.5 A key fuse is upstream"}
+  - {id: I01, from: KEY.IGN, to: OPTO.IN1, sys: inputs, mm2: 0.75, fuse: 7.5, via: "1 A diode", status: planned, note: "Taken from the key side of the P03 diode, so the Pico sees key-off while relay 8 holds the rail. 0.75 mm² because the 7.5 A key fuse is upstream"}
   - {id: I02, from: BRAKE_SW.OUT, to: OPTO.IN2, sys: inputs, mm2: 0.5, status: tbc}
   - {id: I03, from: FNR.R, to: OPTO.IN3, sys: inputs, mm2: 0.5, via: "opto board", status: tbc, note: "The F-N-R switch is on the Shinegle key line. If J1-1 runs at 72 V, this needs a 72 V rated input, not the 12 V opto"}
   - {id: I04, from: LIM_DN.NC, to: OPTO.IN4, sys: inputs, mm2: 0.5, status: planned, note: "Normally closed, a broken wire reads as at the limit"}
@@ -944,6 +955,8 @@ wires:
   - {id: LT52, from: LIMP_SW.OUT, to: HEAD_R.LO, sys: lights, mm2: 1.5, via: "Schottky diode 5 A", status: planned}
   - {id: LT54, from: LIMP_SW.OUT, to: TAIL_L.TAIL, sys: lights, mm2: 1.0, via: "Schottky diode 5 A", status: planned, note: "Tails on with the backup toggle too"}
   - {id: LT55, from: LIMP_SW.OUT, to: TAIL_R.TAIL, sys: lights, mm2: 1.0, via: "Schottky diode 5 A", status: planned}
+  - {id: LT62, from: LIMP_SW.OUT, to: TRAILER.P7_TAIL, sys: lights, mm2: 1.0, via: "Schottky diode 5 A", status: planned, note: "Trailer tail lights on the backup toggle too"}
+  - {id: LT63, from: FB2.F6, to: BRAKE_SW.IN, sys: lights, mm2: 1.0, status: tbc, note: "Brake switch feed, always live"}
   # roof beacon
   - {id: LT56, from: FB2.F4, to: BTS9.B+, sys: lights, mm2: 1.0, status: planned}
   - {id: LT57, from: BTS9.M+, to: BEACON.AMBER, sys: lights, mm2: 0.75, status: planned, note: "light.beacon (amber)"}
@@ -951,6 +964,12 @@ wires:
   - {id: LT59, from: BTS9.M-, to: BEACON.WHITE, sys: lights, mm2: 0.75, status: planned, note: "light.beacon_white"}
   - {id: LT60, from: PCA.PWM14, to: BTS9.LPWM, sys: lights, status: planned, note: "light.beacon_white: 3 Hz, opposite amber, stopped only"}
   - {id: LT61, from: PCA.PWM15, to: BTS9.EN, sys: lights, status: planned}
+  - {id: LT64, from: PICO.3V3, to: BTS4.VCC, sys: lights, status: planned, note: "Logic supply, like BTS1-3"}
+  - {id: LT65, from: PICO.3V3, to: BTS5.VCC, sys: lights, status: planned}
+  - {id: LT66, from: PICO.3V3, to: BTS6.VCC, sys: lights, status: planned}
+  - {id: LT67, from: PICO.3V3, to: BTS7.VCC, sys: lights, status: planned}
+  - {id: LT68, from: PICO.3V3, to: BTS8.VCC, sys: lights, status: planned}
+  - {id: LT69, from: PICO.3V3, to: BTS9.VCC, sys: lights, status: planned}
 
   # --- winch
   - {id: WN01, from: BAT12.pos, to: BRK_WINCH.in, sys: winch, mm2: 35, fuse: 250, rating_from: maker, status: planned, note: "Cable that came with the winch"}
@@ -960,14 +979,16 @@ wires:
   - {id: WN06, from: WINCH_SOL.REMOTE, to: WINCH_REMOTE.PLUG, sys: winch, status: confirmed, note: "XBull remote stays as a backup"}
   - {id: WN07, from: FB.F5, to: RELAYS.COM4, sys: winch, mm2: 0.5, status: planned}
   - {id: WN08, from: FB.F5, to: RELAYS.COM5, sys: winch, mm2: 0.5, status: planned}
-  - {id: WN10, from: RELAYS.NO4, to: WINCH_SOL.COIL_IN, sys: winch, mm2: 0.5, fuse: 3, via: "3 A diode (1N5408)", status: planned, note: "winch.in. Never the motor current through the relay board"}
-  - {id: WN11, from: RELAYS.NO5, to: WINCH_SOL.COIL_OUT, sys: winch, mm2: 0.5, fuse: 3, via: "3 A diode (1N5408)", status: planned, note: "winch.out, interlocked with in"}
+  - {id: WN10, from: RELAYS.NO4, to: WINCH_SOL.COIL_IN, sys: winch, mm2: 0.5, fuse: 5, via: "3 A diode (1N5408)", status: planned, note: "winch.in. Never the motor current through the relay board"}
+  - {id: WN11, from: RELAYS.NO5, to: WINCH_SOL.COIL_OUT, sys: winch, mm2: 0.5, fuse: 5, via: "3 A diode (1N5408)", status: planned, note: "winch.out, interlocked with in"}
+  - {id: WN19, from: WINCH_SOL.COIL_IN, to: WINCH_SOL.GND, sys: winch, via: "flyback diode 1N5408 (band to the coil wire)", status: tbc, note: "Across the coil, at the solenoid box, unless the box already has one. Stops the coil's kick arcing the relay contacts and spiking the 12 V"}
+  - {id: WN20, from: WINCH_SOL.COIL_OUT, to: WINCH_SOL.GND, sys: winch, via: "flyback diode 1N5408 (band to the coil wire)", status: tbc}
   - {id: WN13, from: FB.F6, to: HSW_WINCH.FEED, sys: winch, mm2: 0.5, status: planned}
   - {id: WN14, from: FB.F6, to: HSW_CAB.FEED, sys: winch, mm2: 0.5, status: planned}
-  - {id: WN15, from: HSW_WINCH.IN, to: WINCH_SOL.COIL_IN, sys: winch, mm2: 0.5, fuse: 3, via: "3 A diode (1N5408)", status: planned}
-  - {id: WN16, from: HSW_WINCH.OUT, to: WINCH_SOL.COIL_OUT, sys: winch, mm2: 0.5, fuse: 3, via: "3 A diode (1N5408)", status: planned}
-  - {id: WN17, from: HSW_CAB.IN, to: WINCH_SOL.COIL_IN, sys: winch, mm2: 0.5, fuse: 3, via: "3 A diode (1N5408)", status: planned}
-  - {id: WN18, from: HSW_CAB.OUT, to: WINCH_SOL.COIL_OUT, sys: winch, mm2: 0.5, fuse: 3, via: "3 A diode (1N5408)", status: planned}
+  - {id: WN15, from: HSW_WINCH.IN, to: WINCH_SOL.COIL_IN, sys: winch, mm2: 0.5, fuse: 5, via: "3 A diode (1N5408)", status: planned}
+  - {id: WN16, from: HSW_WINCH.OUT, to: WINCH_SOL.COIL_OUT, sys: winch, mm2: 0.5, fuse: 5, via: "3 A diode (1N5408)", status: planned}
+  - {id: WN17, from: HSW_CAB.IN, to: WINCH_SOL.COIL_IN, sys: winch, mm2: 0.5, fuse: 5, via: "3 A diode (1N5408)", status: planned}
+  - {id: WN18, from: HSW_CAB.OUT, to: WINCH_SOL.COIL_OUT, sys: winch, mm2: 0.5, fuse: 5, via: "3 A diode (1N5408)", status: planned}
 
   # --- drive
   - {id: D01, from: PICO.GP7, to: BTS1.RPWM, sys: drive, status: planned, note: "act.diff"}
@@ -998,23 +1019,25 @@ wires:
   - {id: D26, from: PICO.3V3, to: BTS2.VCC, sys: drive, status: planned}
   - {id: D27, from: PICO.3V3, to: BTS3.VCC, sys: drive, status: planned}
   - {id: D28, from: BAT12.pos, to: ADS1.A1, sys: drive, via: "divider 10k / 2.2k + 3.3 V zener", fuse: 1, mm2: 0.5, status: planned, note: "an.aux_12v. Fuse the sense lead"}
-  - {id: D29, from: PI_BUCK.VOUT, to: BRAKE_PEDAL.V5, sys: drive, status: planned, optional: true, note: "Or the Pico buck. 5 V sensor"}
+  - {id: D29, from: PICO_BUCK.VOUT, to: BRAKE_PEDAL.V5, sys: drive, status: planned, optional: true, note: "5 V sensor, fed from the control box so it shares the ADC's ground"}
+  - {id: D36, from: BRAKE_PEDAL.GND, to: ADS2.GND, sys: drive, status: planned, optional: true}
+  - {id: D37, from: BRAKE_PRESS.GND, to: ADS2.GND, sys: drive, status: planned, optional: true}
   - {id: D30, from: BRAKE_PEDAL.SIG, to: ADS2.A0, sys: drive, via: "divider 10k / 20k", status: planned, optional: true, note: "an.brake_pedal, 4.5 V reads 3.0 V"}
   - {id: D34, from: BRAKE_PRESS.SIG, to: ADS2.A1, sys: drive, via: "divider 10k / 20k", status: planned, optional: true, note: "an.brake_pressure"}
-  - {id: D35, from: PI_BUCK.VOUT, to: BRAKE_PRESS.V5, sys: drive, status: planned, optional: true}
+  - {id: D35, from: PICO_BUCK.VOUT, to: BRAKE_PRESS.V5, sys: drive, status: planned, optional: true}
   - {id: D31, from: RAIL.BUS, to: RELAYS2.COM1, sys: drive, mm2: 0.5, fuse: 3, status: planned, optional: true, note: "Steering ignition feed through relay 9, so the lock and RC kill can turn assist off"}
   - {id: D32, from: RELAYS2.NO1, to: EPS_ECU.IG, sys: drive, mm2: 0.5, fuse: 3, status: tbc, optional: true}
   - {id: D33, from: EPS_ECU.MOTOR, to: EPS_COL.MOTOR, sys: drive, status: tbc, optional: true, note: "Toyota's own plug, keep it from the wrecker"}
 
   # --- trailer
   - {id: T01, from: FB.F4, to: BTS8.B+, sys: trailer, mm2: 1.0, status: planned}
-  - {id: T02, from: BTS8.M+, to: TRAILER.P7_TAIL, sys: trailer, mm2: 1.0, status: planned, note: "light.trailer_tail (dimmable). No diode: nothing else feeds this pin"}
+  - {id: T02, from: BTS8.M+, to: TRAILER.P7_TAIL, sys: trailer, mm2: 1.0, status: planned, via: "Schottky diode 5 A", note: "light.trailer_tail (dimmable). Diode so the backup toggle (LT62) can't feed back into the BTS7960"}
   - {id: T04, from: BTS8.M-, to: TRAILER.P6_STOP, sys: trailer, mm2: 1.0, via: "Schottky diode 5 A", status: planned, note: "light.trailer_stop. Diode so the brake switch backup (T05) can't feed back into the BTS7960"}
   - {id: T18, from: PCA.PWM9, to: BTS8.RPWM, sys: trailer, status: planned, note: "light.trailer_tail PWM"}
   - {id: T19, from: PCA.PWM10, to: BTS8.LPWM, sys: trailer, status: planned, note: "light.trailer_stop PWM"}
   - {id: T20, from: PCA.PWM15, to: BTS8.EN, sys: trailer, status: planned}
-  - {id: T05, from: BRAKE_SW.OUT, to: TRAILER.P6_STOP, sys: trailer, mm2: 1.0, via: "diode (backup)", status: tbc, note: "Trailer brake lights still work with the control box off"}
-  - {id: T06, from: RELAYS.NO1, to: TRAILER.P2_REV, sys: trailer, mm2: 1.0, fuse: 10, status: tbc, optional: true, note: "Reversing pin. Relay 1 also runs the floods by hand, so trailer reverse lights would come on with them"}
+  - {id: T05, from: BRAKE_SW.OUT, to: TRAILER.P6_STOP, sys: trailer, mm2: 1.0, via: "Schottky diode 5 A", status: tbc, note: "Trailer brake lights still work with the control box off"}
+  - {id: T06, from: RELAYS.NO1, to: TRAILER.P2_REV, sys: trailer, mm2: 1.5, fuse: 15, status: tbc, optional: true, note: "Reversing pin. Relay 1 follows the rear floods, so trailer reverse lights come on with them"}
   - {id: T07, from: RELAYS.NO7, to: TCAM_PLUG.V12, sys: trailer, mm2: 0.5, fuse: 2, status: planned, optional: true, note: "2 A inline fuse. Runs while driving, not just reversing"}
   - {id: T08, from: TCAM_PLUG.V12, to: CAM_TRAILER.V12, sys: trailer, mm2: 0.5, fuse: 2, status: planned, optional: true}
   - {id: T09, from: CAM_TRAILER.VID, to: TCAM_PLUG.VID, sys: trailer, status: planned, optional: true}
@@ -1034,6 +1057,8 @@ wires:
   - {id: X01, from: PI5.HDMI0, to: SCREEN.HDMI, sys: dash, status: planned}
   - {id: X02, from: SCREEN.USB, to: PI5.USB2_B, sys: dash, status: planned, note: "Touch. Screen only does touch over USB. Right-angle lead, cable-tied to the box"}
   - {id: X03, from: CAM_REAR.VID, to: TCAM_DONGLE.VID_R, sys: dash, status: tbc, note: "Shielded video lead, soldered"}
+  - {id: X05, from: RELAYS.NO7, to: CAM_REAR.V12, sys: dash, mm2: 0.5, fuse: 2, status: tbc, note: "2 A inline fuse. On with the key, like the trailer camera"}
+  - {id: G34, from: CAM_REAR.GND, to: GND_STAR.G, sys: ground, mm2: 0.5, status: tbc, note: "Or a good chassis earth near the camera"}
   - {id: X03b, from: CAM_REAR.VID_GND, to: TCAM_DONGLE.VID_R_GND, sys: dash, status: tbc}
   - {id: X04, from: TCAM_DONGLE.CSI, to: PI5.CSI1, sys: dash, status: tbc, note: "Camera ribbon, 2nd port"}
   - {id: X07, from: CARPLAY.USB, to: PI5.USB2_A, sys: dash, status: planned, optional: true, note: "CarPlay dongle is USB only. Right-angle lead, dongle zip-tied down inside the box"}
@@ -1059,4 +1084,10 @@ wires:
   - {id: X22, from: AMP.SPK, to: SPEAKERS.IN, sys: dash, status: planned, optional: true}
   - {id: X34, from: AMP.SUB, to: SUB.IN, sys: dash, status: planned, optional: true, note: "Amp ch 3 + 4 bridged (ch 3 + and ch 4 -, check the amp's label)"}
   - {id: X23, from: PI5.P3_SDA, to: IMU.SDA, sys: dash, status: planned, optional: true}
+  - {id: X35, from: PI5.P17_3V3, to: IMU.VCC, sys: dash, status: planned, optional: true}
+  - {id: X36, from: IMU.GND, to: PI5.GND, sys: dash, status: planned, optional: true}
+  - {id: P21, from: RAIL.BUS, to: MODEM_BUCK.VIN, sys: power, mm2: 0.5, fuse: 2, status: planned, optional: true, note: "2 A inline fuse"}
+  - {id: P22, from: MODEM_BUCK.VOUT, to: MODEM_4G.V, sys: power, mm2: 0.5, status: planned, optional: true, note: "Soldered lead to the V pin"}
+  - {id: G35, from: MODEM_BUCK.GND, to: PI_BUCK.GND, sys: ground, mm2: 0.5, status: planned, optional: true}
+  - {id: G36, from: MODEM_4G.G, to: PI5.GND, sys: ground, status: planned, optional: true, note: "Ground with the UART leads"}
   - {id: X24, from: PI5.P5_SCL, to: IMU.SCL, sys: dash, status: planned, optional: true}

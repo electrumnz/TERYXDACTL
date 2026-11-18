@@ -29,6 +29,7 @@ set(CORE_SRC
     src/core/lock.c
     src/core/sha256.c
     src/core/lights.c
+    src/core/eps.c
 )
 
 if(TERYX_HOST)

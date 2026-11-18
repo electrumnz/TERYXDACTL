@@ -10,7 +10,7 @@ Why things are wired this way (power hold, diodes, CAN rules): [`docs/wiring.md`
 Viewer with search: [`index.html`](index.html), also online at
 <https://electrumnz.github.io/TERYXDACTL/wiring/>.
 
-**93 devices, 305 wires.** By status: 19 from_manual, 3 confirmed, 246 planned, 33 tbc, 4 placeholder.
+**94 devices, 327 wires.** By status: 19 from_manual, 3 confirmed, 263 planned, 38 tbc, 4 placeholder.
 Nothing has been checked on the real Teryx yet.
 
 Wire sizes follow the conservative table in the YAML (from
@@ -78,14 +78,14 @@ runs up to about 5 m). Go one size up for bundled or hot runs.
 - [ ] **Screen 12 V supply** (SCREEN_PSU): Read the label on the screen's power brick (volts and amps)
 - [ ] **16-ch relay board, channels 1-8** (RELAYS): Does the relay board click from 3.3 V logic? Active high or low? Relays are SRD-05VDC type, 10 A at 28-30 V DC. Keep each load under about 7 A. Nothing on the relays gets near that now the floods are on the MOSFET board (relay 1 only feeds the trailer reversing lamp)
 - [ ] **16-ch relay board, channels 9-16 (2 used, 6 spare)** (RELAYS2): Relay 10 is rated 30 V DC. If the Shinegle KSI turns out to be 72 V (see KIT_KEY), swap relay 10 for one rated 80 V DC or more
-- [ ] **8-ch isolated MOSFET board (low side, all 8 used)** (MOSFET): The listing must say 3.3 V input, PNP / high-level trigger (firmware drives the pins high for on; pins sit low at boot so lights stay off), at least 24 V load and 10 A per channel. If it only says 5 A, use single LR7843 modules instead
+- [ ] **8-ch isolated MOSFET board (low side, all 8 used)** (MOSFET): The listing must say 3.3 V input, PNP / high-level trigger (firmware drives the pins high for on; pins sit low at boot so lights stay off), at least 24 V load and 10 A per channel. If it only says 5 A, use single LR7843 modules instead. Low side switching only works if each light's - wire isn't joined to its metal body. Meter a bar's - lead to its housing (and the floods and trailer bar), it must read open. If one reads shorted, that light needs a high side switch
 - [ ] **Rear flood left (4 in pod)** (FLOOD_L): Light bars and pods dim with PWM? Test one on a cheap dimmer
 - [ ] **Left headlight (stock, 12 V 35/35 W)** (HEAD_L): Unplug a headlight and photo the plug. Which pin is low, high and earth?
 - [ ] **Left tail / brake light (stock, 12 V 8/27 W)** (TAIL_L): Photo the tail light plug. Which wire is tail, brake and earth?
 - [ ] **Roof beacon (amber + white LED, steady-on)** (BEACON): Count the wires. Common earth + one wire per colour is what this plan expects. If each colour has its own earth it still works (join the earths). If it has a mode wire instead (one + feed, cycles colours on a pulse), tell the dash thread
 - [ ] **XBull solenoid box** (WINCH_SOL): Photo the XBull solenoid box terminals and the remote plug pins
 - [ ] **2WD/4WD actuator** (ACT_4WD): Is the stock electric 4WD actuator still on the front diff, and is the dash 2WD/4WD switch still wired to it? Photo its plug
-- [ ] **Brake light switch (stock)** (BRAKE_SW): Find the brake light switch wire and meter it (12 V when pressed?)
+- [ ] **Brake light switch (stock)** (BRAKE_SW): Find the brake light switch's two wires and meter them. Feed one from the 6-way (way 6), the other is OUT. If the stock loom still feeds the switch, cut that feed so it's only on our fuse. The switch now carries both brake filaments plus the trailer stop lamps (about 8 A with bulbs): if its contacts look small, put a 12 V automotive relay after it
 - [ ] **Parking brake switch (stock)** (PARK_SW): Find the parking brake switch wire at the meter plug. Does it switch ground or 12 V?
 - [ ] **Toyota Aqua EPS ECU (89650-52B51)** (EPS_ECU): Photo both EPS ECU plugs (pin numbers and wire colours) when the column is picked up
 - [ ] **Aqua steering column (motor + torque sensor)** (EPS_COL): Measure the space from the steering wheel to where the Teryx shaft goes to the rack
@@ -106,10 +106,14 @@ Wires marked TBC, with what's unknown:
 - I03 FNR.R to OPTO.IN3: The F-N-R switch is on the Shinegle key line. If J1-1 runs at 72 V, this needs a 72 V rated input, not the 12 V opto
 - I10 WINCH_SOL.COIL_IN to OPTO.IN6: Remote taps: only if the remote's own lines can be reached. TBC
 - I11 PARK_SW.OUT to OPTO.IN7: If the switch grounds, wire the opto input the other way round
+- LT63 FB2.F6 to BRAKE_SW.IN: Brake switch feed, always live
+- WN19 WINCH_SOL.COIL_IN to WINCH_SOL.GND: Across the coil, at the solenoid box, unless the box already has one. Stops the coil's kick arcing the relay contacts and spiking the 12 V
 - D33 EPS_ECU.MOTOR to EPS_COL.MOTOR: Toyota's own plug, keep it from the wrecker
 - T05 BRAKE_SW.OUT to TRAILER.P6_STOP: Trailer brake lights still work with the control box off
-- T06 RELAYS.NO1 to TRAILER.P2_REV: Reversing pin. Relay 1 also runs the floods by hand, so trailer reverse lights would come on with them
+- T06 RELAYS.NO1 to TRAILER.P2_REV: Reversing pin. Relay 1 follows the rear floods, so trailer reverse lights come on with them
 - X03 CAM_REAR.VID to TCAM_DONGLE.VID_R: Shielded video lead, soldered
+- X05 RELAYS.NO7 to CAM_REAR.V12: 2 A inline fuse. On with the key, like the trailer camera
+- G34 CAM_REAR.GND to GND_STAR.G: Or a good chassis earth near the camera
 - X04 TCAM_DONGLE.CSI to PI5.CSI1: Camera ribbon, 2nd port
 
 ## Fuse block
@@ -118,10 +122,10 @@ Wires marked TBC, with what's unknown:
 |---|---|---|---|
 | F1 | 15 A | front bars 1 + 4 (outer pair) | LT01, LT04 |
 | F2 | 15 A | front bars 2 + 3 (inner pair) | LT02, LT03 |
-| F3 | 10 A | rear floods (MOSFET 7-8) + relay 1 trailer reverse pin | LT16, LT17, LT18 |
+| F3 | 15 A | rear floods (MOSFET 7-8) + relay 1 trailer reverse pin | LT16, LT17, LT18 |
 | F4 | 7.5 A | BTS7960 8 trailer tail + stop | T01 |
-| F5 | 3 A | relays 4-5 winch coils | WN07, WN08 |
-| F6 | 3 A | winch hand switches, tray limits, trailer reed | I13, WN13, WN14 |
+| F5 | 5 A | relays 4-5 winch coils | WN07, WN08 |
+| F6 | 5 A | winch hand switches, tray limits, trailer reed | I13, WN13, WN14 |
 | F7 | 10 A | extras - interior bar + relay 7 accessory (phone charger, trailer cam) | P15, LT05 |
 | F8 | 7.5 A | relay 8 power hold | P04 |
 | F9 | 10 A | BTS7960 1 diff | D05 |
@@ -146,12 +150,12 @@ Fuses not in the block (inline, at the battery or on a board):
 | I01 | 7.5 A | KEY.IGN | OPTO.IN1 |
 | WN01 | 250 A | BAT12.pos | BRK_WINCH.in |
 | WN02 | 250 A | BRK_WINCH.out | WINCH_SOL.B+ |
-| WN10 | 3 A | RELAYS.NO4 | WINCH_SOL.COIL_IN |
-| WN11 | 3 A | RELAYS.NO5 | WINCH_SOL.COIL_OUT |
-| WN15 | 3 A | HSW_WINCH.IN | WINCH_SOL.COIL_IN |
-| WN16 | 3 A | HSW_WINCH.OUT | WINCH_SOL.COIL_OUT |
-| WN17 | 3 A | HSW_CAB.IN | WINCH_SOL.COIL_IN |
-| WN18 | 3 A | HSW_CAB.OUT | WINCH_SOL.COIL_OUT |
+| WN10 | 5 A | RELAYS.NO4 | WINCH_SOL.COIL_IN |
+| WN11 | 5 A | RELAYS.NO5 | WINCH_SOL.COIL_OUT |
+| WN15 | 5 A | HSW_WINCH.IN | WINCH_SOL.COIL_IN |
+| WN16 | 5 A | HSW_WINCH.OUT | WINCH_SOL.COIL_OUT |
+| WN17 | 5 A | HSW_CAB.IN | WINCH_SOL.COIL_IN |
+| WN18 | 5 A | HSW_CAB.OUT | WINCH_SOL.COIL_OUT |
 | D06 | 10 A | BTS1.M+ | ACT_DIFF.M+ |
 | D07 | 10 A | BTS1.M- | ACT_DIFF.M- |
 | D16 | 10 A | BTS2.M+ | ACT_4WD.M+ |
@@ -161,9 +165,11 @@ Fuses not in the block (inline, at the battery or on a board):
 | D28 | 1 A | BAT12.pos | ADS1.A1 |
 | D31 | 3 A | RAIL.BUS | RELAYS2.COM1 |
 | D32 | 3 A | RELAYS2.NO1 | EPS_ECU.IG |
-| T06 | 10 A | RELAYS.NO1 | TRAILER.P2_REV |
+| T06 | 15 A | RELAYS.NO1 | TRAILER.P2_REV |
 | T07 | 2 A | RELAYS.NO7 | TCAM_PLUG.V12 |
 | T08 | 2 A | TCAM_PLUG.V12 | CAM_TRAILER.V12 |
+| X05 | 2 A | RELAYS.NO7 | CAM_REAR.V12 |
+| P21 | 2 A | RAIL.BUS | MODEM_BUCK.VIN |
 
 ## Wire schedule
 
@@ -210,7 +216,7 @@ Fuses not in the block (inline, at the battery or on a board):
 |---|---|---|---|---|---|---|---|
 | P01 | BAT12.pos | FB.IN | 10 mm² | 60 A |  | planned | 60 A main fuse at the battery. Was 6 mm² in wiring.md, which the table only rates to 40 A |
 | P02 | FB.F12 | KEY.BAT | 1 mm² | 7.5 A |  | planned |  |
-| P03 | KEY.IGN | RAIL.BUS | 1 mm² | 7.5 A |  | planned |  |
+| P03 | KEY.IGN | RAIL.BUS | 1 mm² | 7.5 A | Schottky diode 10 A | planned | Diode so relay 8 can't feed back into the key wire after key-off. Without it the Pico would see the key still on and never shut down |
 | P04 | FB.F8 | RELAYS.COM8 | 1 mm² | 7.5 A |  | planned |  |
 | P05 | RELAYS.NO8 | RAIL.BUS | 1 mm² | 7.5 A |  | planned | Power hold, in parallel with the key |
 | P06 | RAIL.BUS | TVS.K | 1 mm² | 7.5 A |  | planned |  |
@@ -228,6 +234,8 @@ Fuses not in the block (inline, at the battery or on a board):
 | P17 | RAIL.BUS | AMP.REM | 0.5 mm² | 2 A |  | planned (optional) | Remote turn-on, goes off with the rail |
 | P18 | DCDC.out_pos | BAT12.pos |  |  |  | tbc | DC-DC charge lead. Size and fuse depend on its rating |
 | P19 | BAT12.pos | EPS_ECU.B+ | 10 mm² | 60 A |  | planned (optional) | Own 60 A fuse and cable straight to the battery (Toyota fuses the Prius EPS at 60 A) |
+| P21 | RAIL.BUS | MODEM_BUCK.VIN | 0.5 mm² | 2 A |  | planned (optional) | 2 A inline fuse |
+| P22 | MODEM_BUCK.VOUT | MODEM_4G.V | 0.5 mm² |  |  | planned (optional) | Soldered lead to the V pin |
 
 ### Grounds (chassis, star point)
 
@@ -260,11 +268,16 @@ Fuses not in the block (inline, at the battery or on a board):
 | G13 | BTS2.B- | GND_STAR.G | 1.5 mm² |  |  | planned |  |
 | G14 | BTS3.B- | GND_STAR.G | 2.5 mm² |  |  | planned |  |
 | G17 | WINCH_SOL.GND | BAT12.neg | 35 mm² |  |  | planned | Winch return straight to the battery, cable from the winch kit |
+| G37 | RELAYS.GND | PICO_BUCK.GND | 0.5 mm² |  |  | planned | Relay coil return (JD-VCC side) |
+| G38 | RELAYS2.GND | PICO_BUCK.GND | 0.5 mm² |  |  | planned (optional) |  |
 | G19 | OPTO.COM12 | GND_STAR.G | 0.5 mm² |  |  | planned | 12 V side ground of the opto board |
 | G20 | TRAILER.P3_EARTH | GND_STAR.G | 2.5 mm² |  |  | planned |  |
 | G21 | TCAM_PLUG.GND | GND_STAR.G | 0.5 mm² |  |  | planned (optional) |  |
 | G22 | EPS_ECU.GND | BAT12.neg | 10 mm² |  |  | planned (optional) |  |
 | G23 | CAM_TRAILER.GND | TCAM_PLUG.GND | 0.5 mm² |  |  | planned (optional) | Earth the camera at the hitch, not through the 7-pin earth |
+| G34 | CAM_REAR.GND | GND_STAR.G | 0.5 mm² |  |  | tbc | Or a good chassis earth near the camera |
+| G35 | MODEM_BUCK.GND | PI_BUCK.GND | 0.5 mm² |  |  | planned (optional) |  |
+| G36 | MODEM_4G.G | PI5.GND |  |  |  | planned (optional) | Ground with the UART leads |
 
 ### CAN buses: main Teryx bus and the steering bus
 
@@ -333,7 +346,7 @@ Fuses not in the block (inline, at the battery or on a board):
 
 | Wire | From | To | Size | Fuse | Via | Status | Note |
 |---|---|---|---|---|---|---|---|
-| I01 | KEY.IGN | OPTO.IN1 | 0.75 mm² | 7.5 A | 1 A diode | planned | So the Pico sees key-off while relay 8 holds the rail. 0.75 mm² because the 7.5 A key fuse is upstream |
+| I01 | KEY.IGN | OPTO.IN1 | 0.75 mm² | 7.5 A | 1 A diode | planned | Taken from the key side of the P03 diode, so the Pico sees key-off while relay 8 holds the rail. 0.75 mm² because the 7.5 A key fuse is upstream |
 | I02 | BRAKE_SW.OUT | OPTO.IN2 | 0.5 mm² |  |  | tbc |  |
 | I03 | FNR.R | OPTO.IN3 | 0.5 mm² |  | opto board | tbc | The F-N-R switch is on the Shinegle key line. If J1-1 runs at 72 V, this needs a 72 V rated input, not the 12 V opto |
 | I04 | LIM_DN.NC | OPTO.IN4 | 0.5 mm² |  |  | planned | Normally closed, a broken wire reads as at the limit |
@@ -368,9 +381,9 @@ Fuses not in the block (inline, at the battery or on a board):
 | LT13 | PICO.GP18 | MOSFET.IN3 |  |  |  | planned | light.front_3 PWM |
 | LT14 | PICO.GP19 | MOSFET.IN4 |  |  |  | planned | light.front_4 PWM |
 | LT15 | PICO.GP20 | MOSFET.IN5 |  |  |  | planned | light.interior PWM |
-| LT16 | FB.F3 | RELAYS.COM1 | 1.5 mm² | 10 A |  | planned |  |
-| LT17 | FB.F3 | FLOOD_L.pos | 1.5 mm² | 10 A |  | planned | Always live, the MOSFET switches the - side |
-| LT18 | FB.F3 | FLOOD_R.pos | 1.5 mm² | 10 A |  | planned |  |
+| LT16 | FB.F3 | RELAYS.COM1 | 1.5 mm² | 15 A |  | planned |  |
+| LT17 | FB.F3 | FLOOD_L.pos | 1.5 mm² | 15 A |  | planned | Always live, the MOSFET switches the - side |
+| LT18 | FB.F3 | FLOOD_R.pos | 1.5 mm² | 15 A |  | planned |  |
 | LT19 | FLOOD_L.neg | MOSFET.OUT7 | 1.5 mm² |  |  | planned |  |
 | LT20 | FLOOD_R.neg | MOSFET.OUT8 | 1.5 mm² |  |  | planned |  |
 | LT21 | PCA.PWM11 | MOSFET.IN7 |  |  |  | planned | light.flood_l PWM |
@@ -407,12 +420,20 @@ Fuses not in the block (inline, at the battery or on a board):
 | LT52 | LIMP_SW.OUT | HEAD_R.LO | 1.5 mm² |  | Schottky diode 5 A | planned |  |
 | LT54 | LIMP_SW.OUT | TAIL_L.TAIL | 1 mm² |  | Schottky diode 5 A | planned | Tails on with the backup toggle too |
 | LT55 | LIMP_SW.OUT | TAIL_R.TAIL | 1 mm² |  | Schottky diode 5 A | planned |  |
+| LT62 | LIMP_SW.OUT | TRAILER.P7_TAIL | 1 mm² |  | Schottky diode 5 A | planned | Trailer tail lights on the backup toggle too |
+| LT63 | FB2.F6 | BRAKE_SW.IN | 1 mm² | 10 A |  | tbc | Brake switch feed, always live |
 | LT56 | FB2.F4 | BTS9.B+ | 1 mm² | 5 A |  | planned |  |
 | LT57 | BTS9.M+ | BEACON.AMBER | 0.75 mm² |  |  | planned | light.beacon (amber) |
 | LT58 | PCA.PWM13 | BTS9.RPWM |  |  |  | planned | light.beacon: flashed at 3 Hz by the Pico |
 | LT59 | BTS9.M- | BEACON.WHITE | 0.75 mm² |  |  | planned | light.beacon_white |
 | LT60 | PCA.PWM14 | BTS9.LPWM |  |  |  | planned | light.beacon_white: 3 Hz, opposite amber, stopped only |
 | LT61 | PCA.PWM15 | BTS9.EN |  |  |  | planned |  |
+| LT64 | PICO.3V3 | BTS4.VCC |  |  |  | planned | Logic supply, like BTS1-3 |
+| LT65 | PICO.3V3 | BTS5.VCC |  |  |  | planned |  |
+| LT66 | PICO.3V3 | BTS6.VCC |  |  |  | planned |  |
+| LT67 | PICO.3V3 | BTS7.VCC |  |  |  | planned |  |
+| LT68 | PICO.3V3 | BTS8.VCC |  |  |  | planned |  |
+| LT69 | PICO.3V3 | BTS9.VCC |  |  |  | planned |  |
 
 ### Winch
 
@@ -423,16 +444,18 @@ Fuses not in the block (inline, at the battery or on a board):
 | WN04 | WINCH_SOL.M1 | WINCH_MOTOR.M1 | 35 mm² |  |  | confirmed |  |
 | WN05 | WINCH_SOL.M2 | WINCH_MOTOR.M2 | 35 mm² |  |  | confirmed |  |
 | WN06 | WINCH_SOL.REMOTE | WINCH_REMOTE.PLUG |  |  |  | confirmed | XBull remote stays as a backup |
-| WN07 | FB.F5 | RELAYS.COM4 | 0.5 mm² | 3 A |  | planned |  |
-| WN08 | FB.F5 | RELAYS.COM5 | 0.5 mm² | 3 A |  | planned |  |
-| WN10 | RELAYS.NO4 | WINCH_SOL.COIL_IN | 0.5 mm² | 3 A | 3 A diode (1N5408) | planned | winch.in. Never the motor current through the relay board |
-| WN11 | RELAYS.NO5 | WINCH_SOL.COIL_OUT | 0.5 mm² | 3 A | 3 A diode (1N5408) | planned | winch.out, interlocked with in |
-| WN13 | FB.F6 | HSW_WINCH.FEED | 0.5 mm² | 3 A |  | planned |  |
-| WN14 | FB.F6 | HSW_CAB.FEED | 0.5 mm² | 3 A |  | planned |  |
-| WN15 | HSW_WINCH.IN | WINCH_SOL.COIL_IN | 0.5 mm² | 3 A | 3 A diode (1N5408) | planned |  |
-| WN16 | HSW_WINCH.OUT | WINCH_SOL.COIL_OUT | 0.5 mm² | 3 A | 3 A diode (1N5408) | planned |  |
-| WN17 | HSW_CAB.IN | WINCH_SOL.COIL_IN | 0.5 mm² | 3 A | 3 A diode (1N5408) | planned |  |
-| WN18 | HSW_CAB.OUT | WINCH_SOL.COIL_OUT | 0.5 mm² | 3 A | 3 A diode (1N5408) | planned |  |
+| WN07 | FB.F5 | RELAYS.COM4 | 0.5 mm² | 5 A |  | planned |  |
+| WN08 | FB.F5 | RELAYS.COM5 | 0.5 mm² | 5 A |  | planned |  |
+| WN10 | RELAYS.NO4 | WINCH_SOL.COIL_IN | 0.5 mm² | 5 A | 3 A diode (1N5408) | planned | winch.in. Never the motor current through the relay board |
+| WN11 | RELAYS.NO5 | WINCH_SOL.COIL_OUT | 0.5 mm² | 5 A | 3 A diode (1N5408) | planned | winch.out, interlocked with in |
+| WN19 | WINCH_SOL.COIL_IN | WINCH_SOL.GND |  |  | flyback diode 1N5408 (band to the coil wire) | tbc | Across the coil, at the solenoid box, unless the box already has one. Stops the coil's kick arcing the relay contacts and spiking the 12 V |
+| WN20 | WINCH_SOL.COIL_OUT | WINCH_SOL.GND |  |  | flyback diode 1N5408 (band to the coil wire) | tbc |  |
+| WN13 | FB.F6 | HSW_WINCH.FEED | 0.5 mm² | 5 A |  | planned |  |
+| WN14 | FB.F6 | HSW_CAB.FEED | 0.5 mm² | 5 A |  | planned |  |
+| WN15 | HSW_WINCH.IN | WINCH_SOL.COIL_IN | 0.5 mm² | 5 A | 3 A diode (1N5408) | planned |  |
+| WN16 | HSW_WINCH.OUT | WINCH_SOL.COIL_OUT | 0.5 mm² | 5 A | 3 A diode (1N5408) | planned |  |
+| WN17 | HSW_CAB.IN | WINCH_SOL.COIL_IN | 0.5 mm² | 5 A | 3 A diode (1N5408) | planned |  |
+| WN18 | HSW_CAB.OUT | WINCH_SOL.COIL_OUT | 0.5 mm² | 5 A | 3 A diode (1N5408) | planned |  |
 
 ### Drive: 4WD, diff lock, tray, power steering
 
@@ -466,10 +489,12 @@ Fuses not in the block (inline, at the battery or on a board):
 | D26 | PICO.3V3 | BTS2.VCC |  |  |  | planned |  |
 | D27 | PICO.3V3 | BTS3.VCC |  |  |  | planned |  |
 | D28 | BAT12.pos | ADS1.A1 | 0.5 mm² | 1 A | divider 10k / 2.2k + 3.3 V zener | planned | an.aux_12v. Fuse the sense lead |
-| D29 | PI_BUCK.VOUT | BRAKE_PEDAL.V5 |  |  |  | planned (optional) | Or the Pico buck. 5 V sensor |
+| D29 | PICO_BUCK.VOUT | BRAKE_PEDAL.V5 |  |  |  | planned (optional) | 5 V sensor, fed from the control box so it shares the ADC's ground |
+| D36 | BRAKE_PEDAL.GND | ADS2.GND |  |  |  | planned (optional) |  |
+| D37 | BRAKE_PRESS.GND | ADS2.GND |  |  |  | planned (optional) |  |
 | D30 | BRAKE_PEDAL.SIG | ADS2.A0 |  |  | divider 10k / 20k | planned (optional) | an.brake_pedal, 4.5 V reads 3.0 V |
 | D34 | BRAKE_PRESS.SIG | ADS2.A1 |  |  | divider 10k / 20k | planned (optional) | an.brake_pressure |
-| D35 | PI_BUCK.VOUT | BRAKE_PRESS.V5 |  |  |  | planned (optional) |  |
+| D35 | PICO_BUCK.VOUT | BRAKE_PRESS.V5 |  |  |  | planned (optional) |  |
 | D31 | RAIL.BUS | RELAYS2.COM1 | 0.5 mm² | 3 A |  | planned (optional) | Steering ignition feed through relay 9, so the lock and RC kill can turn assist off |
 | D32 | RELAYS2.NO1 | EPS_ECU.IG | 0.5 mm² | 3 A |  | tbc (optional) |  |
 | D33 | EPS_ECU.MOTOR | EPS_COL.MOTOR |  |  |  | tbc (optional) | Toyota's own plug, keep it from the wrecker |
@@ -479,13 +504,13 @@ Fuses not in the block (inline, at the battery or on a board):
 | Wire | From | To | Size | Fuse | Via | Status | Note |
 |---|---|---|---|---|---|---|---|
 | T01 | FB.F4 | BTS8.B+ | 1 mm² | 7.5 A |  | planned |  |
-| T02 | BTS8.M+ | TRAILER.P7_TAIL | 1 mm² |  |  | planned | light.trailer_tail (dimmable). No diode: nothing else feeds this pin |
+| T02 | BTS8.M+ | TRAILER.P7_TAIL | 1 mm² |  | Schottky diode 5 A | planned | light.trailer_tail (dimmable). Diode so the backup toggle (LT62) can't feed back into the BTS7960 |
 | T04 | BTS8.M- | TRAILER.P6_STOP | 1 mm² |  | Schottky diode 5 A | planned | light.trailer_stop. Diode so the brake switch backup (T05) can't feed back into the BTS7960 |
 | T18 | PCA.PWM9 | BTS8.RPWM |  |  |  | planned | light.trailer_tail PWM |
 | T19 | PCA.PWM10 | BTS8.LPWM |  |  |  | planned | light.trailer_stop PWM |
 | T20 | PCA.PWM15 | BTS8.EN |  |  |  | planned |  |
-| T05 | BRAKE_SW.OUT | TRAILER.P6_STOP | 1 mm² |  | diode (backup) | tbc | Trailer brake lights still work with the control box off |
-| T06 | RELAYS.NO1 | TRAILER.P2_REV | 1 mm² | 10 A |  | tbc (optional) | Reversing pin. Relay 1 also runs the floods by hand, so trailer reverse lights would come on with them |
+| T05 | BRAKE_SW.OUT | TRAILER.P6_STOP | 1 mm² |  | Schottky diode 5 A | tbc | Trailer brake lights still work with the control box off |
+| T06 | RELAYS.NO1 | TRAILER.P2_REV | 1.5 mm² | 15 A |  | tbc (optional) | Reversing pin. Relay 1 follows the rear floods, so trailer reverse lights come on with them |
 | T07 | RELAYS.NO7 | TCAM_PLUG.V12 | 0.5 mm² | 2 A |  | planned (optional) | 2 A inline fuse. Runs while driving, not just reversing |
 | T08 | TCAM_PLUG.V12 | CAM_TRAILER.V12 | 0.5 mm² | 2 A |  | planned (optional) |  |
 | T09 | CAM_TRAILER.VID | TCAM_PLUG.VID |  |  |  | planned (optional) |  |
@@ -505,6 +530,7 @@ Fuses not in the block (inline, at the battery or on a board):
 | X01 | PI5.HDMI0 | SCREEN.HDMI |  |  |  | planned |  |
 | X02 | SCREEN.USB | PI5.USB2_B |  |  |  | planned | Touch. Screen only does touch over USB. Right-angle lead, cable-tied to the box |
 | X03 | CAM_REAR.VID | TCAM_DONGLE.VID_R |  |  |  | tbc | Shielded video lead, soldered |
+| X05 | RELAYS.NO7 | CAM_REAR.V12 | 0.5 mm² | 2 A |  | tbc | 2 A inline fuse. On with the key, like the trailer camera |
 | X03b | CAM_REAR.VID_GND | TCAM_DONGLE.VID_R_GND |  |  |  | tbc |  |
 | X04 | TCAM_DONGLE.CSI | PI5.CSI1 |  |  |  | tbc | Camera ribbon, 2nd port |
 | X07 | CARPLAY.USB | PI5.USB2_A |  |  |  | planned (optional) | CarPlay dongle is USB only. Right-angle lead, dongle zip-tied down inside the box |
@@ -530,6 +556,8 @@ Fuses not in the block (inline, at the battery or on a board):
 | X22 | AMP.SPK | SPEAKERS.IN |  |  |  | planned (optional) |  |
 | X34 | AMP.SUB | SUB.IN |  |  |  | planned (optional) | Amp ch 3 + 4 bridged (ch 3 + and ch 4 -, check the amp's label) |
 | X23 | PI5.P3_SDA | IMU.SDA |  |  |  | planned (optional) |  |
+| X35 | PI5.P17_3V3 | IMU.VCC |  |  |  | planned (optional) |  |
+| X36 | IMU.GND | PI5.GND |  |  |  | planned (optional) |  |
 | X24 | PI5.P5_SCL | IMU.SCL |  |  |  | planned (optional) |  |
 
 ## Devices
@@ -551,12 +579,12 @@ Fuses not in the block (inline, at the battery or on a board):
 | BAT12 | 12 V aux battery | engine_bay | confirmed | Kept after the conversion. Charged by the DC-DC |
 | GND_STAR | Ground point (star) | engine_bay | planned | One solid chassis ground near the fuse block. Every 12 V ground goes here |
 | FB | Blade fuse block | cab | tbc | 12 fuses in use. Small loads that can go out together share a fuse (front bars in pairs, trailer tail + stop, interior bar + accessory). All four front bars are NOT on one fuse, so one fault can't black out the front at night. The winch, control box power, key, power hold and each actuator keep their own. Sam's 12-way (in the post) is used, so it is full with no spares; add a small 6-way next to it if more circuits come |
-| FB2 | Small 6-way blade fuse block (stock lights + beacon) | cab | planned | Next to the 12-way, which is full. Fed off the 12-way's feed stud through its own 30 A fuse. 1 way spare |
+| FB2 | Small 6-way blade fuse block (stock lights + beacon) | cab | planned | Next to the 12-way, which is full. Fed off the 12-way's feed stud through its own 30 A fuse. All 6 ways used (way 6 feeds the stock brake switch so the brake lights are on a known fuse, always live) |
 | KEY | Teryx key switch | cab | confirmed |  |
 | RAIL | Dash 12 V rail | dash | planned | Key OR relay 8 (power hold). Stays up after key-off until the Pico lets go See [`docs/wiring.md`](../../docs/wiring.md). |
 | TVS | 1.5KE18A TVS diode | dash | planned | Clamps spikes on the dash rail |
 | PI_BUCK | Pololu D36V50F5 5 V 5.5 A | dash | planned | Pi 5 power. About 16 W of its 27 W with the AI HAT+ 2 fitted |
-| PICO_BUCK | Mini560 5 V buck (control box) | control_box | planned |  |
+| PICO_BUCK | 5 V 5 A buck (Sam's, control box) | control_box | planned |  |
 | SCREEN_PSU | Screen 12 V supply | dash | tbc | LTC3780 buck-boost board (5-32 V in, set to 12.0 V, 80 W) in the Pi box. Keeps the screen on a steady 12 V while the battery swings 11-14.4 V. No reverse-polarity protection, so it sits after the fuse. Skip it if the screen's own board says 9-36 V in |
 | PICO | Raspberry Pi Pico 2 | control_box | planned | Talks to the Pi over CAN only. No USB lead to the Pi; reflash with a laptop on its own USB port in the workshop See [`docs/io-list.md`](../../docs/io-list.md). |
 | DEBUG | Debug UART header | control_box | planned | Inside the box. Vehicle lock workshop reset |
@@ -592,7 +620,7 @@ Fuses not in the block (inline, at the battery or on a board):
 | HEAD_R | Right headlight (stock, 12 V 35/35 W) | front | from_manual |  |
 | TAIL_L | Left tail / brake light (stock, 12 V 8/27 W) | rear | from_manual | Dual filament bulb, 8 W tail and 27 W brake, one shared earth (owner's manual: tail/brake light 12 V 8/27 W x 2) |
 | TAIL_R | Right tail / brake light (stock, 12 V 8/27 W) | rear | from_manual |  |
-| LIMP_SW | Backup lights toggle (hidden) | cab | planned | The Teryx has no headlight switch, so the dash and the Pico do everything. This hidden toggle is the backup if the control box dies: it feeds both low beams and both tails at full through diodes. Leave it off normally. The Pico also turns low beams and tails on by itself if the dash goes quiet with the key on |
+| LIMP_SW | Backup lights toggle (hidden) | cab | planned | The Teryx has no headlight switch, so the dash and the Pico do everything. This hidden toggle is the backup if the control box dies: it feeds both low beams, both tails and the trailer tail at full through diodes. Leave it off normally. The Pico also turns low beams and tails on by itself if the dash goes quiet with the key on |
 | BEACON | Roof beacon (amber + white LED, steady-on) | rear | planned | Sam's amber + white LED beacon (bought 18 Nov). Each colour stays on steady and the Pico flashes them at 3 Hz (NZ Vehicle Lighting Rule 11.1(2): 2 to 4 Hz), amber and white taking turns. White only when stopped: on the road only red or amber may show to the rear. Fits Sam's existing hole on the roof |
 | BRK_WINCH | 250 A breaker | engine_bay | planned | Manual reset breaker, also the winch's kill switch: push it off to make the winch dead. No isolator contactor (Sam, 18 Nov), so the XBull remote and hand switches work whenever this is on |
 | WINCH_SOL | XBull solenoid box | front | confirmed |  |
@@ -620,9 +648,10 @@ Fuses not in the block (inline, at the battery or on a board):
 | PI_CAN | MCP2515 CAN module (Pi) | dash | planned | Seeed MCP2515 + SN65HVD230 on the Pi box wall |
 | SCREEN | 10.1 in touch screen | dash | confirmed | 1280x800, HDMI + USB touch, 3.5 mm audio in |
 | GLOVE_USB | Glove box USB-C charger (RC phone) | dash | planned (optional) | 12 V to USB-C PD socket for the phone that lives in the glove box (docs/rc-beach-launch.md 4b). Fed from the accessory relay so it's off with the key off |
-| CAM_REAR | Rear camera (200 degree, Sam's) | rear | tbc | Sam thinks it's AHD. Set to CVBS/PAL mode, soldered shielded video lead to the analogue-to-ribbon board. Rear or trailer is picked in software when the trailer plug is in. 12 V feed TBC |
+| CAM_REAR | Rear camera (200 degree, Sam's) | rear | tbc | Sam thinks it's AHD. Set to CVBS/PAL mode, soldered shielded video lead to the analogue-to-ribbon board. Rear or trailer is picked in software when the trailer plug is in. 12 V from the accessory relay (relay 7) through its own 2 A inline fuse |
 | CAM_FRONT | Camera Module 3 Wide (front) | dash | planned | Inside the screen housing, 200-300 mm ribbon |
 | MODEM_4G | SIMCom A7670SA 4G board | dash | placeholder (optional) | 6-pin header S G V K T R G. V takes 5-10 V from the spare Mini560 5 V buck. NEVER raw 12 V (10 V max, and the car runs 14.4 V with spikes). K is tied to ground on the board, so it starts by itself. T/R are 115200 baud TTL to the Pi's GPIO 15/14; measure T before connecting (3.3 V ok, else BSS138). Micro USB also on board. Its GNSS (FASE version, u.FL GPS socket on Sam's board) is the dash GPS too, so there is no separate USB GPS. Check on arrival that it gets a fix with the SIM out / 4G off. No USB: it's on the header pins (soldered leads), so texts, GPS and slow data only, no live video over 4G |
+| MODEM_BUCK | Mini560 5 V buck (4G board) | dash | planned (optional) | Feeds the 4G board's V pin (5 V, 2 A peaks when it transmits). In the Pi box, on the dash rail, so the 4G board is on when the Pi is |
 | CARPLAY | Carlinkit CPC200-CCPA | dash | planned (optional) |  |
 | DAC_HAT | Raspberry Pi DAC+ (on jumper leads) | dash | planned (optional) | PCM5122 DAC HAT (ex IQaudio DAC+), RCA line out to the amp. Sits on standoffs in the right-hand end of the Pi box, off the Pi, so the top of the Pi stays free for the AI HAT+ 2. Joined by 7 male-to-female jumper leads (about 20 cm), not a full 40-way ribbon: a ribbon would cover the header pins the CAN board, 4G board and IMU leads plug onto. Uses GPIO 18, 19, 21 (I2S), 2 and 3 (I2C, shared with the IMU: DAC 0x4D, IMU 0x68), 5 V and GND. Nothing else on the Pi uses 18-21 (CAN is SPI0 + GPIO 25, 4G is UART GPIO 14/15). The ID EEPROM pins 27/28 are left off, so it never fights the AI HAT's EEPROM; set the overlay by hand: scripts/audio-setup.sh --i2s iqaudio-dacplus. A dab of hot glue on the leads at both ends against vibration. Later the leads move onto the AI HAT's stacking header pins See [`docs/audio.md`](../../docs/audio.md). |
 | AMP | 4-ch class D amp (AliExpress, 4 x 63 W RMS at 4 ohm) | cab | confirmed (optional) | Sam's pick. 4 x 63 W RMS at 4 ohm, or 2 x 200 W RMS bridged at 4 ohm; built-in 90 Hz high and low pass; 8-16 V; up to 33 A flat out (16.5 A on music); 145 x 100 x 45 mm. Channels 1 and 2 drive the Kenwoods (set the HPF on). Channels 3 and 4 bridged (200 W at 4 ohm) drive the Kicker KM104 sub (LPF on, gain set so it stays under the sub's 150 W RMS) See [`docs/audio.md`](../../docs/audio.md). |

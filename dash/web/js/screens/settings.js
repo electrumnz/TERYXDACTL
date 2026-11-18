@@ -232,7 +232,7 @@ export class SettingsScreen {
     const s = this.ctx.settings, hub = this.ctx.media;
     this.title(body, "Audio and media", "Where the sound goes and how music behaves. Alert sounds are set under Sounds and alerts, and are never turned down by the music.");
     const outBox = el(`<div class="col" style="gap:10px"><div class="muted">Checking…</div></div>`);
-    body.appendChild(row("Sound goes to", "The Pi 5 has no headphone jack. Use a USB DAC or an I2S amp HAT into the amp. HDMI only helps if the HDMI to VGA adapter has a 3.5 mm audio out.", outBox));
+    body.appendChild(row("Sound goes to", "The Pi 5 has no headphone jack. The Raspberry Pi DAC+ (on jumper leads, I2S) feeds the amp over RCA.", outBox));
     const lvl = stepper(100, { step: 10, min: 10, max: 100, fmt: (v) => `${v}%`, onChange: (v) => api("audio/output-level", { method: "POST", body: { level: v / 100 } }).catch((e) => toast(`Couldn't set the level (${e.message}).`, "bad")) });
     body.appendChild(row("Output level", "The feed to the amp. Leave it at 100% and set the amp's gain once, so alerts are always loud enough.", lvl));
     const fill = async () => {
@@ -292,7 +292,7 @@ export class SettingsScreen {
   // ---------- Camera ----------
   async sec_camera(body) {
     const s = this.ctx.settings;
-    this.title(body, "Cameras", "Up to four: rear, front, trailer and cabin. Each can be a USB camera, or an RCA/AHD camera through a USB capture dongle. Both show up below as a device. Cameras that aren't fitted show greyed out on the Cameras screen.");
+    this.title(body, "Cameras", "Up to four: rear, front, trailer and cabin. No USB: the front is the Pi Camera Module 3 on ribbon port 0 (csi0); rear, trailer and cabin are analogue (CVBS/PAL) into the video board on ribbon port 1 (adv:0, adv:1, adv:2). The video board shows one of its cameras at a time. Cameras that aren't fitted show greyed out on the Cameras screen.");
     body.appendChild(row("Source", "Auto tries the camera directly, then the server stream.", seg([["auto", "Auto"], ["usb", "Camera"], ["stream", "Server stream"]], s.get("camera.source"), (v) => s.set("camera.source", v))));
     body.appendChild(row("Pop up in reverse", "Shows a camera when you select reverse, and goes back after.", toggle(s.get("camera.autoOnReverse"), (v) => s.set("camera.autoOnReverse", v))));
     body.appendChild(row("Trailer camera in reverse", "With a trailer plugged in, reverse shows the trailer camera instead of the rear one. You can still swap on the Cameras screen.", toggle(s.get("camera.trailerInReverse") !== false, (v) => s.set("camera.trailerInReverse", v))));
@@ -303,7 +303,7 @@ export class SettingsScreen {
       rear: "Mirror on, so left on screen is left behind you.",
       front: "Grille or bull bar camera, for seeing over a crest. Usually no mirror and no guide lines.",
       trailer: "On the back of the trailer. Only shows when a trailer is plugged in (reed switch in the 7-pin socket).",
-      cabin: "Small camera on the dash looking at the seats, on the Pi's second ribbon port (csi1). Records with the others and takes the face shot if someone tries the key while it's locked.",
+      cabin: "Small camera on the dash looking at the seats, on the video board's spare input (adv:2). Shares the board with the rear and trailer cameras, so only one of them records at a time. Records with the others and takes the face shot if someone tries the key while it's locked.",
     };
     CAMS.forEach((c) => {
       const k = `camera.cams.${c.id}`, cfg = s.get(k) || {};
