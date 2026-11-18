@@ -19,7 +19,9 @@ starting point for the bench build.
 - Grounds: one solid ground point near the fuse block, star-wired from there.
 - Sharing a fuse is fine only for small loads that can go out together without
   making anything unsafe: the front bars in pairs (outer 1+4, inner 2+3, so a
-  blown fuse still leaves light on both sides) and the trailer tail + stop.
+  blown fuse still leaves light on both sides), the trailer tail + stop, and the
+  "extras" (interior bar + accessory relay 7). All four front bars on one fuse
+  was ruled out: one fault would black out the front at night.
   The winch coils, the hand winch switches, the key, the power hold and each
   actuator keep their own fuse, so one fault can't take out the backup too or
   let a stalled actuator blow another one's fuse.
@@ -35,7 +37,7 @@ starting point for the bench build.
 flowchart LR
   BATT["12V aux battery<br/>(charged by Shinegle DC-DC)"]
   BATT -- "35mm² + 250A breaker" --> WSOL["Winch solenoid box"] --> WINCH["XBull 5000lb winch"]
-  BATT -- "10mm² + 60A main fuse" --> FB["20 way fuse block (13 used)"]
+  BATT -- "10mm² + 60A main fuse" --> FB["20 way fuse block (12 used)"]
   KEY["Key switch (12V when on)"] --> RAIL
   FB -- "7.5A" --> HOLD["Relay 8 power.hold<br/>(contacts parallel to key)"] --> RAIL["Dash 12V rail"]
   RAIL -- "5V 5A buck" --> PI["Pi 5 + 10.1in screen"]
@@ -133,7 +135,7 @@ ground (0x48). RESET on the MCP23017 to 3.3V through 10kΩ.
 | A3 | 4 | Fuse block 3A → winch solenoid box "in" coil wire |
 | A4 | 5 | Fuse block 3A → winch solenoid box "out" coil wire |
 | A5 | 6 | Fuse block 3A → winch isolator/contactor coil |
-| A6 | 7 | Fuse block 10A → accessory 12V |
+| A6 | 7 | Fuse block 10A (shared with interior bar) → accessory 12V |
 | A7 | 8 | Fuse block 7.5A → dash 12V rail (see power) |
 
 - Remove the JD-VCC/VCC jumper and feed JD-VCC from the Pico's 5V buck, VCC
@@ -185,7 +187,7 @@ limit" and stops the tray instead of letting it run.
 | GP17 | 2 | Front bar 2 (inner left) | 15A (shared with bar 3) | 1.5mm² |
 | GP18 | 3 | Front bar 3 (inner right) | 15A (shared with bar 2) | 1.5mm² |
 | GP19 | 4 | Front bar 4 (far right) | 15A (shared with bar 1) | 1.5mm² |
-| GP20 | 5 | Interior bar | 5A | 1mm² |
+| GP20 | 5 | Interior bar | 10A (shared with accessory relay 7) | 1mm² |
 
 These are low-side switches: the light's **+** goes to its fuse, the light's
 **−** goes to the MOSFET board's output, and the MOSFET board ground goes to
