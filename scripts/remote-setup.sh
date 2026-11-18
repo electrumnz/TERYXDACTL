@@ -17,18 +17,26 @@
 #                     Skinny is wapaccess.co.nz if it needs setting by hand.
 #   --ssd-label NAME  Filesystem label of the video SSD (default: skip the SSD step)
 #   --no-modem        Skip steps 1 and 2 (no 4G stick fitted)
+#   --uart            The 4G module is a bare board (A7670SA etc) on the Pi's UART, GPIO 14/15,
+#                     not a USB stick. Turns on UART0 (/dev/ttyAMA0) and tells ModemManager
+#                     to use it. Reboot after. See docs/remote-access.md "Bare module on the UART".
+#   --uart-direct     Same wiring, but skip ModemManager and let the dash talk AT commands
+#                     itself. Texts only, no 4G data. Only if ModemManager won't take the port.
 set -euo pipefail
 
 APN=""
 SSD_LABEL=""
 MODEM=1
+UART=""
 
 while [ $# -gt 0 ]; do
   case "$1" in
     --apn) APN="$2"; shift 2 ;;
     --ssd-label) SSD_LABEL="$2"; shift 2 ;;
     --no-modem) MODEM=0; shift ;;
-    -h|--help) sed -n '2,20p' "$0"; exit 0 ;;
+    --uart) UART=mm; shift ;;
+    --uart-direct) UART=direct; shift ;;
+    -h|--help) sed -n '2,25p' "$0"; exit 0 ;;
     *) echo "unknown option: $1 (try --help)" >&2; exit 2 ;;
   esac
 done
@@ -59,6 +67,34 @@ if [ "$MODEM" -eq 1 ]; then
   fi
   [ -z "$APN" ] || nmcli connection modify teryx-4g gsm.apn "$APN"
   # Higher route metric: Wi-Fi wins when both are up, so media never eats the SIM's data.
+  if [ -n "$UART" ]; then
+    CONFIG=/boot/firmware/config.txt
+    [ -f "$CONFIG" ] || CONFIG=/boot/config.txt
+    BEGIN="# >>> teryx 4g uart"
+    END="# <<< teryx 4g uart"
+    sed -i "/^$BEGIN/,/^$END/d" "$CONFIG"
+    printf '%s\nenable_uart=1\ndtparam=uart0=on\n%s\n' "$BEGIN" "$END" >> "$CONFIG"
+    echo "Turned on UART0 on GPIO 14/15 ($CONFIG). It shows up as /dev/ttyAMA0 after a reboot."
+    if grep -q 'console=serial0\|console=ttyAMA0' /boot/firmware/cmdline.txt 2>/dev/null; then
+      echo "Note: cmdline.txt has a serial console. On a Pi 5 serial0 is normally the debug header"
+      echo "(ttyAMA10), which is fine. If it points at ttyAMA0, take it out."
+    fi
+    if [ "$UART" = mm ]; then
+      # ModemManager ignores plain serial ports unless told to look at them.
+      cat > /etc/udev/rules.d/77-teryx-4g-uart.rules <<'RULES'
+# Written by scripts/remote-setup.sh --uart: let ModemManager probe the 4G module on UART0.
+ACTION=="add|change|move", SUBSYSTEM=="tty", KERNEL=="ttyAMA0", ENV{ID_MM_DEVICE_PROCESS}="1", ENV{ID_MM_TTY_BAUDRATE}="115200"
+RULES
+      rm -f /etc/systemd/system/teryx-dash.service.d/4g-uart.conf
+    else
+      rm -f /etc/udev/rules.d/77-teryx-4g-uart.rules
+      mkdir -p /etc/systemd/system/teryx-dash.service.d
+      printf '[Service]\nEnvironment=TERYX_MODEM=at:/dev/ttyAMA0:115200\n' > /etc/systemd/system/teryx-dash.service.d/4g-uart.conf
+      usermod -aG dialout teryx
+      systemctl daemon-reload
+    fi
+    udevadm control --reload-rules
+  fi
   if mmcli -L 2>/dev/null | grep -q Modem; then
     echo "4G stick found:"; mmcli -L
   else

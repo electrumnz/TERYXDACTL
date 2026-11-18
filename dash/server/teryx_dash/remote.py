@@ -399,6 +399,9 @@ class RemoteService:
             return ("Lock sent. It locks once it has been stopped for 10 s or the key is off, "
                     "never while moving. Text WHERE to check.")
         if cmd in ("cams", "online"):
+            if not getattr(self.modem, "can_data", True):
+                return ("Texts work, but this module has no 4G data set up (UART without ModemManager). "
+                        "See docs/remote-access.md.")
             mins = await self.data_on(now)
             return (f"Data on for {mins} min. On your phone open Tailscale, then http://teryx:8080 "
                     "for live cameras and saved clips. Text OFF to stop sooner.")
@@ -432,13 +435,139 @@ class RemoteService:
         del self.log[:-50]
 
 
+# ---------------------------------------------------------------- bare module on the Pi's UART, no ModemManager
+Transact = Callable[..., Awaitable[str]]
+
+
+def parse_at_time(s: str) -> float:
+    """+CMGL times look like 26/11/18,19:04:11+52 (the zone is in quarter hours). Unknown -> now."""
+    m = re.fullmatch(r"(\d\d)/(\d\d)/(\d\d),(\d\d):(\d\d):(\d\d)([+-])(\d+)", (s or "").strip())
+    if not m:
+        return time.time()
+    yy, mo, dd, hh, mi, ss, sign, q = m.groups()
+    mins = int(q) * 15 * (1 if sign == "+" else -1)
+    iso = f"20{yy}-{mo}-{dd}T{hh}:{mi}:{ss}{'+' if mins >= 0 else '-'}{abs(mins) // 60:02d}:{abs(mins) % 60:02d}"
+    try:
+        return datetime.fromisoformat(iso).timestamp()
+    except ValueError:
+        return time.time()
+
+
+def parse_cmgl(text: str) -> list[tuple[int, Sms]]:
+    """Text-mode AT+CMGL answer -> [(index, Sms)]. Each header line is followed by the text."""
+    out: list[tuple[int, Sms]] = []
+    lines = text.replace("\r", "").split("\n")
+    i = 0
+    while i < len(lines):
+        m = re.match(r'\+CMGL:\s*(\d+),"([^"]*)","([^"]*)",(?:"[^"]*")?,?"?([^"]*)"?', lines[i])
+        if m:
+            body = []
+            i += 1
+            while i < len(lines) and not lines[i].startswith("+CMGL:") and lines[i].strip() != "OK":
+                body.append(lines[i])
+                i += 1
+            out.append((int(m.group(1)), Sms(m.group(3), "\n".join(body).strip(), parse_at_time(m.group(4)))))
+            continue
+        i += 1
+    return out
+
+
+class SerialAt:
+    """One AT command at a time over a serial port (pyserial, run off the event loop)."""
+
+    def __init__(self, port: str, baud: int = 115200):
+        self.port, self.baud = port, baud
+        self._ser = None
+        self._lock = asyncio.Lock()
+
+    def _open(self):
+        if self._ser is None:
+            import serial   # pyserial; only needed on the Pi
+            self._ser = serial.Serial(self.port, self.baud, timeout=0.2)
+        return self._ser
+
+    def _xfer(self, cmd: str, body: str | None, timeout: float) -> str:
+        ser = self._open()
+        ser.reset_input_buffer()
+        ser.write((cmd + "\r").encode())
+        buf, end = b"", time.monotonic() + timeout
+        while time.monotonic() < end:
+            buf += ser.read(256)
+            if body is not None and buf.endswith(b"> "):
+                ser.write(body.encode("ascii", "replace") + b"\x1a")   # Ctrl-Z sends it
+                body = None
+                continue
+            if re.search(rb"\r\n(OK|ERROR|\+CM[SE] ERROR:[^\r]*)\r\n$", buf):
+                break
+        return buf.decode("ascii", "replace")
+
+    async def __call__(self, cmd: str, body: str | None = None, timeout: float = 5) -> str:
+        async with self._lock:
+            return await asyncio.to_thread(self._xfer, cmd, body, timeout)
+
+
+class AtModem:
+    """A bare 4G module (A7670SA etc) on the Pi's UART, spoken to with plain AT commands.
+
+    Texts only: 4G data over a UART needs PPP, which ModemManager does for you (docs/remote-access.md,
+    "Bare module on the UART"). Use this only if ModemManager won't take the port."""
+    can_data = False
+
+    def __init__(self, transact: Transact):
+        self.at = transact
+        self._ready = False
+
+    async def _setup(self) -> None:
+        if not self._ready:
+            await self.at("ATE0")
+            await self.at("AT+CMGF=1")          # text mode
+            await self.at('AT+CSCS="GSM"')
+            self._ready = True
+
+    async def read_sms(self) -> list[Sms]:
+        await self._setup()
+        got = parse_cmgl(await self.at('AT+CMGL="REC UNREAD"', timeout=10))
+        for idx, _ in got:
+            await self.at(f"AT+CMGD={idx}")      # delete once read, the SIM only holds a few
+        return [sms for _, sms in got]
+
+    async def send_sms(self, number: str, text: str) -> None:
+        await self._setup()
+        number = normalise_number(number)
+        text = re.sub(r"[^\x20-\x7e\n]", " ", text)[:160]
+        reply = await self.at(f'AT+CMGS="{number}"', body=text, timeout=60)
+        if "+CMGS:" not in reply:
+            raise RuntimeError("the module did not send the text")
+
+    async def set_data(self, on: bool) -> None:
+        return None   # no data on this setup; RemoteService says so in the reply
+
+    async def status(self) -> dict:
+        try:
+            csq = await self.at("AT+CSQ")
+            cops = await self.at("AT+COPS?")
+        except Exception:
+            return {"present": False, "data_on": False, "signal_pct": None, "operator": None}
+        m = re.search(r"\+CSQ:\s*(\d+)", csq)
+        rssi = int(m.group(1)) if m else 99
+        op = re.search(r'\+COPS:\s*\d+,\d+,"([^"]+)"', cops)
+        return {"present": bool(m), "data_on": False, "texts_only": True,
+                "signal_pct": None if rssi == 99 else round(min(rssi, 31) * 100 / 31),
+                "operator": op.group(1) if op else None}
+
+
 REMOTE_KEY = web.AppKey("teryx_dash_remote", RemoteService)
 REMOTE_TASK_KEY = web.AppKey("teryx_dash_remote_task", asyncio.Future)
 
 
 def make_modem() -> Any:
-    """TERYX_MODEM=fake for the sim (the default off the Pi), mmcli on the Pi."""
+    """TERYX_MODEM picks it: fake (the sim, and the default off the Pi), mmcli (the default on the Pi,
+    for a USB stick or a UART module ModemManager has taken), or at:/dev/ttyAMA0[:115200] for a bare
+    module on the UART spoken to directly (texts only)."""
     kind = os.environ.get("TERYX_MODEM") or ("mmcli" if Path("/usr/bin/mmcli").exists() else "fake")
+    if kind.startswith("at:"):
+        parts = kind.split(":")
+        return AtModem(SerialAt(parts[1], int(parts[2]) if len(parts) > 2 else 115200))
     return MmcliModem() if kind == "mmcli" else FakeModem()
 
 
@@ -502,6 +631,8 @@ def setup_remote_routes(app: web.Application, gateway: Any, config_dir: Callable
             return web.json_response({"error": "wrong code, or blocked after wrong codes"}, status=403)
         if d.get("off"):
             await svc.data_off()
+        elif not getattr(svc.modem, "can_data", True):
+            return web.json_response({"error": "this 4G module has no data set up (texts only)"}, status=409)
         else:
             try:
                 await svc.data_on(now, int(d.get("minutes") or 0) or None)
