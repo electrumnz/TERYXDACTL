@@ -55,7 +55,7 @@ Keys follow the io-map ids in `config/io-map.yaml`.
 | `regen.state` | off / ready / active / limited / sensor_fault | Brake regen state |
 | `regen.limit` | none / low_speed / speed_unknown / not_forward / battery_full / two_wd / sensor / throttle | What is holding regen back |
 | `an.brake_pedal_raw` | 0-32767 | Raw pedal sensor reading, for calibrating settings 28/29 |
-| `in.ignition`, `in.brake`, `in.reverse`, `in.tray_down`, `in.tray_up`, `in.winch_remote`, `in.park`, `in.spare` | bool | Wired inputs |
+| `in.ignition`, `in.brake`, `in.reverse`, `in.tray_down`, `in.tray_up`, `in.winch_remote`, `in.park`, `in.trailer` | bool | Wired inputs (`in.trailer` = trailer plugged in) |
 | `an.diff_pos` | % | Diff actuator actual position |
 | `an.aux_12v` | V | |
 | `an.diff_current`, `an.4wd_current`, `an.tray_current` | A | |

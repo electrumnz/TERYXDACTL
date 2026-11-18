@@ -21,6 +21,8 @@ import { TrayScreen } from "./screens/tray.js";
 import { CameraScreen } from "./screens/camera.js";
 import { SettingsScreen } from "./screens/settings.js";
 import { MediaScreen } from "./screens/media.js";
+import { FunScreen } from "./screens/fun.js";
+import { wireEggs } from "./fun/eggs.js";
 import { MediaHub } from "./media/hub.js";
 import { demoPlayer } from "./ui/demoplayer.js";
 import { featureOn, featureName } from "./features.js";
@@ -78,7 +80,7 @@ ctx.media = new MediaHub(ctx);
 // Music dips under every alert sound. Alerts themselves always play at their own volume.
 Sound.onPlay = (kind) => ctx.media.mixer.pulse(kind === "bad" ? 4000 : 2500);
 
-const screens = [DriveScreen, TripsScreen, DrivetrainScreen, LightsScreen, WinchScreen, TrayScreen, CameraScreen, MediaScreen, SettingsScreen].map((C) => new C(ctx));
+const screens = [DriveScreen, TripsScreen, DrivetrainScreen, LightsScreen, WinchScreen, TrayScreen, CameraScreen, MediaScreen, FunScreen, SettingsScreen].map((C) => new C(ctx));
 const byId = Object.fromEntries(screens.map((s) => [s.id, s]));
 
 function buildNav() {
@@ -86,7 +88,7 @@ function buildNav() {
   screens.forEach((s) => {
     const b = el(`<button class="nav-btn" data-id="${s.id}">${icon(s.icon)}<span>${s.label}</span></button>`);
     b.onclick = () => show(s.id);
-    if (s.id !== "drive" && s.id !== "settings") b.appendChild(el(`<i class="soon-tag">SOON</i>`));
+    if (s.id !== "drive" && s.id !== "settings" && s.id !== "fun") b.appendChild(el(`<i class="soon-tag">SOON</i>`));
     nav.appendChild(b);
     const root = el(`<section class="screen" id="screen-${s.id}"></section>`);
     main.appendChild(root);
@@ -252,6 +254,7 @@ async function main() {
   markFeatures();
   settings.subscribe((path) => { if (path.startsWith("features")) markFeatures(); });
   soundButton();
+  wireEggs(ctx);
   volumeControl(ctx, document.getElementById("tb-vol"));
   const player = demoPlayer();
   document.getElementById("app").appendChild(player.root);
@@ -277,6 +280,7 @@ async function main() {
     ctx.shift.update(st);
     topbar(st); alertBanner(st); reverseCamera(st); player.update(st);
     ctx.lock.update(st);
+    byId.fun.background(st);   // camp mode and games stop by themselves if the Teryx moves
     // Only the screen on show is redrawn, to keep the Pi cool.
     if (ctx.current) ctx.current.update(st);
     // Anything moving stops if we navigate away (each screen's hide() also does this).

@@ -2,6 +2,12 @@
 // Most are from Tabler Icons (https://tabler.io/icons), MIT licence, Copyright (c) 2020-2024 Paweł Kuna.
 // The vehicle ones (4WD, lights, winch, tray, camera guides, CarPlay) are drawn for this dash.
 const P = {
+  // Fun screen (drawn for this dash)
+  fun: '<path d="M12 21c-2.8 0 -4.5 -1.6 -4.5 -3.6c0 -2 1.8 -3.4 4.5 -3.4s4.5 1.4 4.5 3.4c0 2 -1.7 3.6 -4.5 3.6z" /> <path d="M7.5 13.5l-3.5 -6" /> <path d="M12 12v-8.5" /> <path d="M16.5 13.5l3.5 -6" />',
+  flame: '<path d="M12 21c-3.9 0 -7 -2.8 -7 -6.5c0 -3.2 2.3 -5 3.8 -7.2c.4 1.6 1.3 2.6 2.2 3.1c0 -3.2 1.5 -5.6 4 -7.4c-.3 3 1 4.8 2.3 6.6c1 1.4 1.7 3 1.7 4.9c0 3.7 -3.1 6.5 -7 6.5z" /> <path d="M12 21c-1.7 0 -3 -1.2 -3 -2.8c0 -1.7 1.5 -2.5 2.2 -4.2c1.4 1 3.8 2.4 3.8 4.2c0 1.6 -1.3 2.8 -3 2.8z" />',
+  bone: '<path d="M7.5 16.5l9 -9" /> <path d="M15.6 6.2a2.2 2.2 0 1 1 2.6 2.6a2.2 2.2 0 1 1 -1.6 1.6" /> <path d="M8.4 17.8a2.2 2.2 0 1 1 -2.6 -2.6a2.2 2.2 0 1 1 1.6 -1.6" />',
+  tv: '<rect x="3" y="6" width="18" height="12" rx="2" /> <path d="M8 21h8" /> <path d="M8 2l4 4l4 -4" /> <path d="M10.5 10v4l3.5 -2z" />',
+  egg: '<path d="M12 3c3.5 0 6.5 5.5 6.5 10a6.5 6.5 0 0 1 -13 0c0 -4.5 3 -10 6.5 -10z" /> <path d="M8 13l2 -1.5l2 1.5l2 -1.5l2 1.5" />',
   // drawn for this dash
   fourwd: '<rect x="4" y="3" width="4" height="6" rx="1"/><rect x="16" y="3" width="4" height="6" rx="1"/><rect x="4" y="15" width="4" height="6" rx="1"/><rect x="16" y="15" width="4" height="6" rx="1"/><path d="M8 6h8M8 18h8M12 6v12"/>',
   lights: '<path d="M9 6c-4 0-6 3-6 6s2 6 6 6h2V6H9z"/><path d="M14 8h7M14 12h7M14 16h7"/>',

@@ -18,9 +18,10 @@ not stopped, not armed), the dash says why in plain words.
 | Lights | 4 front bars, interior bar, rear pods (Off / Auto in reverse / On), trailer status. Each bar is dimmable or on/off only (set in Settings). Presets (All on/off, Trail, Work, Spot) and effects (Steady, Breathe, Strobe, Chase, Outside pair, Inside pair) |
 | Winch | Slide to arm (so a knee can't arm it), then hold IN or OUT. Lifting your finger stops it. Shows checks and the auto-disarm countdown |
 | Tray | Hold UP or DOWN. Only when stopped. Shows limit switches, current and position |
-| Cameras | Reverse camera with guide lines and mirror. Pops up on its own in reverse and goes back 3 s after |
+| Cameras | Up to three cameras (rear, front, trailer), picked with the buttons along the top. Ones not fitted are greyed out; the trailer camera also greys out with no trailer plugged in. Guide lines and mirror per camera. Pops up on its own in reverse (the trailer camera if a trailer is on) and goes back 3 s after |
 | Media | Bluetooth audio from a phone, music on the Pi or a USB stick, internet radio, and CarPlay / Android Auto through a Carlinkit USB adapter. One volume; music dips under alerts and in reverse. See [`docs/audio.md`](../docs/audio.md) |
-| Settings | Display (night/day/auto, units, pack size), sounds and alerts, lights setup, camera, control box safety limits, diff pot calibration, faults, updates (OTA), Wi-Fi, about |
+| Fun | Camp mode (fire, lights, battery hours), two original T. rex games, a streaming launcher, a light show and easter eggs. Parked only: park brake on and stopped. See [`docs/fun.md`](../docs/fun.md) |
+| Settings | Display (night/day/auto, units, pack size), sounds and alerts, lights setup, cameras, control box safety limits, diff pot calibration, faults, updates (OTA), Wi-Fi, about |
 
 Faults from the control box or motor controller show as a banner along the bottom with plain
 English text, and are listed under Settings > Faults.
@@ -102,15 +103,29 @@ simulator has a fake tilt sensor and GPS so it can be tried on the bench
 power on instead of scrolling text, and the dash page shows the same logo until the control box
 answers (4 s at most).
 
-## Camera: USB or RCA, both work
+## Cameras: rear, front and trailer
 
-We don't know yet which camera is fitted, so both are supported:
+![Trailer camera in reverse](docs/screens/cameras-trailer.png)
+
+Each camera is set up on its own in Settings > Cameras (fitted or not, which device, mirror,
+guide lines). Any of these work:
 
 - **USB camera**: shows up as a video device and opens straight in the browser.
 - **RCA / AHD camera**: plug it into a cheap USB AV capture dongle (UVC). It then looks
   exactly like a USB camera. The Pi 5 has no analogue video input, so a dongle is needed.
-- **Fallback**: Settings > Camera > Server stream uses ffmpeg on the Pi to serve
-  `/api/camera.mjpg`, in case the browser can't open the device.
+- **Raspberry Pi ribbon camera** (Camera Module 3, for the front one in the screen housing):
+  set its `v4l2Device` to `csi0` or `csi1`. Chromium can't open these, so it always comes
+  through the server stream, using `rpicam-vid`.
+- **Fallback**: Source > Server stream uses ffmpeg on the Pi to serve
+  `/api/camera.mjpg?cam=rear` (or `front`, `trailer`), in case the browser can't open the device.
+
+With more than one camera plugged in, pick the device for each one; only the rear camera falls
+back to "first camera found".
+
+**Trailer.** The trailer camera only shows when the control box says a trailer is plugged in
+(`in.trailer`, a reed switch in the 7-pin socket). In reverse it shows instead of the rear
+camera, unless that's turned off in Settings. Try it with `?demo=reverse&trailer=1`, or in the
+simulator by switching on the `in.trailer` input. Why and how to wire it: [`docs/cameras.md`](../docs/cameras.md).
 
 ## Running it
 
@@ -152,6 +167,15 @@ A small built-in fake vehicle runs in the page. Other demos: `?demo=park`, `?dem
 `?demo=faults`. Add `&screen=lights` (or `drivetrain`, `winch`, `tray`, `camera`, `settings`)
 to open a screen straight away. Settings that need the Pi (limits, updates, Wi-Fi) say
 "not available in demo mode".
+
+### Online copy (for a phone)
+
+Every merge to `main` that touches `dash/web` puts it online on GitHub Pages
+(`.github/workflows/dash-site.yml`) at https://electrumnz.github.io/TERYXDACTL/. On a
+`*.github.io` or `*.vercel.app` address the dash runs the demo vehicle on its own, so no Pi or
+laptop is needed. Add `?demo=park`, `?demo=reverse` or `?demo=faults` for the other demos. Hold the phone sideways (it asks you
+to in portrait), and "Add to Home Screen" opens it full screen. Search engines are told not to
+list it. One-off setup: repo Settings > Pages > Source: GitHub Actions.
 
 ### On the Pi
 

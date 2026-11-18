@@ -4,7 +4,7 @@
 // so refusals and timers can be seen in demo mode too.
 //
 // Scenarios: ?demo=drive (driving a loop), ?demo=park (stopped, for winch/tray),
-//            ?demo=reverse, ?demo=faults
+//            ?demo=reverse, ?demo=faults. Add &trailer=1 for a trailer plugged in.
 
 // Vehicle lock, demo copy of teryx/vehicle_lock.py. Kept in this browser's storage so a reload
 // stays locked, like the real control box keeps it in flash. Demo only: a simple hash, not SHA-256.
@@ -30,6 +30,8 @@ export class DemoVehicle {
       "mc.throttle": 0, "mc.direction": "neutral", "mc.mode": "normal", "mc.faults": [],
       "in.ignition": true, "in.brake": false, "in.reverse": false, "in.tray_down": true, "in.tray_up": false,
       "in.winch_remote": false, "in.park": true,
+      // Trailer plugged in: add &trailer=1 to the URL to try the trailer camera.
+      "in.trailer": (() => { try { return new URLSearchParams(location.search).has("trailer"); } catch { return false; } })(),
       "an.diff_pos": 0, "an.aux_12v": 12.9, "an.4wd_current": 0, "an.tray_current": 0, "an.diff_current": 0,
       "light.rear": false, "light.effect": "none", "trailer.tail": false, "trailer.brake": false,
       "winch.in": false, "winch.out": false, "winch.isolator": false, "winch.armed": false,

@@ -15,6 +15,7 @@ control box does the safety-critical switching, and they talk over CAN.
 | Decoding the Shinegle CAN bus (sniffer + tools) | `firmware/can-sniffer/`, `teryx/decode/` | [`docs/shinegle-decode.md`](docs/shinegle-decode.md) |
 | Brake pedal regen (test feature, off by default) | `teryx/regen.py` | [`docs/brake-regen.md`](docs/brake-regen.md) |
 | Ideas and open-source projects to learn from | `docs/` | [`inspiration.md`](docs/inspiration.md) |
+| What the AI HAT+ 2 could do, and is it worth it | `docs/` | [`ai-hat-ideas.md`](docs/ai-hat-ideas.md) |
 
 Everything runs on a laptop with no Teryx attached, using the simulator.
 

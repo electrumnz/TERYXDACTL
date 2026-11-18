@@ -91,7 +91,7 @@ INPUT_BITS = {   # 0x710 byte 3, MCP23017 B0-B7
     4: "in.tray_up",
     5: "in.winch_remote",
     6: "in.park",
-    7: "in.spare",
+    7: "in.trailer",      # trailer plugged in: reed switch in the 7-pin socket (see docs/cameras.md)
 }
 # Vehicle lock (docs/vehicle-lock.md)
 LOCK_CMD = {1: "lock", 2: "unlock", 3: "verify", 4: "set_pin", 5: "set_puk", 6: "remove"}

@@ -3,6 +3,7 @@
 // Saved on the Pi via /api/settings, with localStorage as a fallback (demo mode, no server).
 
 import { FEATURE_DEFAULTS } from "./features.js";
+import { CAMP_DEFAULTS } from "./fun/campcalc.js";
 
 export const LIGHTS = [
   { id: "light.front_1", name: "Bar 1", where: "Front far left", dimmable: true },
@@ -32,12 +33,19 @@ export const DEFAULTS = {
   },
   camera: {
     source: "auto",        // auto | usb | stream
-    deviceId: "",          // which video device (USB camera or USB AV capture dongle)
     streamUrl: "/api/camera.mjpg",
-    mirror: true,          // rear cameras are usually mirrored so left is left
-    guides: true,
     guideOffset: 0,        // nudge guide lines left/right (px)
     autoOnReverse: true,
+    trailerInReverse: true, // in reverse, show the trailer camera if a trailer is plugged in
+    current: "rear",       // last camera picked on the Cameras screen
+    // One entry per camera (see CAMS in screens/camera.js). deviceId is the browser's id for the
+    // video device (USB camera or USB AV capture dongle); v4l2Device is the same camera for the
+    // server stream fallback (/dev/videoN). Rear cameras are usually mirrored so left is left.
+    cams: {
+      rear:    { fitted: true,  name: "Rear",    deviceId: "", v4l2Device: "/dev/video0", mirror: true,  guides: true },
+      front:   { fitted: false, name: "Front",   deviceId: "", v4l2Device: "", mirror: false, guides: false },
+      trailer: { fitted: false, name: "Trailer", deviceId: "", v4l2Device: "", mirror: true,  guides: true },
+    },
   },
   features: { ...FEATURE_DEFAULTS },   // what's wired up yet; the rest shows greyed out (see features.js)
   updates: { channel: "stable", auto_check: true },
@@ -52,6 +60,12 @@ export const DEFAULTS = {
     ],
     carplay: { autoStart: true, hand: "rhd" },   // NZ is right-hand drive
   },
+  fun: {
+    eggs: [],              // easter eggs found so far (fun/eggs.js)
+    digBest: 0,            // Fossil Dig: most brushes to spare
+    duelBestMs: 0,         // Roar Duel solo: quickest reaction
+    camp: { ...CAMP_DEFAULTS },   // camp mode battery maths (fun/campcalc.js)
+  },
 };
 
 function merge(a, b) {
@@ -62,14 +76,23 @@ function merge(a, b) {
   return out;
 }
 
+/** Older settings files had one camera (camera.deviceId, .mirror, .guides, .v4l2Device). Those are the rear camera now. */
+export function migrate(v) {
+  const c = v.camera || {};
+  for (const k of ["deviceId", "mirror", "guides", "v4l2Device"]) {
+    if (k in c) { if (c[k] !== "" && c[k] != null) c.cams.rear[k] = c[k]; delete c[k]; }
+  }
+  return v;
+}
+
 export class Settings {
   constructor() { this.v = structuredClone(DEFAULTS); this.subs = new Set(); this.server = false; }
   async load() {
     try {
       const r = await fetch("/api/settings", { cache: "no-store" });
-      if (r.ok) { this.v = merge(DEFAULTS, await r.json()); this.server = true; return; }
+      if (r.ok) { this.v = migrate(merge(DEFAULTS, await r.json())); this.server = true; return; }
     } catch {}
-    try { const j = localStorage.getItem("teryx.settings"); if (j) this.v = merge(DEFAULTS, JSON.parse(j)); } catch {}
+    try { const j = localStorage.getItem("teryx.settings"); if (j) this.v = migrate(merge(DEFAULTS, JSON.parse(j))); } catch {}
   }
   get(path) { return path.split(".").reduce((o, k) => (o == null ? o : o[k]), this.v); }
   set(path, value) {

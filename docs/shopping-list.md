@@ -1,6 +1,15 @@
 # Shopping list and which dash computer to buy
 
+> **Changed 18 November 2026: buy the Pi 5 8GB plus the AI HAT+ 2.** Sam wants to buy once
+> with headroom, and the voice assistant, several cameras, CarPlay and camera AI are all
+> definitely happening. Sections 1, 4 and the new section 4a are updated for that. Sections 2
+> and 3 are the 17 November research and still hold. Cameras have their own write-up in
+> [`cameras.md`](cameras.md). The order list by shop, with SKUs and a total, is
+> [`pbtech-order.md`](pbtech-order.md).
+
 Prices checked live on **17 November 2026** (NZ time), incl GST unless it says otherwise.
+Prices added on 18 November came from search results because PB Tech's pages wouldn't open
+for me; those say so. Check them before you buy.
 Every price has a link. Where I couldn't check a price, it says **not verified** and gives
 no number. Prices move a lot right now because of the RAM shortage (see below), so check
 the link before you buy.
@@ -12,18 +21,37 @@ section 5 below, so tick off whatever you really do have.
 
 ## 1. Short answer
 
-**Buy a Raspberry Pi 5 4GB.** It's the cheapest option that runs the whole stack with
-lots of room to spare, it's the only one that needs **no code changes**, it fits the Pi box
-we already designed, and it draws the least power from the 12V system.
+**Buy a Raspberry Pi 5 8GB, with the Raspberry Pi AI HAT+ 2 and the Active Cooler.**
 
-- 8GB is a waste for this job: the measured worst case is under 1.5 GB in use (section 2).
-- An N100/N150 mini PC works, costs about twice as much, draws two to three times the
-  power, and needs a new box and setup script (section 3).
-- A rugged tablet costs NZ$2,254 or more and throws away the screen you already have. No.
+- It needs **no code changes**, draws the least power of the options, and fits the plan.
+- The AI HAT+ 2 runs the camera AI and a small local language model for the voice assistant,
+  using its **own 8GB of memory** ([Raspberry Pi](https://www.raspberrypi.com/products/ai-hat-plus-2/)).
+  The older AI HAT+ is about as good for cameras alone but can't run a language model
+  ([Raspberry Pi](https://www.raspberrypi.com/news/introducing-the-raspberry-pi-ai-hat-plus-2-generative-ai-on-raspberry-pi/),
+  [Core Electronics](https://core-electronics.com.au/guides/raspberry-pi/raspberry-pi-ai-hat-1-vs-ai-hat-2-which-should-you-buy/)).
+- 8GB rather than 4GB: see the budget below. 4GB would most likely cope, but with only about
+  1 GB spare. 8GB leaves about 5 GB for whatever comes next, for about NZ$139 more.
+- An N100/N150 mini PC or a rugged tablet still aren't worth it (section 3).
 
-Rough cost of the dash computer bits (section 4): about **NZ$341** for the Pi 5 4GB, cooler,
-cable, SD card and CAN HAT, plus about **NZ$115** for proper 12V protection and a good 5V
-regulator. The control box (section 5) is extra.
+### Memory budget with everything on
+
+| | MB | Where the number comes from |
+|---|---|---|
+| Raspberry Pi OS desktop | ~330 | Measured / Raspberry Pi magazine (section 2) |
+| Chromium: dash with CarPlay video | ~800 | Measured (section 2) |
+| Python dash server | ~52 | Measured |
+| 2-3 camera feeds and the camera AI pipeline on the Pi side | 300-500 | **Guess**, not measured. The AI models themselves sit in the HAT's own 8GB |
+| Speech to text on the Pi (whisper.cpp tiny to small) | ~270-850 | [whisper.cpp](https://github.com/ggerganov/whisper.cpp) memory table. Could move to the HAT later |
+| PipeWire, BlueZ, ffmpeg, updates | ~200 | Allowance (section 2) |
+| **Total** | **~2.0-2.7 GB** | |
+
+So: 4GB leaves about 1.3-2 GB, 8GB leaves about 5.3-6 GB.
+
+### Rough cost (dash computer, section 4 and 4a)
+
+About **NZ$1,000** for the Pi 5 8GB, AI HAT+ 2, Active Cooler, cable, 128GB card, CAN module
+and front camera, plus about **NZ$115** for proper 12V protection and a good 5V regulator.
+The control box (section 6) is extra.
 
 ## 2. Is 4GB enough? Measured, not guessed
 
@@ -124,22 +152,91 @@ have gone the same way: GMKtec's N150 G3 Plus is US$329.99 on their own site wit
 ([GMKtec](https://www.gmktec.com/products/nucbox-g3-plus-enhanced-performance-mini-pc-with-intel-n150-processor)).
 The more RAM, the bigger the jump, which is another reason 4GB is the sweet spot.
 
-## 4. Dash computer parts (Pi 5 4GB)
+## 4. Dash computer parts (Pi 5 8GB)
 
 | Part | Why | Where | Price | Notes |
 |---|---|---|---|---|
-| Raspberry Pi 5 4GB | The dash | [PB Tech](https://www.pbtech.co.nz/product/SEVRBP0501/Raspberry-Pi-5-4GB-LPDDR4-24GHz-Quad-Core-ARM-Cort) | NZ$232.69 | On order, ships about 11 Jan. Or the [4GB starter kit](https://www.pbtech.co.nz/product/SEVRBP0855/Raspberry-Pi-5-4GB-Entry-Level-Starter-Kit-Pack-Wh) for NZ$309.00, which adds a micro HDMI cable, 32GB card, case and a 27 W mains power supply for the bench (on order, ships about 17 May) |
-| Raspberry Pi Active Cooler | Keeps it under 85°C | [PB Tech](https://www.pbtech.co.nz/product/SEVRBP0531) | NZ$11.21 | In stock |
+| Raspberry Pi 5 **8GB** | The dash | [PB Tech](https://www.pbtech.co.nz/product/SEVRBP0502/Raspberry-Pi-5-8GB-LPDDR4-24GHz-Quad-Core-ARM-Cort) | NZ$371.39 | Checked 17 Nov: on order, ships about 30 Nov. A search result on 18 Nov showed NZ$254.15, which may be an old cached price, so check. The 16GB is about [NZ$644](https://www.pbtech.co.nz/product/SEVRBP0505/Raspberry-Pi-5-16GB-LPDDR4-24GHz-Quad-Core-ARM-Cor) (search result), not needed |
+| Raspberry Pi **AI HAT+ 2** (Hailo-10H, 8GB on board) | Camera AI and the voice assistant's language model | [PB Tech](https://www.pbtech.co.nz/product/SEVRBP0446/Raspberry-Pi-5-Official-AI-Hat-2) | ~NZ$423.43 (search result) | US$200 list price ([Raspberry Pi](https://www.raspberrypi.com/products/ai-hat-plus-2/)). Comes with its own heatsink and a 16 mm stacking header so it sits over the Active Cooler. **Uses the Pi's only PCIe port**, see storage below |
+| Raspberry Pi Active Cooler | Keeps the Pi under 85°C with the HAT on top | [PB Tech](https://www.pbtech.co.nz/product/SEVRBP0531) | NZ$11.21 | In stock (17 Nov). **Needed even though you have a passive heatsink**: with the AI HAT+ 2 on top, Raspberry Pi say fit the Active Cooler on the Pi and the HAT's heatsink on the AI chip ([Raspberry Pi docs](https://www.raspberrypi.com/documentation/accessories/ai-hat-plus.html)). Keep the passive one for the bench. Don't take the Active Cooler off once fitted, the push pins and pads don't like it |
 | Micro HDMI to HDMI cable, 2 m | Pi to screen | [PB Tech (Vention)](https://www.pbtech.co.nz/product/VNT1306/Vention-VAA-D03-B200-Micro-HDMI-Cable---2m---Black) | NZ$12.41 | No stock, ships about 28 Jan. In stock now: [Jaycar micro HDMI adaptor](https://jaycar.co.nz/micro-hdmi-plug-to-hdmi-socket-adaptor/p/PA3649) NZ$20.90 plus an HDMI cable |
-| microSD card 64GB A2 | OS | [PB Tech SanDisk Extreme](https://www.pbtech.co.nz/product/MEMSDK33210/SanDisk-Extreme-64GB-microSDXC-Memory-Card-Class-1) | NZ$56.35 | Out of stock when checked. Any A2 card from a name brand is fine |
-| Waveshare RS485 CAN HAT | CAN for the Pi | [Core Electronics (AU)](https://core-electronics.com.au/catalog/product/view/sku/WS-14882) | AU$22.75 (about NZ$28) | In stock. Ships to NZ from about AU$12. **It has a 12 MHz crystal** ([Waveshare wiki](https://www.waveshare.com/wiki/RS485_CAN_HAT)), so run `pi-setup.sh --can-osc 12000000`. Interrupt is GPIO 25, which is our default |
+| microSD card **128GB A2** | OS, apps, logs | [PB Tech, official Raspberry Pi card](https://www.pbtech.co.nz/product/SEVRBP0538/Raspberry-Pi-Official-A2---Class-UltraSD-Card-128G) | **Not verified** | Doesn't have to be the Pi one, but the Pi 5 turns on command queueing for it, and one guide says a SanDisk Extreme runs below its A2 rating on the Pi 5 ([HackMD guide](https://hackmd.io/@ampheo/what-is-the-best-micro-sd-card-for-raspberry-pi-5)); other guides disagree. Not a "high endurance" card: those are for dashcams and aren't A2 rated. The 64GB [SanDisk Extreme](https://www.pbtech.co.nz/product/MEMSDK33210/SanDisk-Extreme-64GB-microSDXC-Memory-Card-Class-1) (NZ$56.35, 17 Nov) is the fallback |
+| MCP2515 CAN module (same Seeed board as the control box, section 6) | CAN for the Pi | [Core Electronics (AU)](https://core-electronics.com.au/seeed-studio-can-bus-breakout-board-for-xiao-and-qt-py-mcp2515-controller-sn65hvd230-transceiver-chip.html) | AU$18.45 (about NZ$23) | **Changed 18 Nov:** the Waveshare CAN HAT can't stack over the AI HAT+ 2's heatsink, so a small module sits on the Pi box wall, wired to the GPIO pins on top of the HAT (pins in [`wiring.md`](wiring.md)). Run `pi-setup.sh --can-osc <its crystal>`. Interrupt is GPIO 25, our default |
 | 30 mm 5V fan | Pi box lid (see `cad/README.md`) | [Jaycar](https://www.jaycar.co.nz/5vdc-30mm-thin-2-wire-fan/p/YX2500) | NZ$31.90 | NZ stock. Much cheaper on AliExpress, not verified |
 | USB audio out (optional, for the amp) | Pi 5 has no audio jack | [Jaycar USB to 3.5 mm](https://jaycar.co.nz/p/XC4953) | NZ$24.90 | NZ stock. It's a headphone output, not a line out, so keep the amp gain low |
 | Carlinkit CPC200-CCPA (optional) | CarPlay / Android Auto | Carlinkit's own store or AliExpress | **Not verified** | No NZ seller found. [PriceSpy NZ](https://pricespy.co.nz/product.php?p=13023735) has no active listings. Must be the CCPA / Autokit type (see [`audio.md`](audio.md)) |
-| USB AV capture dongle (only if the camera is RCA/AHD) | Camera into the Pi | AliExpress | **Not verified** | Needs to be UVC so Linux sees it as a webcam |
+| USB AV capture dongle (only if the camera is RCA/AHD) | Camera into the Pi | AliExpress, or [EasyCAP DC60 at PB Tech](https://www.pbtech.co.nz/product/SEVOEM9701) NZ$28.75 (composite only) | **Not verified** for AHD | Needs to be UVC so Linux sees it as a webcam. One per RCA/AHD camera. See [`cameras.md`](cameras.md) |
 
-**Subtotal (Pi, cooler, cable, card, HAT): about NZ$341** (NZ$312.66 at PB Tech plus about
-NZ$28 for the HAT, before shipping).
+**Subtotal (Pi 8GB, AI HAT+ 2, cooler, cable, CAN module): about NZ$841**, plus the SD card
+(price not verified) and front camera (section 4a).
+
+### 4a. Added for headroom (18 November)
+
+| Part | Why | Where | Price | Notes |
+|---|---|---|---|---|
+| Raspberry Pi Camera Module 3 **Wide** | Front camera inside the screen housing, and the one the camera AI watches | [PB Tech](https://www.pbtech.co.nz/product/SEVRBP0398/Raspberry-Pi-Official-Camera-Module-3-Wide-Version) | ~NZ$80.71 (search result) | Out of stock when the search ran. [element14 NZ](https://nz.element14.com/raspberry-pi/sc0874/rpi-wide-camera-mod-3-wide-lens/dp/4132320) ~NZ$69, also out. Not waterproof and the ribbon only comes up to 500 mm, so it must sit inside the housing near the Pi |
+| Pi 5 camera cable, 200 or 300 mm | Front camera to the Pi | Raspberry Pi resellers | **Not verified** | Pi 5 needs the 22-pin to 15-pin cable ([Raspberry Pi](https://www.raspberrypi.com/products/camera-cable/)) |
+| Narva 7-pin flat socket with reed switch, 82043BL | Tells the dash a trailer is plugged in (`in.trailer`) | Narva stockists | **Not verified** | [Narva](https://narva.com.au/products/narva-7-pin-flat-quickfit-trailer-socket-with-reed-switch-for-use-with-normally-closed-circuits-1-pack). Check which way it switches |
+| Trailer camera bits | See [`cameras.md`](cameras.md) section 3 | | | Pick wired plug, wireless or power-line first |
+| USB SSD (later, only if we record footage) | Somewhere to keep recordings | e.g. Samsung T7 1TB at PB Tech | ~NZ$199 (search result) | **No NVMe on the PCIe port** while the AI HAT+ 2 is on it: the Pi 5 has one PCIe lane, so NVMe needs a switch board like the Seeed dual M.2 HAT ([SunFounder FAQ](https://docs.sunfounder.com/projects/nvme-kit/en/latest/faq.html), [Seeed wiki](https://wiki.seeedstudio.com/raspberry_pi_5_uses_pcie_hat_dual_hat/)). A USB SSD avoids that |
+
+**Heat.** The AI HAT+ 2 is rated for 0 to 50°C air around it
+([Core Electronics](https://core-electronics.com.au/raspberry-pi-ai-hat-plus-2.html)). Its chip
+draws about 2.5 to 4.5 W depending on the job ([heise](https://heise.de/-11136612),
+[Jeff Geerling](https://jeffgeerling.com/blog/2026/raspberry-pi-ai-hat-2)). So the Pi box's
+lid fan has to move air through the box, and the box wants to stay out of direct sun.
+
+**Pi box height. Done 18 Nov:** the box was 46 mm tall inside; it's now 56 mm
+(`cad/measurements.scad`, `pi_box_in`), sized for the Pi on 6 mm standoffs, the Active
+Cooler, the AI HAT+ 2 on its 16 mm spacers and its heatsink, with about 19 mm of air under
+the lid fan. The side vents grow with it. The CAN HAT is replaced by a small CAN module on the
+box wall. Check the stack on the real parts before printing.
+
+**Power.** The Pololu 5V 5.5A regulator in section 5 is still the pick. The Pi 5 flat out is
+11.6 W (section 3) plus up to about 4.5 W for the HAT, so about 16 W of the regulator's 27 W
+before USB devices. Power 12 V cameras from 12 V, not from the Pi's USB.
+
+### 4b. GPS (added 18 November)
+
+**The Pi 5 has no GPS built in, so it isn't free, but it's cheap.** The dash already knows
+what to do with one: it reads `pi.gps.*` (see [`DASH_API.md`](DASH_API.md)) and shows "not
+fitted" until those turn up. What's still to write is the small Pi-side bit that reads the
+receiver (through `gpsd`, BSD licence, fine for us) and sends those keys.
+
+| Part | Why | Where | Price | Notes |
+|---|---|---|---|---|
+| **DFRobot USB GPS receiver, TEL0138** | Position, speed, heading, height | [Core Electronics (AU)](https://core-electronics.com.au/catalog/product/view/sku/TEL0138), goes in the same parcel as the CAN boards | AU$21.05 (~NZ$26) (search result) | Local option: [RS NZ 247-3251](https://nz.rs-online.com/web/p/gnss-gps-modules/2473251) NZ$30.85 (search result). u-blox UBX-G7020 chip, 56 channels, under 2.5 m accuracy, 1 update a second, -40 to 85°C, magnetic base, 2 m USB lead ([DFRobot wiki](https://wiki.dfrobot.com/tel0138/), [Mouser](https://www.mouser.co.uk/new/dfrobot/dfrobot-tel0138-gps-receiver/)). The aerial is inside the puck. **No waterproof rating found**, so it goes under plastic, not out in the weather |
+
+**Where it goes.** GPS goes through plastic but not metal. Stick the puck under the plastic
+dash top or the roof panel with a clear view of the sky, and run the 2 m lead to the Pi. If
+the Pi ends up under the bonnet and 2 m won't reach, a USB extension is fine (USB 2 is good
+to 5 m).
+
+**Why this one and not a fancier one.** On this dash GPS is a backup and a nice extra: speed
+comes from the motor controller, and night mode already works from the clock. The TEL0138
+is an older chip and I couldn't confirm it uses more than the American GPS satellites at
+once, which can mean a slower or patchier fix under thick bush. If that bites, the upgrade is
+a plug-in swap with no code change:
+
+| Upgrade (only if needed) | Where | Price | Notes |
+|---|---|---|---|
+| u-blox NEO-M9N USB dongle with SMA aerial plug, ELT0103 | [gnss.store](https://gnss.store/products/elt0103) (Europe) | €66.99 ex VAT (search result), shipping to NZ **not checked** | Uses GPS, Galileo, GLONASS and BeiDou together, so more satellites under trees ([gnss.store](https://gnss.store/collections/standard-precision-dongles)) |
+| Active magnetic GPS aerial, SMA, 3 m lead | [PB Tech CCTMLS1025 (Milesight)](https://www.pbtech.com/pacific/product/CCTMLS1025/Milesight-ACC-AM3M-G-GPS-Magnetic-Antenna-28dBi-wi) or [Core Electronics GPS-14986](https://core-electronics.com.au/catalog/product/view/sku/GPS-14986) | NZ$29.57 / AU$29.25 (search results) | Goes on the roof or roll cage, outside. Needed with the dongle above |
+
+**What the dash uses it for:**
+
+| Use | Status |
+|---|---|
+| Night mode from sunrise and sunset at where you actually are | **Works now** with a fix (a light sensor wins if one is fitted). Without GPS it uses the region picked in Settings. Position stays on the Pi, never saved or sent |
+| Compass heading, height and satellite count on the Sensors panel | **Works now** with a fix |
+| Speed backup if the motor controller speed is missing or wrong (wheelspin, locked wheels) | Key is there (`pi.gps.speed_kmh`), not wired into the speedo yet |
+| Trail logging (record a ride, show where you've been) | **Not built yet.** Would need Sam's OK, since it saves where he goes |
+| Offline maps | **Not built yet.** Would need map tiles stored on the SD card |
+| Clock | The Pi has no clock battery fitted by default, so GPS can set the time with no wifi |
+
+**USB ports are getting full.** The Pi 5 has 4 USB ports. Touch, rear camera, trailer camera
+dongle, CarPlay dongle, USB audio, GPS and a mic later makes 6 or 7. Plan on a **powered USB
+hub** in the Pi box for the low-speed ones (GPS, audio, mic, touch). Not priced yet.
 
 AUD to NZD: 1 AUD = 1.234 NZD on [Wise](https://wise.com/us/currency-converter/aud-to-nzd-rate)
 when checked (no timestamp on the page). Core Electronics prices are AUD incl Australian GST;
@@ -203,7 +300,11 @@ and I didn't check them.
 - The Carlinkit CCPA in NZ.
 - Boot time of any option.
 - Real CPU load of CarPlay video on a Pi 5. Test this first when the Pi turns up.
+- Live prices for the Pi 5 8GB, AI HAT+ 2, Camera Module 3 Wide and the official SD card
+  (PB Tech's pages wouldn't open on 18 November, so these came from search results).
+- Memory used by camera feeds and camera AI on the Pi (guessed in section 1).
 - The screen's power brick voltage and current.
+- Whether the TEL0138 GPS uses GLONASS as well as GPS, and the landed price of the NEO-M9N upgrade.
 
 ## Sources
 

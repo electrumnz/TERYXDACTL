@@ -191,3 +191,7 @@ The rear camera may be USB or AHD through a USB capture stick. Both show up as
 a normal video device, so the dash uses the browser's camera API. On the test
 screen add `?camera=1` to the URL to use a real camera, otherwise it shows a
 moving test pattern when the Teryx is in reverse.
+
+The dash has rear, front and trailer cameras (see `dash/README.md`). Switch on the
+`in.trailer` input in the simulator to plug a trailer in; the trailer camera then
+stops being greyed out and shows in reverse.

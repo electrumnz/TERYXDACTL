@@ -15,6 +15,7 @@ from typing import Any
 from aiohttp import web
 
 from . import pico_settings
+from .fun import setup_fun_routes
 from .media import setup_media_routes
 from .ota import Ota, OtaConfig
 from .trips import DEFAULT_PACK_KWH, TripLog
@@ -75,6 +76,8 @@ def setup_routes(app: web.Application, gateway: Any) -> None:
     r = app.router
     # Audio, Bluetooth phone, music and radio (media.py).
     setup_media_routes(app, gateway, lambda: SETTINGS_FILE)
+    # Fun screen: streaming window and camp mode screen power (fun.py).
+    setup_fun_routes(app, gateway, CONFIG_DIR, lambda: SETTINGS_FILE, lambda: snapshot(gateway))
 
     # ---------- dash settings ----------
     async def get_settings(_):
@@ -327,13 +330,18 @@ def setup_routes(app: web.Application, gateway: Any) -> None:
     # ---------- camera as MJPEG ----------
     async def camera(req):
         from .camera import mjpeg_response
-        return await mjpeg_response(req, _camera_device())
+        return await mjpeg_response(req, _camera_device(req.query.get("cam", "rear")))
 
-    def _camera_device() -> str:
+    def _camera_device(cam: str) -> str:
+        """/dev/videoN for a camera (rear, front, trailer). Older settings had one top-level v4l2Device."""
         try:
-            return json.loads(SETTINGS_FILE.read_text()).get("camera", {}).get("v4l2Device") or "/dev/video0"
+            c = json.loads(SETTINGS_FILE.read_text()).get("camera", {})
         except Exception:
-            return "/dev/video0"
+            c = {}
+        dev = (c.get("cams", {}).get(cam) or {}).get("v4l2Device")
+        if not dev and cam == "rear":
+            dev = c.get("v4l2Device") or "/dev/video0"
+        return dev or ""
 
     r.add_get("/api/settings", get_settings)
     r.add_put("/api/settings", put_settings)

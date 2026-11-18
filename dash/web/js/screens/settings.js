@@ -1,7 +1,7 @@
 // Settings: display, lights setup, camera, control box limits, diff calibration, faults, updates (OTA), Wi-Fi, about.
 import { el, $, stepper, toggle, toast } from "../ui/controls.js";
 import { LIGHTS } from "../settings.js";
-import { listCameras } from "./camera.js";
+import { listCameras, CAMS } from "./camera.js";
 import { keyboard } from "../ui/keyboard.js";
 import { REGIONS } from "../theme.js";
 import { LOOKS } from "../look.js";
@@ -16,7 +16,7 @@ async function api(path, opts = {}) {
 }
 
 const SECTIONS = [
-  ["display", "Display"], ["lock", "Vehicle lock"], ["sounds", "Sounds and alerts"], ["audio", "Audio and media"], ["lights", "Lights setup"], ["camera", "Camera"], ["limits", "Safety limits"],
+  ["display", "Display"], ["lock", "Vehicle lock"], ["sounds", "Sounds and alerts"], ["audio", "Audio and media"], ["lights", "Lights setup"], ["camera", "Cameras"], ["limits", "Safety limits"],
   ["diff", "Diff calibration"], ["features", "Features"], ["faults", "Faults"], ["updates", "Updates"], ["wifi", "Wi-Fi"], ["about", "About"],
 ];
 
@@ -273,17 +273,30 @@ export class SettingsScreen {
   // ---------- Camera ----------
   async sec_camera(body) {
     const s = this.ctx.settings;
-    this.title(body, "Reverse camera", "Works with a USB camera, or an RCA/AHD camera through a USB capture dongle. Both show up below as a camera.");
+    this.title(body, "Cameras", "Up to three: rear, front and trailer. Each can be a USB camera, or an RCA/AHD camera through a USB capture dongle. Both show up below as a device. Cameras that aren't fitted show greyed out on the Cameras screen.");
     body.appendChild(row("Source", "Auto tries the camera directly, then the server stream.", seg([["auto", "Auto"], ["usb", "Camera"], ["stream", "Server stream"]], s.get("camera.source"), (v) => s.set("camera.source", v))));
-    const sel = el(`<select class="big"><option value="">First camera found</option></select>`);
-    sel.onchange = () => s.set("camera.deviceId", sel.value);
-    body.appendChild(row("Which camera", "", sel));
-    body.appendChild(row("Pop up in reverse", "Shows the camera when you select reverse, and goes back after.", toggle(s.get("camera.autoOnReverse"), (v) => s.set("camera.autoOnReverse", v))));
-    body.appendChild(row("Mirror image", "Most reverse cameras want this on, so left on screen is left behind you.", toggle(s.get("camera.mirror"), (v) => s.set("camera.mirror", v))));
-    body.appendChild(row("Guide lines", "", toggle(s.get("camera.guides"), (v) => s.set("camera.guides", v))));
+    body.appendChild(row("Pop up in reverse", "Shows a camera when you select reverse, and goes back after.", toggle(s.get("camera.autoOnReverse"), (v) => s.set("camera.autoOnReverse", v))));
+    body.appendChild(row("Trailer camera in reverse", "With a trailer plugged in, reverse shows the trailer camera instead of the rear one. You can still swap on the Cameras screen.", toggle(s.get("camera.trailerInReverse") !== false, (v) => s.set("camera.trailerInReverse", v))));
     body.appendChild(row("Guide line offset", "Nudge if the camera isn't mounted in the middle.", stepper(s.get("camera.guideOffset"), { step: 10, min: -200, max: 200, fmt: (v) => `${v > 0 ? "+" : ""}${v}`, onChange: (v) => s.set("camera.guideOffset", v) })));
-    const cams = await listCameras();
-    cams.forEach((c, i) => sel.appendChild(el(`<option value="${c.deviceId}" ${c.deviceId === s.get("camera.deviceId") ? "selected" : ""}>${c.label || `Camera ${i + 1}`}</option>`)));
+    const devices = await listCameras();
+    const esc = (t) => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+    const HELP = {
+      rear: "Mirror on, so left on screen is left behind you.",
+      front: "Grille or bull bar camera, for seeing over a crest. Usually no mirror and no guide lines.",
+      trailer: "On the back of the trailer. Only shows when a trailer is plugged in (reed switch in the 7-pin socket).",
+    };
+    CAMS.forEach((c) => {
+      const k = `camera.cams.${c.id}`, cfg = s.get(k) || {};
+      body.appendChild(el(`<div style="margin-top:18px"><h3>${esc(c.name)} camera</h3><div class="muted small" style="margin-bottom:6px">${HELP[c.id]}</div></div>`));
+      body.appendChild(row("Fitted", "", toggle(!!cfg.fitted, (v) => { s.set(`${k}.fitted`, v); this.open("camera"); })));
+      if (!cfg.fitted) return;
+      const sel = el(`<select class="big"><option value="">${c.id === "rear" ? "First camera found" : "Pick one…"}</option></select>`);
+      devices.forEach((d, i) => sel.appendChild(el(`<option value="${esc(d.deviceId)}" ${d.deviceId === cfg.deviceId ? "selected" : ""}>${esc(d.label || `Camera ${i + 1}`)}</option>`)));
+      sel.onchange = () => s.set(`${k}.deviceId`, sel.value);
+      body.appendChild(row("Which device", c.id === "rear" ? "" : "With more than one camera plugged in, pick which one this is.", sel));
+      body.appendChild(row("Mirror image", "", toggle(!!cfg.mirror, (v) => s.set(`${k}.mirror`, v))));
+      body.appendChild(row("Guide lines", "", toggle(!!cfg.guides, (v) => s.set(`${k}.guides`, v))));
+    });
   }
 
   // ---------- Safety limits (control box) ----------
