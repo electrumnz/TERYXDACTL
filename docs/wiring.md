@@ -204,6 +204,7 @@ here; the dash just treats them as on/off.
 | USB 2 | Pico 2 USB (data + reflash) |
 | 40-pin header | AI HAT+ 2 on its 16 mm stacking header. The MCP2515 CAN module is wired to the header pins that come up through the HAT: 3V3 (pin 1), GND (6), MOSI GPIO10 (19), MISO GPIO9 (21), SCLK GPIO11 (23), CS CE0 GPIO8 (24), INT GPIO25 (22). Use a 2x20 female housing or glue the leads so they can't shake off |
 | I2C1 GPIO2/3 | IMU (optional) |
+| UART0 GPIO14/15 (pins 8, 10) | 4G module board (A7670SA), optional: Pi TX to module RX, Pi RX to module TX, GND pin 6. Module UART is 1.8 V, so a level shifter unless the board has one. Own 3.8 V 3 A buck, not the Pi's 5 V. See [`remote-access.md`](remote-access.md) |
 | Power button pads | Optional dash power button |
 
 ---
