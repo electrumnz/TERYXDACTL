@@ -86,7 +86,7 @@ lines:
   - {id: pico, shop: pbtech, part: Raspberry Pi Pico 2 5-pack, sku: SEVRBP0628, qty: 1, each: 47.20, source: Checked 17 Nov, covers: [PICO], notes: "Control box, CAN sniffer, steering bench test, 2 spare", link: "https://www.pbtech.co.nz/product/SEVRBP0628"}
   - {id: psu27, shop: pbtech, part: Raspberry Pi 27W USB-C power supply (bench), sku: SEVRBP0512, qty: 1, each: 24.90, source: Search result 18 Nov, notes: Bench only, link: "https://www.pbtech.co.nz/product/SEVRBP0512"}
   - {id: hdmi, shop: pbtech, part: Raspberry Pi micro HDMI to HDMI cable 1m, sku: SEVRBP0207, qty: 1, each: 11.80, source: Search result 18 Nov, notes: "Alt black SEVRBP0262 ~11.10", link: "https://www.pbtech.co.nz/product/SEVRBP0207"}
-  - {id: sd_endurance, shop: pbtech, part: "Samsung PRO Endurance 256GB microSD (OS + loop recordings)", sku: MEMSAM11240, qty: 1, each: 205.85, source: "PB Tech page 18 Nov (was NZ$89 on sale earlier)", notes: "In the Pi's own slot, no USB. Rated 140,160 hours of 1080p. Dashcam/sentry overwrite oldest first", link: "https://www.pbtech.co.nz/product/MEMSAM11240"}
+  - {id: sd, shop: pbtech, part: "Raspberry Pi A2 SD card 128GB (OS)", sku: SEVRBP0538, qty: 1, each: 47.32, source: "Search result 18 Nov", notes: "Official card, in the Pi's own slot. Not made for non-stop writes, so dashcam/Sentry recording stays off or minimal until extra storage is added", link: "https://www.pbtech.co.nz/product/SEVRBP0538"}
   - {id: dac_hat, shop: pbtech, part: "Raspberry Pi DAC+ HAT (ex IQaudio DAC+, SC0368)", sku: SEVRBP0313, qty: 1, each: 35.65, source: "Search result 18 Nov (out of stock when indexed)", covers: [DAC_HAT], notes: "Official board, RCA out. If PB Tech has none: Pakronics NZ ~NZ$40", link: "https://www.pbtech.co.nz/product/SEVRBP0313"}
 
   # ------------------------------------------------------------- AliExpress
@@ -202,6 +202,7 @@ later:
 
 # Not in the totals; shown so nothing is forgotten.
 later_lines:
+  - {part: "Recording storage (e.g. Samsung PRO Endurance 128GB, MEMSAM11230)", shop: PB Tech, each: 114.90, notes: "For dashcam/Sentry. Sam to sort later"}
   - {part: Raspberry Pi AI HAT+ 2, shop: PB Tech, each: 423.43, notes: Not now}
   - {part: Raspberry Pi Active Cooler, shop: PB Tech, each: 11.21, notes: Only with the AI HAT}
   - {part: Noctua NF-A4x10 5V fan, shop: Newegg NZ, each: 21.85, notes: Only if the Pi box runs hot}

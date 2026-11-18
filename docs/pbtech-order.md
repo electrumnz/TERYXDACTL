@@ -26,9 +26,9 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | [Raspberry Pi Pico 2 5-pack](https://www.pbtech.co.nz/product/SEVRBP0628) (SEVRBP0628) | 1 | 47.20 | 47.20 | Checked 17 Nov | Control box, CAN sniffer, steering bench test, 2 spare |
 | [Raspberry Pi 27W USB-C power supply (bench)](https://www.pbtech.co.nz/product/SEVRBP0512) (SEVRBP0512) | 1 | 24.90 | 24.90 | Search result 18 Nov | Bench only |
 | [Raspberry Pi micro HDMI to HDMI cable 1m](https://www.pbtech.co.nz/product/SEVRBP0207) (SEVRBP0207) | 1 | 11.80 | 11.80 | Search result 18 Nov | Alt black SEVRBP0262 ~11.10 |
-| [Samsung PRO Endurance 256GB microSD (OS + loop recordings)](https://www.pbtech.co.nz/product/MEMSAM11240) (MEMSAM11240) | 1 | 205.85 | 205.85 | PB Tech page 18 Nov (was NZ$89 on sale earlier) | In the Pi's own slot, no USB. Rated 140,160 hours of 1080p. Dashcam/sentry overwrite oldest first |
+| [Raspberry Pi A2 SD card 128GB (OS)](https://www.pbtech.co.nz/product/SEVRBP0538) (SEVRBP0538) | 1 | 47.32 | 47.32 | Search result 18 Nov | Official card, in the Pi's own slot. Not made for non-stop writes, so dashcam/Sentry recording stays off or minimal until extra storage is added |
 | [Raspberry Pi DAC+ HAT (ex IQaudio DAC+, SC0368)](https://www.pbtech.co.nz/product/SEVRBP0313) (SEVRBP0313) | 1 | 35.65 | 35.65 | Search result 18 Nov (out of stock when indexed) | Official board, RCA out. If PB Tech has none: Pakronics NZ ~NZ$40 |
-| **Total** | | | **851.74** | | |
+| **Total** | | | **693.21** | | |
 
 ### AliExpress (one order, 2 to 4 weeks)
 
@@ -141,13 +141,13 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 
 | Shop | NZ$ |
 |---|---|
-| PB Tech (buy Thursday) | 851.74 |
+| PB Tech (buy Thursday) | 693.21 |
 | AliExpress (one order, 2 to 4 weeks) | 731.01 |
 | Core Electronics (AU, online) | 246.68 |
 | Gogo:Tronics and element14 (NZ, online) | 10.38 |
 | Local: Jaycar, Narva stockist, Repco, auto electrical | 1,241.50 |
 | Separate pickup | 115.00 |
-| **Everything** | **3,196.31** |
+| **Everything** | **3,037.78** |
 
 ### Already got (not in the totals)
 
@@ -161,6 +161,7 @@ Traction battery pack, 150 A air-break switch, Main contactor, Shinegle SG1202 c
 
 | Part | Shop | About NZ$ | Notes |
 |---|---|---|---|
+| Recording storage (e.g. Samsung PRO Endurance 128GB, MEMSAM11230) | PB Tech | 114.90 | For dashcam/Sentry. Sam to sort later |
 | Raspberry Pi AI HAT+ 2 | PB Tech | 423.43 | Not now |
 | Raspberry Pi Active Cooler | PB Tech | 11.21 | Only with the AI HAT |
 | Noctua NF-A4x10 5V fan | Newegg NZ | 21.85 | Only if the Pi box runs hot |
