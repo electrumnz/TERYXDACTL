@@ -38,6 +38,7 @@ static const range_t k_ranges[SET_COUNT] = {
     [SET_BRAKE_PEDAL_MAX]      = {22000, 0, 32767},
     [SET_SHIFT_WAIT_MS]        = {10000, 0, 30000},
     [SET_SHIFT_THROTTLE_HOLD]  = {1, 0, 1},
+    [SET_SENTRY_MIN_12V_MV]    = {12200, 11000, 13500},
 };
 
 void settings_defaults(settings_t *s) {

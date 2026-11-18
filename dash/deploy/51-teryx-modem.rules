@@ -1,0 +1,12 @@
+// Lets the dash server (user "teryx") read and send texts on the 4G stick and turn its
+// data on and off (docs/remote-access.md). Nothing else in ModemManager.
+// Install: sudo install -m 0644 51-teryx-modem.rules /etc/polkit-1/rules.d/
+polkit.addRule(function (action, subject) {
+  if (subject.user !== "teryx") return polkit.Result.NOT_HANDLED;
+  if (action.id === "org.freedesktop.ModemManager1.Messaging" ||
+      action.id === "org.freedesktop.ModemManager1.Device.Control" ||
+      action.id === "org.freedesktop.ModemManager1.Location") {
+    return polkit.Result.YES;
+  }
+  return polkit.Result.NOT_HANDLED;
+});

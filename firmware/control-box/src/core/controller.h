@@ -145,6 +145,10 @@ typedef struct {
     // Power
     bool power_hold;
     bool shutting_down;
+    bool sentry_hold;       // key off, power kept on because the Pi asked for sentry
+    bool sentry_flat;       // 12V stayed under setting 32: no sentry until the key goes on
+    bool sentry_low;        // 12V under setting 32 since sentry_low_ms
+    uint32_t sentry_low_ms;
     uint32_t keyoff_ms;
     uint32_t low12_since_ms;
 
@@ -158,6 +162,8 @@ typedef struct {
 
     // Vehicle lock (docs/vehicle-lock.md)
     vlock_t lock;
+    bool still;             // remote lock: known stopped (under 0.5 km/h) since still_from_ms
+    uint32_t still_from_ms;
 
     uint8_t tx_counter;
     uint32_t last_tx_fast_ms;

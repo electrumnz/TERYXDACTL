@@ -16,7 +16,7 @@ Pico stops tray, winch and actuators if this goes quiet for 500 ms.
 | Signal | Where | Type | Unit | Notes |
 |---|---|---|---|---|
 | `counter` | byte 0 | u8 |  |  |
-| `dash_state` | byte 1 | u8 |  | 0=boot, 1=ok, 2=shutting_down |
+| `dash_state` | byte 1 | u8 |  | 0=boot, 1=ok, 2=shutting_down, 3=sentry |
 
 ### 0x701 PI_LIGHTS
 
@@ -81,7 +81,7 @@ Vehicle lock command, on demand (docs/vehicle-lock.md). Digits are BCD, first di
 
 | Signal | Where | Type | Unit | Notes |
 |---|---|---|---|---|
-| `cmd` | byte 0 | u8 |  | 1=lock, 2=unlock, 3=verify, 4=set_pin, 5=set_puk, 6=remove |
+| `cmd` | byte 0 | u8 |  | 1=lock, 2=unlock, 3=verify, 4=set_pin, 5=set_puk, 6=remove, 7=remote |
 | `n_digits` | byte 1 | u8 |  |  |
 | `d0` | byte 2 | u8 |  |  |
 | `d1` | byte 3 | u8 |  |  |
@@ -122,6 +122,8 @@ From **controlbox**, every 100 ms.
 | `reverse_active` | byte 6 bit 2 | u1 |  |  |
 | `shutdown_request` | byte 6 bit 3 | u1 |  | Key off: Pi should shut down |
 | `parked` | byte 6 bit 4 | u1 |  | Stopped and safe for OTA updates |
+| `sentry_hold` | byte 6 bit 5 | u1 |  | Key off, power kept on because the Pi asked for sentry |
+| `sentry_flat` | byte 6 bit 6 | u1 |  | Sentry refused: 12V under setting 32 (until the key goes on) |
 | `speed` | byte 7 | u8 | km/h | Speed as the Pico sees it, 255 = unknown |
 
 ### 0x711 PICO_OUTPUTS
@@ -210,7 +212,8 @@ Vehicle lock state (docs/vehicle-lock.md). Also sent straight after every 0x705.
 | `puk_set` | byte 4 bit 1 | u1 |  | A recovery code is stored |
 | `inhibit` | byte 4 bit 2 | u1 |  | Drive inhibit asked for (how is TBC until the Shinegle is decoded) |
 | `lockout` | byte 4 bit 3 | u1 |  |  |
-| `result` | byte 5 | u8 |  | Result of the last 0x705 0=none, 1=ok, 2=wrong, 3=not_parked, 4=no_pin, 5=lockout, 6=bad_digits, 7=not_allowed, 8=recovered |
+| `pending` | byte 4 bit 4 | u1 |  | Remote lock asked for, waiting until stopped 10 s or key off |
+| `result` | byte 5 | u8 |  | Result of the last 0x705 0=none, 1=ok, 2=wrong, 3=not_parked, 4=no_pin, 5=lockout, 6=bad_digits, 7=not_allowed, 8=recovered, 9=pending |
 | `result_count` | byte 6 | u8 |  | Goes up by one per 0x705 |
 | `fails` | byte 7 | u8 |  | Wrong tries in a row (kept over power cuts) |
 
@@ -344,6 +347,7 @@ HOST/BENCH BUILD ONLY. Lets the simulator drive the Pico's wired inputs and inje
 | 29 (0x1D) | `brake_pedal_max_raw` | raw | 22000 | 0-32767 |
 | 30 (0x1E) | `shift_wait_ms` | ms | 10000 | 0-30000 |
 | 31 (0x1F) | `shift_throttle_hold` | bool | 1 | 0-1 |
+| 32 (0x20) | `sentry_min_12v_mv` | mV | 12200 | 11000-13500 |
 | 240 (0xF0) | save to flash | | | |
 | 241 (0xF1) | reset to defaults | | | |
 | 242 (0xF2) | clear latched faults | | | |

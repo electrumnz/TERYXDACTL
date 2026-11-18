@@ -95,6 +95,7 @@ safety:                      # defaults, adjustable in settings
   diff_max_run_s: 4
   shift_wait_s: 10            # a 4WD / diff request waits this long for the right speed, then gives up (0 = refuse at once)
   shift_throttle_hold: true   # hold throttle while a shift runs from a standstill (never while moving)
+  sentry_min_12v: 12.2        # key off: sentry keeps the Pi on only while the 12V battery is above this (docs/sentry.md)
   tray_requires_stopped: true
   tray_max_run_s: 20
   tray_overcurrent_a: 10

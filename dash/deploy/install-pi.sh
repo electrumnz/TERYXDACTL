@@ -18,6 +18,7 @@ chown -R teryx:teryx "$ROOT"
 install -m 0440 "$ROOT/current/dash/deploy/sudoers-teryx" /etc/sudoers.d/teryx
 # Wi-Fi from the dash's on-screen keyboard (NetworkManager via polkit, no sudo)
 install -m 0644 "$ROOT/current/dash/deploy/50-teryx-wifi.rules" /etc/polkit-1/rules.d/
+install -m 0644 "$ROOT/current/dash/deploy/51-teryx-modem.rules" /etc/polkit-1/rules.d/
 # Logo on boot instead of scrolling text
 bash "$ROOT/current/dash/deploy/install-splash.sh" || echo "Boot splash skipped (see install-splash.sh)"
 cp "$ROOT/current/dash/deploy/teryx-dash.service" /etc/systemd/system/

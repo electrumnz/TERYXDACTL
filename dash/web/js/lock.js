@@ -15,6 +15,7 @@ const RESULT_TEXT = {
   bad_digits: "A PIN is 4 to 6 digits.",
   not_allowed: "Not allowed right now. Enter the current PIN first.",
   recovered: "Unlocked with the recovery code. The old PIN is gone, so set a new one.",
+  pending: "Remote lock asked for by text. It locks once stopped for 10 s or the key is off. Your PIN cancels it.",
 };
 export const lockResultText = (r) => RESULT_TEXT[r] || "";
 

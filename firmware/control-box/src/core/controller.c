@@ -117,6 +117,15 @@ void ctl_load_lock(controller_t *c, const lock_blob_t *saved, uint32_t now) {
 static void stop_all_motion(controller_t *c);
 static void send_lock(controller_t *c, uint32_t now, cb_send_fn send, void *u);
 
+// Remote lock (docs/remote-access.md): only once it's safe. Key off, or known
+// speed under 0.5 km/h for 10 s with the winch not pulling. No park brake
+// needed (a thief won't put it on), and drive is never cut on the move.
+static bool remote_safe(const controller_t *c, uint32_t now) {
+    if (c->winch.active != 0) return false;
+    if (!ignition(c)) return true;
+    return c->still && since(now, c->still_from_ms) >= LOCK_REMOTE_STOP_MS;
+}
+
 static bool speed_reason(uint8_t r) { return r == REJ_TOO_FAST || r == REJ_NOT_STOPPED; }
 static bool fwd_busy(const controller_t *c) { return c->fwd.moving || c->fwd.waiting; }
 static bool diff_busy(const controller_t *c) { return c->diff.moving || c->diff.waiting; }
@@ -394,6 +403,7 @@ void ctl_on_frame(controller_t *c, const can_frame_t *f, uint32_t now,
     case CAN_ID_PI_LOCK: {
         bool was = ctl_locked(c);
         vlock_on_frame(&c->lock, f->data, f->dlc, ctl_can_lock(c, now), now);
+        vlock_remote_check(&c->lock, remote_safe(c, now));
         if (!was && ctl_locked(c)) stop_all_motion(c);
         send_lock(c, now, send, user);  // answer straight away, not on the next 100 ms
         break;
@@ -764,6 +774,8 @@ static void send_status(controller_t *c, uint32_t now, cb_send_fn send, void *u)
     if (reverse_active(c, now)) flags |= FLAG_REVERSE;
     if (c->shutting_down) flags |= FLAG_SHUTDOWN_REQUEST;
     if (ctl_parked(c, now)) flags |= FLAG_PARKED;
+    if (c->sentry_hold) flags |= FLAG_SENTRY_HOLD;
+    if (c->sentry_flat) flags |= FLAG_SENTRY_FLAT;
     f.data[6] = flags;
     f.data[7] = ctl_speed_valid(c, now) ? clamp_u8((c->speed_x10 + 5u) / 10u) : 0xFF;
     send(&f, u);
@@ -830,13 +842,38 @@ void ctl_tick(controller_t *c, const cb_in_t *in, cb_out_t *out, cb_send_fn send
     // Vehicle lock: nothing moves, lights off, drive inhibited. The lock
     // sits in flash, so this holds from the first tick after a power cut.
     vlock_tick(&c->lock, now);
+    if (stopped(c, now)) {
+        if (!c->still) { c->still = true; c->still_from_ms = now; }
+    } else {
+        c->still = false;
+    }
+    if (vlock_remote_check(&c->lock, remote_safe(c, now))) stop_all_motion(c);
     bool locked = ctl_locked(c);
     if (locked && (anything_moving(c) || c->fwd.waiting || c->diff.waiting || c->winch.armed))
         stop_all_motion(c);
 
+    // Sentry (docs/sentry.md): 12V must stay above setting 32. 30 s under it (or no
+    // reading at all) and sentry is off until the key next goes on, so it can't flatten
+    // the battery that the winch and the Pi's own start-up need.
+    if (ign) {
+        c->sentry_flat = false;
+        c->sentry_low = false;
+    } else if (c->in.aux_mv < S(c, SET_SENTRY_MIN_12V_MV)) {
+        if (!c->sentry_low) { c->sentry_low = true; c->sentry_low_ms = now; }
+        else if (since(now, c->sentry_low_ms) >= SENTRY_LOW_MS) c->sentry_flat = true;
+    } else {
+        c->sentry_low = false;
+    }
+
     // Rule 8: key-off. Keep power on until the Pi has shut down, or time's up.
+    // Sentry keeps it on while the Pi keeps asking for it and the 12V is OK.
+    c->sentry_hold = !ign && c->power_hold && dash_ok && c->dash_state == DASH_SENTRY && !c->sentry_flat;
     if (ign) {
         c->power_hold = true;
+        c->shutting_down = false;
+    } else if (c->sentry_hold) {
+        if (c->tray.dir != 0 || fwd_busy(c) || diff_busy(c)) stop_all_motion(c);
+        winch_disarm(c);
         c->shutting_down = false;
     } else {
         if (c->tray.dir != 0 || fwd_busy(c) || diff_busy(c)) stop_all_motion(c);

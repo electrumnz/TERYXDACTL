@@ -45,7 +45,20 @@ export const DEFAULTS = {
       rear:    { fitted: true,  name: "Rear",    deviceId: "", v4l2Device: "/dev/video0", mirror: true,  guides: true },
       front:   { fitted: false, name: "Front",   deviceId: "", v4l2Device: "", mirror: false, guides: false },
       trailer: { fitted: false, name: "Trailer", deviceId: "", v4l2Device: "", mirror: true,  guides: true },
+      // Small camera on the dash looking at the driver's seat, on the Pi's second ribbon port.
+      // Records with the others, and takes the face shot when someone tries the key while locked.
+      cabin:   { fitted: false, name: "Cabin",   deviceId: "", v4l2Device: "csi1", mirror: false, guides: false },
     },
+  },
+  // Sentry and dashcam (docs/sentry.md). Read by the dash server (sentry.py) too.
+  sentry: {
+    enabled: true,         // watch and record while locked with the key off
+    dashcam: true,         // loop recording while the key is on
+    maxHours: 12,          // sentry gives up after this long...
+    min12v: 12.2,          // ...or when the 12V battery drops under this
+    storage: "/mnt/teryx-video",
+    eventsPct: 25,         // share of the video drive kept for saved clips
+    width: 1280, height: 720, fps: 15, kbps: 2000,
   },
   rc: { allow4g: false },  // remote driving over 4G (docs/rc-beach-launch.md). Off by default, needs the PIN to change
   features: { ...FEATURE_DEFAULTS },   // what's wired up yet; the rest shows greyed out (see features.js)

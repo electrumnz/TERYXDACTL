@@ -62,6 +62,15 @@ void vlock_init(vlock_t *l, const lock_blob_t *saved, uint32_t now) {
 
 bool vlock_pin_set(const vlock_t *l) { return (l->saved.flags & LOCKF_PIN_SET) != 0; }
 bool vlock_is_locked(const vlock_t *l) { return (l->saved.flags & LOCKF_LOCKED) != 0; }
+bool vlock_pending(const vlock_t *l) { return (l->saved.flags & LOCKF_PENDING) != 0; }
+
+bool vlock_remote_check(vlock_t *l, bool safe) {
+    if (!vlock_pending(l) || !safe) return false;
+    l->saved.flags = (uint8_t)((l->saved.flags & ~LOCKF_PENDING) | LOCKF_LOCKED);
+    l->window = false;
+    save(l);
+    return true;
+}
 
 // BCD digits to ASCII. Returns false if a nibble isn't 0-9 or the length is off.
 static bool digits(const uint8_t *d, uint8_t dlc, char out[8], uint8_t *n) {
@@ -136,7 +145,11 @@ static uint8_t handle(vlock_t *l, const uint8_t *d, uint8_t dlc, bool can_lock, 
         if (!check(l, p, n, false)) return wrong(l, now);
         right(l);
         if (cmd == LOCK_CMD_UNLOCK) {
-            if (locked) { l->saved.flags &= (uint8_t)~LOCKF_LOCKED; save(l); }
+            // The right PIN also cancels a remote lock that hasn't happened yet.
+            if (locked || vlock_pending(l)) {
+                l->saved.flags &= (uint8_t)~(LOCKF_LOCKED | LOCKF_PENDING);
+                save(l);
+            }
         } else {
             if (locked) return LOCK_RES_NOT_ALLOWED;  // unlock first
             l->window = true;
@@ -144,6 +157,15 @@ static uint8_t handle(vlock_t *l, const uint8_t *d, uint8_t dlc, bool can_lock, 
         }
         return LOCK_RES_OK;
     }
+
+    case LOCK_CMD_REMOTE:
+        // From the owner's phone, checked by the Pi (number + code). Locking is the
+        // safe direction, so no PIN here, but it never cuts drive on the move: it
+        // waits until vlock_remote_check() says it's stopped.
+        if (!vlock_pin_set(l)) return LOCK_RES_NO_PIN;   // nobody could unlock it
+        if (locked) return LOCK_RES_OK;
+        if (!vlock_pending(l)) { l->saved.flags |= LOCKF_PENDING; save(l); }
+        return LOCK_RES_PENDING;
 
     case LOCK_CMD_SET_PIN:
         if (locked) return LOCK_RES_NOT_ALLOWED;
@@ -210,6 +232,7 @@ void vlock_status(const vlock_t *l, uint32_t now, bool inhibit, uint8_t out[8]) 
     if (l->saved.flags & LOCKF_PUK_SET) flags |= LOCK_FLAG_PUK_SET;
     if (inhibit) flags |= LOCK_FLAG_INHIBIT;
     if (l->lockout) flags |= LOCK_FLAG_LOCKOUT;
+    if (vlock_pending(l)) flags |= LOCK_FLAG_PENDING;
     out[4] = flags;
     out[5] = l->result;
     out[6] = l->result_count;

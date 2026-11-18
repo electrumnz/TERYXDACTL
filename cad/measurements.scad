@@ -151,6 +151,16 @@ pi_fan      = 30;               // lid fan size (30 or 40), 0 for no fan
 pi_fan_hole = 24;               // fan screw spacing (30 mm fan = 24, 40 mm = 32)
 // Glands go in the bottom wall so water runs off them
 pi_glands   = [PG9, PG9, PG7, PG7];   // 12V in, CAN, camera, spare
+// Video SSD for sentry and dashcam clips (docs/sentry.md): Kingston XS1000, 69.54 x 32.58
+// x 13.5 mm (Kingston datasheet). It sits in a cradle on the inside of the lid, over the
+// free strip below the Pi, so it's clear of the AI HAT stack, the lid fan and the side vents.
+// A short right-angle USB-C to USB-A lead goes to one of the Pi's USB 3 ports. Held in with a
+// cable tie through the two slots. Another small USB SSD fits if it's within ssd_size.
+// The 4G stick is NOT in here: it hangs outside on its own 20 cm lead so its aerial isn't
+// boxed in next to the Pi (docs/remote-access.md).
+ssd_size    = [70.2, 33.2, 13.5];   // XS1000 plus 0.6 mm play in X and Y
+ssd_pos     = [-18, -30];           // centre, box coordinates (same X and Y as the box)
+ssd_on      = true;                 // false = plain lid
 
 // ---------------------------------------------------------------------------
 // Pico 2 control box (Pico, MCP2515, MCP23017, ADS1115, opto board,

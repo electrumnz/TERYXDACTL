@@ -57,6 +57,7 @@ FALLBACK: list[Setting] = [
     Setting(29, "brake_pedal_max_raw", "Brake pedal floor point", 22000, "raw", None, 100, 0, 32767, "Pedal sensor reading with the pedal pushed hard down."),
     Setting(30, "shift_wait_ms", "Wait for the right speed", 10000, "ms", None, 1000, 0, 30000, "How long a 4WD or diff lock change waits for you to stop or slow down before giving up. 0 = refuse straight away."),
     Setting(31, "shift_throttle_hold", "Hold throttle while shifting", 1, "", None, 1, 0, 1, "Holds the throttle while 4WD or diff lock changes from a standstill. Never while moving."),
+    Setting(32, "sentry_min_12v_mv", "Sentry stops below", 12200, "mV", None, 100, 11000, 13500, "With the key off, sentry keeps the Pi on only while the 12V battery is above this. Under it for 30 s and everything turns off until the key goes on."),
     Setting(17, "hold_to_run_timeout_ms", "Hold-to-run stop after", 300, "ms", None, 50, 100, 2000, "Stop the tray or winch if the dash's repeats stop this long."),
 ]
 

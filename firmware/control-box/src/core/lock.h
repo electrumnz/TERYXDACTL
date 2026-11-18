@@ -23,6 +23,8 @@
 #define LOCKF_PIN_SET 0x01u
 #define LOCKF_PUK_SET 0x02u
 #define LOCKF_LOCKED  0x04u
+#define LOCKF_PENDING 0x08u          // remote lock waiting for the Teryx to stop (kept over power cuts)
+#define LOCK_REMOTE_STOP_MS 10000u   // remote lock: stopped this long before it locks
 
 // Stored in its own flash sector (or a file on the host build).
 typedef struct {
@@ -55,6 +57,11 @@ uint32_t vlock_random32(void);
 void vlock_init(vlock_t *l, const lock_blob_t *saved, uint32_t now_ms);
 bool vlock_is_locked(const vlock_t *l);
 bool vlock_pin_set(const vlock_t *l);
+bool vlock_pending(const vlock_t *l);
+// Remote lock: call every tick. safe = key off, or known speed under 0.5 km/h for
+// LOCK_REMOTE_STOP_MS and the winch not pulling. Locks a pending remote lock then.
+// Returns true if it locked just now.
+bool vlock_remote_check(vlock_t *l, bool safe);
 // One 0x705 frame. can_lock = stopped (or key off), park brake on, nothing moving.
 uint8_t vlock_on_frame(vlock_t *l, const uint8_t *d, uint8_t dlc, bool can_lock, uint32_t now_ms);
 void vlock_tick(vlock_t *l, uint32_t now_ms);
