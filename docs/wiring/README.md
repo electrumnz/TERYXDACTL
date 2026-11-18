@@ -559,5 +559,5 @@ Fuses not in the block (inline, at the battery or on a board):
 | CARPLAY | Carlinkit CPC200-CCPA | dash | planned (optional) |  |
 | USB_DAC | USB audio out | dash | planned (optional) |  |
 | AMP | 12 V marine amp | cab | planned (optional) | See [`docs/audio.md`](../../docs/audio.md). |
-| SPEAKERS | Marine speakers | cab | planned (optional) |  |
+| SPEAKERS | Kenwood KFC-2053MRB 8 in marine speakers (pair) | cab | confirmed (optional) | Sam has these. 8 in 2-way, 4 ohm, about 50 W RMS each (100 W the pair), 180 mm cut-out, about 86 mm mounting depth (retailer specs). One amp channel each; speaker cable 1.5 mm² is plenty |
 | IMU | IMU (roll / pitch) | dash | planned (optional) |  |

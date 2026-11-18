@@ -34,7 +34,7 @@
 <g data-wire="X19" data-from="PI5.P24_CE0" data-to="PI_CAN.CS" data-status="planned"><title>X19: PI5.P24_CE0 -&gt; PI_CAN.CS</title><path d="M310,497 C395,497 395,1200 480,1200" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
 <g data-wire="X20" data-from="PI_CAN.INT" data-to="PI5.P22_GPIO25" data-status="planned"><title>X20: PI_CAN.INT -&gt; PI5.P22_GPIO25</title><path d="M480,1220 C395,1220 395,457 310,457" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
 <g data-wire="X21" data-from="USB_DAC.OUT" data-to="AMP.IN" data-status="planned"><title>X21: USB_DAC.OUT -&gt; AMP.IN</title><path d="M1190,399 C1275,399 1275,197 1360,197" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="X22" data-from="AMP.SPK" data-to="SPEAKERS.IN" data-status="planned"><title>X22: AMP.SPK -&gt; SPEAKERS.IN</title><path d="M1630,217 C1715,217 1715,197 1800,197" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="X22" data-from="AMP.SPK" data-to="SPEAKERS.IN" data-status="planned"><title>X22: AMP.SPK -&gt; SPEAKERS.IN</title><path d="M1630,217 C1715,217 1715,212 1800,212" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
 <g data-wire="X23" data-from="PI5.P3_SDA" data-to="IMU.SDA" data-status="planned"><title>X23: PI5.P3_SDA -&gt; IMU.SDA</title><path d="M310,377 C395,377 395,1009 480,1009" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
 <g data-wire="X24" data-from="PI5.P5_SCL" data-to="IMU.SCL" data-status="planned"><title>X24: PI5.P5_SCL -&gt; IMU.SCL</title><path d="M310,397 C395,397 395,1029 480,1029" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
 <g data-device="PI5" data-status="confirmed"><title>PI5: Raspberry Pi 5 8GB - The 40-pin header and the PCIe port are kept for the AI HAT+ 2. CAN module wires go to header pins that come up through the HAT</title><rect x="40" y="150" width="270" height="369" rx="6" fill="#eef9f1" stroke="#0969da" stroke-width="1.5"/>
@@ -196,11 +196,12 @@
 <line x1="1360" y1="217" x2="1630" y2="217" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="1495" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SPK</text>
 </g>
-<g data-device="SPEAKERS" data-status="planned"><title>SPEAKERS: Marine speakers</title><rect x="1800" y="150" width="270" height="69" rx="6" fill="#f0f6ff" stroke="#424a53" stroke-width="1.5"/>
-<text x="1810" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Marine speakers</text>
-<text x="1810" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">SPEAKERS · planned · optional</text>
-<line x1="1800" y1="197" x2="2070" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1935" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN</text>
+<g data-device="SPEAKERS" data-status="confirmed"><title>SPEAKERS: Kenwood KFC-2053MRB 8 in marine speakers (pair) - Sam has these. 8 in 2-way, 4 ohm, about 50 W RMS each (100 W the pair), 180 mm cut-out, about 86 mm mounting depth (retailer specs). One amp channel each; speaker cable 1.5 mm² is plenty</title><rect x="1800" y="150" width="270" height="84" rx="6" fill="#f0f6ff" stroke="#0969da" stroke-width="1.5"/>
+<text x="1810" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Kenwood KFC-2053MRB 8 in marine</text>
+<text x="1810" y="183" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">speakers (pair)</text>
+<text x="1810" y="198" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">SPEAKERS · confirmed · optional</text>
+<line x1="1800" y1="212" x2="2070" y2="212" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1935" y="216" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN</text>
 </g>
 <text x="318" y="194" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X01</text>
 <text x="758" y="214" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">X02</text>

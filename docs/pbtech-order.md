@@ -102,7 +102,6 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | F-N-R switch, DPDT centre-off, 10A+ | 1 | 20.00 | 20.00 | Estimate |  |
 | E-stop mushroom button, twist release, NC, IP65 | 1 | 25.00 | 25.00 | Estimate | RC mode: cuts KSI with no software |
 | Momentary (ON)-OFF-(ON) toggle, 10A, with waterproof boot | 2 | 15.00 | 30.00 | Estimate | Hidden winch switches |
-| Marine speakers (pair) | 1 | 100.00 | 100.00 | Estimate |  |
 | 3.5mm to 2 x RCA lead 1.5m | 1 | 10.00 | 10.00 | Estimate | DAC to amp |
 | Short right-angle USB-C to USB-A leads | 2 | 10.00 | 20.00 | Estimate | SSD, 4G board |
 | Prepaid SIM | 1 | 10.00 | 10.00 | Estimate |  |
@@ -132,7 +131,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Tinned lugs for 4 mm², M8 hole | 6 | 2.00 | 12.00 | Estimate; counted from config/wiring.yaml | 2 spare |
 | Tinned lugs for 10 mm², M8 hole | 10 | 2.00 | 20.00 | Estimate; counted from config/wiring.yaml | 2 spare |
 | Tinned lugs for 35 mm², M8 hole | 6 | 2.00 | 12.00 | Estimate; counted from config/wiring.yaml | 2 spare |
-| **Total** | | | **1,326.00** | | |
+| **Total** | | | **1,226.00** | | |
 
 ### Separate pickup
 
@@ -149,13 +148,13 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | AliExpress (one order, 2 to 4 weeks) | 753.01 |
 | Core Electronics (AU, online) | 272.66 |
 | Gogo:Tronics and element14 (NZ, online) | 10.38 |
-| Local: Jaycar, Narva stockist, Repco, auto electrical | 1,326.00 |
+| Local: Jaycar, Narva stockist, Repco, auto electrical | 1,226.00 |
 | Separate pickup | 115.00 |
-| **Everything** | **3,323.61** |
+| **Everything** | **3,223.61** |
 
 ### Already got (not in the totals)
 
-10.1 in touch screen, 12 V battery, 12 in light bar, 2K rear camera, 4 in pod, 400 mm actuator, 50 mm actuator, 50 mm actuator with pot, 7 in light bar, ADS1115, XBull 5000 lb winch (and its 35 mm² cables), XBull remote, XBull solenoid box, one BTS7960. Samsung Galaxy XCover 5 (RC remote) (NZ$187).
+10.1 in touch screen, 12 V battery, 12 in light bar, 2K rear camera, 4 in pod, 400 mm actuator, 50 mm actuator, 50 mm actuator with pot, 7 in light bar, ADS1115, Kenwood KFC-2053MRB 8 in marine speakers (pair), XBull 5000 lb winch (and its 35 mm² cables), XBull remote, XBull solenoid box, one BTS7960. Samsung Galaxy XCover 5 (RC remote) (NZ$187).
 
 ### Comes with the Shinegle kit or the stock Teryx
 
