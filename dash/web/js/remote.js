@@ -267,7 +267,44 @@
     if (want > veh.diff && veh.kmh >= 15) { e.target.value = veh.diff; return flash("Diff lock only under 15 km/h", true); }
     veh.diff = want;
   });
-  $("lights").addEventListener("click", () => (veh.lights = !veh.lights));
+  // ---- lights sheet: sliders for every light (docs/lights.md) ----------------------
+  // On the Teryx (page served by the Pi) these go to the dash over its websocket, as the same
+  // requests the dash's own Lights screen sends. On github.io they only light up the pretend Teryx.
+  let dashWs = null;
+  const onTeryx = /^https?:$/.test(location.protocol) && !/github\.io$/.test(location.hostname);
+  function dashSend(id, value) {
+    if (!onTeryx) return;
+    if (!dashWs || dashWs.readyState > 1) {
+      try { dashWs = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/ws`); } catch (_) { dashWs = null; return; }
+    }
+    const msg = JSON.stringify({ type: "request", id, value });
+    if (dashWs.readyState === 1) dashWs.send(msg);
+    else dashWs.addEventListener("open", () => dashWs.send(msg), { once: true });
+  }
+  const lights = { bars: 0, head: 100, headMode: "off", cabin: 0, rear: 0, trailer: 0, beacon: 0 };
+  const to255 = (pct) => Math.round((pct / 100) * 255);
+  function lightsSend(which) {
+    if (which === "bars") ["light.front_1", "light.front_2", "light.front_3", "light.front_4"].forEach((id) => dashSend(id, to255(lights.bars)));
+    if (which === "cabin") dashSend("light.interior", to255(lights.cabin));
+    if (which === "head") { dashSend("light.head_level", to255(lights.head)); dashSend("light.head", lights.headMode); }
+    if (which === "rear") { dashSend("light.rear_level", to255(lights.rear)); dashSend("light.rear", lights.rear ? "on" : "auto"); }
+    if (which === "trailer") dashSend("light.trailer_bar", to255(lights.trailer));
+    if (which === "beacon") dashSend("light.beacon", to255(lights.beacon));
+    veh.lights = lights.bars > 0 || lights.headMode !== "off" || lights.rear > 0;
+  }
+  document.querySelectorAll("[data-light]").forEach((r) => r.addEventListener("input", () => {
+    const k = r.dataset.light;
+    lights[k] = +r.value;
+    $(`lv-${k}`).textContent = `${r.value}%`;
+    lightsSend(k);
+  }));
+  document.querySelectorAll("[data-head]").forEach((b) => b.addEventListener("click", () => {
+    lights.headMode = b.dataset.head;
+    document.querySelectorAll("[data-head]").forEach((x) => x.classList.toggle("on", x === b));
+    lightsSend("head");
+  }));
+  $("lights").addEventListener("click", () => ($("lightPanel").hidden = false));
+  $("lightClose").addEventListener("click", () => ($("lightPanel").hidden = true));
   $("drop").addEventListener("click", () => {
     veh.signal = !veh.signal;
     $("drop").classList.toggle("on", !veh.signal);

@@ -71,10 +71,11 @@ via_parts:
   "divider 10k / 2.2k + 3.3 V zener": {10k resistor: 1, 2.2k resistor: 1, 3.3 V zener: 1}
   "diode (backup)": {1N5408: 1}
   "opto board": {}            # the opto board line covers it
+  "Schottky diode 5 A": {SB560 5 A Schottky diode: 1}
 
 # Devices out in the weather that get a waterproof plug, so they unplug.
 # The plug size comes from how many of their pins are wired.
-plugs: [LB1, LB2, LB3, LB4, LB_INT, FLOOD_L, FLOOD_R, ACT_DIFF, ACT_4WD, ACT_TRAY,
+plugs: [LB1, LB2, LB3, LB4, LB_INT, FLOOD_L, FLOOD_R, BEACON, ACT_DIFF, ACT_4WD, ACT_TRAY,
         LIM_DN, LIM_UP, HSW_WINCH, CAM_REAR, CAM_TRAILER, IMU]
 
 lines:
@@ -92,8 +93,12 @@ lines:
   - {id: ccpa, shop: aliexpress, part: Carlinkit CPC200-CCPA (or CCPA-MIC) CarPlay dongle, qty: 1, each: 65.00, source: "US$33-39 x 1.822", covers: [CARPLAY], notes: "Title must say CCPA + Android head unit; lsusb 1314:1520/1521"}
   - {id: amp, shop: aliexpress, part: "4-channel class D amp, 4 x 63W RMS at 4 ohm, 2 x 200W bridged, 90Hz HPF/LPF (Sam's pick)", qty: 1, each: 100.00, source: "Sam, AliExpress ~NZ$100", covers: [AMP], notes: "Ch 1-2 Kenwoods, ch 3-4 kept for a bridged sub later; under the seat, not waterproof"}
   - {id: opto, shop: aliexpress, part: 8-channel PC817 opto board 12V in, qty: 2, each: 9.00, source: "~US$5 estimate", covers: [OPTO], notes: "Board 1 = all 8 inputs; board 2 = 8 spare on MCP2"}
-  - {id: mosfet, shop: aliexpress, part: "8-channel opto-isolated MOSFET board, 3.3V input version (PWM)", qty: 1, each: 22.00, source: "~US$12 estimate", covers: [MOSFET], notes: "Pick the 3.3V input, PNP (high-level trigger) version: Pico pin high = channel on, which is what the firmware does. Not NPN (low-level trigger). Light bars: 5 used, 3 spare. Listing must say 3.3V input, 24V+ load, 10A per channel; if it says 5A, buy 6 single LR7843 modules (~NZ$30) instead"}
-  - {id: relay16, shop: aliexpress, part: "16-channel 5V relay board, mechanical, opto + JD-VCC jumper, 10A", qty: 1, each: 21.00, source: "~US$11.28 x 1.822", covers: [RELAYS, RELAYS2], notes: "10 used, 6 spare; must have the JD-VCC jumper"}
+  - {id: mosfet, shop: aliexpress, part: "8-Channel Opto-Isolated MOSFET Driver Module, DC 3.7-27V, 10A per channel, PWM 3-20V input, 0-20kHz (Sam's pick)", qty: 1, each: 22.00, source: "~US$12 estimate", covers: [MOSFET], notes: "Front bars, cabin bar, trailer bar, rear floods (all 8 used)"}
+  - {id: mosfet4, shop: aliexpress, part: "4 CH MOSFET PLC amplifier board, PWM 3-20V in, 3.7-27V 10A per channel, opto isolated (Sam's pick)", qty: 1, each: 12.00, source: Estimate, covers: [MOSFET2], notes: "Roof beacon + 3 spare"}
+  - {id: bts_lights, shop: aliexpress, part: "BTS7960 43A motor driver board (IBT-2), same as the 3 already owned", qty: 5, each: 10.00, source: "~US$5-6 estimate", covers: [BTS4, BTS5, BTS6, BTS7, BTS8], notes: "Used as two + side (high side) switches each for the stock lamps: headlights L and R (low + high), tail/brake L and R, trailer tail/stop. The stock bulbs share one earth per bulb, so the MOSFET boards can't do them"}
+  - {id: fuse6, shop: aliexpress, part: "6-way blade fuse block with cover", qty: 1, each: 15.00, source: Estimate, covers: [FB2], notes: "Stock lights + beacon; the 12-way is full. 2 ways spare"}
+  - {id: beacon, shop: aliexpress, part: "12V amber LED beacon, single bolt, with a STEADY (non-flashing) mode, IP67", qty: 1, each: 35.00, source: Estimate, covers: [BEACON], notes: "The Pico does the flashing (3 Hz) and dimming, so it must be able to stay on steady. Measure the hole in the roof first. Narva and Hella make dearer ones that do the same"}
+  - {id: relay16, shop: aliexpress, part: "16-channel 5V relay board, mechanical, opto + JD-VCC jumper, 10A", qty: 1, each: 21.00, source: "~US$11.28 x 1.822", covers: [RELAYS, RELAYS2], notes: "8 used, 8 spare after the lights moved to MOSFET/BTS7960 boards; an 8-ch board would be full. Must have the JD-VCC jumper"}
   - {id: winch_iso, shop: aliexpress, part: "Winch isolator contactor, 12V coil, 200A continuous duty", qty: 1, each: 30.00, source: Estimate, covers: [WINCH_ISO], notes: "Continuous duty, not a starter solenoid"}
   - {id: winch_brk, shop: aliexpress, part: 250A manual reset circuit breaker (winch), qty: 1, each: 30.00, source: Estimate, covers: [BRK_WINCH], notes: "Leave it out of the cart if one came in the winch box"}
   - {id: limits, shop: aliexpress, part: "Waterproof micro limit switch, roller lever (NC)", qty: 3, each: 2.67, source: Estimate, covers: [LIM_DN, LIM_UP], notes: Tray up/down + 1 spare}
@@ -140,7 +145,8 @@ lines:
   - {id: sim, shop: local, part: Prepaid SIM, qty: 1, each: 10.00, source: Estimate}
   - {id: busbar, shop: local, part: "Ground bus bar, M8 studs, 6+ ways, with cover", qty: 1, each: 25.00, source: Estimate, covers: [GND_STAR]}
   - {id: wago, shop: local, part: "Wago 221 lever connectors, 5-way pack", qty: 1, each: 20.00, source: Estimate, covers: [RAIL], notes: Dash 12V rail splits}
-  - {id: smallparts, shop: local, part: "Diodes and resistors (see contents)", qty: 1, each: 20.00, source: Estimate, notes: "AUTO"}
+  - {id: limp_sw, shop: local, part: "Waterproof toggle switch, on-off, 15 A+ at 12 V, with rubber boot", qty: 1, each: 12.00, source: Estimate, covers: [LIMP_SW], notes: "Hidden backup lights switch (low beams + tails at full if the control box dies). Narva or Jaycar"}
+  - {id: smallparts, shop: local, part: "Diodes and resistors (see contents)", qty: 1, each: 30.00, source: Estimate, notes: "AUTO"}
   - {id: heatshrink, shop: local, part: Heatshrink assortment (glue-lined), qty: 1, each: 20.00, source: Estimate}
   - {id: loom, shop: local, part: "Split corrugated loom 10mm + 16mm, 10m each", qty: 1, each: 30.00, source: Estimate}
   - {id: ties, shop: local, part: "UV-black cable ties + adhesive P-clips", qty: 1, each: 20.00, source: Estimate}
@@ -197,6 +203,10 @@ kit:
   KEY: stock Teryx
   BRAKE_SW: stock Teryx
   PARK_SW: stock Teryx
+  HEAD_L: stock Teryx (35/35 W bulb)
+  HEAD_R: stock Teryx (35/35 W bulb)
+  TAIL_L: stock Teryx (8/27 W bulb)
+  TAIL_R: stock Teryx (8/27 W bulb)
 
 # Not part of this build (Sam's call, or waiting on a check).
 later:
@@ -212,7 +222,6 @@ later_lines:
   - {part: Raspberry Pi Active Cooler, shop: PB Tech, each: 11.21, notes: Only with the AI HAT}
   - {part: Noctua NF-A4x10 5V fan, shop: Newegg NZ, each: 21.85, notes: Only if the Pi box runs hot}
   - {part: "Brake pedal Hall sensor (+ pressure sensor)", shop: AliExpress, each: 30.00, notes: "Brake regen; the second ADS1115 is already owned"}
-  - {part: "Small 6-way blade fuse block", shop: AliExpress, each: 15.00, notes: "Only if more fused circuits get added; the 12-way is full"}
   - {part: GameSir G8 Galileo phone gamepad, shop: AliExpress, each: 78.00, notes: "RC mode, Sam: not now"}
   - {part: EasyCAP DC60 USB capture, shop: PB Tech, each: 28.75, notes: Only if the rear camera turns out to be RCA}
   - {part: Carlinkit CCPA from Audio City (NZ stock), shop: Audio City, each: 180.00, notes: Backup if the AliExpress one is slow}

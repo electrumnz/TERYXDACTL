@@ -83,6 +83,16 @@ BO_ 1797 PI_LOCK: 8 PI_DASH
  SG_ d3 : 40|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ counter : 48|8@1+ (1,0) [0|255] "" Vector__XXX
 
+BO_ 1798 PI_LIGHTS2: 8 PI_DASH
+ SG_ head_low : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ head_high : 8|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ tail : 16|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ rear : 24|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ trailer_bar : 32|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ beacon : 40|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ show : 48|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ counter : 56|8@1+ (1,0) [0|255] "" Vector__XXX
+
 BO_ 1823 PI_FW_UPDATE: 8 PI_DASH
  SG_ magic : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
 
@@ -159,6 +169,25 @@ BO_ 1814 PICO_LOCK: 8 PICO_BOX
  SG_ result_count : 48|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ fails : 56|8@1+ (1,0) [0|255] "" Vector__XXX
 
+BO_ 1815 PICO_LIGHTS2: 8 PICO_BOX
+ SG_ head_l_low : 0|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ head_l_high : 4|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ head_r_low : 8|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ head_r_high : 12|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ tail_l : 16|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ brake_l : 20|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ tail_r : 24|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ brake_r : 28|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ trailer_tail : 32|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ trailer_stop : 36|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ flood_l : 40|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ flood_r : 44|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ beacon : 48|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ trailer_bar : 52|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ show_running : 56|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ show_blocked : 57|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ pwm_ok : 58|1@1+ (1,0) [0|1] "" Vector__XXX
+
 BO_ 2016 BENCH_INPUTS: 8 BENCH
  SG_ inputs : 0|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ force_mask : 8|8@1+ (1,0) [0|255] "" Vector__XXX
@@ -191,6 +220,13 @@ CM_ SG_ 1795 winch_timed_s "Timed pull length, 0 = plain hold. Pico stops it on 
 CM_ BO_ 1795 "Hold-to-run, sent at 10 Hz only while a button is held. Pico stops if it goes quiet for 300 ms.";
 CM_ BO_ 1796 "On change, one key per frame. The Pico echoes it on 0x714 as an ack. Keys are in SETTINGS below. 0xF0 = save to flash, 0xF1 = reset defaults.";
 CM_ BO_ 1797 "Vehicle lock command, on demand (docs/vehicle-lock.md). Digits are BCD, first digit in the high nibble of d0. PIN 4-6 digits, recovery code 8. The Pico keeps only a salted hash and answers on 0x716 straight away.";
+CM_ SG_ 1798 head_low "Low beam, both sides";
+CM_ SG_ 1798 head_high "High beam, both sides. Wins over low";
+CM_ SG_ 1798 tail "Tail lights, 0 = automatic (on with any headlight or front bar)";
+CM_ SG_ 1798 rear "Rear flood level while 0x701 rear_on is set, 0 = full";
+CM_ SG_ 1798 beacon "Roof beacon brightness, 0 = off. The Pico flashes it at 3 Hz";
+CM_ SG_ 1798 show "Light show, parked only";
+CM_ BO_ 1798 "Stock lamps, rear floods, beacon, trailer bar and the light show (docs/lights.md). On change, plus a resend every 1 s. Levels 0-255, 0 = off. The Pico keeps brake lights at full, never dims headlights or tails while moving, and only runs a show when parked.";
 CM_ BO_ 1823 "Pico reboots to its bootloader when magic = 0x5445 ('TE') and parked.";
 CM_ SG_ 1808 fault_bits "See FAULT_BITS";
 CM_ SG_ 1808 inputs "MCP23017 B0-B7, see INPUT_BITS";
@@ -229,6 +265,9 @@ CM_ SG_ 1814 result "Result of the last 0x705";
 CM_ SG_ 1814 result_count "Goes up by one per 0x705";
 CM_ SG_ 1814 fails "Wrong tries in a row (kept over power cuts)";
 CM_ BO_ 1814 "Vehicle lock state (docs/vehicle-lock.md). Also sent straight after every 0x705.";
+CM_ SG_ 1815 show_blocked "A show was asked for but the Teryx isn't parked (key on, park brake, stopped)";
+CM_ SG_ 1815 pwm_ok "PCA9685 answering";
+CM_ BO_ 1815 "What the PCA9685 lamps are actually doing, after every safety rule (docs/lights.md). Levels are 0-15 (top 4 bits of 0-255).";
 CM_ SG_ 2016 inputs "Bits as INPUT_BITS";
 CM_ SG_ 2016 force_mask "Which input bits to force";
 CM_ SG_ 2016 fault_inject "See BENCH_FAULTS";
@@ -245,12 +284,14 @@ BA_ "GenMsgCycleTime" BO_ 1792 100;
 BA_ "GenMsgCycleTime" BO_ 1793 1000;
 BA_ "GenMsgCycleTime" BO_ 1794 1000;
 BA_ "GenMsgCycleTime" BO_ 1795 100;
+BA_ "GenMsgCycleTime" BO_ 1798 1000;
 BA_ "GenMsgCycleTime" BO_ 1808 100;
 BA_ "GenMsgCycleTime" BO_ 1809 100;
 BA_ "GenMsgCycleTime" BO_ 1810 100;
 BA_ "GenMsgCycleTime" BO_ 1811 1000;
 BA_ "GenMsgCycleTime" BO_ 1813 100;
 BA_ "GenMsgCycleTime" BO_ 1814 100;
+BA_ "GenMsgCycleTime" BO_ 1815 100;
 BA_ "GenMsgCycleTime" BO_ 2016 100;
 
 VAL_ 384 direction 0 "neutral" 1 "forward" 2 "reverse" ;
@@ -258,6 +299,7 @@ VAL_ 384 mode 0 "eco" 1 "normal" 2 "sport" ;
 VAL_ 1792 dash_state 0 "boot" 1 "ok" 2 "shutting_down" 3 "sentry" ;
 VAL_ 1793 effect 0 "none" 1 "strobe" 2 "chase" 3 "outside_only" 4 "inside_only" 5 "breathe" 6 "sos" ;
 VAL_ 1797 cmd 1 "lock" 2 "unlock" 3 "verify" 4 "set_pin" 5 "set_puk" 6 "remove" 7 "remote" ;
+VAL_ 1798 show 0 "none" 1 "wave" 2 "breathe" 3 "roar" 4 "party" ;
 VAL_ 1808 state 0 "boot" 1 "ok" 2 "degraded" 3 "failsafe" ;
 VAL_ 1808 reject_reason 0 "none" 1 "too_fast" 2 "not_stopped" 3 "speed_unknown" 4 "not_armed" 5 "interlock" 6 "actuator_fault" 7 "low_12v" 8 "dash_link" 9 "ignition_off" 10 "at_limit" 11 "not_parked" 12 "winch_remote" 13 "bad_frame" 14 "wait_timeout" 15 "busy" ;
 VAL_ 1809 effect 0 "none" 1 "strobe" 2 "chase" 3 "outside_only" 4 "inside_only" 5 "breathe" 6 "sos" ;

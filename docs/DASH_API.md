@@ -67,6 +67,9 @@ Keys follow the io-map ids in `config/io-map.yaml`.
 | `light.front_1` to `light.front_4`, `light.interior` | 0-255 | Actual output, after effects |
 | `light.effect` | string | Actual effect |
 | `light.rear`, `trailer.tail`, `trailer.brake`, `winch.in`, `winch.out`, `winch.isolator`, `aux.accessory`, `power.hold` | bool | Actual relay states |
+| `lamp.head_l_low` ... `lamp.trailer_bar` (14, see `LAMPS` in teryx/lights.py) | 0-255 | Actual PCA9685 lamp levels, in steps of 17 (0x717) |
+| `light.trailer_bar` | 0-255 | Actual trailer bar level |
+| `light.show_running`, `light.show_blocked`, `light.pwm_ok` | bool | Light show running; asked for but not parked; PWM board answering |
 
 **Vehicle lock** (`0x716`, see `docs/vehicle-lock.md`)
 
@@ -116,6 +119,13 @@ sensor service on the Pi will publish them later; the simulator fakes them now.
 | `light.front_1` to `light.front_4`, `light.interior` | 0-255 |
 | `light.effect` | `none`, `strobe`, `chase`, `outside_only`, `inside_only`, `breathe`, `sos` |
 | `light.rear` | `off`, `on`, `auto` (on in reverse) |
+| `light.head` | `off`, `low`, `high` (headlights, both sides) |
+| `light.head_level` | 0-255 headlight brightness (only dims when parked) |
+| `light.tail` | 0-255 tail lights, 0 = automatic (on with any headlight or front bar) |
+| `light.rear_level` | 0-255 rear flood brightness when `light.rear` is `on`, 0 = full |
+| `light.trailer_bar` | 0-255 trailer light bar (only with the trailer plugged in) |
+| `light.beacon` | 0-255 roof beacon, 0 = off. The control box flashes it at 3 Hz |
+| `light.show` | `none`, `wave`, `breathe`, `roar`, `party`. Parked only (key on, park brake, stopped) |
 | `act.4wd` | 0 = 2WD, 1 = 4WD |
 | `act.diff` | 0-100 % |
 | `winch.armed` | true / false |

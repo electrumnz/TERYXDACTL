@@ -43,6 +43,7 @@ from dataclasses import dataclass, field
 from ..canbus import messages as M
 from ..canbus import shinegle as SG
 from ..config import safety_defaults
+from ..lights import LAMPS, Lights, LightsReq, LightsState
 from ..regen import BrakeRegen
 from ..vehicle_lock import REMOTE_STOP_S, VehicleLock, decode_digits
 
@@ -117,6 +118,9 @@ class ControlBox:
         "front_1": 0, "front_2": 0, "front_3": 0, "front_4": 0, "interior": 0,
         "effect": 0, "rear_on": 0, "rear_auto": 1})
     lights_out: dict = field(default_factory=dict)
+    lights2_req: LightsReq = field(default_factory=LightsReq)    # 0x706
+    lights2: Lights = field(default_factory=Lights)
+    lights2_out: object = None
     hold_tray: int = 0
     hold_winch: int = 0
     last_hold: float = -1e9
@@ -196,6 +200,10 @@ class ControlBox:
             self.dash_state = M.DASH_STATE.get(int(v.get("dash_state", 0)), "boot")
         elif name == "PI_LIGHTS":
             self.lights_req = {k: v[k] for k in self.lights_req}
+        elif name == "PI_LIGHTS2":
+            r = self.lights2_req
+            for k in ("head_low", "head_high", "tail", "rear", "trailer_bar", "beacon", "show"):
+                setattr(r, k, int(v[k]))
         elif name == "PI_DRIVE":
             self._drive_request(v)
         elif name == "PI_HOLD":
@@ -657,6 +665,19 @@ class ControlBox:
         # On/off-only bars: anything above 0 is full on
         levels = [lvl if mask & (1 << i) else (255 if lvl else 0) for i, lvl in enumerate(levels)]
         rear = not self.locked and (bool(r["rear_on"]) or (bool(r["rear_auto"]) and self.inp("in.reverse")))
+        # Stock lamps, floods, beacon, trailer and the light show (teryx/lights.py)
+        req = self.lights2_req
+        req.rear_on, req.rear_auto = bool(r["rear_on"]), bool(r["rear_auto"])
+        st = LightsState(
+            brake=self.inp("in.brake") or self.regen.out.brake_light, reverse=self.inp("in.reverse"),
+            trailer=self.inp("in.trailer"), stopped=self.stopped(), park=self.inp("in.park"),
+            ignition=self.inp("in.ignition"), locked=self.locked, dash_ok=self.dash_ok(),
+            front_on=any(int(r[f"front_{n}"]) for n in range(1, 5)), now_ms=int(t * 1000))
+        o2 = self.lights2.step(req, st)
+        self.lights2_out = o2
+        if o2.front is not None:   # the show drives the front bars and cabin bar too
+            levels = [o2.front[f"front_{n}"] for n in range(1, 5)] + [o2.front["interior"]]
+            levels = [lvl if mask & (1 << i) else (255 if lvl >= 128 else 0) for i, lvl in enumerate(levels)]
         self.lights_out = {
             **{f"front_{n}": levels[n - 1] for n in range(1, 5)},
             "interior": levels[4], "effect": int(r["effect"]), "rear": rear,
@@ -665,14 +686,14 @@ class ControlBox:
     # ------------------------------------------------------------ outputs
     def relays(self) -> dict[str, bool]:
         lo = self.lights_out
-        any_front = any(lo.get(f"front_{n}", 0) for n in range(1, 5))
         ign = self.inp("in.ignition")
         holding = ign or self.sentry_hold or (self.ignition_off_at is not None
                           and self.t - self.ignition_off_at < self.s("shutdown_wait_s"))
         return {
             "light.rear": bool(lo.get("rear")),
-            "trailer.tail": any_front,
-            "trailer.brake": self.inp("in.brake") or self.regen.out.brake_light,
+            # relays 2-3 are spare; the bits report the trailer tail / stop (BTS7960 8)
+            "trailer.tail": bool(self.lights2_out and self.lights2_out.level["trailer_tail"]),
+            "trailer.brake": bool(self.lights2_out and self.lights2_out.level["trailer_stop"]),
             "winch.in": self.winch_dir == 1,
             "winch.out": self.winch_dir == -1,
             "winch.isolator": self.winch_armed,
@@ -778,4 +799,9 @@ class ControlBox:
             }),
             ("PICO_LOCK", self.lock.frame(self.t, self.drive_inhibit)),
         ]
+        o2 = self.lights2_out
+        if o2 is not None:
+            out.append(("PICO_LIGHTS2", {**{k: o2.level[k] >> 4 for k in LAMPS},
+                                         "show_running": int(o2.show_running),
+                                         "show_blocked": int(o2.show_blocked), "pwm_ok": 1}))
         return out

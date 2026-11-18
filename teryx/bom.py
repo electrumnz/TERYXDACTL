@@ -96,7 +96,7 @@ def _skip_wire(bom: dict, wiring: dict, w: dict) -> bool:
     later, kit = bom.get("later") or {}, bom.get("kit") or {}
     if a in later or b in later:
         return True
-    if a in kit and b in kit:
+    if a in kit and b in kit and not w.get("via"):   # a new lead with a diode in it is ours to buy
         return True
     if w.get("sys") == "hv":
         return True

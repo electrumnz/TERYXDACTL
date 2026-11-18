@@ -20,6 +20,7 @@ from ..canbus import messages as M
 from ..canbus import shinegle as SG
 from ..canbus.bus import open_bus
 from ..canbus.node import Node
+from ..lights import LAMPS, LIGHT_SHOW
 from ..vehicle_lock import encode_digits
 
 log = logging.getLogger("teryx.dash")
@@ -30,6 +31,9 @@ SETTINGS_RESEND_S = 5.0
 
 LIGHT_IDS = {"light.front_1": "front_1", "light.front_2": "front_2", "light.front_3": "front_3",
              "light.front_4": "front_4", "light.interior": "interior"}
+# 0x706 levels, 0-255 (docs/lights.md)
+LIGHT2_LEVELS = {"light.head_level": 255, "light.tail": 0, "light.rear_level": 0,
+                 "light.trailer_bar": 0, "light.beacon": 0}
 
 
 class Gateway:
@@ -51,12 +55,13 @@ class Gateway:
         self.req = {
             "light.front_1": 0, "light.front_2": 0, "light.front_3": 0, "light.front_4": 0,
             "light.interior": 0, "light.effect": "none", "light.rear": "auto",
+            "light.head": "off", **LIGHT2_LEVELS, "light.show": "none",
             "act.4wd": 0, "act.diff": 0, "winch.armed": False,
         }
         self.holds = {"act.tray": (0, 0.0), "winch": (0, 0.0)}
         self._hold_active = False
         self.winch_timed_s = 0   # timed pull length for the current winch hold, 0 = plain hold
-        self._dirty = {"lights": True, "drive": True}
+        self._dirty = {"lights": True, "lights2": True, "drive": True}
         self._last_reject_count = None
         self._lock_counter = 0
         # Sentry (docs/sentry.md): the heartbeat says "sentry" so the Pico keeps power on after key-off
@@ -101,6 +106,19 @@ class Gateway:
                     raise ValueError("light.rear must be off, on or auto")
                 self.req[id] = value
                 self._dirty["lights"] = True
+            elif id == "light.head":
+                if value not in ("off", "low", "high"):
+                    raise ValueError("light.head must be off, low or high")
+                self.req[id] = value
+                self._dirty["lights2"] = True
+            elif id in LIGHT2_LEVELS:
+                self.req[id] = max(0, min(255, int(value)))
+                self._dirty["lights2"] = True
+            elif id == "light.show":
+                if value not in LIGHT_SHOW.values():
+                    raise ValueError(f"unknown light show {value}")
+                self.req[id] = value
+                self._dirty["lights2"] = True
             elif id == "act.4wd":
                 self.req[id] = 1 if value in (1, True, "4wd", "1") else 0
                 self._dirty["drive"] = True
@@ -171,6 +189,15 @@ class Gateway:
                 "rear_on": int(r["light.rear"] == "on"),
                 "rear_auto": int(r["light.rear"] == "auto")}
 
+    def _lights2_values(self) -> dict:
+        r = self.req
+        lvl = r["light.head_level"] or 255
+        return {"head_low": lvl if r["light.head"] == "low" else 0,
+                "head_high": lvl if r["light.head"] == "high" else 0,
+                "tail": r["light.tail"], "rear": r["light.rear_level"],
+                "trailer_bar": r["light.trailer_bar"], "beacon": r["light.beacon"],
+                "show": M.enum_value(LIGHT_SHOW, r["light.show"])}
+
     def _drive_values(self) -> dict:
         return {"fourwd_req": self.req["act.4wd"], "diff_target": self.req["act.diff"]}
 
@@ -197,6 +224,12 @@ class Gateway:
                 self.node._last_sent[M.PI_LIGHTS.can_id] = now
             else:
                 self.node.send_due(M.PI_LIGHTS, self._lights_values, now)
+            if self._dirty["lights2"]:
+                self._dirty["lights2"] = False
+                self.node.send(M.PI_LIGHTS2, self._lights2_values())
+                self.node._last_sent[M.PI_LIGHTS2.can_id] = now
+            else:
+                self.node.send_due(M.PI_LIGHTS2, self._lights2_values, now)
             if self._dirty["drive"]:
                 self._dirty["drive"] = False
                 self.node.send(M.PI_DRIVE, self._drive_values())
@@ -259,6 +292,13 @@ class Gateway:
                 for k, short in LIGHT_IDS.items():
                     st[k] = v[short]
                 st["light.effect"] = M.LIGHT_EFFECT.get(v["effect"], "none")
+            elif msg.name == "PICO_LIGHTS2":
+                for k in LAMPS:
+                    st[f"lamp.{k}"] = int(v[k]) * 17          # 0-15 back to 0-255
+                st["light.trailer_bar"] = st["lamp.trailer_bar"]
+                st["light.show_running"] = bool(v["show_running"])
+                st["light.show_blocked"] = bool(v["show_blocked"])
+                st["light.pwm_ok"] = bool(v["pwm_ok"])
             elif msg.name == "PICO_ACTUATORS":
                 st["an.diff_pos"] = v["diff_pct"]
                 st["act.diff_target"] = v["diff_target"]

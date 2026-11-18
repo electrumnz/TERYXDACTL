@@ -67,6 +67,26 @@
     </div>
   </div>
 
+  <!-- Lights: brightness sliders, the same requests the dash sends (docs/lights.md).
+       The control box still makes every safety call (brakes always full, no dimming of
+       headlights or tails on the move, beacon flashes at 3 Hz, trailer bar only with the plug in). -->
+  <div id="lightPanel" class="setpanel" hidden>
+    <div class="setbox">
+      <h2>Lights</h2>
+      <label class="slider">FRONT BARS <b id="lv-bars">0%</b><input type="range" data-light="bars" min="0" max="100" step="5" value="0"></label>
+      <div class="setrow">
+        <label class="slider">HEADLIGHTS <b id="lv-head">100%</b><input type="range" data-light="head" min="10" max="100" step="5" value="100"></label>
+        <div class="fnr" style="grid-template-columns:1fr 1fr 1fr"><button class="key on" data-head="off">OFF</button><button class="key" data-head="low">LOW</button><button class="key" data-head="high">HIGH</button></div>
+      </div>
+      <label class="slider">CABIN <b id="lv-cabin">0%</b><input type="range" data-light="cabin" min="0" max="100" step="5" value="0"></label>
+      <label class="slider">REAR FLOODS <b id="lv-rear">0%</b><input type="range" data-light="rear" min="0" max="100" step="5" value="0"></label>
+      <label class="slider">TRAILER BAR <b id="lv-trailer">0%</b><input type="range" data-light="trailer" min="0" max="100" step="5" value="0"></label>
+      <label class="slider">BEACON <b id="lv-beacon">0%</b><input type="range" data-light="beacon" min="0" max="100" step="5" value="0"></label>
+      <p class="lightnote">Brake lights always go full. Headlights and tails only dim when parked.</p>
+      <button class="key" id="lightClose">CLOSE</button>
+    </div>
+  </div>
+
   <main>
     <section class="side left">
       <button class="key big" id="arm">ARM RC</button>

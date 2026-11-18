@@ -12,10 +12,13 @@ can:
     pi_drive:       0x702  # Pi -> Pico, on change
     pi_hold_to_run: 0x703  # Pi -> Pico, 10 Hz while held
     pi_settings:    0x704  # Pi -> Pico, on change
+    pi_lock:        0x705  # Pi -> Pico, on demand
+    pi_lights2:     0x706  # Pi -> Pico, on change (stock lamps, floods, beacon, trailer, light show)
     pico_status:    0x710  # Pico -> Pi, 10 Hz
     pico_outputs:   0x711  # Pico -> Pi, 10 Hz
     pico_actuators: 0x712  # Pico -> Pi, 10 Hz
     pico_power:     0x713  # Pico -> Pi, 1 Hz
+    pico_lights2:   0x717  # Pico -> Pi, 10 Hz
     pi_fw_update:   0x71F  # Pi -> Pico, on demand
 
 outputs:
@@ -24,9 +27,24 @@ outputs:
   light.front_3:   {driver: mosfet, pin: GP18, pwm: true, fuse_a: 10, label: "Front bar 3 (inner right)"}
   light.front_4:   {driver: mosfet, pin: GP19, pwm: true, fuse_a: 10, label: "Front bar 4 (far right)"}
   light.interior:  {driver: mosfet, pin: GP20, pwm: true, fuse_a: 5,  label: "Interior bar"}
-  light.rear:      {driver: relay, relay: 1, expander_pin: A0, fuse_a: 10, label: "Rear / reverse pods"}
-  trailer.tail:    {driver: relay, relay: 2, expander_pin: A1, fuse_a: 5,  label: "Trailer tail"}
-  trailer.brake:   {driver: relay, relay: 3, expander_pin: A2, fuse_a: 5,  label: "Trailer brake"}
+  light.rear:      {driver: relay, relay: 1, expander_pin: A0, fuse_a: 10, label: "Trailer reverse pin (follows the rear floods)"}
+  # Everything below dims through the PCA9685 (0x40) on the Pico's I2C. docs/lights.md
+  # The stock lamps are high side on BTS7960 4-8 (RPWM = M+, LPWM = M-); the rest are MOSFET channels.
+  light.trailer_bar:  {driver: pca9685, channel: 0,  to: [MOSFET.IN6], label: "Trailer light bar"}
+  light.head_l_low:   {driver: pca9685, channel: 1,  to: [BTS4.RPWM], fuse_a: 10, label: "Left headlight low"}
+  light.head_l_high:  {driver: pca9685, channel: 2,  to: [BTS4.LPWM], fuse_a: 10, label: "Left headlight high"}
+  light.head_r_low:   {driver: pca9685, channel: 3,  to: [BTS5.RPWM], fuse_a: 10, label: "Right headlight low"}
+  light.head_r_high:  {driver: pca9685, channel: 4,  to: [BTS5.LPWM], fuse_a: 10, label: "Right headlight high"}
+  light.tail_l:       {driver: pca9685, channel: 5,  to: [BTS6.RPWM], fuse_a: 10, label: "Left tail"}
+  light.brake_l:      {driver: pca9685, channel: 6,  to: [BTS6.LPWM], fuse_a: 10, label: "Left brake (always full when braking)"}
+  light.tail_r:       {driver: pca9685, channel: 7,  to: [BTS7.RPWM], fuse_a: 10, label: "Right tail"}
+  light.brake_r:      {driver: pca9685, channel: 8,  to: [BTS7.LPWM], fuse_a: 10, label: "Right brake (always full when braking)"}
+  light.trailer_tail: {driver: pca9685, channel: 9,  to: [BTS8.RPWM], fuse_a: 7.5, label: "Trailer tail"}
+  light.trailer_stop: {driver: pca9685, channel: 10, to: [BTS8.LPWM], fuse_a: 7.5, label: "Trailer stop (always full when braking)"}
+  light.flood_l:      {driver: pca9685, channel: 11, to: [MOSFET.IN7], fuse_a: 10, label: "Rear flood left"}
+  light.flood_r:      {driver: pca9685, channel: 12, to: [MOSFET.IN8], fuse_a: 10, label: "Rear flood right"}
+  light.beacon:       {driver: pca9685, channel: 13, to: [MOSFET2.IN1], fuse_a: 5, label: "Roof beacon (Pico flashes it at 3 Hz)"}
+  light.enable:       {driver: pca9685, channel: 15, to: [BTS4.EN, BTS5.EN, BTS6.EN, BTS7.EN, BTS8.EN], label: "BTS7960 4-8 enable"}
   winch.in:        {driver: relay, relay: 4, expander_pin: A3, fuse_a: 3,  label: "Winch in (solenoid coil)"}
   winch.out:       {driver: relay, relay: 5, expander_pin: A4, fuse_a: 3,  label: "Winch out (solenoid coil)"}
   winch.isolator:  {driver: relay, relay: 6, expander_pin: A5, fuse_a: 3,  label: "Winch power enable"}

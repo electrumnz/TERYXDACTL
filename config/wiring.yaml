@@ -195,8 +195,8 @@ devices:
       IN: {v: 12v, multi: true}
       F1:  {v: 12v, supply: true, fuse_a: 15,  multi: true, desc: front bars 1 + 4 (outer pair)}
       F2:  {v: 12v, supply: true, fuse_a: 15,  multi: true, desc: front bars 2 + 3 (inner pair)}
-      F3:  {v: 12v, supply: true, fuse_a: 10,  desc: relay 1 rear floods}
-      F4:  {v: 12v, supply: true, fuse_a: 7.5, multi: true, desc: relays 2-3 trailer tail + stop}
+      F3:  {v: 12v, supply: true, fuse_a: 10,  multi: true, desc: "rear floods (MOSFET 7-8) + relay 1 trailer reverse pin"}
+      F4:  {v: 12v, supply: true, fuse_a: 7.5, desc: BTS7960 8 trailer tail + stop}
       F5:  {v: 12v, supply: true, fuse_a: 3,   multi: true, desc: relays 4-6 winch coils}
       F6:  {v: 12v, supply: true, fuse_a: 3,   multi: true, desc: "winch hand switches, tray limits, trailer reed"}
       F7:  {v: 12v, supply: true, fuse_a: 10,  multi: true, desc: "extras - interior bar + relay 7 accessory (phone charger, trailer cam)"}
@@ -205,6 +205,18 @@ devices:
       F10: {v: 12v, supply: true, fuse_a: 10,  desc: BTS7960 2 4WD}
       F11: {v: 12v, supply: true, fuse_a: 15,  desc: BTS7960 3 tray}
       F12: {v: 12v, supply: true, fuse_a: 7.5, desc: key switch}
+  FB2:
+    name: Small 6-way blade fuse block (stock lights + beacon)
+    zone: cab
+    status: planned
+    note: "Next to the 12-way, which is full. Fed off the 12-way's feed stud through its own 30 A fuse. 1 way spare"
+    pins:
+      IN: 12v
+      F1: {v: 12v, supply: true, fuse_a: 10, desc: BTS7960 4 left headlight}
+      F2: {v: 12v, supply: true, fuse_a: 10, desc: BTS7960 5 right headlight}
+      F3: {v: 12v, supply: true, fuse_a: 10, multi: true, desc: BTS7960 6-7 tail + brake lights}
+      F4: {v: 12v, supply: true, fuse_a: 5, desc: roof beacon}
+      F5: {v: 12v, supply: true, fuse_a: 10, desc: backup lights toggle (low beams + tails)}
   KEY:
     name: Teryx key switch
     zone: cab
@@ -319,8 +331,10 @@ devices:
     zone: control_box
     status: planned
     optional: true
-    note: "More dimming outputs on the Pico's I2C. Wires soldered straight to the pads, no header pins. VCC 3.3 V so the outputs are 3.3 V, which the 3.3 V PNP MOSFET board takes. Leave V+ (servo power) empty. OE tied low on the board. 15 channels spare"
-    pins: {VCC: 3v3, SDA: 3v3, SCL: 3v3, PWM0: 3v3}
+    note: "Every light that isn't a front bar or the cabin bar dims through this (docs/lights.md). Wires soldered straight to the pads, no header pins. VCC 3.3 V so the outputs are 3.3 V, which the MOSFET boards (3-20 V input) and the BTS7960s (3.3 V logic like BTS1-3) take. Leave V+ (servo power) empty. OE tied low on the board. PWM0 trailer bar, 1-10 stock lights on BTS7960 4-8, 11-12 rear floods, 13 beacon, 14 spare, 15 BTS7960 enable. All outputs are off at power-up"
+    pins: {VCC: 3v3, SDA: 3v3, SCL: 3v3, PWM0: 3v3, PWM1: 3v3, PWM2: 3v3, PWM3: 3v3, PWM4: 3v3, PWM5: 3v3, PWM6: 3v3,
+           PWM7: 3v3, PWM8: 3v3, PWM9: 3v3, PWM10: 3v3, PWM11: 3v3, PWM12: 3v3, PWM13: 3v3,
+           PWM15: {v: 3v3, multi: true, desc: "BTS7960 4-8 enable (off at power-up)"}}
   ADS1:
     name: ADS1115 ADC (0x48)
     zone: control_box
@@ -348,9 +362,10 @@ devices:
     zone: control_box
     status: planned
     note: One 16-channel board of mechanical 5 V relays with opto and JD-VCC jumper (AliExpress cart), in an aux box next to the control box. RELAYS2 is channels 9-16 of the same board. The solid state G3MB-202P board Sam has is AC only and won't turn off on 12 V DC. JD-VCC jumper off, coils on 5 V, inputs from 3.3 V
-    check: Does the relay board click from 3.3 V logic? Active high or low? Relays are SRD-05VDC type, 10 A at 28-30 V DC. Keep each load under about 7 A. Only rear floods (relay 1) could get near that, so read the pod labels (two pods + trailer reverse under about 80 W). If over, relay 1 drives a 40 A automotive relay instead
-    # Relay loads (none carry big current): 1 rear floods, 2-3 trailer tail/stop, 4-6 winch solenoid and isolator COILS only (the winch motor current goes
-    # through its own contactor), 7 accessory (phone charger + trailer cam, about 5 A), 8 power hold (dash rail, about 5 A). Front bars are on the MOSFET board, not relays
+    check: Does the relay board click from 3.3 V logic? Active high or low? Relays are SRD-05VDC type, 10 A at 28-30 V DC. Keep each load under about 7 A. Nothing on the relays gets near that now the floods are on the MOSFET board (relay 1 only feeds the trailer reversing lamp)
+    # Relay loads (none carry big current): 1 trailer reversing pin, 2-3 spare (trailer tail/stop moved to BTS8), 4-6 winch solenoid and isolator COILS only
+    # (the winch motor current goes through its own contactor), 7 accessory (phone charger + trailer cam, about 5 A), 8 power hold (dash rail, about 5 A).
+    # All other lights are on the MOSFET and BTS7960 boards via the PCA9685. 8 of 16 relays used, 8 spare
     pins: {VCC: 3v3, JDVCC: 5v, GND: gnd,
            IN1: 3v3, IN2: 3v3, IN3: 3v3, IN4: 3v3, IN5: 3v3, IN6: 3v3, IN7: 3v3, IN8: 3v3,
            COM1: 12v, COM2: 12v, COM3: 12v, COM4: 12v, COM5: 12v, COM6: 12v, COM7: 12v, COM8: 12v,
@@ -378,13 +393,33 @@ devices:
     zone: control_box
     status: planned
     pins: *bts
-  MOSFET:
-    name: 8-ch isolated MOSFET board (low side, 6 used, 2 spare)
+  # BTS7960 4-8: the stock lamps. Their bulbs are dual filament with ONE shared earth, so a
+  # low-side MOSFET can't switch each filament on its own. Each BTS7960 is two high-side
+  # switches: RPWM drives M+, LPWM drives M-, each to its own filament (docs/lights.md).
+  BTS4:
+    name: BTS7960 4 (left headlight low / high)
     zone: control_box
     status: planned
-    note: One 8-channel opto-isolated MOSFET board (3.3 V input version), one channel per light bar, 3 spare. About 6 A per front bar. Low side switching, so each bar's + comes from its fuse and its - goes to an OUT pin
+    note: "Used as two high-side switches, not a motor bridge. VCC from the Pico 3.3 V like BTS1-3. EN (R_EN + L_EN) from PCA9685 PWM15 with a 10k to ground, so the lamps stay off until the Pico is running"
+    pins: &btsl {VCC: 3v3, GND: gnd, RPWM: 3v3, LPWM: 3v3, EN: 3v3, IS: 3v3, B+: 12v, B-: gnd, M+: 12v, M-: 12v}
+  BTS5: {name: BTS7960 5 (right headlight low / high), zone: control_box, status: planned, pins: *btsl}
+  BTS6: {name: BTS7960 6 (left tail / brake), zone: control_box, status: planned, pins: *btsl}
+  BTS7: {name: BTS7960 7 (right tail / brake), zone: control_box, status: planned, pins: *btsl}
+  BTS8: {name: BTS7960 8 (trailer tail / stop), zone: control_box, status: planned, pins: *btsl}
+  MOSFET:
+    name: 8-ch isolated MOSFET board (low side, all 8 used)
+    zone: control_box
+    status: planned
+    note: "Sam's board: 8-channel opto-isolated MOSFET driver, DC 3.7-27 V, 10 A per channel, PWM input 3-20 V, 0-20 kHz. 1-4 front bars, 5 cabin bar, 6 trailer bar, 7-8 rear floods. Low side switching, so each light's + comes from its fuse and its - goes to an OUT pin"
     check: The listing must say 3.3 V input, PNP / high-level trigger (firmware drives the pins high for on; pins sit low at boot so lights stay off), at least 24 V load and 10 A per channel. If it only says 5 A, use single LR7843 modules instead
-    pins: {GND: gnd, IN1: 3v3, IN2: 3v3, IN3: 3v3, IN4: 3v3, IN5: 3v3, OUT1: 12v, OUT2: 12v, OUT3: 12v, OUT4: 12v, OUT5: 12v, IN6: 3v3, OUT6: 12v}
+    pins: {GND: gnd, IN1: 3v3, IN2: 3v3, IN3: 3v3, IN4: 3v3, IN5: 3v3, OUT1: 12v, OUT2: 12v, OUT3: 12v, OUT4: 12v, OUT5: 12v, IN6: 3v3, OUT6: 12v,
+           IN7: 3v3, OUT7: 12v, IN8: 3v3, OUT8: 12v}
+  MOSFET2:
+    name: 4-ch MOSFET board (beacon, 3 spare)
+    zone: control_box
+    status: planned
+    note: "Sam's 4-channel version of the same board (3-20 V PWM input, 3.7-27 V 10 A per channel, opto isolated). Channel 1 roof beacon, 3 spare for later lights"
+    pins: {GND: gnd, IN1: 3v3, OUT1: 12v}
 
   # ---------------------------------------------------------- lights
   LB1: {name: Front bar 1 (far left), zone: front, status: confirmed, pins: {pos: 12v, neg: 12v}}
@@ -397,10 +432,39 @@ devices:
     name: Rear flood left (4 in pod)
     zone: rear
     status: confirmed
-    note: Outside of the roll cage mounting plate. Also the reverse light
+    note: Outside of the roll cage mounting plate. Also the reverse light. Dimmable on MOSFET channel 7 (left) and 8 (right)
     check: Light bars and pods dim with PWM? Test one on a cheap dimmer
-    pins: {pos: 12v, neg: gnd}
-  FLOOD_R: {name: Rear flood right (4 in pod), zone: rear, status: confirmed, pins: {pos: 12v, neg: gnd}}
+    pins: {pos: 12v, neg: 12v}
+  FLOOD_R: {name: Rear flood right (4 in pod), zone: rear, status: confirmed, pins: {pos: 12v, neg: 12v}}
+  HEAD_L:
+    name: Left headlight (stock, 12 V 35/35 W)
+    zone: front
+    status: from_manual
+    note: "Dual filament bulb, low and high, one shared earth (Kawasaki 2013 Teryx 750 owner's manual: headlight 12 V 35/35 W x 2)"
+    check: Unplug a headlight and photo the plug. Which pin is low, high and earth?
+    pins: {LO: {v: 12v, multi: true}, HI: 12v, GND: gnd}
+  HEAD_R: {name: "Right headlight (stock, 12 V 35/35 W)", zone: front, status: from_manual, pins: {LO: {v: 12v, multi: true}, HI: 12v, GND: gnd}}
+  TAIL_L:
+    name: Left tail / brake light (stock, 12 V 8/27 W)
+    zone: rear
+    status: from_manual
+    note: "Dual filament bulb, 8 W tail and 27 W brake, one shared earth (owner's manual: tail/brake light 12 V 8/27 W x 2)"
+    check: Photo the tail light plug. Which wire is tail, brake and earth?
+    pins: {TAIL: {v: 12v, multi: true}, STOP: {v: 12v, multi: true}, GND: gnd}
+  TAIL_R: {name: "Right tail / brake light (stock, 12 V 8/27 W)", zone: rear, status: from_manual, pins: {TAIL: {v: 12v, multi: true}, STOP: {v: 12v, multi: true}, GND: gnd}}
+  LIMP_SW:
+    name: Backup lights toggle (hidden)
+    zone: cab
+    status: planned
+    note: "The Teryx has no headlight switch, so the dash and the Pico do everything. This hidden toggle is the backup if the control box dies: it feeds both low beams and both tails at full through diodes. Leave it off normally. The Pico also turns low beams and tails on by itself if the dash goes quiet with the key on"
+    pins: {IN: 12v, OUT: {v: 12v, multi: true}}
+  BEACON:
+    name: Roof beacon (amber LED, steady-on)
+    zone: rear
+    status: planned
+    note: "Plain amber LED beacon that stays on steady. The Pico flashes it at 3 Hz (NZ Vehicle Lighting Rule 11.1(2): 2 to 4 Hz) and dims it. Fits Sam's existing hole on the roof"
+    check: Measure the hole in the roof. The beacon must have a steady (non-flashing) mode
+    pins: {pos: 12v, neg: 12v}
 
   # ---------------------------------------------------------- winch
   BRK_WINCH:
@@ -469,6 +533,7 @@ devices:
     name: Brake light switch (stock)
     zone: cab
     status: tbc
+    note: "Also feeds both brake filaments and the trailer stop pin through diodes, so the brake lights work at full even with the control box off"
     check: Find the brake light switch wire and meter it (12 V when pressed?)
     pins: {OUT: {v: 12v, multi: true}}
   PARK_SW:
@@ -729,12 +794,20 @@ wires:
   - {id: G09, from: SCREEN.GND, to: SCREEN_PSU.GND, sys: ground, mm2: 1.0, status: tbc}
   - {id: G10, from: AMP.GND, to: GND_STAR.G, sys: ground, mm2: 6.0, status: planned, optional: true, note: Same size as the feed}
   - {id: G24, from: GLOVE_USB.GND, to: GND_STAR.G, sys: ground, mm2: 0.75, status: planned, optional: true}
-  - {id: G11, from: MOSFET.GND, to: GND_STAR.G, sys: ground, mm2: 2.5, status: planned, note: "Carries all five lights' current"}
+  - {id: G11, from: MOSFET.GND, to: GND_STAR.G, sys: ground, mm2: 4.0, status: planned, note: "Carries the current of all 8 lights on the board (about 30 A with everything on)"}
+  - {id: G15, from: MOSFET2.GND, to: GND_STAR.G, sys: ground, mm2: 1.0, status: planned}
+  - {id: G16, from: BTS4.B-, to: GND_STAR.G, sys: ground, mm2: 1.5, status: planned}
+  - {id: G31, from: BTS5.B-, to: GND_STAR.G, sys: ground, mm2: 1.5, status: planned}
+  - {id: G32, from: BTS6.B-, to: GND_STAR.G, sys: ground, mm2: 1.5, status: planned}
+  - {id: G25, from: BTS7.B-, to: GND_STAR.G, sys: ground, mm2: 1.5, status: planned}
+  - {id: G26, from: BTS8.B-, to: GND_STAR.G, sys: ground, mm2: 1.0, status: planned}
+  - {id: G27, from: HEAD_L.GND, to: GND_STAR.G, sys: ground, mm2: 1.5, status: tbc, note: "Stock earth, keep it if it's good"}
+  - {id: G28, from: HEAD_R.GND, to: GND_STAR.G, sys: ground, mm2: 1.5, status: tbc}
+  - {id: G29, from: TAIL_L.GND, to: GND_STAR.G, sys: ground, mm2: 1.0, status: tbc}
+  - {id: G30, from: TAIL_R.GND, to: GND_STAR.G, sys: ground, mm2: 1.0, status: tbc}
   - {id: G12, from: BTS1.B-, to: GND_STAR.G, sys: ground, mm2: 1.5, status: planned}
   - {id: G13, from: BTS2.B-, to: GND_STAR.G, sys: ground, mm2: 1.5, status: planned}
   - {id: G14, from: BTS3.B-, to: GND_STAR.G, sys: ground, mm2: 2.5, status: planned}
-  - {id: G15, from: FLOOD_L.neg, to: GND_STAR.G, sys: ground, mm2: 1.5, status: planned}
-  - {id: G16, from: FLOOD_R.neg, to: GND_STAR.G, sys: ground, mm2: 1.5, status: planned}
   - {id: G17, from: WINCH_SOL.GND, to: BAT12.neg, sys: ground, mm2: 35, status: planned, rating_from: maker, note: "Winch return straight to the battery, cable from the winch kit"}
   - {id: G18, from: WINCH_ISO.coil_neg, to: GND_STAR.G, sys: ground, mm2: 0.5, status: planned}
   - {id: G19, from: OPTO.COM12, to: GND_STAR.G, sys: ground, mm2: 0.5, status: planned, note: "12 V side ground of the opto board"}
@@ -770,9 +843,7 @@ wires:
   - {id: L16, from: PICO.GP26, to: ADS2.SDA, sys: logic, status: planned, optional: true}
   - {id: L17, from: PICO.GP27, to: ADS2.SCL, sys: logic, status: planned, optional: true}
   - {id: L18, from: MCP1.INTB, to: PICO.GP21, sys: logic, status: planned}
-  - {id: L19, from: MCP1.A0, to: RELAYS.IN1, sys: logic, status: planned, note: "light.rear"}
-  - {id: L20, from: MCP1.A1, to: RELAYS.IN2, sys: logic, status: planned, note: "trailer.tail"}
-  - {id: L21, from: MCP1.A2, to: RELAYS.IN3, sys: logic, status: planned, note: "trailer.brake"}
+  - {id: L19, from: MCP1.A0, to: RELAYS.IN1, sys: logic, status: planned, note: "light.rear (relay 1 now only feeds the trailer reverse pin)"}
   - {id: L22, from: MCP1.A3, to: RELAYS.IN4, sys: logic, status: planned, note: "winch.in"}
   - {id: L23, from: MCP1.A4, to: RELAYS.IN5, sys: logic, status: planned, note: "winch.out"}
   - {id: L24, from: MCP1.A5, to: RELAYS.IN6, sys: logic, status: planned, note: "winch.isolator"}
@@ -834,8 +905,50 @@ wires:
   - {id: LT14, from: PICO.GP19, to: MOSFET.IN4, sys: lights, status: planned, note: "light.front_4 PWM"}
   - {id: LT15, from: PICO.GP20, to: MOSFET.IN5, sys: lights, status: planned, note: "light.interior PWM"}
   - {id: LT16, from: FB.F3, to: RELAYS.COM1, sys: lights, mm2: 1.5, status: planned}
-  - {id: LT17, from: RELAYS.NO1, to: FLOOD_L.pos, sys: lights, mm2: 1.5, fuse: 10, status: planned, note: "light.rear, auto on in reverse"}
-  - {id: LT18, from: RELAYS.NO1, to: FLOOD_R.pos, sys: lights, mm2: 1.5, fuse: 10, status: planned}
+  - {id: LT17, from: FB.F3, to: FLOOD_L.pos, sys: lights, mm2: 1.5, status: planned, note: "Always live, the MOSFET switches the - side"}
+  - {id: LT18, from: FB.F3, to: FLOOD_R.pos, sys: lights, mm2: 1.5, status: planned}
+  - {id: LT19, from: FLOOD_L.neg, to: MOSFET.OUT7, sys: lights, mm2: 1.5, status: planned}
+  - {id: LT20, from: FLOOD_R.neg, to: MOSFET.OUT8, sys: lights, mm2: 1.5, status: planned}
+  - {id: LT21, from: PCA.PWM11, to: MOSFET.IN7, sys: lights, status: planned, note: "light.flood_l PWM"}
+  - {id: LT22, from: PCA.PWM12, to: MOSFET.IN8, sys: lights, status: planned, note: "light.flood_r PWM"}
+  # stock lamps, high side on BTS7960 4-7 (docs/lights.md)
+  - {id: LT23, from: FB.IN, to: FB2.IN, sys: lights, mm2: 4.0, fuse: 30, status: planned, note: "Own 30 A inline fuse off the 12-way's feed stud"}
+  - {id: LT24, from: FB2.F1, to: BTS4.B+, sys: lights, mm2: 1.5, status: planned}
+  - {id: LT25, from: FB2.F2, to: BTS5.B+, sys: lights, mm2: 1.5, status: planned}
+  - {id: LT26, from: FB2.F3, to: BTS6.B+, sys: lights, mm2: 1.5, status: planned}
+  - {id: LT27, from: FB2.F3, to: BTS7.B+, sys: lights, mm2: 1.5, status: planned}
+  - {id: LT28, from: BTS4.M+, to: HEAD_L.LO, sys: lights, mm2: 1.5, via: "Schottky diode 5 A", status: planned, note: "light.head_l_low. The diode stops the backup toggle feeding back into the BTS7960"}
+  - {id: LT29, from: BTS4.M-, to: HEAD_L.HI, sys: lights, mm2: 1.5, via: "Schottky diode 5 A", status: planned, note: "light.head_l_high"}
+  - {id: LT30, from: BTS5.M+, to: HEAD_R.LO, sys: lights, mm2: 1.5, via: "Schottky diode 5 A", status: planned, note: "light.head_r_low"}
+  - {id: LT31, from: BTS5.M-, to: HEAD_R.HI, sys: lights, mm2: 1.5, via: "Schottky diode 5 A", status: planned, note: "light.head_r_high"}
+  - {id: LT32, from: BTS6.M+, to: TAIL_L.TAIL, sys: lights, mm2: 1.0, via: "Schottky diode 5 A", status: planned, note: "light.tail_l"}
+  - {id: LT33, from: BTS6.M-, to: TAIL_L.STOP, sys: lights, mm2: 1.0, via: "Schottky diode 5 A", status: planned, note: "light.brake_l"}
+  - {id: LT34, from: BTS7.M+, to: TAIL_R.TAIL, sys: lights, mm2: 1.0, via: "Schottky diode 5 A", status: planned, note: "light.tail_r"}
+  - {id: LT35, from: BTS7.M-, to: TAIL_R.STOP, sys: lights, mm2: 1.0, via: "Schottky diode 5 A", status: planned, note: "light.brake_r"}
+  - {id: LT36, from: PCA.PWM1, to: BTS4.RPWM, sys: lights, status: planned, note: "light.head_l_low PWM"}
+  - {id: LT37, from: PCA.PWM2, to: BTS4.LPWM, sys: lights, status: planned, note: "light.head_l_high PWM"}
+  - {id: LT38, from: PCA.PWM3, to: BTS5.RPWM, sys: lights, status: planned, note: "light.head_r_low PWM"}
+  - {id: LT39, from: PCA.PWM4, to: BTS5.LPWM, sys: lights, status: planned, note: "light.head_r_high PWM"}
+  - {id: LT40, from: PCA.PWM5, to: BTS6.RPWM, sys: lights, status: planned, note: "light.tail_l PWM"}
+  - {id: LT41, from: PCA.PWM6, to: BTS6.LPWM, sys: lights, status: planned, note: "light.brake_l PWM"}
+  - {id: LT42, from: PCA.PWM7, to: BTS7.RPWM, sys: lights, status: planned, note: "light.tail_r PWM"}
+  - {id: LT43, from: PCA.PWM8, to: BTS7.LPWM, sys: lights, status: planned, note: "light.brake_r PWM"}
+  - {id: LT44, from: PCA.PWM15, to: BTS4.EN, sys: lights, status: planned, note: "R_EN + L_EN joined, 10k to ground"}
+  - {id: LT45, from: PCA.PWM15, to: BTS5.EN, sys: lights, status: planned}
+  - {id: LT46, from: PCA.PWM15, to: BTS6.EN, sys: lights, status: planned}
+  - {id: LT47, from: PCA.PWM15, to: BTS7.EN, sys: lights, status: planned}
+  # backups: the stock switches still light the lamps at full with the control box off
+  - {id: LT48, from: BRAKE_SW.OUT, to: TAIL_L.STOP, sys: lights, mm2: 1.0, via: "Schottky diode 5 A", status: planned, note: "Brake lights always work, whatever the Pico does"}
+  - {id: LT49, from: BRAKE_SW.OUT, to: TAIL_R.STOP, sys: lights, mm2: 1.0, via: "Schottky diode 5 A", status: planned}
+  - {id: LT50, from: FB2.F5, to: LIMP_SW.IN, sys: lights, mm2: 1.5, status: planned}
+  - {id: LT51, from: LIMP_SW.OUT, to: HEAD_L.LO, sys: lights, mm2: 1.5, via: "Schottky diode 5 A", status: planned, note: "Backup toggle on = low beams at full, even with the control box dead"}
+  - {id: LT52, from: LIMP_SW.OUT, to: HEAD_R.LO, sys: lights, mm2: 1.5, via: "Schottky diode 5 A", status: planned}
+  - {id: LT54, from: LIMP_SW.OUT, to: TAIL_L.TAIL, sys: lights, mm2: 1.0, via: "Schottky diode 5 A", status: planned, note: "Tails on with the backup toggle too"}
+  - {id: LT55, from: LIMP_SW.OUT, to: TAIL_R.TAIL, sys: lights, mm2: 1.0, via: "Schottky diode 5 A", status: planned}
+  # roof beacon
+  - {id: LT56, from: FB2.F4, to: BEACON.pos, sys: lights, mm2: 0.75, status: planned}
+  - {id: LT57, from: BEACON.neg, to: MOSFET2.OUT1, sys: lights, mm2: 0.75, status: planned}
+  - {id: LT58, from: PCA.PWM13, to: MOSFET2.IN1, sys: lights, status: planned, note: "light.beacon: flashed at 3 Hz by the Pico"}
 
   # --- winch
   - {id: WN01, from: BAT12.pos, to: BRK_WINCH.in, sys: winch, mm2: 35, fuse: 250, rating_from: maker, status: planned, note: "Cable that came with the winch"}
@@ -895,10 +1008,12 @@ wires:
   - {id: D33, from: EPS_ECU.MOTOR, to: EPS_COL.MOTOR, sys: drive, status: tbc, optional: true, note: "Toyota's own plug, keep it from the wrecker"}
 
   # --- trailer
-  - {id: T01, from: FB.F4, to: RELAYS.COM2, sys: trailer, mm2: 1.0, status: planned}
-  - {id: T02, from: RELAYS.NO2, to: TRAILER.P7_TAIL, sys: trailer, mm2: 1.0, fuse: 7.5, status: planned, note: "trailer.tail"}
-  - {id: T03, from: FB.F4, to: RELAYS.COM3, sys: trailer, mm2: 1.0, status: planned}
-  - {id: T04, from: RELAYS.NO3, to: TRAILER.P6_STOP, sys: trailer, mm2: 1.0, fuse: 7.5, status: planned, note: "trailer.brake"}
+  - {id: T01, from: FB.F4, to: BTS8.B+, sys: trailer, mm2: 1.0, status: planned}
+  - {id: T02, from: BTS8.M+, to: TRAILER.P7_TAIL, sys: trailer, mm2: 1.0, status: planned, note: "light.trailer_tail (dimmable). No diode: nothing else feeds this pin"}
+  - {id: T04, from: BTS8.M-, to: TRAILER.P6_STOP, sys: trailer, mm2: 1.0, via: "Schottky diode 5 A", status: planned, note: "light.trailer_stop. Diode so the brake switch backup (T05) can't feed back into the BTS7960"}
+  - {id: T18, from: PCA.PWM9, to: BTS8.RPWM, sys: trailer, status: planned, note: "light.trailer_tail PWM"}
+  - {id: T19, from: PCA.PWM10, to: BTS8.LPWM, sys: trailer, status: planned, note: "light.trailer_stop PWM"}
+  - {id: T20, from: PCA.PWM15, to: BTS8.EN, sys: trailer, status: planned}
   - {id: T05, from: BRAKE_SW.OUT, to: TRAILER.P6_STOP, sys: trailer, mm2: 1.0, via: "diode (backup)", status: tbc, note: "Trailer brake lights still work with the control box off"}
   - {id: T06, from: RELAYS.NO1, to: TRAILER.P2_REV, sys: trailer, mm2: 1.0, fuse: 10, status: tbc, optional: true, note: "Reversing pin. Relay 1 also runs the floods by hand, so trailer reverse lights would come on with them"}
   - {id: T07, from: RELAYS.NO7, to: TCAM_PLUG.V12, sys: trailer, mm2: 0.5, fuse: 2, status: planned, optional: true, note: "2 A inline fuse. Runs while driving, not just reversing"}

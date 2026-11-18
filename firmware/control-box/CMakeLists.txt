@@ -28,6 +28,7 @@ set(CORE_SRC
     src/core/settings.c
     src/core/lock.c
     src/core/sha256.c
+    src/core/lights.c
 )
 
 if(TERYX_HOST)
@@ -55,6 +56,7 @@ else()
         src/pico/mcp2515.c
         src/pico/mcp23017.c
         src/pico/ads1115.c
+        src/pico/pca9685.c
     )
     target_compile_options(teryx_control_box PRIVATE -Wall -Wextra -Wno-unused-parameter)
     target_link_libraries(teryx_control_box

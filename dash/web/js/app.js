@@ -9,6 +9,7 @@ import { Alerts } from "./alerts.js";
 import { Sound } from "./sound.js";
 import { autoTheme } from "./theme.js";
 import { LookPicker, LOOKS } from "./look.js";
+import { NightCabin } from "./nightcabin.js";
 import { TripData } from "./tripdata.js";
 import { fitToScreen } from "./fit.js";
 import { keyboardOpen } from "./ui/keyboard.js";
@@ -57,6 +58,7 @@ const ctx = {
   lookInfo() { return ctx.looks.pick(new Date()); },
   applyTheme() {
     const { look, dark } = ctx.looks.pick(new Date());
+    ctx.nightCabin.tick(dark);   // Night mode fades the cabin light down (nightcabin.js)
     const cls = `look-${look} theme-${dark ? "night" : "day"}`;
     if (document.body.className !== cls) {
       document.body.className = cls;
@@ -72,6 +74,7 @@ const ctx = {
 };
 
 ctx.looks = new LookPicker(store, settings);
+ctx.nightCabin = new NightCabin(ctx);
 ctx.alerts = new Alerts(store, settings);
 ctx.winchHeat = new WinchHeat();
 ctx.shift = new ShiftWatch(ctx);   // safe 4WD / diff changes: spinner, wait, cancel, done

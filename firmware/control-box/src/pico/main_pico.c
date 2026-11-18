@@ -20,6 +20,7 @@
 #include "ads1115.h"
 #include "mcp23017.h"
 #include "mcp2515.h"
+#include "pca9685.h"
 
 #define I2C_PORT i2c1
 #define NC_INPUTS (BIT(IN_TRAY_DOWN) | BIT(IN_TRAY_UP))
@@ -172,6 +173,40 @@ static uint8_t relay_bits_to_pins(uint8_t logical) {
     return S(&ctl, SET_RELAY_ACTIVE_LOW) ? (uint8_t)~logical : logical;
 }
 
+// ---- PCA9685 lamps ---------------------------------------------------------------
+static const uint8_t lamp_ch[LP_COUNT] = LAMP_PCA_CH;
+static bool pca_ok;
+static uint8_t pca_written[16];
+static bool pca_valid[16];
+static uint32_t last_pca_retry_ms, last_pca_refresh_ms;
+
+static void pca_init(void) {
+    pca_ok = pca9685_init(I2C_PORT, PCA9685_ADDR, LAMP_PWM_HZ);
+    for (int i = 0; i < 16; i++) pca_valid[i] = false;
+}
+
+static void pca_put(uint8_t ch, uint8_t duty, bool force) {
+    if (!pca_ok || (!force && pca_valid[ch] && pca_written[ch] == duty)) return;
+    if (pca9685_set(I2C_PORT, PCA9685_ADDR, ch, duty)) {
+        pca_written[ch] = duty;
+        pca_valid[ch] = true;
+    } else {
+        pca_ok = false;
+    }
+}
+
+// Write on change, and every channel once a second anyway in case of a glitch.
+static void lamps_write(const cb_out_t *o, uint32_t now) {
+    if (!pca_ok) {
+        if (now - last_pca_retry_ms > 500u) { last_pca_retry_ms = now; pca_init(); }
+        if (!pca_ok) return;
+    }
+    bool force = now - last_pca_refresh_ms >= 1000u;
+    if (force) last_pca_refresh_ms = now;
+    for (int i = 0; i < LP_COUNT; i++) pca_put(lamp_ch[i], o->lamp[i], force);
+    pca_put(PCA_CH_LAMP_ENABLE, o->lamp_enable ? 255 : 0, force);
+}
+
 // ---- I2C parts -------------------------------------------------------------------
 static bool exp_ok, ads_ok;
 static int io_fail;
@@ -225,6 +260,7 @@ static void io_poll(cb_in_t *in, uint32_t now) {
 
     in->din = din_last;
     in->io_ok = exp_ok && ads_ok && io_fail < 3;
+    in->pwm_ok = pca_ok;
     in->pot_ok = pot_fresh && now - pot_time_ms < 100u;
     in->diff_pot_raw = (uint16_t)ads_raw[0];
     uint32_t aux_adc_mv = (uint32_t)ads_raw[1] * ADS1115_UV_PER_COUNT / 1000u;
@@ -288,6 +324,7 @@ int main(void) {
         hold_on = (relay_bits_to_pins(olat) & BIT(R_POWER_HOLD)) != 0;
     }
     io_init();
+    pca_init();   // every lamp off, BTS7960 4-8 disabled
     if (hold_on) mcp23017_write_a(I2C_PORT, MCP23017_ADDR, relay_bits_to_pins(BIT(R_POWER_HOLD)));
 
     uint32_t now = to_ms_since_boot(get_absolute_time());
@@ -320,6 +357,7 @@ int main(void) {
             ctl_tick(&ctl, &in, &out, can_send_cb, NULL);
 
             outputs_write_pins(&out);
+            lamps_write(&out, now);
             uint8_t pins = relay_bits_to_pins(out.relays);
             if (exp_ok && (pins != relays_written || (now & 0x3FF) < TICK_MS)) {
                 // Write on change, and about once a second anyway in case of a glitch.
@@ -333,6 +371,9 @@ int main(void) {
                 ctl.out.save_settings = false;
             }
             if (out.enter_bootloader) {
+                // The PCA9685 keeps its outputs while the Pico is in the bootloader, so
+                // turn every lamp off first (the brake switch still lights the brakes).
+                for (uint8_t ch = 0; ch < 16; ch++) pca_put(ch, 0, true);
                 can_flush();
                 sleep_ms(20);
                 watchdog_disable();
