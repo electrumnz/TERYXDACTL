@@ -18,6 +18,7 @@ AliExpress,AliExpress,30mm 5V 2-pin fan (3007),,1,6.00,6.00,"~US$2-5 estimate","
 AliExpress,AliExpress,SIMCom A7670SA 4G Cat-1 core board (must list B28),,1,28.00,28.00,"US$15.46 x 1.822","UART only = texts/WHERE/LOCK, too slow for cameras; better if USB-C goes to the module's own USB pins",https://www.aliexpress.us/item/3256808314829525.html
 AliExpress,AliExpress,MP1584 adjustable buck 3A rated + 1000uF cap (4G board at 3.8V; 2.8A peak),,1,3.00,3.00,Estimate,,
 AliExpress,AliExpress,4-channel BSS138 level shifter (only if board has 1.8V UART),,1,2.00,2.00,Estimate,,
+AliExpress,AliExpress,Active GPS antenna IPEX (with the GPS/FASE version),,1,8.00,8.00,Estimate,,
 AliExpress,AliExpress,LTE antenna 698-2700MHz + u.FL to SMA lead,,1,12.00,12.00,Estimate,Must cover 700MHz B28,
 AliExpress,GameSir official store on AliExpress,GameSir G8 Galileo USB-C phone gamepad grip (RC mode),,1,78.00,78.00,"US$40-45 deals x 1.822 (list US$79.99)","Instead of Razer Kishi V3 NZ$167.58 at PB Tech",https://gamesir.com/collections/all-products/products/gamesir-g8-galileo
 Order online,Core Electronics (AU),Seeed MCP2515 + SN65HVD230 CAN board (Pi + control box + sniffer + power steering),,4,22.77,91.08,AU$18.45 x 1.234,15 in stock 17 Nov,https://core-electronics.com.au/seeed-studio-can-bus-breakout-board-for-xiao-and-qt-py-mcp2515-controller-sn65hvd230-transceiver-chip.html
@@ -40,6 +41,6 @@ Later (optional),PB Tech,Raspberry Pi Camera Module 3 NoIR Wide (cabin camera),S
 Later,TBC,Powered USB hub,,0,,0.00,Not priced,Pi 5 has 4 USB ports,
 Later,PB Tech,EasyCAP DC60 USB capture (only if rear cam is RCA),SEVOEM9701,0,28.75,0.00,Search result 18 Nov,Optional,https://www.pbtech.co.nz/product/SEVOEM9701
 ,,TOTAL buy tomorrow (all PB Tech),,,,596.65,,,
-,,TOTAL AliExpress (priced),,,,340.00,,,
+,,TOTAL AliExpress (priced),,,,348.00,,,
 ,,TOTAL other online (priced),,,,269.59,,,
-,,TOTAL everything priced incl Aqua column,,,,1321.24,,,
+,,TOTAL everything priced incl Aqua column,,,,1329.24,,,
