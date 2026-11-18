@@ -16,7 +16,7 @@ Written 18 November 2026. Research only, nothing here is built yet.
   Pi 5's CPU writes words faster (more on this below). Where the HAT wins is how quickly
   it *starts* answering, and that it leaves the CPU alone for the dash, CarPlay and cameras.
 - **Verdict:** keep the HAT+ 2 only if you want the Teryx to be a proper talking co-pilot
-  (ideas 3 to 5 below). If voice is only ever going to be short commands like "front
+  (idea 6 below, plus "ask the camera" and better voice in the wind). If voice is only ever going to be short commands like "front
   lightbar medium", swap to the AI HAT+ 26 TOPS and save about NZ$200. See
   [section 4](#4-is-it-worth-nz423).
 
@@ -86,121 +86,40 @@ listens. Bigger Whisper models (Small, Medium) are Hailo-10H only in Hailo's Gen
 The older Hailo-8 can run Whisper Tiny/Base through Hailo's speech app
 ([Hailo community](https://community.hailo.ai/t/automatic-speech-recognition-pipeline-with-whisper-model/13127?page=2)).
 
-## 2. Ideas, ranked
+## 2. The top 10 (the "no way" list)
 
-Ranked by how useful it is on the Teryx, then how easy. "Which HAT" says what's really
-needed: **CPU** = the Pi can do it alone, **Any HAT** = the cheaper AI HAT+ does it too,
-**HAT+ 2** = only the HAT+ 2 can do it well.
+**Which HAT:** *Any HAT* = the cheaper AI HAT+ does it too. *HAT+ 2* = needs the HAT+ 2.
+*No HAT* = the Pi alone. **Effort:** S = days, M = a week or two plus bench testing,
+L = needs our own training footage.
 
-Effort: **S** = a day or two of thread work, **M** = a week-ish plus bench testing,
-**L** = needs our own training data or lots of testing.
+Nothing here drives the vehicle by itself. Anything that changes 4WD, diff or winch is a
+*suggestion* you tap to accept, or a *request* to the Pico, which keeps its own safety
+rules. The hand switches always win.
 
-None of these touch safety controls directly. Anything that stops something (like the
-winch) sends a *request* to the Pico, same as a screen button, and the hand switches and
-the Pico's own rules still win.
-
-| # | Idea | Needs | Which HAT | Effort |
+| # | Idea | Which HAT | Effort | Honest catch |
 |---|---|---|---|---|
-| 1 | **Smart reverse and trailer camera** | Rear cam (+ trailer cam) | Any HAT | M |
-| 2 | **Winch safety watch** | Front cam | Any HAT | M |
-| 3 | **Talking co-pilot** | Mic, speaker, dash state | HAT+ 2 | M |
-| 4 | **Voice that works in the wind** | Mic | HAT+ 2 (Whisper Small) | S |
-| 5 | **"Ask the camera"** | Any cam | HAT+ 2 | M |
-| 6 | **Guard mode when locked** | Cams, Tailscale | Any HAT | M |
-| 7 | **Stock and oncoming-vehicle spotter for the light bars** | Front cam | Any HAT | M (L for deer) |
-| 8 | **Ride diary** | Trip logs | CPU | S |
-| 9 | **T. rex eyes that follow you** | Front cam | Any HAT | S |
-| 10 | **Rock / step height ahead** | Front cam | Any HAT | L, not reliable |
+| 1 | **Track reader.** Front cam reads the trail ahead (mud, puddle, deep water, rock, grass) and pops up "mud ahead: 4WD + diff 60%?" before you get there. One tap to accept. | Any HAT | L | Off-road training sets exist (RELLIS-3D even splits "puddle" from "deep water"), but the best models only score about 52% on it vs about 81% on city roads ([RELLIS-3D paper](https://arxiv.org/abs/2011.12954)). Advice only, and it needs our own footage to get good |
+| 2 | **Water crossing mode.** Spots water ahead, offers 4WD + diff lock + slow mode, starts recording, and checks for wheel slip on the way out. | Any HAT | M | A camera can't see the bottom of muddy water, so it can't tell you the depth. Real depth needs a wading sensor on the body (not priced) |
+| 3 | **"Take me home."** Every ride leaves a breadcrumb trail. Say "hey Teryx, take me home" and get arrows back the way you came, with no signal. Snapshots at each fork so you recognise them. | No HAT | M | Needs the GPS puck (PR #30). Thick bush can throw GPS off, so the photos help |
+| 4 | **Night pest hunter.** Thermal camera + HAT spots pigs, deer, goats and possums in the dark, pins each one on the map with a count, and the T. rex calls "pig, left side". | Any HAT | L | Needs a USB thermal camera (not priced). No ready-made possum or pig model found; deer-on-thermal has been done ([arXiv](https://arxiv.org/abs/2509.18779)) so we'd train our own. A hobbyist ran a Pi 5 + thermal + YOLO at night at about 10 W ([WILDLABS](https://wildlabs.net/en/comment/12893)) |
+| 5 | **Stock counter.** Drive along the fence and it counts the mob: "142 sheep in the back paddock, 3 fewer than last week." | Any HAT | M | Sheep and cows are in YOLO's standard set, so it works day one, but a tight mob overlaps and will undercount. Test against a hand count |
+| 6 | **T. rex co-pilot.** Proper personality: banter, a roar when the diff locks at 100%, battery warnings in character, answers "why won't it go into 4WD?" from live data. | HAT+ 2 | M | Small models get facts wrong, so it only reads numbers we give it and picks from a fixed list of actions. Starts talking in about 0.4 s on the HAT vs about 2 s on the CPU |
+| 7 | **Auto highlight reel.** Records the front cam and auto-cuts a 60 s clip of the best bits (steep climbs, splashes, animals, winch pulls, big lean) with speed, lean and diff % on screen. Straight to your phone. | Any HAT | M-L | The Pi 5 has no video encoder chip; software 1080p30 uses about 60% of the CPU ([Raspberry Pi white paper](https://pip-assets.raspberrypi.com/categories/685-app-notes-guides-whitepapers/documents/RP-010033-WP-1-H.264%20encoding%20performance%20on%20Raspberry%20Pi%205_series%20computers.pdf)). So one camera at a time, and a USB SSD |
+| 8 | **Crash cam.** Big jolt, near-rollover lean or a hard stop saves the last 30 s from every camera plus all the CAN data. | No HAT | M | Needs a tilt/jolt sensor (IMU), not on the parts list yet. Same CPU limit as #7 |
+| 9 | **Trail scores and "will I make it back?"** Every trail gets a difficulty score (grade, slip, diff use, Wh/km). Head down one you've done and it says "used 1.8 kWh last time, you'll be back with 34%." Plus coaching: "lock the diff before that climb, you spun 3 times." | No HAT | M | Only for trails you've driven before. Builds on the learned Wh/km in PR #24 |
+| 10 | **Winch spotter.** Front cam watches the line and the danger zone. Talks you through rigging, calls "person in the zone" and asks the Pico to pause the pull. | Any HAT | M | Advisory only. Depends on how much of the line the front camera can actually see |
 
-### 1. Smart reverse and trailer camera
+**Also fun:** guard mode where the T. rex wakes, tracks and roars at anyone poking around
+the locked Teryx and sends you a photo (about 7 W while watching, so on a timer); T. rex
+eyes that follow you; "ask the camera" ("is the gate shut?", HAT+ 2 only); Whisper Small
+so voice works in the wind (HAT+ 2 only); auto-dipping the light bars for oncoming
+vehicles (if they turn out dimmable).
 
-Boxes around people, dogs, stock and vehicles behind you, with a beep when something
-is close and moving in while you're in reverse. Works on the trailer camera too, which is
-where you can't see a kid or dog behind the trailer. Hailo's `hailo-detect` app already
-does detection with tracking on several streams; we'd send the boxes to the dash over the
-existing websocket and draw them on the camera view.
+**Notice the pattern:** of these 10, only #6 truly needs the HAT+ 2. Most need *a* HAT,
+and #3, #8 and #9 need none. That's why the verdict below hasn't changed.
 
-Why the HAT: doing this on the CPU at a useful frame rate would eat the CPU that CarPlay
-video already needs (the Pi 5 has no H.264 hardware decoder, see
-[`shopping-list.md`](shopping-list.md)).
-
-### 2. Winch safety watch
-
-When the winch is running, the front camera watches the area around the line. If a
-person walks into it, the dash flashes a big warning and asks the Pico to pause the pull.
-Uses pose/person detection (`hailo-pose`). It only warns and requests: the winch hand
-switches and the Pico stay in charge. Ties in with the timed pull already built (PR #22).
-Needs testing for how well the front camera actually sees the line area.
-
-### 3. Talking co-pilot
-
-Beyond fixed commands: "how far can I get and still make it back?", "why won't it go into
-4WD?", "what's the battery temp doing?". A small function-calling model (Qwen2 1.5B
-function-calling is in Hailo's list) gets the dash state and a list of safe "tools"
-(read range, set lights, start a guided check) and answers in a sentence through Piper
-speech. Hailo's voice-to-action demo is basically this already.
-
-Why the HAT+ 2: the prompt with all the dash state is long, so the CPU would take a couple
-of seconds to start answering and hog all 4 cores while doing it. On the HAT it starts in
-about 0.4 s.
-
-Honest limits: 1 to 2B models get things wrong. Hailo's own forum has users saying the
-small models "are simply not very accurate"
-([Hailo community](https://community.hailo.ai/t/qwen-3-4b-on-hailo10h/18818)). So the
-model only *picks* from our fixed list of actions and reads numbers we give it. It never
-makes up numbers or controls anything directly.
-
-### 4. Voice that works in the wind
-
-Even for simple commands, Whisper Small hears far better than Tiny/Base, and an open
-side-by-side on a gravel track with the motor whining is a hard place for speech. Whisper
-Small runs on the HAT+ 2 at about 10 tokens/s and leaves the CPU free. Cheapest of the
-HAT+ 2 ideas to try: record some real cab audio on the first drive and test Base on the
-CPU vs Small on the HAT.
-
-### 5. "Ask the camera"
-
-Tap a camera and ask: "is the gate shut?", "is the load still strapped?", "what's on the
-track ahead?". A 2B vision model answers in a sentence or two, taking about 1 to 1.5 s to
-start. More fun than essential, and like the chat model it can be wrong, so never for
-anything safety related. CNX got Hailo's VLM demo working, though with odd camera colours.
-
-### 6. Guard mode when locked
-
-When the vehicle lock is on (PR #29), cameras watch for people near the Teryx. On a hit:
-the T. rex lock screen wakes, a snapshot is saved, and a notification goes to your phone
-over Tailscale. Hailo's face recognition app (beta) could skip alarms for you and family.
-
-Catch: the Pi + HAT draws about 7 W while doing this (CNX), so leave it as an option with
-a timer, and check what the 12V side can spare. The traction pack is much bigger, but
-only if a DC-DC stays on when parked, which isn't decided.
-
-### 7. Stock and oncoming-vehicle spotter for the light bars
-
-Front camera at night picks out cattle, sheep, horses, dogs and vehicles (all in the
-standard COCO set YOLO is trained on), warns on the dash, and could drop the light bars
-to low when a vehicle's coming. Deer, goats and pigs aren't in the standard set, so those
-would need our own training photos (that's the L). Depends on the open question of
-whether the light bars are dimmable.
-
-### 8. Ride diary
-
-After each ride, a short write-up: where you went, kWh used, Wh/km, steepest bit, how long
-in 4WD and diff lock, winch pulls. The numbers come from our logs and the model only
-writes the sentences. No HAT needed: it can run on the CPU when parked, where time
-doesn't matter.
-
-### 9. T. rex eyes that follow you
-
-On the lock screen, the T. rex's eye follows whoever walks past the front. Pure fun,
-cheap once detection is running for other ideas. Fits the dash theme.
-
-### 10. Rock or step height ahead (not recommended yet)
-
-Hailo has depth-from-one-camera and segmentation demos. But depth from a single camera
-only knows "nearer" and "further", not centimetres, and the segmentation models are
-trained on city roads, not bush tracks. Wouldn't trust it for clearance. Worth revisiting
-only if a second camera is added for stereo depth (Hailo has a stereo depth demo too).
+**Not worth it yet:** rock or step height from one camera. Single-camera depth only knows
+"nearer" and "further", not centimetres.
 
 ### What the HAT won't help with
 
@@ -228,7 +147,7 @@ Prices (PB Tech NZ, inc GST, from search results so check live before buying):
 | AI HAT+ 26 TOPS | Hailo-8 | ~NZ$225 ([PB Tech](https://www.pbtech.co.nz/product/SEVRBP0545/Raspberry-Pi-5-Official-AI-HAT-26-TOPS-Hailo-AI-Ac)) | Yes | No | No |
 | **AI HAT+ 2** | Hailo-10H | ~NZ$423 ([PB Tech](https://www.pbtech.co.nz/product/SEVRBP0446/Raspberry-Pi-5-Official-AI-Hat-2)) | Yes, same as 26 TOPS | Yes | Yes |
 
-The extra ~NZ$200 over the 26 TOPS board buys ideas 3, 4 and 5 and nothing else.
+The extra ~NZ$200 over the 26 TOPS board buys the T. rex co-pilot (idea 6), "ask the camera" and Whisper Small, and nothing else.
 Geerling's own conclusion was "it's hard to say 'yes, buy this thing'", and CNX thought it
 suits security camera setups more than chat.
 
@@ -237,5 +156,5 @@ definitely happening, the HAT+ 2 is defensible. It's the only one that can grow 
 proper co-pilot, and it keeps speech and chat off a CPU that will already be busy with
 CarPlay and cameras. But if you're honest that voice will mostly be "lights on, 4WD in",
 the AI HAT+ 26 TOPS does everything else the same for about NZ$200 less. Nothing is bought
-yet, so either choice is easy. Everything in ideas 1, 2, 6, 7 and 9 works on both, so
+yet, so either choice is easy. Every camera idea in the top 10 works on both, so
 the code we write doesn't depend on which you pick.
