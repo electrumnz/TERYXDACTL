@@ -8,25 +8,26 @@ page and **may be out of date**. Check each link before you pay. Why each part i
 
 **What changed today:** the AI HAT+ 2 is off the list for now (moved to "Later"), the CarPlay
 dongle is on, a fourth CAN board is added for the power steering column, and the 4G modem
-and video SSD are listed as "later". The Pi box stays sized for the AI HAT.
+and video SSD are listed as "later". The Pi box stays sized for the AI HAT. Later on 18 Nov: the Pi box went sealed and fanless for wash-downs, so the 30 mm fan and the Active Cooler are out and heatsink parts are in the AliExpress cart.
 
 ## Buy tomorrow (in store or click and collect)
 
 | # | Part | Shop | SKU | Qty | Price | Price from | Stock / notes |
 |---|---|---|---|---|---|---|---|
 | 1 | [Raspberry Pi 5 8GB](https://www.pbtech.co.nz/product/SEVRBP0502/Raspberry-Pi-5-8GB-LPDDR4-24GHz-Quad-Core-ARM-Cort) | PB Tech | SEVRBP0502 | 1 | NZ$371.39 | Checked 17 Nov | Was on order, ships about 30 Nov. Ask in store if any have come in. A search result showed NZ$254.15, maybe an old price |
-| 2 | [Raspberry Pi Active Cooler](https://www.pbtech.co.nz/product/SEVRBP0531) | PB Tech | SEVRBP0531 | 1 | NZ$11.21 | Checked 17 Nov | In stock. **Still needed without the AI HAT**, see "Cooling" below |
+| 2 | ~~[Raspberry Pi Active Cooler](https://www.pbtech.co.nz/product/SEVRBP0531)~~ | PB Tech | SEVRBP0531 | 0 | ~~NZ$11.21~~ | Checked 17 Nov | **Not now (18 Nov).** The Pi box is now sealed and fanless: an aluminium pillar takes the chip's heat to a heatsink on the outside of the lid ([`pi-box-cooling.md`](pi-box-cooling.md)). Buy it later with the AI HAT. Keep your passive heatsink for the bench |
 | 3 | [Raspberry Pi A2 SD card 128GB](https://www.pbtech.co.nz/product/SEVRBP0538/Raspberry-Pi-Official-A2---Class-UltraSD-Card-128G) | PB Tech | SEVRBP0538 | 1 | NZ$47.32 | Search result | In stock when indexed |
 | 4 | [Camera Module 3 Wide](https://www.pbtech.co.nz/product/SEVRBP0398/Raspberry-Pi-Official-Camera-Module-3-Wide-Version) | PB Tech | SEVRBP0398 | 1 | NZ$80.71 | Search result | **Out of stock** when indexed. Alternative: [element14 NZ SC0874](https://nz.element14.com/raspberry-pi/sc0874/rpi-wide-camera-mod-3-wide-lens/dp/4132320) ~NZ$69, also out then. Not needed for the first bench tests, so skip it if there's none |
 | 5 | [Pi 5 camera cable 200 mm](https://www.pbtech.com/pacific/product/SEVRBP0541) | PB Tech | SEVRBP0541 | 1 | ~NZ$2.12 | Search result | Only with the camera |
 | 6 | [Raspberry Pi Pico 2, 5-pack](https://www.pbtech.co.nz/product/SEVRBP0628/Raspberry-Pi-Kit-Pack-Microcontrollers-Board---Pic) | PB Tech | SEVRBP0628 | 1 | NZ$47.20 | Checked 17 Nov | In stock. Control box, CAN sniffer, power steering bench test, 2 spares |
 | 7 | [Raspberry Pi 27W USB-C power supply](https://www.pbtech.co.nz/product/SEVRBP0512) | PB Tech | SEVRBP0512 | 1 | ~NZ$24.90 | Search result | Bench only. In the Teryx the Pololu regulator powers the Pi |
 | 8 | [Raspberry Pi official micro HDMI to HDMI cable, 1 m, white](https://www.pbtech.co.nz/product/SEVRBP0207/Raspberry-Pi-Official-1M-White-Cable-Micro-HDMI-to) | PB Tech | SEVRBP0207 | 1 | NZ$11.80 | Search result | Stock not confirmed. Same cable in black: [SEVRBP0262](https://www.pbtech.co.nz/product/SEVRBP0262/Raspberry-Pi-Official-1M-Black-Cable-Micro-HDMI-to) ~NZ$11.10. If neither is in, [Jaycar PA3649 adaptor](https://jaycar.co.nz/micro-hdmi-plug-to-hdmi-socket-adaptor/p/PA3649) NZ$20.90 plus any HDMI cable. Use a **cable**, not a plug-in adaptor: a stiff adaptor hanging off the micro HDMI socket will work loose or crack the socket on the trail. The screen sits right over the Pi box, so 1 m is plenty; zip-tie the cable down close to the plug. Stay with HDMI, not VGA: the Pi has no VGA out, so it would need an active converter box, which is one more thing to fail and gives a softer picture. A printed clamp for the plug in the Pi box is a follow-up |
-| | **Buy tomorrow total (all PB Tech)** | | | | **about NZ$597** | | NZ$516 if the camera is out of stock |
+| | **Buy tomorrow total (all PB Tech)** | | | | **about NZ$585** | | NZ$505 if the camera is out of stock |
 
-Everything for tomorrow is at PB Tech now. The lid fan and fuse block moved to the AliExpress cart
-(Sam, 18 Nov): the bench Pi runs fine on the Active Cooler alone, and the fuse block isn't needed
-until wiring the Teryx.
+Everything for tomorrow is at PB Tech now. The fuse block moved to the AliExpress cart (Sam,
+18 Nov), as it isn't needed until wiring the Teryx. The lid fan and the Active Cooler are off the
+list: the Pi box is now sealed for wash-downs with a heatsink on the outside, no fan (see
+"Cooling" below).
 
 **CarPlay dongle:** Sam has decided to get it from AliExpress (see the AliExpress cart below).
 Audio City's one (NZ$180, [link](https://www.audiocity.co.nz/ottocast/carlinkit-android-system-to-wireless-apple-carplay-android-auto-dongle.html))
@@ -55,12 +56,16 @@ Pick listings marked "Choice" where you can: they usually ship free and faster.
 | **8-channel 5V relay board, opto-isolated, JD-VCC jumper** (Songle SRD-05VDC type, 10 A contacts with NO and NC) | "8 channel 5V relay module optocoupler JD-VCC" | 1 | ~US$8.29 (~NZ$15). [Treedix 8-channel listing](https://reach.dog/shop/treedix-official/products/treedix-dc-5v-8-channel-relay-board-module-isolated-optocoupler-high-and-low-level-h-l-level-trigger-module-triggered-compatible-with-arduino-raspberry-pi-8-channel); a [similar board](https://sigmanortec.ro/en/5v-relay-module-8-channels-with-optocoupler-high-and-low-trigger-settable) lists 10 A at 30 V DC | Relays 1-8 in the wiring plan. **Must be mechanical relays** (the blue cubes), not the black solid state ones. Look for a **JD-VCC / VCC / GND header with a removable jumper**: that's what keeps the Pico side isolated. Board VCC goes to the Pico's 3.3 V and JD-VCC to the 5 V buck, so a 3.3 V output switches it cleanly. Most are active low, which the firmware already expects (setting 18). The MCP23017 starts up with its outputs floating, so the relays stay off at power-up. Keep loads under about 5 A for long life |
 | **4-channel 5V relay board**, same type | "4 channel 5V relay module optocoupler JD-VCC" | 1 | ~US$5 (~NZ$9), my estimate | Relays 9 and 10 (steering enable, drive lock on the NC contact) plus 2 spares. Same checks as the 8-channel |
 | **Blade fuse block, 20-way, with cover and negative bus** | "20 way blade fuse box negative bus cover" | 1 | ~US$15-25 (~NZ$27-46), my estimate. AliExpress search pages show bait prices like [US$1.09](https://www.aliexpress.com/w/wholesale-Modular%20Fuse%20Block.html); a similar 12-way Nilight is [US$22.99 at Walmart](https://www.walmart.com/c/kp/electrical-box-bus) | The wiring plan has **16 fused circuits** (`config/wiring.yaml`, F1-F16), so get a 20-way for spares. Look for: clip-on cover (ideally a seal), built-in negative bus, 30 A per way and 100 A total, studs or screw terminals for the feed (not a push-on spade), and blown-fuse LEDs are a bonus. A proper brand (Blue Sea, Narva) is better if it'll live where it gets wet |
-| **30 mm 5V fan, 2-pin (3007)** | "3007 5V fan 2 pin" | 1-2 | ~US$2-5 (~NZ$4-9), my estimate. A [reseller copy of an AliExpress listing](https://ubbthreads.com/store/item/4x-2-Pin-30MMx30MM-3007-5V-Cooling-Fan-radiating-For-Raspberry-Pi-2-3-Model-B-4B_285308377334.html) shows US$8.89 for 4 | Pi box lid. Must be 30 x 30 x 7 mm to fit the printed lid. Get a spare, they're cheap |
+| **Finned heatsink, 100 x 100 x 40 mm, black anodised** | "heatsink 100x100x40 aluminium" | 1 | ~NZ$20, my estimate | Pi box lid, outside. **Flat base 5 mm or thicker** (it gets tapped M3). Straight fins, not pins. The rated version is the Fischer SK 92/100 SA (1.4 K/W) from [element14 NZ](https://nz.element14.com/fischer-elektronik/sk-92-100-sa/heat-sink-100mm-1-4-c-w/dp/4621580) if you'd rather. Replaces the 30 mm fan, which is gone |
+| Thermal pad, 1 mm, 4 W/mK or better | "thermal pad 1mm 6W/mK" | 1 sheet | ~NZ$5, my estimate | 20 x 20 mm piece on the Pi's chip, under the pillar |
+| Solid aluminium block, 20 x 20 mm, about 50 mm long | "aluminium block 20x20x50" | 1-2 | ~NZ$5, my estimate | The pillar from the Pi's chip to the lid. Or any 20 x 20 solid offcut. Cut to about 45.3 mm |
+| Thermal paste, small tube | "thermal paste" | 1 | ~NZ$3, my estimate | Lid plate to heatsink |
+| M12 x 1.5 breather vent plug, membrane type | "M12 waterproof breathable vent plug" | 2 | ~NZ$4, my estimate | Pi box bottom wall. Stops the sealed box sucking in water as it cools. One spare |
 | **4G module board, SIMCom A7670SA** (Sam's pick: a bare board to solder in, not a stick) | "A7670SA core board B28" | 1 | ~US$15.46 (~NZ$28). [Listing with B1/B2/B3/B4/B5/B7/B8/B28/B66](https://www.aliexpress.us/item/3256808314829525.html) | **Must be the A7670SA**, and the listing must show **B28** (700 MHz, the NZ country band). The A7670E and some "A7670SA" listings only have B1/B3/B5/B7/B8/B20, no B28 ([SIMCom table via manuals.plus](https://manuals.plus/ae/1005008976290540)). Cat-1 LTE, about 10 Mbps down: plenty for light data and SMS. SIM slot and TTL UART on the board. Talks plain AT commands, so SMS is easy on Linux. **Over UART only it does texts, WHERE and LOCK, but the data is far too slow for live cameras or RC over 4G.** Better buy if you can find one: an A7670SA board whose USB-C goes to the module's **own USB pins** (not a CH340-type USB-serial chip), so it plugs into the Pi over USB at full speed. **Pick the GPS option ("FASE" or "GNSS"; "LASE" has no GPS)**: it can track with the key off for anti-theft. Keep the TEL0138 puck for the dash until the module's GPS proves itself. Skip the flat FPC antenna option. Sam found a candidate at ~NZ$34, still to check against these points |
 | 4-channel BSS138 level shifter | "BSS138 level shifter 4 channel" | 1 | ~NZ$2 (estimate) | **Probably not needed.** Sam's board has its own regulator and TTL serial pins. Before wiring T to the Pi, power the board and measure the T pin against G with a multimeter: about 3.3 V is fine straight to the Pi; 5 V or 1.8 V needs this shifter. It's NZ$2, so worth having in the cart anyway |
 | Active GPS antenna, IPEX/u.FL (only with the GPS version) | "active GPS antenna ipex" | 1 | ~NZ$8 (estimate) | Check the board powers an active antenna |
 | LTE antenna, wideband 698-2700 MHz, u.FL to SMA lead | "4G LTE antenna 698-2700 SMA" | 1 | ~NZ$12 (estimate) | The little PCB stick antennas are poor at 700 MHz (B28), which is what you'll be on out in the country. Mount it outside the metal, near the GPS puck |
-| | | | **about NZ$291** | Dongle NZ$65, amp NZ$82, 2 x BTS7960 NZ$24, fuse block ~NZ$40, relay boards ~NZ$24, fan ~NZ$6, 4G board, level shifter, LTE and GPS antennas ~NZ$50. Opto and MOSFET boards on top |
+| | | | **about NZ$322** | Dongle NZ$65, amp NZ$82, 2 x BTS7960 NZ$24, fuse block ~NZ$40, relay boards ~NZ$24, Pi box heatsink parts ~NZ$37, 4G board, level shifter, LTE and GPS antennas ~NZ$50. Opto and MOSFET boards on top |
 
 **The 8-channel solid state relay board you've got coming won't work here.** Those boards use Omron G3MB-202P relays, which are for AC only. On 12 V DC they switch on but never switch off again until the power is cut ([Omron FAQ](https://www.ia.omron.com/support/faq/answer/18/faq02101/index.html)). Keep it for a mains project, or send it back if you can.
 
@@ -89,7 +94,7 @@ Pick listings marked "Choice" where you can: they usually ship free and faster.
 | [Mini560 5V 5A buck](https://sparks.gogo.co.nz/catalog/DC-Power-260/Fixed-Output-Step-Down-Converter-Out-5v-up-to-5A-Continuous-In-7-20v-1009.html) | Gogo:Tronics | 2 | NZ$2.95 each | Pico control box power, and the second one powers the 4G board (5 V into its V pin). Grab a third (NZ$2.95) if you want a spare |
 | [1.5KE18A TVS diode](https://nz.element14.com/stmicroelectronics/1-5ke18a/diode-tvs-1-5kw-18v/dp/9884831) | element14 NZ | 2 | NZ$2.24 each | Spike clamp on the dash 12V |
 | [Narva 7-pin flat socket with reed switch 82043BL](https://narva.com.au/products/narva-7-pin-flat-quickfit-trailer-socket-with-reed-switch-for-use-with-normally-closed-circuits-1-pack) | Narva stockists | 1 | **Not priced** | Trailer detect |
-| | | | **about NZ$291** | Priced items |
+| | | | **about NZ$270** | Priced items |
 
 AUD to NZD at 1.234 (Wise, 17 Nov). USD to NZD at 1.822 (Wise, 18 Nov, no time shown on the page).
 
@@ -103,13 +108,13 @@ AUD to NZD at 1.234 (Wise, 17 Nov). USD to NZD at 1.822 (Wise, 18 Nov, no time s
 
 | | NZ$ |
 |---|---|
-| Buy tomorrow (all PB Tech) | ~597 |
-| AliExpress cart | ~291 |
+| Buy tomorrow (all PB Tech) | ~585 |
+| AliExpress cart | ~322 |
 | Other online orders (Core, Gogo, element14) | ~270 |
 | Aqua column | ~115 |
-| **Everything priced** | **about NZ$1,272** |
+| **Everything priced** | **about NZ$1,292** |
 
-The amp (NZ$82) is new to the list today. Without it, it's about NZ$1,190. Not counted: blade fuses, the opto and MOSFET boards, Narva socket, trailer camera bits,
+The amp (NZ$82) is new to the list today. Without it, it's about NZ$1,210. Not counted: blade fuses, the opto and MOSFET boards, Narva socket, trailer camera bits,
 speakers and amp wiring, and everything under "Later".
 
 ## Wiring the 4G board
@@ -135,20 +140,20 @@ Sam's board (from its datasheet): a 6-pin header marked **S** (sleep), **G** (gr
   anti-theft work, so it's not in the totals. Standby draw has to be checked against the 12V
   battery.
 
-## Cooling without the AI HAT
+## Cooling: sealed and fanless (18 Nov)
 
-- **Active Cooler: yes, still buy it.** The dash will decode CarPlay video on the CPU the whole
-  time it's running (the Pi 5 has no H.264 decoder), which is a long steady load, inside a closed
-  box. Raspberry Pi say heavy continuous loads will throttle a bare Pi 5, and their own tests had
-  the Active Cooler keeping it at 71°C where no cooler hit 83°C in 30 seconds
-  ([Raspberry Pi](https://www.raspberrypi.com/news/heating-and-cooling-raspberry-pi-5/),
-  [white paper](https://pip-assets.raspberrypi.com/categories/685-app-notes-guides-whitepapers/documents/RP-010139-WP-1-Use-case-specific%20thermal%20performance%20of%20Raspberry%20Pi%20SBCs.pdf)).
-  It's NZ$11, and it's what goes under the AI HAT later anyway. Keep your passive heatsink for
-  the bench.
-- **30 mm lid fan: yes, but it's less critical now.** The Active Cooler only moves air around
-  inside the box; the lid fan swaps hot box air for outside air. Without the HAT the box makes
-  about 7-12 W instead of up to about 16 W, so the fan matters less, but the box can sit in the
-  sun and the fan mount is already in the lid. It's needed for sure once the HAT goes in.
+Sam wants the Pi box to survive hosing the Teryx down, and no fan noise. So the box is now sealed:
+no vents, no lid fan. The lid is a 3 mm aluminium plate (cut with the back plate) with a finned
+heatsink on the outside, and a 20 x 20 mm aluminium pillar carries the Pi chip's heat straight up
+to it through a thermal pad. Full write-up, sums and assembly: [`pi-box-cooling.md`](pi-box-cooling.md).
+
+- **Active Cooler: not now.** The pillar does its job. It comes back with the AI HAT, under the HAT,
+  as Raspberry Pi say. Keep your passive heatsink for the bench.
+- **30 mm lid fan: gone** from the AliExpress cart. The heatsink parts are in its place.
+- **Heat:** about 9 W in normal driving puts the heatsink near 56°C and the Pi chip near 62°C on a
+  40°C day, well under the 80°C point where the Pi slows down. Everything flat out at once on a hot
+  day just touches it. A quiet optional fan on the outside of the fins (Noctua NF-A4x10 5V PWM,
+  "Later") is the fix if the logs say so, and it'll be needed with the AI HAT.
 
 ## Getting the right CarPlay dongle
 
@@ -181,6 +186,8 @@ screens. Most "wireless CarPlay adapters" in NZ shops are the wrong kind.
 |---|---|---|---|
 | GameSir G8 Galileo phone gamepad grip, USB-C (GameSir official store on AliExpress) | RC mode | US$40-45 on deals (~NZ$73-82), list [US$79.99](https://gamesir.com/collections/all-products/products/gamesir-g8-galileo) | **Not now (Sam, 18 Nov).** RC mode uses on-screen sticks until then; gamepad support stays in the code. Half the price of the Razer Kishi V3 (NZ$167.58 at PB Tech) |
 | Samsung Galaxy XCover 5, second-hand, lives in the ATV as the RC remote (Android 14, 4 GB RAM / 64 GB, IP68, 5.3" screen works with gloves, swappable battery, 5 GHz wifi) | RC mode | NZ$187 on Trade Me, 90 day warranty | **Bought (Sam, 18 Nov).** Fully Kiosk Browser licence optional (price not checked). See docs/rc-beach-launch.md section 4b |
+| [Raspberry Pi Active Cooler](https://www.pbtech.co.nz/product/SEVRBP0531) | Goes under the AI HAT+ 2 | NZ$11.21 at PB Tech (checked 17 Nov) | Only with the HAT. Not needed for the sealed box now |
+| Noctua NF-A4x10 5V PWM 40 mm fan (optional) | Blows on the Pi box heatsink fins if it runs hot, and with the AI HAT | about NZ$22 at [Newegg NZ](https://www.newegg.com/global/nz-en/noctua-nf-a4x10-5v-pwm/p/1YF-000T-000N2) (search result) | Outside the sealed box, so the seal doesn't care. Runs off the Pi 5 fan connector (needs an adaptor), off below 50°C |
 | [Raspberry Pi AI HAT+ 2](https://www.pbtech.co.nz/product/SEVRBP0446/Raspberry-Pi-5-Official-AI-Hat-2) | Camera AI, local voice assistant | ~NZ$423 PB Tech (search result), or [Core Electronics](https://core-electronics.com.au/raspberry-pi-ai-hat-plus-2.html) AU$289 (~NZ$357-373 landed) | **Not buying now.** The Pi box stays 56 mm tall for it, the Pi's PCIe slot stays free, its header stays clear (the CAN board sits on the box wall), and the Pololu regulator has the spare power |
 | Huawei E3372h-607 4G USB stick (plug-in alternative to the A7670SA board in the AliExpress cart) | Anti-theft tracking, SMS and remote access | ~US$36-42 (~NZ$66-77) on eBay/AliExpress (search results), or second-hand on Trade Me | Bands 1/3/7/8/28/40, which covers Spark, One NZ and 2degrees including the 700 MHz B28 country band ([listing](https://ubbthreads.com/store/item/Huawei-E3372h-607-4G-LTE-FDD-TDD-B40-4GX-USB-Dongle-Mobile-Broadband-150Mbps-NEW_314457944618.html)). Shows up on the Pi as a plain network adaptor, no driver needed, and SMS works through its built-in web API. **Check the label under the cap says E3372h-607** (other versions like -153 or -320 miss B28), and that it's unlocked if second-hand. No GPS built in, but the Pi already has the GPS puck. Light data and SMS is all we need |
 | Waveshare SIM7600G-H 4G Dongle (dearer alternative) | Same, plus its own GPS | US$101.99 at [waveshare.com](https://www.waveshare.com/sim7600g-h-4g-dongle.htm), or about NZ$139-179 plus shipping on Fruugo NZ | The 4G anti-theft work's first pick. Worth it only if we want a GPS fix that keeps working when the Pi's own GPS puck is unplugged or cut. Goes inside the Pi box |
