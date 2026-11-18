@@ -120,8 +120,12 @@ screens. Most "wireless CarPlay adapters" in NZ shops are the wrong kind.
 | Part | Why | Price | Notes |
 |---|---|---|---|
 | [Raspberry Pi AI HAT+ 2](https://www.pbtech.co.nz/product/SEVRBP0446/Raspberry-Pi-5-Official-AI-Hat-2) | Camera AI, local voice assistant | ~NZ$423 PB Tech (search result), or [Core Electronics](https://core-electronics.com.au/raspberry-pi-ai-hat-plus-2.html) AU$289 (~NZ$357-373 landed) | **Not buying now.** The Pi box stays 56 mm tall for it, the Pi's PCIe slot stays free, its header stays clear (the CAN board sits on the box wall), and the Pololu regulator has the spare power |
-| **4G USB modem with NZ bands** (optional) | Anti-theft tracking and remote access | **TBC** | Model being picked in the "Add 4G anti-theft and remote access" work. Needs NZ bands (B1, B3, B7, B28 for Spark, One NZ and 2degrees). Goes inside the Pi box. PB Tech's Huawei E8372h-320 was NZ$43.12 on clearance and out of stock (search result), and the E3372 looks discontinued |
-| **Compact USB SSD for video** (optional) | Recording camera footage | **TBC**, e.g. [Samsung T7 500GB](https://www.pbtech.com/product/HDDSSM17051/reg) (HDDSSM17051, price not found) | USB, not NVMe, so the PCIe slot stays free for the AI HAT. Goes inside the Pi box |
+| **Waveshare SIM7600G-H 4G Dongle** (optional) | Anti-theft tracking and remote access | US$101.99 at [waveshare.com](https://www.waveshare.com/sim7600g-h-4g-dongle.htm), or about NZ$139-179 plus shipping on Fruugo NZ | Picked by the 4G anti-theft work. Not at PB Tech. Goes inside the Pi box |
+| Prepaid SIM (optional) | For the 4G dongle | | Needs topping up once a year |
+| AirTag (optional) | Backup tracker | about NZ$47-68 | Hidden somewhere separate from the Pi box |
+| **Kingston XS1000 1TB USB-C SSD** (optional) | Video drive for the dashcam and Sentry | NZ$189-253 at PB Tech (HDDKCP225100, the price moved between checks) | USB, not NVMe, so the PCIe slot stays free for the AI HAT. Sits in a cradle in the Pi box lid, no case needed |
+| Short right-angle USB-C to USB-A lead (optional) | For the SSD | Not priced | |
+| **Camera Module 3 NoIR Wide** (optional) | Cabin camera for the face shot | about NZ$70 at PB Tech (SEVRBP0399) | Plus a second 200 mm cable (SEVRBP0541, ~NZ$2) |
 | Powered USB hub | Pi 5 only has 4 USB ports | Not priced | Touch, cameras, CarPlay dongle, audio, GPS, and later the 4G modem and SSD won't all fit. The Pi 5's USB ports share 1.6 A, so the modem and SSD may need the hub's power |
 | [EasyCAP DC60 USB capture](https://www.pbtech.co.nz/product/SEVOEM9701) (PB Tech SEVOEM9701) | Only if the rear camera is RCA | NZ$28.75 (search result) | Composite only, not AHD. See [`cameras.md`](cameras.md) |
 

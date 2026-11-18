@@ -245,8 +245,9 @@ hub** in the Pi box for the low-speed ones (GPS, audio, mic, touch). Not priced 
 | Part | Why | Price | Notes |
 |---|---|---|---|
 | [Raspberry Pi AI HAT+ 2](https://www.pbtech.co.nz/product/SEVRBP0446/Raspberry-Pi-5-Official-AI-Hat-2) (Hailo-10H, 8GB on board) | Camera AI and the voice assistant's language model | ~NZ$423 PB Tech (search result), or [Core Electronics](https://core-electronics.com.au/raspberry-pi-ai-hat-plus-2.html) ~NZ$357-373 landed | **Not buying now (Sam, 18 Nov).** US$200 list price ([Raspberry Pi](https://www.raspberrypi.com/products/ai-hat-plus-2/)). Comes with its own heatsink and a 16 mm stacking header so it sits over the Active Cooler. Uses the Pi's only PCIe port, so nothing else may use it |
-| 4G USB modem with NZ bands (optional) | Anti-theft tracking and remote access | **TBC** | Model being picked by the 4G anti-theft work. Needs NZ bands (B1, B3, B7, B28). Goes inside the Pi box |
-| Compact USB SSD for video (optional) | Recording camera footage | **TBC** | USB, not NVMe. Goes inside the Pi box |
+| Waveshare SIM7600G-H 4G Dongle, prepaid SIM, AirTag (optional) | Anti-theft tracking and remote access | US$101.99 at Waveshare (or ~NZ$139-179 + shipping, Fruugo NZ); AirTag ~NZ$47-68 | From the 4G anti-theft work. Dongle goes inside the Pi box. SIM needs a top-up once a year |
+| Kingston XS1000 1TB USB-C SSD (optional), PB Tech HDDKCP225100 | Dashcam and Sentry video | NZ$189-253 | USB, not NVMe. Cradle in the Pi box lid, short right-angle USB-C to USB-A lead |
+| Camera Module 3 NoIR Wide (optional), PB Tech SEVRBP0399 | Cabin camera | ~NZ$70 | Plus a second 200 mm cable |
 | Powered USB hub | More USB ports | Not priced | See "USB ports are getting full" below. The Pi 5's USB ports share 1.6 A, so the modem and SSD may need the hub's power |
 
 AUD to NZD: 1 AUD = 1.234 NZD on [Wise](https://wise.com/us/currency-converter/aud-to-nzd-rate)

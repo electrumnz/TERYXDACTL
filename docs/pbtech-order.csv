@@ -21,8 +21,12 @@ Order online,element14 NZ,1.5KE18A TVS diode,9884831,2,2.24,4.48,Checked 17 Nov 
 Order online,Narva stockist,Narva 7-pin flat socket with reed switch,82043BL,1,,,Not priced,Trailer detect,https://narva.com.au/products/narva-7-pin-flat-quickfit-trailer-socket-with-reed-switch-for-use-with-normally-closed-circuits-1-pack
 Separate pickup,Dodson's (Trade Me),Toyota Aqua EPS column (ECU 89650-52B51),,1,115.00,115.00,About NZ$115,Picking up 19 Nov,
 Later,PB Tech / Core Electronics,Raspberry Pi AI HAT+ 2,SEVRBP0446,0,423.43,0.00,Search result 18 Nov,"Not buying now; Core ~NZ$357-373 landed; box stays sized for it",https://www.pbtech.co.nz/product/SEVRBP0446
-Later (optional),TBC,4G USB modem with NZ bands,,0,,0.00,Not priced,"Model TBC by the 4G anti-theft work; goes in the Pi box",
-Later (optional),TBC,Compact USB SSD for video (e.g. Samsung T7 500GB),HDDSSM17051,0,,0.00,Not priced,"USB not NVMe; goes in the Pi box",https://www.pbtech.com/product/HDDSSM17051/reg
+Later (optional),Waveshare / Fruugo NZ,Waveshare SIM7600G-H 4G Dongle,,0,,0.00,"US$101.99 waveshare.com, or ~NZ$139-179 + shipping Fruugo NZ","4G anti-theft; goes in the Pi box",https://www.waveshare.com/sim7600g-h-4g-dongle.htm
+Later (optional),Any,Prepaid SIM,,0,,0.00,Not priced,Top up once a year,
+Later (optional),Any,AirTag (backup tracker),,0,,0.00,About NZ$47-68,,
+Later (optional),PB Tech,Kingston XS1000 1TB USB-C SSD,HDDKCP225100,0,,0.00,NZ$189-253 (price moved between checks),"Dashcam/Sentry video; cradle in Pi box lid",https://www.pbtech.co.nz/product/HDDKCP225100
+Later (optional),TBC,Short right-angle USB-C to USB-A lead,,0,,0.00,Not priced,For the SSD,
+Later (optional),PB Tech,Raspberry Pi Camera Module 3 NoIR Wide (cabin camera),SEVRBP0399,0,70.00,0.00,About NZ$70,Plus a second SEVRBP0541 cable,https://www.pbtech.co.nz/product/SEVRBP0399
 Later,TBC,Powered USB hub,,0,,0.00,Not priced,Pi 5 has 4 USB ports,
 Later,PB Tech,EasyCAP DC60 USB capture (only if rear cam is RCA),SEVOEM9701,0,28.75,0.00,Search result 18 Nov,Optional,https://www.pbtech.co.nz/product/SEVOEM9701
 ,,TOTAL buy tomorrow,,,,691.55,,"PB Tech 584.85 + Jaycar 106.70",
