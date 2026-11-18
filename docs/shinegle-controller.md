@@ -9,6 +9,14 @@ names to be mixed up.
 
 Everything below is from the manual unless marked **TBC**.
 
+**Our own wiring diagram:** [`img/sg1202-wiring.svg`](img/sg1202-wiring.svg),
+drawn from the machine-readable pinout
+[`config/shinegle-sg1202.yaml`](../config/shinegle-sg1202.yaml). Edit the
+YAML (for example mark a pin `measured` once checked on the Teryx), then run
+`python -m teryx shinegle-diagram`. A test fails if the two get out of step.
+
+![SG1202 wiring](img/sg1202-wiring.svg)
+
 ## Headline facts
 
 | | What the manual says |

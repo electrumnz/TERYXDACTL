@@ -6,6 +6,7 @@
     python -m teryx monitor --bus udp   print decoded CAN frames
     python -m teryx replay FILE         play a candump/.asc/.blf log onto the bus
     python -m teryx canmap              write docs/CAN_PROTOCOL.md and docs/teryx.dbc
+    python -m teryx shinegle-diagram    write docs/img/sg1202-wiring.svg from config/shinegle-sg1202.yaml
     python -m teryx decode ...          Shinegle decoding kit (docs/shinegle-decode.md)
 """
 
@@ -256,6 +257,9 @@ def main(argv=None) -> None:
     sp.add_argument("--out", default="docs/CAN_PROTOCOL.md")
     sp.add_argument("--dbc", default="docs/teryx.dbc")
     sp.set_defaults(fn=cmd_canmap)
+
+    sp = sub.add_parser("shinegle-diagram", help="draw the SG1202 wiring SVG from its YAML")
+    sp.set_defaults(fn=lambda a: print("wrote", __import__("teryx.shinegle_diagram", fromlist=["write"]).write()))
 
     sp = sub.add_parser("decode", help="Shinegle decoding kit: capture, analyse, check, install")
     dsub = sp.add_subparsers(dest="what", required=True)

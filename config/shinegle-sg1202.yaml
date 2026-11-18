@@ -1,0 +1,66 @@
+# Shinegle SG1202 AC induction motor controller: wiring, machine readable.
+#
+# Source: Shinegle "SG12X2 Manual" (covers SG1202/1212/1222), Fig. 2 and Fig. 3,
+# summarised in docs/shinegle-controller.md. Our own redraw:
+# docs/img/sg1202-wiring.svg (made from this file by
+# `python -m teryx shinegle-diagram`). Edit this file, not the SVG.
+#
+# status: from_manual = drawn in the manual
+#         tbc         = we expect it but the manual doesn't show where
+#         unknown     = pin exists on the plug, use not documented
+# Update a pin to `measured` once it has been checked on Sam's harness.
+
+controller:
+  model: SG1202
+  maker: Shinegle
+  battery_v: [56, 80]          # 72 V model, from the manual's spec table
+  max_current_a: 400
+  rated_current_a: 120
+  control: vector, with speed sensor
+  regen: full regeneration capability (trigger and settings not documented)
+
+power:
+  B+:  {to: battery positive via 150 A air-break switch, status: from_manual}
+  B-:  {to: battery negative, status: from_manual}
+  U:   {to: motor U, status: from_manual}
+  V:   {to: motor V, status: from_manual}
+  W:   {to: motor W, status: from_manual}
+
+connectors:
+  J1: {type: AMP 35-way, part: 776163-1, mating_plug: 776164-1, pins: 35}
+  J6: {type: DJ7041-1.5-21, use: speed sensor (controller side)}
+  J7: {type: DJ7041-1.5-11, use: speed sensor (motor side)}
+  J8: {type: DJ7021-1.5-21, use: motor temp sensor (controller side)}
+  J9: {type: DJ7021-1.5-11, use: motor temp sensor (motor side)}
+
+# J1 pins. Anything from 1 to 35 not listed here is unknown.
+j1:
+  1:  {name: KSI,           group: key,      dir: in,  desc: Key switch power, via 10 A fuse, status: from_manual}
+  6:  {name: SPEED_PULSE,   group: dash,     dir: out, desc: Speed pulse output to the speedo, status: from_manual}
+  7:  {name: GND,           group: common,   dir: gnd, desc: "Logic ground: programmer, speed sensor, motor temp 2", status: from_manual}
+  8:  {name: MOTOR_TEMP_1,  group: temp,     dir: in,  desc: Motor temperature sensor, status: from_manual}
+  9:  {name: THROTTLE_SW,   group: throttle, dir: in,  desc: Throttle micro switch, status: from_manual}
+  16: {name: THROTTLE_WIPER, group: throttle, dir: in, desc: Throttle signal, status: from_manual}
+  18: {name: THROTTLE_GND,  group: throttle, dir: gnd, desc: Throttle ground, status: from_manual}
+  22: {name: FORWARD,       group: key,      dir: in,  desc: Forward switch (SW2), status: from_manual}
+  25: {name: V12_OUT,       group: common,   dir: out, desc: "+12 V supply: throttle, speed sensor, programmer", status: from_manual}
+  28: {name: SCI_TX,        group: programmer, dir: out, desc: Serial Tx to the SG1810 programmer, status: from_manual}
+  29: {name: SCI_RX,        group: programmer, dir: in,  desc: Serial Rx from the SG1810 programmer, status: from_manual}
+  31: {name: SPEED_A,       group: speed,    dir: in,  desc: Motor speed sensor signal A, status: from_manual}
+  32: {name: SPEED_B,       group: speed,    dir: in,  desc: Motor speed sensor signal B, status: from_manual}
+  33: {name: REVERSE,       group: key,      dir: in,  desc: Reverse switch (SW3), status: from_manual}
+
+# Things the controller has (per the manual's text) but whose pins aren't drawn.
+not_drawn:
+  - {name: CAN_H / CAN_L, status: tbc, note: "CANopen, 29-bit IDs, optional. Check if fitted on Sam's unit"}
+  - {name: BRAKE input,  status: tbc, note: "Not mentioned at all. Needed for brake pedal regen (docs/brake-regen.md)"}
+
+# Outside devices, for the diagram.
+devices:
+  programmer: {name: SG1810 handheld programmer, pins: [25, 28, 29, 7], note: "4-pin lead, carries +12 V. Not USB"}
+  throttle:   {name: Throttle pedal, pins: [25, 16, 18, 9]}
+  speed_sensor: {name: Motor speed sensor, pins: [25, 31, 32, 7], via: J6/J7}
+  motor_temp: {name: Motor temp sensor, pins: [8, 7], via: J8/J9}
+  shifter:    {name: F/N/R switch, pins: [22, 33], fed_from: key switch}
+  speedo:     {name: Speedo / Shinegle dash, pins: [6]}
+  key:        {name: Key switch + 10 A fuse, pins: [1]}
