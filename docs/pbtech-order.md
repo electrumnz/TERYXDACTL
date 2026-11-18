@@ -56,9 +56,12 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Thermal pad 1mm, 4 W/mK+ | 1 | 5.00 | 5.00 | Estimate |  |
 | Solid aluminium block 20x20x50mm | 1 | 5.00 | 5.00 | Estimate | Cut to ~45.3mm |
 | Thermal paste small tube | 1 | 3.00 | 3.00 | Estimate |  |
-| M12x1.5 breather vent plug | 2 | 2.00 | 4.00 | Estimate | One spare |
-| Nylon cable glands IP68: PG7 x3, PG9 x5, PG16 x5, M20 x1 | 1 | 15.00 | 15.00 | Estimate | Pi box 4, control box 5, relay box 5 (cad/measurements.scad) |
+| M12x1.5 breather vent plug | 4 | 2.00 | 8.00 | Estimate | Pi box, both speaker pods, one spare |
+| Nylon cable glands IP68: PG7 x5, PG9 x5, PG16 x5, M20 x1 | 1 | 16.00 | 16.00 | Estimate | Pi box 4, control box 5, relay box 5, speaker pods 2 (cad/measurements.scad) |
 | M3 brass heat-set inserts 4.0mm OD x 5.7mm, 100 pack | 1 | 8.00 | 8.00 | Estimate | About 40 used |
+| Aluminium roll-cage clamp with flat tab, 1.875 in (47.6 mm) tube, rubber liner, M6 bolt hole | 4 | 9.00 | 36.00 | Estimate | Speaker pods, 2 each. Teryx perimeter tube is 1.875 in, top crossbars 1.7 in (Axia Alloys, 2008+ Teryx): measure where the pods go and buy that size |
+| M6 brass heat-set inserts 8mm OD x 12mm, 10 pack | 1 | 6.00 | 6.00 | Estimate | Speaker pod mounting pads, 2 each |
+| M6 x 20 stainless bolts, spring + flat washers, 10 each | 1 | 6.00 | 6.00 | Estimate | Pod to cage clamp, with threadlocker |
 | M2 + M2.5 heat-set inserts, 50 each | 1 | 8.00 | 8.00 | Estimate | Pi and 4G board standoffs |
 | Stainless bolt kit: M2, M2.5, M3 (6-16mm), M4 (12-20mm), nuts, nylocs, washers | 1 | 25.00 | 25.00 | Estimate | cad/README.md hardware table: ~50 small bolts, 16 M4, 4 M5 nuts |
 | Bootlace ferrule kit 0.5-6mm² with ratchet crimper | 1 | 30.00 | 30.00 | Estimate | Every wire end into a screw terminal in the boxes |
@@ -68,7 +71,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Waterproof 3-pin plug pair (DT style) | 3 | 3.00 | 9.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
 | Waterproof 4-pin plug pair (DT style) | 2 | 3.50 | 7.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
 | Waterproof 6-pin plug pair (DT style) | 2 | 5.00 | 10.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
-| **Total** | | | **780.01** | | |
+| **Total** | | | **833.01** | | |
 
 ### Core Electronics (AU, online)
 
@@ -107,7 +110,8 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | UV-black cable ties + adhesive P-clips | 1 | 20.00 | 20.00 | Estimate |  |
 | Dielectric grease, small tube | 1 | 12.00 | 12.00 | Estimate | Trailer plugs and outdoor connectors |
 | 2mm closed-cell foam tape, 1m+ | 1 | 10.00 | 10.00 | Estimate | Bezel to panel |
-| ASA filament 1.75mm 1kg (dash panel, hood, back plate) | 2 | 45.00 | 90.00 | Estimate | Leave out what you already have |
+| ASA filament 1.75mm 1kg (dash panel, hood, back plate, speaker pods) | 5 | 45.00 | 225.00 | Estimate | Leave out what you already have |
+| Polyester fibre fill (speaker wadding or pillow stuffing), 200 g | 1 | 12.00 | 12.00 | Estimate | About 70 g per speaker pod, loose. Not foam (it holds water) |
 | PETG filament 1.75mm 1kg (boxes, liner) | 1 | 35.00 | 35.00 | Estimate |  |
 | 3mm aluminium cut from DXF: back plate + Pi lid plate | 1 | 80.00 | 80.00 | Estimate | Laser or waterjet shop; cad/stl/*.dxf |
 | Auto cable 0.5 mm² (metres) | 85 | 0.90 | 76.50 | Estimate; counted from config/wiring.yaml | About 68 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
@@ -129,7 +133,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Tinned lugs for 6 mm², M8 hole | 6 | 2.00 | 12.00 | Estimate; counted from config/wiring.yaml | 2 spare |
 | Tinned lugs for 10 mm², M8 hole | 10 | 2.00 | 20.00 | Estimate; counted from config/wiring.yaml | 2 spare |
 | Tinned lugs for 35 mm², M8 hole | 4 | 2.00 | 8.00 | Estimate; counted from config/wiring.yaml | 2 spare |
-| **Total** | | | **1,402.00** | | |
+| **Total** | | | **1,549.00** | | |
 
 ### Separate pickup
 
@@ -143,12 +147,12 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Shop | NZ$ |
 |---|---|
 | PB Tech (buy Thursday) | 623.21 |
-| AliExpress (one order, 2 to 4 weeks) | 780.01 |
+| AliExpress (one order, 2 to 4 weeks) | 833.01 |
 | Core Electronics (AU, online) | 246.68 |
 | Gogo:Tronics and element14 (NZ, online) | 7.43 |
-| Local: Jaycar, Narva stockist, Repco, auto electrical | 1,402.00 |
+| Local: Jaycar, Narva stockist, Repco, auto electrical | 1,549.00 |
 | Separate pickup | 115.00 |
-| **Everything** | **3,174.33** |
+| **Everything** | **3,374.33** |
 
 ### Already got (not in the totals)
 

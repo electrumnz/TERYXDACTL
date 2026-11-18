@@ -2,9 +2,9 @@ name: Printed parts
 
 on:
   push:
-    paths: ["cad/**", ".github/workflows/cad.yml"]
+    paths: ["cad/**", "config/speaker_pods.yaml", ".github/workflows/cad.yml"]
   pull_request:
-    paths: ["cad/**", ".github/workflows/cad.yml"]
+    paths: ["cad/**", "config/speaker_pods.yaml", ".github/workflows/cad.yml"]
 
 jobs:
   stl:

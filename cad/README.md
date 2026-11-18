@@ -10,6 +10,7 @@ OpenSCAD designs for everything that gets 3D printed:
 | Pi 5 box | **Sealed for wash-downs, no fan** ([`docs/pi-box-cooling.md`](../docs/pi-box-cooling.md)): a 3 mm aluminium lid plate (DXF) with a finned heatsink outside, and an aluminium pillar from the Pi's chip to the lid. Room for the AI HAT+ 2 later. Holds the Pi 5, a small MCP2515 CAN module, the 5V 5A buck and a 4G board with its buck and capacitor on a printed liner under the lid plate (SMA bulkheads for the 4G and GPS aerials in the wall). The liner also has a cradle for the video SSD (Kingston XS1000, [`docs/sentry.md`](../docs/sentry.md)). A cradle in the floor holds the micro HDMI plug still. Bolts to the back of the back plate; the screen's cables come straight in through the floor | `pi_box_box/lid/gasket` (lid = the printed liner), `pi_lid_plate.dxf` |
 | Control box | Pico 2, MCP2515, MCP23017, ADS1115, opto board, MOSFET boards, 5V 2A buck | `control_box_box/lid/gasket/plate` |
 | Relay box | 8-channel relay board and the three BTS7960 drivers | `relay_box_box/lid/gasket/plate` |
+| Speaker pods | Sealed 7.4 L pods for the Kenwood 8" speakers, sized and EQ'd for sound. Mount on the cage with clamps. See [`docs/speaker-pods.md`](../docs/speaker-pods.md) | `speaker_pod` (x2, ASA), `speaker_pod_gasket` (x2, TPU) |
 | Fit test | One corner of the dash panel (cut-out corner, bezel recess, inserts), to check the fit before the big print | `fit_test_corner` |
 
 ![Front](img/assembly-front.png)

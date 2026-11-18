@@ -9,6 +9,7 @@
     python -m teryx shinegle-diagram    write docs/img/sg1202-wiring.svg from config/shinegle-sg1202.yaml
     python -m teryx wiring              check config/wiring.yaml, write docs/wiring/ (--check: check only)
     python -m teryx bom                 write the parts list from config/bom.yaml + wiring (--check: check only)
+    python -m teryx speakerbox          speaker pod sizing and the Pi's bass EQ (docs/speaker-pods.md)
     python -m teryx shinegle-manual     write docs/shinegle-sg1810-tables.md from the SG1810 YAML files
     python -m teryx decode ...          Shinegle decoding kit (docs/shinegle-decode.md)
 """
@@ -276,6 +277,10 @@ def main(argv=None) -> None:
     sp.add_argument("--check", action="store_true", help="only check, write nothing")
     sp.set_defaults(fn=lambda a: sys.exit(__import__("teryx.bom", fromlist=["main"]).main(a.check)))
 
+    sp = sub.add_parser("speakerbox", help="speaker pod sizing, Thiele-Small from measurements, bass EQ",
+                        add_help=False)
+    # its own options are handled by teryx.speaker_box (see the check below)
+
     sp = sub.add_parser("shinegle-manual", help="write the SG1810 parameter and fault tables doc from its YAML")
     sp.set_defaults(fn=lambda a: print("wrote", __import__("teryx.shinegle_manual", fromlist=["write"]).write()))
 
@@ -307,6 +312,10 @@ def main(argv=None) -> None:
     d.add_argument("dbc")
     sp.set_defaults(fn=cmd_decode)
 
+    raw = sys.argv[1:] if argv is None else list(argv)
+    if raw[:1] == ["speakerbox"]:
+        from .speaker_box import main as speakerbox
+        sys.exit(speakerbox(raw[1:]))
     args = p.parse_args(argv)
     if getattr(args, "what", None) == "analyze":
         args.what = "analyse"

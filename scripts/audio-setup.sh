@@ -110,6 +110,12 @@ pulse.properties = {
 }
 EOF
 chown "$DESK_USER:$DESK_USER" "$DESK_HOME/.config/pipewire/pipewire-pulse.conf.d/50-teryx.conf"
+# Bass EQ for the printed speaker pods (docs/speaker-pods.md): a "Teryx speaker pods" output.
+POD_EQ="$(dirname "$(readlink -f "$0")")/pipewire/50-teryx-pod-eq.conf"
+if [ -f "$POD_EQ" ]; then
+  install -d -o "$DESK_USER" -g "$DESK_USER" "$DESK_HOME/.config/pipewire/pipewire.conf.d"
+  install -o "$DESK_USER" -g "$DESK_USER" -m 644 "$POD_EQ" "$DESK_HOME/.config/pipewire/pipewire.conf.d/"
+fi
 install -d /etc/systemd/system/teryx-dash.service.d
 cat > /etc/systemd/system/teryx-dash.service.d/audio.conf <<EOF
 # Written by scripts/audio-setup.sh

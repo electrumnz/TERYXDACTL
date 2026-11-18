@@ -707,7 +707,7 @@ devices:
     name: Kenwood KFC-2053MRB 8 in marine speakers (pair)
     zone: cab
     status: confirmed
-    note: Sam has these. 8 in 2-way, 4 ohm, about 50 W RMS each (100 W the pair), 180 mm cut-out, about 86 mm mounting depth (retailer specs). One amp channel each; speaker cable 1.5 mm² is plenty
+    note: Sam has these. 8 in 2-way, 4 ohm, about 50 W RMS each (100 W the pair), 180 mm cut-out, about 86 mm mounting depth (Kenwood spec page). One amp channel each; speaker cable 1.5 mm² is plenty. In sealed printed pods on the roll cage (cad/parts/speaker_pod.scad, docs/speaker-pods.md); the cable goes in through a PG7 gland underneath each pod
     optional: true
     pins: {IN: spk}
   IMU:
