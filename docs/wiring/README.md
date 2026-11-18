@@ -10,7 +10,7 @@ Why things are wired this way (power hold, diodes, CAN rules): [`docs/wiring.md`
 Viewer with search: [`index.html`](index.html), also online at
 <https://electrumnz.github.io/TERYXDACTL/wiring/>.
 
-**79 devices, 255 wires.** By status: 19 from_manual, 3 confirmed, 201 planned, 28 tbc, 4 placeholder.
+**80 devices, 258 wires.** By status: 19 from_manual, 3 confirmed, 204 planned, 28 tbc, 4 placeholder.
 Nothing has been checked on the real Teryx yet.
 
 Wire sizes follow the conservative table in the YAML (from
@@ -322,6 +322,9 @@ Fuses not in the block (inline, at the battery or on a board):
 | L45 | PICO.3V3 | RELAYS2.VCC |  |  |  | planned (optional) |  |
 | L46 | PICO.GP0 | DEBUG.RX |  |  |  | planned | UART0 TX |
 | L47 | DEBUG.TX | PICO.GP1 |  |  |  | planned |  |
+| L60 | PICO.GP26 | PCA.SDA |  |  |  | planned (optional) | soldered |
+| L61 | PICO.GP27 | PCA.SCL |  |  |  | planned (optional) | soldered |
+| L62 | PICO.3V3 | PCA.VCC |  |  |  | planned (optional) | soldered |
 
 ### 12 V signals into the control box (opto board)
 
@@ -448,7 +451,7 @@ Fuses not in the block (inline, at the battery or on a board):
 | T14 | TCAM_PLUG.LB_POS | LB_TRL.pos | 1.5 mm² |  |  | planned (optional) |  |
 | T15 | LB_TRL.neg | TCAM_PLUG.LB_NEG | 1.5 mm² |  |  | planned (optional) |  |
 | T16 | TCAM_PLUG.LB_NEG | MOSFET.OUT6 | 1.5 mm² |  |  | planned (optional) |  |
-| T17 | MCP2.GPB7 | MOSFET.IN6 |  |  |  | planned (optional) | light.trailer on/off (the Pico has no free PWM pin) |
+| T17 | PCA.PWM0 | MOSFET.IN6 |  |  |  | planned (optional) | light.trailer PWM (dimmable) |
 | T12 | TCAM_PLUG.VID_GND | TCAM_DONGLE.VID_GND |  |  |  | planned (optional) |  |
 
 ### Dash computer: Pi 5, screen, cameras, USB, audio
@@ -515,6 +518,7 @@ Fuses not in the block (inline, at the battery or on a board):
 | EPS_CAN | MCP2515 CAN module (steering bus) | control_box | planned (optional) | Own 500 kbit/s bus to the steering ECU. Transmit only, INT not wired See [`docs/power-steering-wrecker.md`](../../docs/power-steering-wrecker.md). |
 | MCP1 | MCP23017 I/O expander (0x20) | control_box | planned |  |
 | MCP2 | Second MCP23017 (0x21) | control_box | planned (optional) | More outputs for the steering enable and the drive lock relay. The first one is full See [`docs/vehicle-lock.md`](../../docs/vehicle-lock.md). |
+| PCA | PCA9685 16-ch PWM board (0x40) | control_box | planned (optional) | More dimming outputs on the Pico's I2C. Wires soldered straight to the pads, no header pins. VCC 3.3 V so the outputs are 3.3 V, which the 3.3 V PNP MOSFET board takes. Leave V+ (servo power) empty. OE tied low on the board. 15 channels spare |
 | ADS1 | ADS1115 ADC (0x48) | control_box | planned | ALERT pin left free so GP22 can be the steering CAN chip select (read "ready" over I2C) |
 | ADS2 | Second ADS1115 (0x49) | control_box | planned (optional) | Brake pedal regen only See [`docs/brake-regen.md`](../../docs/brake-regen.md). |
 | OPTO | 8-ch opto board (PC817, 12 V in) | control_box | planned | All 8 channels used. A second 8-ch board (AliExpress cart) gives 8 spare inputs, read on MCP2 port B |

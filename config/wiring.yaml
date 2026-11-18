@@ -313,7 +313,14 @@ devices:
     optional: true
     note: More outputs for the steering enable and the drive lock relay. The first one is full
     doc: docs/vehicle-lock.md
-    pins: {VDD: 3v3, GND: gnd, SDA: 3v3, SCL: 3v3, A0: 3v3, A1: 3v3, GPB7: 3v3}
+    pins: {VDD: 3v3, GND: gnd, SDA: 3v3, SCL: 3v3, A0: 3v3, A1: 3v3}
+  PCA:
+    name: PCA9685 16-ch PWM board (0x40)
+    zone: control_box
+    status: planned
+    optional: true
+    note: "More dimming outputs on the Pico's I2C. Wires soldered straight to the pads, no header pins. VCC 3.3 V so the outputs are 3.3 V, which the 3.3 V PNP MOSFET board takes. Leave V+ (servo power) empty. OE tied low on the board. 15 channels spare"
+    pins: {VCC: 3v3, SDA: 3v3, SCL: 3v3, PWM0: 3v3}
   ADS1:
     name: ADS1115 ADC (0x48)
     zone: control_box
@@ -903,7 +910,10 @@ wires:
   - {id: T14, from: TCAM_PLUG.LB_POS, to: LB_TRL.pos, sys: trailer, mm2: 1.5, status: planned, optional: true}
   - {id: T15, from: LB_TRL.neg, to: TCAM_PLUG.LB_NEG, sys: trailer, mm2: 1.5, status: planned, optional: true}
   - {id: T16, from: TCAM_PLUG.LB_NEG, to: MOSFET.OUT6, sys: trailer, mm2: 1.5, status: planned, optional: true}
-  - {id: T17, from: MCP2.GPB7, to: MOSFET.IN6, sys: trailer, status: planned, optional: true, note: "light.trailer on/off (the Pico has no free PWM pin)"}
+  - {id: T17, from: PCA.PWM0, to: MOSFET.IN6, sys: trailer, status: planned, optional: true, note: "light.trailer PWM (dimmable)"}
+  - {id: L60, from: PICO.GP26, to: PCA.SDA, sys: logic, status: planned, optional: true, note: soldered}
+  - {id: L61, from: PICO.GP27, to: PCA.SCL, sys: logic, status: planned, optional: true, note: soldered}
+  - {id: L62, from: PICO.3V3, to: PCA.VCC, sys: logic, status: planned, optional: true, note: soldered}
   - {id: T12, from: TCAM_PLUG.VID_GND, to: TCAM_DONGLE.VID_GND, sys: trailer, status: planned, optional: true}
 
   # --- dash computer
