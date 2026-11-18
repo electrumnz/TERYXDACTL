@@ -586,6 +586,14 @@ devices:
     note: For the slow USB things. Not picked yet, power feed TBC
     check: Pick the powered USB hub (7 ports, 12 V or 5 V in)
     pins: {UP: usb, P1: usb, P2: usb, P3: usb, P4: usb, P5: usb, P6: usb, P7: usb}
+  GLOVE_USB:
+    name: Glove box USB-C charger (RC phone)
+    zone: dash
+    status: planned
+    optional: true
+    note: 12 V to USB-C PD socket for the phone that lives in the glove box (docs/rc-beach-launch.md 4b). Fed from the accessory relay so it's off with the key off
+    check: Pick a 12 V USB-C PD panel socket (waterproof cap, about 20-30 W)
+    pins: {VIN: 12v, GND: gnd, USBC: usb}
   CAM_REAR:
     name: Rear camera (2K)
     zone: rear
@@ -709,6 +717,7 @@ wires:
   - {id: P13, from: RAIL.BUS, to: SCREEN_PSU.VIN, sys: power, mm2: 1.0, fuse: 3, status: tbc, note: "Fuse size depends on the screen's draw"}
   - {id: P14, from: SCREEN_PSU.VOUT, to: SCREEN.DC_IN, sys: power, mm2: 1.0, status: tbc}
   - {id: P15, from: FB.F11, to: RELAYS.COM7, sys: power, mm2: 1.5, status: planned, note: "Accessory 12 V, on with ignition"}
+  - {id: P20, from: RELAYS.NO7, to: GLOVE_USB.VIN, sys: power, mm2: 0.75, fuse: 3, status: planned, optional: true, note: "3 A inline fuse. Charges the RC phone with the key on; the control box may hold it on for a while after key-off (TBC)"}
   - {id: P16, from: BAT12.pos, to: AMP.B+, sys: power, mm2: 4.0, fuse: 30, status: planned, optional: true, note: "Own fuse at the battery. 4 x 50 W can pull 20-30 A"}
   - {id: P17, from: RAIL.BUS, to: AMP.REM, sys: power, mm2: 0.5, fuse: 2, status: planned, optional: true, note: "Remote turn-on, goes off with the rail"}
   - {id: P18, from: DCDC.out_pos, to: BAT12.pos, sys: power, status: tbc, note: "DC-DC charge lead. Size and fuse depend on its rating"}
@@ -725,6 +734,7 @@ wires:
   - {id: G08, from: SCREEN_PSU.GND, to: GND_STAR.G, sys: ground, mm2: 1.0, status: tbc}
   - {id: G09, from: SCREEN.GND, to: SCREEN_PSU.GND, sys: ground, mm2: 1.0, status: tbc}
   - {id: G10, from: AMP.GND, to: GND_STAR.G, sys: ground, mm2: 4.0, status: planned, optional: true}
+  - {id: G24, from: GLOVE_USB.GND, to: GND_STAR.G, sys: ground, mm2: 0.75, status: planned, optional: true}
   - {id: G11, from: MOSFET.GND, to: GND_STAR.G, sys: ground, mm2: 2.5, status: planned, note: "Carries all five lights' current"}
   - {id: G12, from: BTS1.B-, to: GND_STAR.G, sys: ground, mm2: 1.5, status: planned}
   - {id: G13, from: BTS2.B-, to: GND_STAR.G, sys: ground, mm2: 1.5, status: planned}

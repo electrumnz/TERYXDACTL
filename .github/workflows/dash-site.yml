@@ -3,10 +3,11 @@ name: Dash demo site
 # Puts dash/web online on GitHub Pages so the dash can be opened on a phone
 # with no Pi or laptop on. On *.github.io the dash runs its built-in demo vehicle.
 # The wiring viewer (docs/wiring, made from config/wiring.yaml) goes up at /wiring/.
+# The Android remote app (android/) goes up as /teryx-remote.apk, to download on the phone.
 on:
   push:
     branches: [main]
-    paths: ["dash/web/**", "docs/wiring/**", ".github/workflows/dash-site.yml"]
+    paths: ["dash/web/**", "docs/wiring/**", "android/**", ".github/workflows/dash-site.yml"]
   workflow_dispatch:
 
 permissions:
@@ -27,12 +28,36 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.10.2"
+      - name: Signing key (only if the repo has one set up)
+        env:
+          KEYSTORE_B64: ${{ secrets.TERYX_KEYSTORE_B64 }}
+        run: |
+          if [ -n "$KEYSTORE_B64" ]; then
+            echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/teryx.jks"
+            echo "TERYX_KEYSTORE=$RUNNER_TEMP/teryx.jks" >> "$GITHUB_ENV"
+          fi
+      - name: Build the Android remote app
+        working-directory: android
+        env:
+          TERYX_VERSION_CODE: ${{ github.run_number }}
+          TERYX_KEYSTORE_PASSWORD: ${{ secrets.TERYX_KEYSTORE_PASSWORD }}
+          TERYX_KEY_ALIAS: ${{ secrets.TERYX_KEY_ALIAS }}
+          TERYX_KEY_PASSWORD: ${{ secrets.TERYX_KEY_PASSWORD }}
+        run: gradle assembleRelease --no-daemon
       - name: Put the dash and the wiring viewer together
         run: |
           mkdir -p _site
           cp -r dash/web/. _site/
           mkdir -p _site/wiring
           cp docs/wiring/index.html docs/wiring/*.svg _site/wiring/
+          cp android/app/build/outputs/apk/release/app-release.apk _site/teryx-remote.apk
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site

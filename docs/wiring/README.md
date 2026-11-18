@@ -10,7 +10,7 @@ Why things are wired this way (power hold, diodes, CAN rules): [`docs/wiring.md`
 Viewer with search: [`index.html`](index.html), also online at
 <https://electrumnz.github.io/TERYXDACTL/wiring/>.
 
-**81 devices, 245 wires.** By status: 19 from_manual, 3 confirmed, 192 planned, 26 tbc, 5 placeholder.
+**82 devices, 247 wires.** By status: 19 from_manual, 3 confirmed, 194 planned, 26 tbc, 5 placeholder.
 Nothing has been checked on the real Teryx yet.
 
 Wire sizes follow the conservative table in the YAML (from
@@ -87,6 +87,7 @@ runs up to about 5 m). Go one size up for bundled or hot runs.
 - [ ] **Aqua steering column (motor + torque sensor)** (EPS_COL): Measure the space from the steering wheel to where the Teryx shaft goes to the rack
 - [ ] **7-pin flat trailer socket (Narva 82043BL, reed switch)** (TRAILER): Which way does the Narva reed switch switch, and what triggers it?
 - [ ] **Powered USB hub** (USB_HUB): Pick the powered USB hub (7 ports, 12 V or 5 V in)
+- [ ] **Glove box USB-C charger (RC phone)** (GLOVE_USB): Pick a 12 V USB-C PD panel socket (waterproof cap, about 20-30 W)
 - [ ] **Rear camera (2K)** (CAM_REAR): Rear camera USB or RCA/AHD? Photo its plug
 
 Wires marked TBC, with what's unknown:
@@ -135,6 +136,7 @@ Fuses not in the block (inline, at the battery or on a board):
 | P05 | 7.5 A | RELAYS.NO8 | RAIL.BUS |
 | P08 | 2 A | RAIL.BUS | PICO_BUCK.VIN |
 | P13 | 3 A | RAIL.BUS | SCREEN_PSU.VIN |
+| P20 | 3 A | RELAYS.NO7 | GLOVE_USB.VIN |
 | P16 | 30 A | BAT12.pos | AMP.B+ |
 | P17 | 2 A | RAIL.BUS | AMP.REM |
 | P19 | 60 A | BAT12.pos | EPS_ECU.B+ |
@@ -224,6 +226,7 @@ Fuses not in the block (inline, at the battery or on a board):
 | P13 | RAIL.BUS | SCREEN_PSU.VIN | 1 mm² | 3 A |  | tbc | Fuse size depends on the screen's draw |
 | P14 | SCREEN_PSU.VOUT | SCREEN.DC_IN | 1 mm² |  |  | tbc |  |
 | P15 | FB.F11 | RELAYS.COM7 | 1.5 mm² | 10 A |  | planned | Accessory 12 V, on with ignition |
+| P20 | RELAYS.NO7 | GLOVE_USB.VIN | 0.75 mm² | 3 A |  | planned (optional) | 3 A inline fuse. Charges the RC phone with the key on; the control box may hold it on for a while after key-off (TBC) |
 | P16 | BAT12.pos | AMP.B+ | 4 mm² | 30 A |  | planned (optional) | Own fuse at the battery. 4 x 50 W can pull 20-30 A |
 | P17 | RAIL.BUS | AMP.REM | 0.5 mm² | 2 A |  | planned (optional) | Remote turn-on, goes off with the rail |
 | P18 | DCDC.out_pos | BAT12.pos |  |  |  | tbc | DC-DC charge lead. Size and fuse depend on its rating |
@@ -243,6 +246,7 @@ Fuses not in the block (inline, at the battery or on a board):
 | G08 | SCREEN_PSU.GND | GND_STAR.G | 1 mm² |  |  | tbc |  |
 | G09 | SCREEN.GND | SCREEN_PSU.GND | 1 mm² |  |  | tbc |  |
 | G10 | AMP.GND | GND_STAR.G | 4 mm² |  |  | planned (optional) |  |
+| G24 | GLOVE_USB.GND | GND_STAR.G | 0.75 mm² |  |  | planned (optional) |  |
 | G11 | MOSFET.GND | GND_STAR.G | 2.5 mm² |  |  | planned | Carries all five lights' current |
 | G12 | BTS1.B- | GND_STAR.G | 1.5 mm² |  |  | planned |  |
 | G13 | BTS2.B- | GND_STAR.G | 1.5 mm² |  |  | planned |  |
@@ -547,6 +551,7 @@ Fuses not in the block (inline, at the battery or on a board):
 | PI_CAN | MCP2515 CAN module (Pi) | dash | planned | Seeed MCP2515 + SN65HVD230 on the Pi box wall |
 | SCREEN | 10.1 in touch screen | dash | confirmed | 1280x800, HDMI + USB touch, 3.5 mm audio in |
 | USB_HUB | Powered USB hub | dash | planned | For the slow USB things. Not picked yet, power feed TBC |
+| GLOVE_USB | Glove box USB-C charger (RC phone) | dash | planned (optional) | 12 V to USB-C PD socket for the phone that lives in the glove box (docs/rc-beach-launch.md 4b). Fed from the accessory relay so it's off with the key off |
 | CAM_REAR | Rear camera (2K) | rear | tbc |  |
 | CAM_FRONT | Camera Module 3 Wide (front) | dash | planned | Inside the screen housing, 200-300 mm ribbon |
 | CAM_CABIN | Cabin camera (sentry) | dash | placeholder (optional) | Being worked out in the 4G / sentry thread. Port TBC |

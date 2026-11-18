@@ -5,9 +5,10 @@
  * it runs a pretend one using the same rules so it can be tried on a phone:
  * a sloping beach, a trailer, the sea coming up as you back down.
  *
- * Inputs: gamepad (left stick Y = forward/back, right stick X = steer, R2 go,
- * L2 brake, L1 dead-man, A/Cross = winch in, B/Circle = winch out), keyboard
- * (W/S, A/D, Space dead-man), or the on-screen sticks.
+ * Inputs: the on-screen sticks by default (thumb on the left stick is the dead-man),
+ * or an optional gamepad (left stick Y = forward/back, right stick X = steer, R2 go,
+ * L2 brake, L1 dead-man, A/Cross = winch in, B/Circle = winch out), or keyboard
+ * (W/S, A/D, Space dead-man).
  */
 (() => {
   "use strict";
@@ -17,14 +18,49 @@
   const S = { allow_4g: false, cap_4g_kmh: 2, link_timeout_4g_s: 0.5, link_timeout_s: 0.2, fwd_cap_kmh: 5, rev_cap_kmh: 3, overspeed_brake_kmh: 1.5,
     stopped_kmh: 0.5, spin_motor_kmh: 3, spin_ground_kmh: 0.5, spin_s: 1.5, stall_throttle: 0.5, stall_s: 3 };
   const F = 1, N = 0, R = -1;
+  const App = window.TeryxApp || null;   // set when running inside the Android app
 
   // ---- inputs -----------------------------------------------------------
   const inp = { drive: 0, steer: 0, go: 0, brake: 0, dead: false, winch: 0, estop: false };
   const touch = { drive: 0, steer: 0 };
   const keys = new Set();
   addEventListener("keydown", (e) => { keys.add(e.code); if (e.code === "Space") e.preventDefault(); });
+
+  // ---- iPhone and Android: no zoom, no scrolling, screen stays on ------------------
+  // iOS Safari ignores user-scalable=no, so block its pinch and double-tap zoom here,
+  // and stop the page dragging about. The sticks use pointer events, so this doesn't touch them.
+  ["gesturestart", "gesturechange", "gestureend"].forEach((t) => document.addEventListener(t, (e) => e.preventDefault()));
+  document.addEventListener("dblclick", (e) => e.preventDefault());
+  document.addEventListener("touchmove", (e) => { if (!e.target.closest("input, .setbox")) e.preventDefault(); }, { passive: false });
+  document.addEventListener("contextmenu", (e) => e.preventDefault());
+
+  // Keep the screen awake while the remote is open. Screen Wake Lock works in Safari 16.4+,
+  // and in a home-screen app from iOS 18.4. It drops when the app is hidden, so take it again.
+  let wake = null;
+  async function keepAwake() {
+    if (!("wakeLock" in navigator) || document.visibilityState !== "visible" || wake) return;
+    try { wake = await navigator.wakeLock.request("screen"); wake.addEventListener("release", () => { wake = null; phoneInfo(); }); }
+    catch (_) { wake = null; }
+    phoneInfo();
+  }
+  document.addEventListener("visibilitychange", keepAwake);
+  addEventListener("pointerdown", keepAwake);       // some browsers only allow it after a tap
+  function phoneInfo() {
+    const el = document.getElementById("phoneInfo"); if (!el) return;
+    const ios = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    const app = matchMedia("(display-mode: fullscreen), (display-mode: standalone)").matches || navigator.standalone === true;
+    const bits = [];
+    if (App) bits.push(`Teryx Remote app ${App.version()}${App.kiosk() ? ", locked kiosk" : ""}.`);
+    else bits.push(app ? "Running as an app." : ios ? "Add to Home Screen (Share, then Add to Home Screen) for full screen." : "Install it (browser menu, Add to Home screen) for full screen.");
+    bits.push(wake || App ? "Screen stays on." : "wakeLock" in navigator ? "Tap anywhere to keep the screen on." : "Can't keep the screen on here: set Auto-Lock to Never while launching.");
+    bits.push(navigator.getGamepads ? (window.isSecureContext ? "Gamepads OK." : "Gamepads need the secure (https) page.") : "No gamepad support in this browser.");
+    el.textContent = bits.join(" ");
+  }
   addEventListener("keyup", (e) => keys.delete(e.code));
 
+  // A palm or the side of a hand makes a big contact patch: ignore those, only fingertips count.
+  const isPalm = (e) => e.pointerType === "touch" && (e.width > 70 || e.height > 70);
+  const held = { drive: false, steer: false };
   function stickPad(el, axis, key) {
     const knob = el.querySelector("i");
     let id = null;
@@ -33,12 +69,15 @@
       let v = axis === "x" ? (e.clientX - r.left) / r.width * 2 - 1 : -((e.clientY - r.top) / r.height * 2 - 1);
       v = Math.max(-1, Math.min(1, v * 1.25));
       touch[key] = Math.abs(v) < 0.08 ? 0 : v;
-      knob.style.transform = axis === "x" ? `translateX(${v * (r.width / 2 - 28)}px)` : `translateY(${-v * (r.height / 2 - 28)}px)`;
+      knob.style.transform = axis === "x" ? `translateX(${v * (r.width / 2 - 36)}px)` : `translateY(${-v * (r.height / 2 - 36)}px)`;
     };
-    el.addEventListener("pointerdown", (e) => { id = e.pointerId; el.setPointerCapture(id); move(e); });
+    el.addEventListener("pointerdown", (e) => {
+      if (id !== null || isPalm(e)) return;          // one thumb per stick, no palms
+      id = e.pointerId; el.setPointerCapture(id); held[key] = true; el.classList.add("held"); move(e);
+    });
     el.addEventListener("pointermove", (e) => { if (e.pointerId === id) move(e); });
-    const up = (e) => { if (e.pointerId !== id) return; id = null; touch[key] = 0; knob.style.transform = ""; };
-    el.addEventListener("pointerup", up); el.addEventListener("pointercancel", up);
+    const up = (e) => { if (e.pointerId !== id) return; id = null; held[key] = false; el.classList.remove("held"); touch[key] = 0; knob.style.transform = ""; };
+    el.addEventListener("pointerup", up); el.addEventListener("pointercancel", up); el.addEventListener("lostpointercapture", up);
   }
   stickPad($("driveStick"), "y", "drive");
   stickPad($("steerStick"), "x", "steer");
@@ -48,8 +87,7 @@
     const up = () => { el.classList.remove("on"); off(); };
     el.addEventListener("pointerup", up); el.addEventListener("pointercancel", up);
   }
-  let touchDead = false, touchWinch = 0;
-  holdButton($("dead"), () => (touchDead = true), () => (touchDead = false));
+  let touchWinch = 0;
   holdButton($("winchIn"), () => (touchWinch = 1), () => (touchWinch = 0));
   holdButton($("winchOut"), () => (touchWinch = -1), () => (touchWinch = 0));
   $("estop").addEventListener("click", () => {
@@ -63,9 +101,12 @@
   function readInputs() {
     const pads = navigator.getGamepads ? [...navigator.getGamepads()].filter(Boolean) : [];
     const gp = pads[0];
-    document.body.classList.toggle("has-pad", !!gp);
-    let drive = touch.drive, steer = touch.steer, dead = touchDead, winch = touchWinch;
+    padSwap(!!gp);
+    // Thumb on the drive stick = dead-man held. Lift it off and the RC box stops and holds.
+    let drive = touch.drive, steer = touch.steer, dead = held.drive, winch = touchWinch;
     if (gp) {
+      drive = 0; steer = 0; winch = 0;                // the on-screen controls are hidden now
+      dead = false;
       const b = (i) => !!(gp.buttons[i] && gp.buttons[i].pressed);
       const bv = (i) => (gp.buttons[i] ? gp.buttons[i].value : 0);
       drive = dz(-(gp.axes[1] || 0));
@@ -83,7 +124,23 @@
     if (keys.has("KeyI")) winch = 1;
     if (keys.has("KeyO")) winch = -1;
     inp.drive = drive; inp.steer = steer; inp.dead = dead; inp.winch = winch;
-    $("dead").classList.toggle("on", dead);
+    $("padDead").classList.toggle("on", dead);
+    $("padDead").textContent = dead ? "L1 HELD" : "HOLD L1 TO DRIVE";
+  }
+
+  // Gamepad plugged in or pulled out: swap layouts, and if RC is on, stop and hold.
+  // Whatever was being held on the old controls is let go, and driving again needs the
+  // stick centred and the new dead-man held (same rule as after a lost signal).
+  let padOn = false;
+  function padSwap(on) {
+    if (on === padOn) return;
+    padOn = on;
+    document.body.classList.toggle("has-pad", on);
+    touch.drive = touch.steer = 0; touchWinch = 0;
+    held.drive = held.steer = false;
+    document.querySelectorAll(".stick").forEach((el) => { el.classList.remove("held"); el.querySelector("i").style.transform = ""; });
+    if (box.state !== "off") { box.state = "hold"; box.reason = on ? "deadman" : "pad_lost"; box.recentre = true; }
+    flash(on ? "GAMEPAD CONNECTED: HOLD L1 TO DRIVE" : "GAMEPAD GONE: STOPPED. ON-SCREEN STICKS ARE BACK", !on);
   }
 
   // ---- remote settings: 4G driving, behind the PIN --------------------------
@@ -116,6 +173,20 @@
   document.querySelectorAll("[data-link]").forEach((b) => b.addEventListener("click", () => setLink(b.dataset.link)));
   show4g();
 
+  // ---- inside the Android app (android/): a couple of extra buttons -------------
+  if (App) {
+    $("appKeys").hidden = false;
+    $("appWifi").addEventListener("click", () => App.wifiSettings());
+    $("appSettings").addEventListener("click", () => {
+      $("pinWhy").textContent = "PIN to leave the remote for the phone's settings";
+      $("pin").value = ""; $("pinBox").hidden = false; $("pin").focus();
+      pinThen = () => App.phoneSettings();
+    });
+  }
+  // Taken out of the glove box (charger pulled): the app wakes the screen and tells us.
+  addEventListener("teryx-unplugged", () => { keepAwake(); flash("READY. PRESS ARM RC WHEN YOU'RE SET", true); });
+  phoneInfo(); keepAwake();
+
   // ---- pretend Teryx --------------------------------------------------------
   const veh = { kmh: 0, ground: 0, pos: 0, heading: 0, wet: 0, soc: 82, fourwd: false, diff: 0, lights: false,
     winchRope: 0, soft: false, signal: true, lastPacket: 0 };
@@ -127,7 +198,7 @@
   function arm() {
     if (box.state !== "off") { box.state = "off"; return; }
     if (Math.abs(inp.drive) > 0.05) return flash("Let go of the stick first", true);
-    if (inp.dead) return flash("Let go of the green button first", true);
+    if (inp.dead) return flash("Take your thumb off the stick first", true);
     if (veh.kmh > 0.1) return flash("Stop first", true);
     Object.assign(box, { state: "armed", reason: "", dir: N, centred: true, spin: 0, stall: 0, recentre: false });
   }
@@ -171,7 +242,8 @@
     return o;
   }
 
-  const WHY = { radio_lost: "SIGNAL LOST: STOPPED ON THE BRAKE", estop: "E-STOP", deadman: "HOLD THE GREEN BUTTON TO DRIVE",
+  const WHY = { radio_lost: "SIGNAL LOST: STOPPED ON THE BRAKE", estop: "E-STOP", deadman: "THUMB ON THE LEFT STICK TO DRIVE",
+    pad_lost: "GAMEPAD GONE: STOPPED. THUMB ON THE LEFT STICK TO DRIVE",
     "4g_off": "4G DRIVING IS OFF", wheelspin: "DIGGING IN: STOPPED. TRY 4WD + DIFF LOCK", stalled: "STUCK: STOPPED. LET GO, THEN TRY AGAIN", recentre: "LET GO OF THE STICK" };
 
   // ---- dash-side buttons (these go to the main Pico, same rules as the dash) ----
@@ -309,7 +381,10 @@
     const b = $("banner");
     let msg = "", warn = false;
     if (performance.now() < flashUntil) { msg = flashMsg; warn = flashWarn; }
-    else if (box.state === "hold" && box.reason) { msg = WHY[box.reason] || box.reason; warn = box.reason === "deadman"; }
+    else if (box.state === "hold" && box.reason) {
+      msg = box.reason === "deadman" && padOn ? "HOLD L1 TO DRIVE" : WHY[box.reason] || box.reason;
+      warn = box.reason === "deadman";
+    }
     else if (o.warn) { msg = o.warn; warn = true; }
     else if (box.state === "off") { msg = "PRESS ARM RC TO START"; warn = true; }
     b.textContent = msg; b.className = "banner" + (msg ? " show" : "") + (warn ? " warn" : "");
