@@ -158,7 +158,7 @@ Traction battery pack, 150 A air-break switch, Main contactor, Shinegle SG1202 c
 
 | Part | Shop | About NZ$ | Notes |
 |---|---|---|---|
-| Cabin camera (Sentry face shot): Sam's own AHD camera, set to CVBS | Owned | 0.00 | Spare input on the video board. The front stays a Pi Camera Module 3 on its own ribbon |
+| Small CVBS (analogue) cabin camera (Sentry face shot) | AliExpress | 25.00 | Spare input on the video board; both camera ribbon ports are used (front Pi camera + video board) |
 | Recording storage (e.g. Samsung PRO Endurance 128GB, MEMSAM11230) | PB Tech | 114.90 | For dashcam/Sentry. Sam to sort later |
 | Raspberry Pi AI HAT+ 2 | PB Tech | 423.43 | Not now |
 | Raspberry Pi Active Cooler | PB Tech | 11.21 | Only with the AI HAT |
