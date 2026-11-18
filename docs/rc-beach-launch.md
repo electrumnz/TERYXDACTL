@@ -33,7 +33,7 @@ Try the remote screen on a phone: <https://electrumnz.github.io/TERYXDACTL/remot
   (splash proof, its own long-range radio). See section 4.
 - **4G driving is in Settings, off by default** and needs your PIN to change.
   Meant for getting it back if it's ever pinched. Crawl speed only (2 km/h),
-  cameras must be live, and it stops if the lag gets over 0.3 s. See section 4b.
+  cameras must be live, and it stops if the lag gets over 0.3 s. See section 4c.
 - **Speeds:** 3 km/h in reverse, 5 km/h forward in RC.
 - **Water:** never past the bottom of the axle caps (Kawasaki's own limit for the
   Teryx 750). Two water probes on the Teryx stop any more reverse at that line.
@@ -123,11 +123,8 @@ remote is, only that fresh packets keep coming.
 
 **Phone things to sort (TBC):**
 
-- **HTTPS (only for the optional grip).** The on-screen sticks work on plain
-  HTTP. Chrome only gives web pages the gamepad on a secure (HTTPS) page,
-  per MDN. So the Pi serves the remote page over HTTPS with its own certificate,
-  which the phone has to trust once. iPhone Safari support for the grip isn't
-  checked yet: which phone does Sam use?
+- **HTTPS.** See 4a below. The on-screen sticks work without it, but gamepads
+  need the secure page.
 - **Wi-Fi range.** The Pi 5's own Wi-Fi is small. Plan on a USB Wi-Fi adaptor
   with an outside antenna up on the roll cage (or a small outdoor access
   point) and test it from a jet ski. Range over water and sand is **not measured**.
@@ -147,7 +144,89 @@ up off your lap. ExpressLRS users report more range on 900 MHz. NZ allows short
 range devices in 915-928 MHz (30 dBm, per a LoRaWAN forum thread, **check the
 current RSM notice**).
 
-### 4b. Driving over 4G (off by default)
+### 4a. iPhone and Android
+
+Sam uses an iPhone, but the remote has to work on both. It's one web app, so
+the same page runs on iPhone Safari and Android Chrome. What's done in the app:
+
+- **Install to the home screen.** `remote.webmanifest` (full screen, landscape)
+  plus Apple's home-screen tags. iPhone: Safari, Share, Add to Home Screen.
+  Android: Chrome menu, Add to Home screen. The Settings panel says which you're
+  in and what to do.
+- **Screen stays on.** Uses the Screen Wake Lock API. Safari has it from 16.4,
+  but it didn't work in home-screen apps until **iOS 18.4** (WebKit bug 254545),
+  so keep the iPhone updated. If it's not there, the app says to set Auto-Lock
+  to Never while launching. It takes the lock again whenever the app comes back.
+- **No zoom or page dragging.** iOS ignores `user-scalable=no`, so the app
+  blocks Safari's pinch (`gesturestart`), double-tap zoom, long-press menus and
+  page scrolling. Notch and home-bar space is padded with `safe-area-inset`.
+- **Two thumbs at once.** Each stick follows its own finger (pointer capture),
+  so you can steer and drive together. Tested with two touches in a phone-sized
+  browser. Palm rejection uses the touch size the browser reports. Some phones
+  report a fixed size, and then palms just aren't filtered there (the sticks
+  still only take one thumb each). **Test on the real phones.**
+- **Gamepads on iPhone.** Safari supports the web Gamepad API, but only on the
+  secure (HTTPS) page. Pads that work with iPhone: Xbox Wireless, PlayStation
+  DualShock 4 and DualSense (iOS 14.5+), and "MFi" pads, all over Bluetooth.
+  Clip-on grips: Backbone One USB-C works on iPhone 15 and newer, and the
+  Lightning Backbone works on older iPhones. Razer Kishi V3 iPhone support
+  **wasn't confirmed** (Razer lists the Kishi Ultra for USB-C iPhones). The
+  webЯcade project lists Xbox Wireless, DualShock 4 and 8BitDo Lite / Zero 2
+  as working in iOS Safari. Safari can't rumble the pad. **Not tested by us
+  yet.** A pad only shows up after you press one of its buttons.
+- **HTTPS on the Teryx's own hotspot (no internet at the beach).** The Pi makes
+  its own small certificate authority (a root certificate with Basic
+  Constraints, which iOS needs) and signs the page's certificate with it. Each
+  phone trusts that root once:
+  - iPhone: open the root on the Pi's page, install the profile in Settings,
+    then turn it on under **Settings > General > About > Certificate Trust
+    Settings**. Some people found that switch missing on iOS 18 after a
+    phone-to-phone move, and later updates fixed it for some of them.
+  - Android: Settings > Security > Encryption & credentials > Install a
+    certificate > CA certificate (the menu names differ by brand).
+  - Another option, **not tested**: `tailscale cert` gives the Pi a real
+    certificate for its Tailscale name, and the Pi's hotspot DNS points that
+    name at itself. Then no phone needs to trust anything. It renews every
+    90 days, so the Pi needs internet now and then.
+
+### 4b. A cheap phone that lives in the ATV (optional)
+
+Sam's happy to buy a cheap phone that stays with the Teryx as its remote. It's
+cheaper than any RC remote, and it means your own phone isn't the one on the
+jet ski. It doesn't need a SIM: it joins the Teryx's hotspot.
+
+| | Ulefone Armor X13 (pick) | Second-hand budget Android | Samsung Galaxy XCover7 |
+|---|---|---|---|
+| Rugged | IP68/IP69K, MIL-STD-810H. 1.5 m for 30 min | Usually just splash rated. Add a cheap waterproof pouch | IP68, but Samsung says not for full dunking |
+| Screen | 6.52", 720x1600. Brightness not published | Varies | 6.6" |
+| Battery | 6320 mAh | Varies, often tired | Swappable |
+| Gamepad later | USB-C OTG, Chrome on Android | Same, if USB-C | Same |
+| Speed | Slow chip (Helio G36). Fine for one camera at a time, **test it** | Varies | Better |
+| Cost | About €142-152 in Europe, US$127 in the US. NZ$396 at Rugged Phones NZ. AliExpress price **not checked** (it blocks us) | Trade Me, often under NZ$150 (**not checked**) | NZ$598.99 at PB Tech |
+
+**Pick: Ulefone Armor X13 from AliExpress**, or the Armor X12 Pro (NZ$365 at
+Rugged Phones NZ) if you want it from an NZ shop. It's properly waterproof,
+has a big battery and USB-C, and costs about what a decent RC remote's battery
+does. A second-hand Android in a waterproof pouch is the cheapest way to try it
+first. Glove or wet-finger mode isn't listed for the X13, so check that when
+it arrives.
+
+**Kiosk setup (boots straight into the remote):**
+
+1. Join it to the Teryx's Wi-Fi only, and turn off auto updates and battery
+   saving for Chrome.
+2. Trust the Pi's root certificate (4a), open `https://teryx/remote.html` and
+   Add to Home screen.
+3. Free way: Android screen pinning (Settings > Security > App pinning), and
+   pin the remote. It holds until you unpin it with the right gesture and PIN.
+   Kiosk app guides say updates and gestures can still get past pinning.
+4. Tighter way: **Fully Kiosk Browser** set as the home app, with the remote
+   page as its start page and launch on boot. One forum user found launch on
+   boot didn't fire on their tablet until they added an autostart app. Its
+   kiosk features need a paid licence (price **not checked**).
+5. Keep it on a USB charger in the cab so it's always full.
+
+### 4c. Driving over 4G (off by default)
 
 Sam's idea: if it's ever stolen, drive it out of the thief's driveway from the
 phone. It's in **Settings > Remote control > Allow driving over 4G** on the
@@ -353,7 +432,7 @@ spot, and ask the council if in doubt.
 | BTS7960 | Brake actuator driver |
 | AS5600 | Steering shaft angle |
 | 2 stainless probes | Water |
-| Remote | Your phone (on-screen sticks, free). Optional: a gamepad grip (Razer Kishi V3 NZ$167.58) or a SIYI MK15 |
+| Remote | Your phone (on-screen sticks, free), iPhone or Android. Optional: a cheap rugged phone that lives in the ATV (Ulefone Armor X13, see 4b), a gamepad, or a SIYI MK15 |
 | Wi-Fi | USB Wi-Fi adaptor with an outside antenna, or a small outdoor access point (TBC) |
 | Brake actuator | Not chosen, needs pedal measurements |
 
@@ -369,7 +448,7 @@ reason, throttle, brake, direction, link age).
 3. Measure brake pedal force and travel, choose the brake actuator.
 4. Meter the Shinegle throttle wiper (J1-16) range and what F/R (J1-22, J1-33)
    expect.
-5. Try the app on your phone now, with wet hands too. A gamepad grip is optional, only if the on-screen sticks don't feel right.
+5. Try the app on your iPhone now (Add to Home Screen, iOS 18.4 or later), with wet hands too. A gamepad is optional, only if the on-screen sticks don't feel right.
 6. Build the RC box on the bench with the sim, then on the Teryx up on stands.
 7. Ask Shinegle for the motor and battery IP ratings.
 
@@ -397,6 +476,12 @@ reason, throttle, brake, direction, link age).
 - 4G and teleoperation latency: https://arxiv.org/html/2503.14186v1 (5G study, 4G jitter), https://arxiv.org/pdf/2209.09794 (sub-50 ms on LTE), https://www.frontiersin.org/articles/10.3389/ffutr.2021.801567/full (300 ms)
 - NZ Police, stolen vehicles (don't pursue, call 111): https://www.police.govt.nz/can-you-help-us/stolen-vehicles
 - MDN, getGamepads() needs a secure context: https://developer.mozilla.org/en-US/docs/Web/API/Navigator/getGamepads
+- Wake Lock in iOS home-screen apps (WebKit bug 254545, fixed in iOS 18.4): https://bugs.webkit.org/show_bug.cgi?id=254545 and https://progressier.com/pwa-capabilities/screen-wake-lock ; Safari 16.4 support: https://developer.chrome.com/docs/capabilities/web-apis/wake-lock
+- Apple, trusting a root certificate (Certificate Trust Settings): https://support.apple.com/en-gw/guide/deployment/depb5eff8914/web ; Basic Constraints needed and iOS 18 missing-toggle reports: https://developer.apple.com/forums/thread/764673
+- iPhone support for DualSense and Xbox Series pads (iOS 14.5): https://www.gamesradar.com/iphone-finally-gets-ps5-and-xbox-series-x-controller-support ; pads tested in iOS Safari: https://docs.webrcade.com/platforms/ios/gamepads/
+- Backbone One USB-C on iPhone 15: https://www.engadget.com/the-backbone-one-android-controller-now-supports-iphone-15-190059914.html ; Kishi Ultra for USB-C iPhones: https://imore.com/iphone/iphone-accessories/razer-kishi-ultra-controller-vs-backbone-one-battle-of-the-extendable-iphone-gamepads
+- Ulefone Armor X13 specs: https://m.gsmarena.com/ulefone_armor_x13-12475.php , https://smartprix.com/mobiles/ulefone-armor-x13-ppd14y4ftqd8 ; EU prices: https://aio.lv/en/product--ulefone-uf-ax13bk--11204123.md , https://arvutitark.ee/en/smart-devices/phones/nutitelefon-ulefone-armor-x13-664gb-must-1360683 ; NZ prices: https://ruggedphones.co.nz/product-category/rugged-android-phones/
+- Android kiosk: screen pinning vs kiosk app: https://help.virtualfrontdesk.com/en/article/android-tablets-chrome-in-full-screen-and-kiosk-mode-pinned-app ; Fully Kiosk launch on boot: https://community.home-assistant.io/t/fully-kiosk-not-launching-at-boot-on-my-android-tablet/1021331
 - PB Tech: Razer Kishi V3 https://www.pbtech.co.nz/product/JOYRAZ112682 , Backbone One Gen2 https://www.pbtech.co.nz/product/JOYBBN1006/BACKBONE-One-Classic-Gaming-Controller-Gen2-USB-C
 - Salt and connectors (dielectric grease, splices, washer distance): https://buywitchdoctors.com/blogs/news/ultimate-guide-on-how-to-protect-utv-atv-electronics-from-water-damage
 - Shinegle controller IP65 and J1 pins: [`shinegle-controller.md`](shinegle-controller.md)

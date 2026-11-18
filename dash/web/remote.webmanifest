@@ -1,0 +1,11 @@
+{
+  "name": "Teryx Remote",
+  "short_name": "Teryx RC",
+  "start_url": "remote.html",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#070504",
+  "theme_color": "#070504",
+  "icons": [{ "src": "img/dino/badge.webp", "sizes": "256x256", "type": "image/webp" }]
+}

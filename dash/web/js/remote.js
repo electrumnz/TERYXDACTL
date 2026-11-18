@@ -24,6 +24,36 @@
   const touch = { drive: 0, steer: 0 };
   const keys = new Set();
   addEventListener("keydown", (e) => { keys.add(e.code); if (e.code === "Space") e.preventDefault(); });
+
+  // ---- iPhone and Android: no zoom, no scrolling, screen stays on ------------------
+  // iOS Safari ignores user-scalable=no, so block its pinch and double-tap zoom here,
+  // and stop the page dragging about. The sticks use pointer events, so this doesn't touch them.
+  ["gesturestart", "gesturechange", "gestureend"].forEach((t) => document.addEventListener(t, (e) => e.preventDefault()));
+  document.addEventListener("dblclick", (e) => e.preventDefault());
+  document.addEventListener("touchmove", (e) => { if (!e.target.closest("input, .setbox")) e.preventDefault(); }, { passive: false });
+  document.addEventListener("contextmenu", (e) => e.preventDefault());
+
+  // Keep the screen awake while the remote is open. Screen Wake Lock works in Safari 16.4+,
+  // and in a home-screen app from iOS 18.4. It drops when the app is hidden, so take it again.
+  let wake = null;
+  async function keepAwake() {
+    if (!("wakeLock" in navigator) || document.visibilityState !== "visible" || wake) return;
+    try { wake = await navigator.wakeLock.request("screen"); wake.addEventListener("release", () => { wake = null; phoneInfo(); }); }
+    catch (_) { wake = null; }
+    phoneInfo();
+  }
+  document.addEventListener("visibilitychange", keepAwake);
+  addEventListener("pointerdown", keepAwake);       // some browsers only allow it after a tap
+  function phoneInfo() {
+    const el = document.getElementById("phoneInfo"); if (!el) return;
+    const ios = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    const app = matchMedia("(display-mode: fullscreen), (display-mode: standalone)").matches || navigator.standalone === true;
+    const bits = [];
+    bits.push(app ? "Running as an app." : ios ? "Add to Home Screen (Share, then Add to Home Screen) for full screen." : "Install it (browser menu, Add to Home screen) for full screen.");
+    bits.push(wake ? "Screen stays on." : "wakeLock" in navigator ? "Tap anywhere to keep the screen on." : "Can't keep the screen on here: set Auto-Lock to Never while launching.");
+    bits.push(navigator.getGamepads ? (window.isSecureContext ? "Gamepads OK." : "Gamepads need the secure (https) page.") : "No gamepad support in this browser.");
+    el.textContent = bits.join(" ");
+  }
   addEventListener("keyup", (e) => keys.delete(e.code));
 
   // A palm or the side of a hand makes a big contact patch: ignore those, only fingertips count.
@@ -140,6 +170,7 @@
   }
   document.querySelectorAll("[data-link]").forEach((b) => b.addEventListener("click", () => setLink(b.dataset.link)));
   show4g();
+  phoneInfo(); keepAwake();
 
   // ---- pretend Teryx --------------------------------------------------------
   const veh = { kmh: 0, ground: 0, pos: 0, heading: 0, wet: 0, soc: 82, fourwd: false, diff: 0, lights: false,
