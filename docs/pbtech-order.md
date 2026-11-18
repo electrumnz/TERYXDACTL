@@ -45,7 +45,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | 12V USB-C PD panel socket, 30W, waterproof cap | 1 | 15.00 | 15.00 | Estimate | Glove box phone (RC remote) |
 | MPU-6050 IMU board (roll / pitch) | 1 | 5.00 | 5.00 | Estimate | I2C to the Pi |
 | 12V AHD reversing camera (trailer) | 1 | 30.00 | 30.00 | Estimate |  |
-| 4-pin waterproof aviation plug + socket (trailer camera) | 1 | 8.00 | 8.00 | Estimate | Next to the 7-pin |
+| Deutsch DT 8-pin kit: DT04-08PA + DT06-08SA, wedgelocks, size 16 pins, seals | 1 | 15.00 | 15.00 | Estimate | Trailer camera + light bar, next to the 7-pin. Needs the Deutsch crimp tool or a careful plier crimp |
 | CVBS (PAL) to MIPI CSI-2 board, ADV7280-M, multi-input | 1 | 120.00 | 120.00 | Estimate. AliExpress search: ADV7282 MIPI CSI (or ADV7280 CSI Raspberry Pi). No official Pi product does this | Chip must be ADV7280-M, ADV7281-M or ADV7282-M (the -M is the ribbon output), 2+ CVBS inputs, Pi camera ribbon socket. Not TP28xx (no Pi driver) or HDMI-to-CSI. Bench test on the Pi 5 |
 | SIMCom A7670SA 4G board (B28, GPS 'FASE' option) | 1 | 28.00 | 28.00 | US$15.46 x 1.822 | Must list B28; V pin from the 2nd Mini560, never raw 12V |
 | 4-channel BSS138 level shifter | 1 | 2.00 | 2.00 | Estimate | Probably not needed; measure the T pin first |
@@ -68,7 +68,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Waterproof 3-pin plug pair (DT style) | 2 | 3.00 | 6.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
 | Waterproof 4-pin plug pair (DT style) | 2 | 3.50 | 7.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
 | Waterproof 6-pin plug pair (DT style) | 2 | 5.00 | 10.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
-| **Total** | | | **762.01** | | |
+| **Total** | | | **769.01** | | |
 
 ### Core Electronics (AU, online)
 
@@ -111,7 +111,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Auto cable 0.5 mm² (metres) | 90 | 0.90 | 81.00 | Estimate; counted from config/wiring.yaml | About 70 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
 | Auto cable 0.75 mm² (metres) | 10 | 1.10 | 11.00 | Estimate; counted from config/wiring.yaml | About 7 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
 | Auto cable 1 mm² (metres) | 30 | 1.40 | 42.00 | Estimate; counted from config/wiring.yaml | About 24 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
-| Auto cable 1.5 mm² (metres) | 60 | 1.90 | 114.00 | Estimate; counted from config/wiring.yaml | About 48 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
+| Auto cable 1.5 mm² (metres) | 70 | 1.90 | 133.00 | Estimate; counted from config/wiring.yaml | About 54 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
 | Auto cable 2.5 mm² (metres) | 15 | 2.90 | 43.50 | Estimate; counted from config/wiring.yaml | About 12 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
 | Auto cable 6 mm² (metres) | 5 | 6.50 | 32.50 | Estimate; counted from config/wiring.yaml | About 3 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
 | Auto cable 10 mm² (metres) | 7 | 11.00 | 77.00 | Estimate; counted from config/wiring.yaml | About 5 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
@@ -125,7 +125,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Tinned lugs for 6 mm², M8 hole | 6 | 2.00 | 12.00 | Estimate; counted from config/wiring.yaml | 2 spare |
 | Tinned lugs for 10 mm², M8 hole | 10 | 2.00 | 20.00 | Estimate; counted from config/wiring.yaml | 2 spare |
 | Tinned lugs for 35 mm², M8 hole | 6 | 2.00 | 12.00 | Estimate; counted from config/wiring.yaml | 2 spare |
-| **Total** | | | **1,241.50** | | |
+| **Total** | | | **1,260.50** | | |
 
 ### Separate pickup
 
@@ -139,16 +139,16 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Shop | NZ$ |
 |---|---|
 | PB Tech (buy Thursday) | 623.21 |
-| AliExpress (one order, 2 to 4 weeks) | 762.01 |
+| AliExpress (one order, 2 to 4 weeks) | 769.01 |
 | Core Electronics (AU, online) | 246.68 |
 | Gogo:Tronics and element14 (NZ, online) | 7.43 |
-| Local: Jaycar, Narva stockist, Repco, auto electrical | 1,241.50 |
+| Local: Jaycar, Narva stockist, Repco, auto electrical | 1,260.50 |
 | Separate pickup | 115.00 |
-| **Everything** | **2,995.83** |
+| **Everything** | **3,021.83** |
 
 ### Already got (not in the totals)
 
-10.1 in touch screen, 12 V battery, 12 in light bar, 12-way fuse box (in the post; 12 fuses planned, so it is full), 200 degree rear camera (in the post), 4 in pod, 5 A step-down buck (in the post; input must take 20 V+), 7 in light bar, ADS1115 (3 in the post), BTS7960 (3 in the post), Kenwood KFC-2053MRB 8 in marine speakers (pair), XBull 5000 lb winch (and its 35 mm² cables), XBull remote, XBull solenoid box, short actuator (in the post), smart actuator with position feedback (in the post), tray actuator (in the post). Samsung Galaxy XCover 5 (RC remote) (NZ$187).
+10.1 in touch screen, 12 V battery, 12 in light bar, 12-way fuse box (in the post; 12 fuses planned, so it is full), 200 degree rear camera (in the post), 4 in pod, 5 A step-down buck (in the post; input must take 20 V+), 7 in light bar, ADS1115 (3 in the post), BTS7960 (3 in the post), Kenwood KFC-2053MRB 8 in marine speakers (pair), XBull 5000 lb winch (and its 35 mm² cables), XBull remote, XBull solenoid box, short actuator (in the post), smart actuator with position feedback (in the post), spare light bar (trailer), tray actuator (in the post). Samsung Galaxy XCover 5 (RC remote) (NZ$187).
 
 ### Comes with the Shinegle kit or the stock Teryx
 

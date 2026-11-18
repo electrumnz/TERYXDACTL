@@ -192,7 +192,7 @@ devices:
     note: 12 fuses in use. Small loads that can go out together share a fuse (front bars in pairs, trailer tail + stop, interior bar + accessory). All four front bars are NOT on one fuse, so one fault can't black out the front at night. The winch, control box power, key, power hold and each actuator keep their own. Sam's 12-way (in the post) is used, so it is full with no spares; add a small 6-way next to it if more circuits come
     check: Check the 12-way's rating (want 30 A per way, about 100 A total, a cover). Read the front bar labels. Each pair (1+4, 2+3) must draw under about 12 A together (about 140 W) to share a 15 A fuse. If not, give each bar its own 10 A again
     pins:
-      IN: 12v
+      IN: {v: 12v, multi: true}
       F1:  {v: 12v, supply: true, fuse_a: 15,  multi: true, desc: front bars 1 + 4 (outer pair)}
       F2:  {v: 12v, supply: true, fuse_a: 15,  multi: true, desc: front bars 2 + 3 (inner pair)}
       F3:  {v: 12v, supply: true, fuse_a: 10,  desc: relay 1 rear floods}
@@ -313,7 +313,7 @@ devices:
     optional: true
     note: More outputs for the steering enable and the drive lock relay. The first one is full
     doc: docs/vehicle-lock.md
-    pins: {VDD: 3v3, GND: gnd, SDA: 3v3, SCL: 3v3, A0: 3v3, A1: 3v3}
+    pins: {VDD: 3v3, GND: gnd, SDA: 3v3, SCL: 3v3, A0: 3v3, A1: 3v3, GPB7: 3v3}
   ADS1:
     name: ADS1115 ADC (0x48)
     zone: control_box
@@ -372,12 +372,12 @@ devices:
     status: planned
     pins: *bts
   MOSFET:
-    name: 8-ch isolated MOSFET board (low side, 5 used, 3 spare)
+    name: 8-ch isolated MOSFET board (low side, 6 used, 2 spare)
     zone: control_box
     status: planned
     note: One 8-channel opto-isolated MOSFET board (3.3 V input version), one channel per light bar, 3 spare. About 6 A per front bar. Low side switching, so each bar's + comes from its fuse and its - goes to an OUT pin
     check: The listing must say 3.3 V input, at least 24 V load and 10 A per channel. If it only says 5 A, use single LR7843 modules instead
-    pins: {GND: gnd, IN1: 3v3, IN2: 3v3, IN3: 3v3, IN4: 3v3, IN5: 3v3, OUT1: 12v, OUT2: 12v, OUT3: 12v, OUT4: 12v, OUT5: 12v}
+    pins: {GND: gnd, IN1: 3v3, IN2: 3v3, IN3: 3v3, IN4: 3v3, IN5: 3v3, OUT1: 12v, OUT2: 12v, OUT3: 12v, OUT4: 12v, OUT5: 12v, IN6: 3v3, OUT6: 12v}
 
   # ---------------------------------------------------------- lights
   LB1: {name: Front bar 1 (far left), zone: front, status: confirmed, pins: {pos: 12v, neg: 12v}}
@@ -385,6 +385,7 @@ devices:
   LB3: {name: Front bar 3 (inner right), zone: front, status: confirmed, pins: {pos: 12v, neg: 12v}}
   LB4: {name: Front bar 4 (far right), zone: front, status: confirmed, pins: {pos: 12v, neg: 12v}}
   LB_INT: {name: Interior 7 in bar, zone: cab, status: confirmed, pins: {pos: 12v, neg: 12v}}
+  LB_TRL: {name: Trailer light bar (Sam's spare), zone: trailer, status: planned, optional: true, note: "On the trailer, through the 8-pin plug. On/off from the dash and the phone remote; only live when the trailer plug is in", pins: {pos: 12v, neg: 12v}}
   FLOOD_L:
     name: Rear flood left (4 in pod)
     zone: rear
@@ -513,12 +514,12 @@ devices:
     check: Which way does the Narva reed switch switch, and what triggers it?
     pins: {P1_LEFT: 12v, P2_REV: 12v, P3_EARTH: gnd, P4_RIGHT: 12v, P5_BRAKES: 12v, P6_STOP: {v: 12v, multi: true}, P7_TAIL: 12v, REED_A: 12v, REED_B: 12v}
   TCAM_PLUG:
-    name: Trailer camera 4-pin plug
+    name: Trailer 8-pin plug (camera + light bar), Deutsch DT
     zone: rear
     status: planned
     optional: true
-    note: Own small waterproof plug next to the 7-pin (pick from cameras.md)
-    pins: {V12: {v: 12v, multi: true}, GND: gnd, VID: {v: video, multi: true}, VID_GND: {v: video, multi: true}}
+    note: "Own waterproof Deutsch DT 8-pin next to the 7-pin (DT04-08PA on the Teryx, DT06-08SA on the trailer lead), 13 A per pin. 1 cam +12 V, 2 cam ground, 3 video, 4 video shield, 5 light bar +12 V, 6 light bar - (switched), 7-8 spare"
+    pins: {V12: {v: 12v, multi: true}, GND: gnd, VID: {v: video, multi: true}, VID_GND: {v: video, multi: true}, LB_POS: {v: 12v, multi: true}, LB_NEG: {v: 12v, multi: true}}
   CAM_TRAILER:
     name: Trailer camera (12 V AHD)
     zone: trailer
@@ -898,6 +899,11 @@ wires:
   - {id: T09, from: CAM_TRAILER.VID, to: TCAM_PLUG.VID, sys: trailer, status: planned, optional: true}
   - {id: T10, from: CAM_TRAILER.VID_GND, to: TCAM_PLUG.VID_GND, sys: trailer, status: planned, optional: true}
   - {id: T11, from: TCAM_PLUG.VID, to: TCAM_DONGLE.VID, sys: trailer, status: planned, optional: true, note: "Shielded video cable"}
+  - {id: T13, from: FB.IN, to: TCAM_PLUG.LB_POS, sys: trailer, mm2: 1.5, fuse: 10, status: planned, optional: true, note: "Own 10 A inline fuse off the fuse block's feed stud (the 12-way is full)"}
+  - {id: T14, from: TCAM_PLUG.LB_POS, to: LB_TRL.pos, sys: trailer, mm2: 1.5, status: planned, optional: true}
+  - {id: T15, from: LB_TRL.neg, to: TCAM_PLUG.LB_NEG, sys: trailer, mm2: 1.5, status: planned, optional: true}
+  - {id: T16, from: TCAM_PLUG.LB_NEG, to: MOSFET.OUT6, sys: trailer, mm2: 1.5, status: planned, optional: true}
+  - {id: T17, from: MCP2.GPB7, to: MOSFET.IN6, sys: trailer, status: planned, optional: true, note: "light.trailer on/off (the Pico has no free PWM pin)"}
   - {id: T12, from: TCAM_PLUG.VID_GND, to: TCAM_DONGLE.VID_GND, sys: trailer, status: planned, optional: true}
 
   # --- dash computer

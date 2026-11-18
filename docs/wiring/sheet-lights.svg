@@ -91,9 +91,9 @@
 <line x1="480" y1="772" x2="750" y2="772" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="776" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">neg</text>
 </g>
-<g data-device="MOSFET" data-status="planned"><title>MOSFET: 8-ch isolated MOSFET board (low side, 5 used, 3 spare) - One 8-channel opto-isolated MOSFET board (3.3 V input version), one channel per light bar, 3 spare. About 6 A per front bar. Low side switching, so each bar&#x27;s + comes from its fuse and its - goes to an OUT pin</title><rect x="920" y="150" width="270" height="264" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<g data-device="MOSFET" data-status="planned"><title>MOSFET: 8-ch isolated MOSFET board (low side, 6 used, 2 spare) - One 8-channel opto-isolated MOSFET board (3.3 V input version), one channel per light bar, 3 spare. About 6 A per front bar. Low side switching, so each bar&#x27;s + comes from its fuse and its - goes to an OUT pin</title><rect x="920" y="150" width="270" height="264" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
 <text x="930" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">8-ch isolated MOSFET board (low</text>
-<text x="930" y="183" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">side, 5 used, 3 spare)</text>
+<text x="930" y="183" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">side, 6 used, 2 spare)</text>
 <text x="930" y="198" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">MOSFET · planned</text>
 <line x1="920" y1="212" x2="1190" y2="212" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="1055" y="216" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN1</text>

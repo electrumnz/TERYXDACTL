@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1320 744" width="1320" height="744" font-family="Arial, Helvetica, sans-serif" data-sheet="trailer">
-<rect width="1320" height="744" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2640 699" width="2640" height="699" font-family="Arial, Helvetica, sans-serif" data-sheet="trailer">
+<rect width="2640" height="699" fill="#ffffff"/>
 <text x="40" y="40" font-size="22" text-anchor="start" font-weight="bold" fill="#1f2328">Trailer plug and trailer camera</text>
 <text x="40" y="62" font-size="12" text-anchor="start" font-weight="normal" fill="#57606a">Teryx OS wiring, sheet &#x27;trailer&#x27;. Made from config/wiring.yaml by `python -m teryx wiring`. Don&#x27;t edit this file.</text>
 <line x1="40" y1="92" x2="74" y2="92" stroke="#1a7f37" stroke-width="2.5"/>
@@ -13,18 +13,23 @@
 <line x1="880" y1="92" x2="914" y2="92" stroke="#8250df" stroke-width="2.5" stroke-dasharray="2 4"/>
 <text x="920" y="96" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">Placeholder / later</text>
 <text x="40" y="120" font-size="11" text-anchor="start" font-weight="normal" fill="#57606a">Labels: wire id, size, fuse (if the wire has its own), and anything in between. Faded = optional. Hover for notes. Full table: docs/wiring/README.md</text>
-<g data-wire="T01" data-from="FB.F4" data-to="RELAYS.COM2" data-status="planned"><title>T01: FB.F4 -&gt; RELAYS.COM2</title><path d="M920,197 C835,197 835,197 750,197" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="T01" data-from="FB.F4" data-to="RELAYS.COM2" data-status="planned"><title>T01: FB.F4 -&gt; RELAYS.COM2</title><path d="M920,217 C835,217 835,197 750,197" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="T02" data-from="RELAYS.NO2" data-to="TRAILER.P7_TAIL" data-status="planned"><title>T02: RELAYS.NO2 -&gt; TRAILER.P7_TAIL - trailer.tail</title><path d="M480,257 C395,257 395,252 310,252" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="T03" data-from="FB.F4" data-to="RELAYS.COM3" data-status="planned"><title>T03: FB.F4 -&gt; RELAYS.COM3</title><path d="M920,197 C835,197 835,217 750,217" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="T03" data-from="FB.F4" data-to="RELAYS.COM3" data-status="planned"><title>T03: FB.F4 -&gt; RELAYS.COM3</title><path d="M920,217 C835,217 835,217 750,217" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="T04" data-from="RELAYS.NO3" data-to="TRAILER.P6_STOP" data-status="planned"><title>T04: RELAYS.NO3 -&gt; TRAILER.P6_STOP - trailer.brake</title><path d="M480,277 C395,277 395,232 310,232" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="T05" data-from="BRAKE_SW.OUT" data-to="TRAILER.P6_STOP" data-status="tbc"><title>T05: BRAKE_SW.OUT -&gt; TRAILER.P6_STOP - Trailer brake lights still work with the control box off</title><path d="M480,388 C395,388 395,232 310,232" fill="none" stroke="#bf8700" stroke-width="2.2" stroke-dasharray="7 4"/></g>
 <g data-wire="T06" data-from="RELAYS.NO1" data-to="TRAILER.P2_REV" data-status="tbc"><title>T06: RELAYS.NO1 -&gt; TRAILER.P2_REV - Reversing pin. Relay 1 also runs the floods by hand, so trailer reverse lights would come on with them</title><path d="M480,237 C395,237 395,212 310,212" fill="none" stroke="#bf8700" stroke-width="2.2" stroke-dasharray="7 4" stroke-opacity="0.65"/></g>
-<g data-wire="T07" data-from="RELAYS.NO7" data-to="TCAM_PLUG.V12" data-status="planned"><title>T07: RELAYS.NO7 -&gt; TCAM_PLUG.V12 - 2 A inline fuse. Runs while driving, not just reversing</title><path d="M480,297 C395,297 395,343 310,343" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="T08" data-from="TCAM_PLUG.V12" data-to="CAM_TRAILER.V12" data-status="planned"><title>T08: TCAM_PLUG.V12 -&gt; CAM_TRAILER.V12</title><path d="M310,343 C395,343 395,479 480,479" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="T09" data-from="CAM_TRAILER.VID" data-to="TCAM_PLUG.VID" data-status="planned"><title>T09: CAM_TRAILER.VID -&gt; TCAM_PLUG.VID</title><path d="M480,499 C395,499 395,363 310,363" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="T10" data-from="CAM_TRAILER.VID_GND" data-to="TCAM_PLUG.VID_GND" data-status="planned"><title>T10: CAM_TRAILER.VID_GND -&gt; TCAM_PLUG.VID_GND</title><path d="M480,519 C395,519 395,383 310,383" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="T11" data-from="TCAM_PLUG.VID" data-to="TCAM_DONGLE.VID" data-status="planned"><title>T11: TCAM_PLUG.VID -&gt; TCAM_DONGLE.VID - Shielded video cable</title><path d="M310,363 C395,363 395,640 480,640" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="T12" data-from="TCAM_PLUG.VID_GND" data-to="TCAM_DONGLE.VID_GND" data-status="planned"><title>T12: TCAM_PLUG.VID_GND -&gt; TCAM_DONGLE.VID_GND</title><path d="M310,383 C395,383 395,660 480,660" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="T07" data-from="RELAYS.NO7" data-to="TCAM_PLUG.V12" data-status="planned"><title>T07: RELAYS.NO7 -&gt; TCAM_PLUG.V12 - 2 A inline fuse. Runs while driving, not just reversing</title><path d="M750,297 C1055,297 1055,212 1360,212" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="T08" data-from="TCAM_PLUG.V12" data-to="CAM_TRAILER.V12" data-status="planned"><title>T08: TCAM_PLUG.V12 -&gt; CAM_TRAILER.V12</title><path d="M1630,212 C1715,212 1715,197 1800,197" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="T09" data-from="CAM_TRAILER.VID" data-to="TCAM_PLUG.VID" data-status="planned"><title>T09: CAM_TRAILER.VID -&gt; TCAM_PLUG.VID</title><path d="M1800,217 C1715,217 1715,232 1630,232" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="T10" data-from="CAM_TRAILER.VID_GND" data-to="TCAM_PLUG.VID_GND" data-status="planned"><title>T10: CAM_TRAILER.VID_GND -&gt; TCAM_PLUG.VID_GND</title><path d="M1800,237 C1715,237 1715,252 1630,252" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="T11" data-from="TCAM_PLUG.VID" data-to="TCAM_DONGLE.VID" data-status="planned"><title>T11: TCAM_PLUG.VID -&gt; TCAM_DONGLE.VID - Shielded video cable</title><path d="M1630,232 C1715,232 1715,358 1800,358" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="T13" data-from="FB.IN" data-to="TCAM_PLUG.LB_POS" data-status="planned"><title>T13: FB.IN -&gt; TCAM_PLUG.LB_POS - Own 10 A inline fuse off the fuse block&#x27;s feed stud (the 12-way is full)</title><path d="M1190,197 C1275,197 1275,272 1360,272" fill="none" stroke="#424a53" stroke-width="2.2" stroke-opacity="0.65"/></g>
+<g data-wire="T14" data-from="TCAM_PLUG.LB_POS" data-to="LB_TRL.pos" data-status="planned"><title>T14: TCAM_PLUG.LB_POS -&gt; LB_TRL.pos</title><path d="M1630,272 C1715,272 1715,469 1800,469" fill="none" stroke="#424a53" stroke-width="2.2" stroke-opacity="0.65"/></g>
+<g data-wire="T15" data-from="LB_TRL.neg" data-to="TCAM_PLUG.LB_NEG" data-status="planned"><title>T15: LB_TRL.neg -&gt; TCAM_PLUG.LB_NEG</title><path d="M1800,489 C1715,489 1715,292 1630,292" fill="none" stroke="#424a53" stroke-width="2.2" stroke-opacity="0.65"/></g>
+<g data-wire="T16" data-from="TCAM_PLUG.LB_NEG" data-to="MOSFET.OUT6" data-status="planned"><title>T16: TCAM_PLUG.LB_NEG -&gt; MOSFET.OUT6</title><path d="M1630,292 C1715,292 1715,615 1800,615" fill="none" stroke="#424a53" stroke-width="2.2" stroke-opacity="0.65"/></g>
+<g data-wire="T17" data-from="MCP2.GPB7" data-to="MOSFET.IN6" data-status="planned"><title>T17: MCP2.GPB7 -&gt; MOSFET.IN6 - light.trailer on/off (the Pico has no free PWM pin)</title><path d="M2240,197 C2155,197 2155,595 2070,595" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="T12" data-from="TCAM_PLUG.VID_GND" data-to="TCAM_DONGLE.VID_GND" data-status="planned"><title>T12: TCAM_PLUG.VID_GND -&gt; TCAM_DONGLE.VID_GND</title><path d="M1630,252 C1715,252 1715,378 1800,378" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
 <g data-device="TRAILER" data-status="planned"><title>TRAILER: 7-pin flat trailer socket (Narva 82043BL, reed switch)</title><rect x="40" y="150" width="270" height="124" rx="6" fill="#f4f4f4" stroke="#424a53" stroke-width="1.5"/>
 <text x="50" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">7-pin flat trailer socket (Narva</text>
 <text x="50" y="183" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">82043BL, reed switch)</text>
@@ -35,16 +40,6 @@
 <text x="175" y="236" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P6_STOP</text>
 <line x1="40" y1="252" x2="310" y2="252" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="175" y="256" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P7_TAIL</text>
-</g>
-<g data-device="TCAM_PLUG" data-status="planned"><title>TCAM_PLUG: Trailer camera 4-pin plug - Own small waterproof plug next to the 7-pin (pick from cameras.md)</title><rect x="40" y="296" width="270" height="109" rx="6" fill="#f4f4f4" stroke="#424a53" stroke-width="1.5"/>
-<text x="50" y="314" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Trailer camera 4-pin plug</text>
-<text x="50" y="329" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">TCAM_PLUG · planned · optional</text>
-<line x1="40" y1="343" x2="310" y2="343" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="347" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">V12</text>
-<line x1="40" y1="363" x2="310" y2="363" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="367" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VID</text>
-<line x1="40" y1="383" x2="310" y2="383" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="387" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VID_GND</text>
 </g>
 <g data-device="RELAYS" data-status="planned"><title>RELAYS: 16-ch relay board, channels 1-8 - One 16-channel board of mechanical 5 V relays with opto and JD-VCC jumper (AliExpress cart), in an aux box next to the control box. RELAYS2 is channels 9-16 of the same board. The solid state G3MB-202P board Sam has is AC only and won&#x27;t turn off on 12 V DC. JD-VCC jumper off, coils on 5 V, inputs from 3.3 V</title><rect x="480" y="150" width="270" height="169" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
 <text x="490" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">16-ch relay board, channels 1-8</text>
@@ -68,31 +63,71 @@
 <line x1="480" y1="388" x2="750" y2="388" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="392" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT</text>
 </g>
-<g data-device="CAM_TRAILER" data-status="planned"><title>CAM_TRAILER: Trailer camera (12 V AHD)</title><rect x="480" y="432" width="270" height="109" rx="6" fill="#f4f4f4" stroke="#424a53" stroke-width="1.5"/>
-<text x="490" y="450" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Trailer camera (12 V AHD)</text>
-<text x="490" y="465" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">CAM_TRAILER · planned · optional</text>
-<line x1="480" y1="479" x2="750" y2="479" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="483" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">V12</text>
-<line x1="480" y1="499" x2="750" y2="499" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="503" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VID</text>
-<line x1="480" y1="519" x2="750" y2="519" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="523" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VID_GND</text>
-</g>
-<g data-device="TCAM_DONGLE" data-status="tbc"><title>TCAM_DONGLE: Analogue video to camera-ribbon (CSI) board, ADV7280-M (rear + trailer) - No USB (Sam). The cameras run in CVBS (PAL) mode into this board, which sits in the Pi box on the Pi&#x27;s 2nd camera ribbon port. ADV7280-M has several analogue inputs picked in software (adv728x-m overlay, adv7180 driver), so it swaps rear/trailer itself, no relay. A spare input can take a small cabin camera later. Pi 5 support for these boards is not proven yet: bench test it first</title><rect x="480" y="563" width="270" height="119" rx="6" fill="#eef9f1" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
-<text x="490" y="581" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Analogue video to camera-ribbon</text>
-<text x="490" y="596" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">(CSI) board, ADV7280-M (rear +</text>
-<text x="490" y="611" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">trailer)</text>
-<text x="490" y="626" font-size="10" text-anchor="start" font-weight="normal" fill="#bf8700">TCAM_DONGLE · tbc</text>
-<line x1="480" y1="640" x2="750" y2="640" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="644" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VID</text>
-<line x1="480" y1="660" x2="750" y2="660" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="664" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VID_GND</text>
-</g>
-<g data-device="FB" data-status="tbc"><title>FB: Blade fuse block - 12 fuses in use. Small loads that can go out together share a fuse (front bars in pairs, trailer tail + stop, interior bar + accessory). All four front bars are NOT on one fuse, so one fault can&#x27;t black out the front at night. The winch, control box power, key, power hold and each actuator keep their own. Sam&#x27;s 12-way (in the post) is used, so it is full with no spares; add a small 6-way next to it if more circuits come</title><rect x="920" y="150" width="270" height="69" rx="6" fill="#f0f6ff" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
+<g data-device="FB" data-status="tbc"><title>FB: Blade fuse block - 12 fuses in use. Small loads that can go out together share a fuse (front bars in pairs, trailer tail + stop, interior bar + accessory). All four front bars are NOT on one fuse, so one fault can&#x27;t black out the front at night. The winch, control box power, key, power hold and each actuator keep their own. Sam&#x27;s 12-way (in the post) is used, so it is full with no spares; add a small 6-way next to it if more circuits come</title><rect x="920" y="150" width="270" height="89" rx="6" fill="#f0f6ff" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
 <text x="930" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Blade fuse block</text>
 <text x="930" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#bf8700">FB · tbc</text>
 <line x1="920" y1="197" x2="1190" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F4  relays 2-3 trailer tail + stop</text>
+<text x="1055" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN</text>
+<line x1="920" y1="217" x2="1190" y2="217" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F4  relays 2-3 trailer tail + stop</text>
+</g>
+<g data-device="TCAM_PLUG" data-status="planned"><title>TCAM_PLUG: Trailer 8-pin plug (camera + light bar), Deutsch DT - Own waterproof Deutsch DT 8-pin next to the 7-pin (DT04-08PA on the Teryx, DT06-08SA on the trailer lead), 13 A per pin. 1 cam +12 V, 2 cam ground, 3 video, 4 video shield, 5 light bar +12 V, 6 light bar - (switched), 7-8 spare</title><rect x="1360" y="150" width="270" height="164" rx="6" fill="#f4f4f4" stroke="#424a53" stroke-width="1.5"/>
+<text x="1370" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Trailer 8-pin plug (camera + light</text>
+<text x="1370" y="183" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">bar), Deutsch DT</text>
+<text x="1370" y="198" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">TCAM_PLUG · planned · optional</text>
+<line x1="1360" y1="212" x2="1630" y2="212" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="216" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">V12</text>
+<line x1="1360" y1="232" x2="1630" y2="232" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="236" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VID</text>
+<line x1="1360" y1="252" x2="1630" y2="252" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="256" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VID_GND</text>
+<line x1="1360" y1="272" x2="1630" y2="272" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="276" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">LB_POS</text>
+<line x1="1360" y1="292" x2="1630" y2="292" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="296" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">LB_NEG</text>
+</g>
+<g data-device="CAM_TRAILER" data-status="planned"><title>CAM_TRAILER: Trailer camera (12 V AHD)</title><rect x="1800" y="150" width="270" height="109" rx="6" fill="#f4f4f4" stroke="#424a53" stroke-width="1.5"/>
+<text x="1810" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Trailer camera (12 V AHD)</text>
+<text x="1810" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">CAM_TRAILER · planned · optional</text>
+<line x1="1800" y1="197" x2="2070" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1935" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">V12</text>
+<line x1="1800" y1="217" x2="2070" y2="217" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1935" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VID</text>
+<line x1="1800" y1="237" x2="2070" y2="237" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1935" y="241" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VID_GND</text>
+</g>
+<g data-device="TCAM_DONGLE" data-status="tbc"><title>TCAM_DONGLE: Analogue video to camera-ribbon (CSI) board, ADV7280-M (rear + trailer) - No USB (Sam). The cameras run in CVBS (PAL) mode into this board, which sits in the Pi box on the Pi&#x27;s 2nd camera ribbon port. ADV7280-M has several analogue inputs picked in software (adv728x-m overlay, adv7180 driver), so it swaps rear/trailer itself, no relay. A spare input can take a small cabin camera later. Pi 5 support for these boards is not proven yet: bench test it first</title><rect x="1800" y="281" width="270" height="119" rx="6" fill="#eef9f1" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
+<text x="1810" y="299" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Analogue video to camera-ribbon</text>
+<text x="1810" y="314" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">(CSI) board, ADV7280-M (rear +</text>
+<text x="1810" y="329" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">trailer)</text>
+<text x="1810" y="344" font-size="10" text-anchor="start" font-weight="normal" fill="#bf8700">TCAM_DONGLE · tbc</text>
+<line x1="1800" y1="358" x2="2070" y2="358" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1935" y="362" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VID</text>
+<line x1="1800" y1="378" x2="2070" y2="378" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1935" y="382" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VID_GND</text>
+</g>
+<g data-device="LB_TRL" data-status="planned"><title>LB_TRL: Trailer light bar (Sam&#x27;s spare) - On the trailer, through the 8-pin plug. On/off from the dash and the phone remote; only live when the trailer plug is in</title><rect x="1800" y="422" width="270" height="89" rx="6" fill="#f4f4f4" stroke="#424a53" stroke-width="1.5"/>
+<text x="1810" y="440" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Trailer light bar (Sam&#x27;s spare)</text>
+<text x="1810" y="455" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">LB_TRL · planned · optional</text>
+<line x1="1800" y1="469" x2="2070" y2="469" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1935" y="473" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">pos</text>
+<line x1="1800" y1="489" x2="2070" y2="489" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1935" y="493" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">neg</text>
+</g>
+<g data-device="MOSFET" data-status="planned"><title>MOSFET: 8-ch isolated MOSFET board (low side, 6 used, 2 spare) - One 8-channel opto-isolated MOSFET board (3.3 V input version), one channel per light bar, 3 spare. About 6 A per front bar. Low side switching, so each bar&#x27;s + comes from its fuse and its - goes to an OUT pin</title><rect x="1800" y="533" width="270" height="104" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="1810" y="551" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">8-ch isolated MOSFET board (low</text>
+<text x="1810" y="566" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">side, 6 used, 2 spare)</text>
+<text x="1810" y="581" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">MOSFET · planned</text>
+<line x1="1800" y1="595" x2="2070" y2="595" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1935" y="599" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN6</text>
+<line x1="1800" y1="615" x2="2070" y2="615" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1935" y="619" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT6</text>
+</g>
+<g data-device="MCP2" data-status="planned"><title>MCP2: Second MCP23017 (0x21) - More outputs for the steering enable and the drive lock relay. The first one is full</title><rect x="2240" y="150" width="270" height="69" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="2250" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Second MCP23017 (0x21)</text>
+<text x="2250" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">MCP2 · planned · optional</text>
+<line x1="2240" y1="197" x2="2510" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="2375" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GPB7</text>
 </g>
 <text x="758" y="194" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T01  1 mm²</text>
 <text x="472" y="254" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T02  1 mm²  7.5 A</text>
@@ -100,10 +135,15 @@
 <text x="472" y="274" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T04  1 mm²  7.5 A</text>
 <text x="472" y="385" font-size="9.5" text-anchor="end" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">T05  1 mm²  via diode (backup)</text>
 <text x="472" y="234" font-size="9.5" text-anchor="end" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">T06  1 mm²  10 A</text>
-<text x="472" y="294" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T07  0.5 mm²  2 A</text>
-<text x="472" y="476" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T08  0.5 mm²  2 A</text>
-<text x="472" y="496" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T09</text>
-<text x="472" y="516" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T10</text>
-<text x="472" y="637" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T11</text>
-<text x="472" y="657" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T12</text>
+<text x="758" y="294" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T07  0.5 mm²  2 A</text>
+<text x="1792" y="194" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T08  0.5 mm²  2 A</text>
+<text x="1792" y="214" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T09</text>
+<text x="1792" y="234" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T10</text>
+<text x="1792" y="355" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T11</text>
+<text x="1198" y="194" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T13  1.5 mm²  10 A</text>
+<text x="1792" y="466" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T14  1.5 mm²</text>
+<text x="1792" y="486" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T15  1.5 mm²</text>
+<text x="1792" y="612" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T16  1.5 mm²</text>
+<text x="2232" y="194" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T17</text>
+<text x="1792" y="375" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T12</text>
 </svg>

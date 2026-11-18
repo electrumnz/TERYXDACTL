@@ -101,7 +101,7 @@ lines:
   - {id: glove_usb, shop: aliexpress, part: "12V USB-C PD panel socket, 30W, waterproof cap", qty: 1, each: 15.00, source: Estimate, covers: [GLOVE_USB], notes: Glove box phone (RC remote)}
   - {id: imu, shop: aliexpress, part: MPU-6050 IMU board (roll / pitch), qty: 1, each: 5.00, source: Estimate, covers: [IMU], notes: "I2C to the Pi"}
   - {id: tcam, shop: aliexpress, part: "12V AHD reversing camera (trailer)", qty: 1, each: 30.00, source: Estimate, covers: [CAM_TRAILER]}
-  - {id: tcam_plug, shop: aliexpress, part: "4-pin waterproof aviation plug + socket (trailer camera)", qty: 1, each: 8.00, source: Estimate, covers: [TCAM_PLUG], notes: Next to the 7-pin}
+  - {id: tcam_plug, shop: aliexpress, part: "Deutsch DT 8-pin kit: DT04-08PA + DT06-08SA, wedgelocks, size 16 pins, seals", qty: 1, each: 15.00, source: Estimate, covers: [TCAM_PLUG], notes: "Trailer camera + light bar, next to the 7-pin. Needs the Deutsch crimp tool or a careful plier crimp"}
   - {id: tcam_dongle, shop: aliexpress, part: "CVBS (PAL) to MIPI CSI-2 board, ADV7280-M, multi-input", qty: 1, each: 120.00, source: "Estimate. AliExpress search: ADV7282 MIPI CSI (or ADV7280 CSI Raspberry Pi). No official Pi product does this", covers: [TCAM_DONGLE], notes: "Chip must be ADV7280-M, ADV7281-M or ADV7282-M (the -M is the ribbon output), 2+ CVBS inputs, Pi camera ribbon socket. Not TP28xx (no Pi driver) or HDMI-to-CSI. Bench test on the Pi 5"}
   - {id: a7670, shop: aliexpress, part: "SIMCom A7670SA 4G board (B28, GPS 'FASE' option)", qty: 1, each: 28.00, source: "US$15.46 x 1.822", covers: [MODEM_4G], notes: "Must list B28; V pin from the 2nd Mini560, never raw 12V"}
   - {id: bss138, shop: aliexpress, part: 4-channel BSS138 level shifter, qty: 1, each: 2.00, source: Estimate, notes: "Probably not needed; measure the T pin first"}
@@ -168,6 +168,7 @@ owned:
   LB3: 12 in light bar
   LB4: 12 in light bar
   LB_INT: 7 in light bar
+  LB_TRL: spare light bar (trailer)
   FLOOD_L: 4 in pod
   FLOOD_R: 4 in pod
   WINCH_SOL: XBull solenoid box
