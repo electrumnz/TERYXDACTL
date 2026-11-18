@@ -87,16 +87,17 @@ Sizing, at the defaults (1280 x 720, 15 fps, 2 Mb/s):
 | 1 TB drive, 75% for the loop | about **200 hours** of all four cameras, about 25 days of 8 h driving |
 | 500 GB drive | about 100 hours |
 
-**Pick (18 Nov): Samsung PRO Endurance 256 GB microSD** in the Pi's own slot, for the OS and the
-recordings. PB Tech MEMSAM11240, about NZ$206 (it was NZ$89 on sale earlier). Samsung rate it for
-140,160 hours of 1080p recording. No USB at all, because USB plugs shake loose (Sam's rule).
+**Pick (18 Nov): Samsung PRO Endurance 128 GB microSD** in the Pi's own slot, for the OS and the
+recordings. PB Tech MEMSAM11230, about NZ$115. Samsung rate the 128 GB for 70,080 hours of
+non-stop recording. It only records when moving and on Sentry events, so that's years of use.
+No USB at all, because USB plugs shake loose (Sam's rule).
 
-| 256 GB card | |
+| 128 GB card | |
 |---|---|
 | OS and apps | about 16 GB |
-| Loop space (75% of the rest) | about 180 GB |
-| Four cameras | about **50 hours**, about 6 days of 8 h driving |
-| One camera | about 200 hours |
+| Loop space (75% of the rest) | about 84 GB |
+| Four cameras | about **23 hours** of recording |
+| One camera | about 90 hours |
 
 The loop deletes the oldest clips first. Sentry clips are marked and kept.
 

@@ -26,9 +26,9 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | [Raspberry Pi Pico 2 5-pack](https://www.pbtech.co.nz/product/SEVRBP0628) (SEVRBP0628) | 1 | 47.20 | 47.20 | Checked 17 Nov | Control box, CAN sniffer, steering bench test, 2 spare |
 | [Raspberry Pi 27W USB-C power supply (bench)](https://www.pbtech.co.nz/product/SEVRBP0512) (SEVRBP0512) | 1 | 24.90 | 24.90 | Search result 18 Nov | Bench only |
 | [Raspberry Pi micro HDMI to HDMI cable 1m](https://www.pbtech.co.nz/product/SEVRBP0207) (SEVRBP0207) | 1 | 11.80 | 11.80 | Search result 18 Nov | Alt black SEVRBP0262 ~11.10 |
-| [Samsung PRO Endurance 256GB microSD (OS + loop recordings)](https://www.pbtech.co.nz/product/MEMSAM11240) (MEMSAM11240) | 1 | 205.85 | 205.85 | PB Tech page 18 Nov (was NZ$89 on sale earlier) | In the Pi's own slot, no USB. Rated 140,160 hours of 1080p. Dashcam/sentry overwrite oldest first |
+| [Samsung PRO Endurance 128GB microSD (OS + recordings)](https://www.pbtech.co.nz/product/MEMSAM11230) (MEMSAM11230) | 1 | 114.90 | 114.90 | PB Tech page 18 Nov | In the Pi's own slot, no USB. Samsung rate the 128GB for 70,080 hours of non-stop recording; it only records on movement and Sentry events, so years of life. Oldest clips overwritten first |
 | [Raspberry Pi DAC+ HAT (ex IQaudio DAC+, SC0368)](https://www.pbtech.co.nz/product/SEVRBP0313) (SEVRBP0313) | 1 | 35.65 | 35.65 | Search result 18 Nov (out of stock when indexed) | Official board, RCA out. If PB Tech has none: Pakronics NZ ~NZ$40 |
-| **Total** | | | **851.74** | | |
+| **Total** | | | **760.79** | | |
 
 ### AliExpress (one order, 2 to 4 weeks)
 
@@ -141,13 +141,13 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 
 | Shop | NZ$ |
 |---|---|
-| PB Tech (buy Thursday) | 851.74 |
+| PB Tech (buy Thursday) | 760.79 |
 | AliExpress (one order, 2 to 4 weeks) | 731.01 |
 | Core Electronics (AU, online) | 246.68 |
 | Gogo:Tronics and element14 (NZ, online) | 10.38 |
 | Local: Jaycar, Narva stockist, Repco, auto electrical | 1,241.50 |
 | Separate pickup | 115.00 |
-| **Everything** | **3,196.31** |
+| **Everything** | **3,105.36** |
 
 ### Already got (not in the totals)
 
