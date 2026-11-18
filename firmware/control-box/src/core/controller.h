@@ -16,7 +16,7 @@
 // The two tray limits are normally closed, so 1 = "at limit or wire broken".
 enum {
     IN_IGNITION = 0, IN_BRAKE = 1, IN_REVERSE = 2, IN_TRAY_DOWN = 3,
-    IN_TRAY_UP = 4, IN_WINCH_REMOTE = 5, IN_PARK = 6, IN_SPARE = 7,
+    IN_TRAY_UP = 4, IN_WINCH_REMOTE = 5, IN_PARK = 6, IN_TRAILER = 7,
 };
 #define BIT(n) (1u << (n))
 

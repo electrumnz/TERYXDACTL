@@ -158,7 +158,7 @@ shifter. **TBC** on the bench.
 | `in.tray_up` | Tray up limit | B4 | Normally closed |
 | `in.winch_remote` | Winch being run by hand: handheld remote, or either hidden hand switch | B5 | All of them diode-OR'd into this one input. The dash shows "by hand", counts it towards winch motor heat, and the Pico won't let the dash drive the winch while it's on |
 | `in.park` | Parking brake pedal switch | B6 | The stock Teryx has one (it lights the red parking brake light in the meter). Tap that wire. Ground or 12V switching **TBC** |
-| `in.spare` | Spare | B7 | |
+| `in.trailer` | Trailer plugged in | B7 | Reed switch in the 7-pin socket (Narva 82043BL type, see [`cameras.md`](cameras.md)). Shows the trailer camera. Was the spare input |
 
 ### Analogue
 | ID | Input | Where | Scaling |

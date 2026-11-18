@@ -91,7 +91,7 @@ INPUT_BITS = {   # 0x710 byte 3, MCP23017 B0-B7
     4: "in.tray_up",
     5: "in.winch_remote",
     6: "in.park",
-    7: "in.spare",
+    7: "in.trailer",      # trailer plugged in: reed switch in the 7-pin socket (see docs/cameras.md)
 }
 FRONT_LIGHTS = ("light.front_1", "light.front_2", "light.front_3", "light.front_4")
 PWM_LIGHTS = FRONT_LIGHTS + ("light.interior",)

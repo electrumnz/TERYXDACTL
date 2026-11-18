@@ -1,0 +1,22 @@
+Shop,Part,SKU,Qty,Price NZ$ incl GST (each),Line total NZ$,Price source,Stock / notes,Link
+PB Tech,Raspberry Pi 5 8GB,SEVRBP0502,1,371.39,371.39,Checked 17 Nov,"On order, ships about 30 Nov",https://www.pbtech.co.nz/product/SEVRBP0502
+PB Tech,Raspberry Pi AI HAT+ 2,SEVRBP0446,1,423.43,423.43,Search result 18 Nov,"Cheaper at Core Electronics (about NZ$357-373)",https://www.pbtech.co.nz/product/SEVRBP0446
+PB Tech,Raspberry Pi Active Cooler,SEVRBP0531,1,11.21,11.21,Checked 17 Nov,In stock,https://www.pbtech.co.nz/product/SEVRBP0531
+PB Tech,Raspberry Pi A2 SD card 128GB,SEVRBP0538,1,47.32,47.32,Search result 18 Nov,In stock when indexed,https://www.pbtech.co.nz/product/SEVRBP0538
+PB Tech,Raspberry Pi Camera Module 3 Wide,SEVRBP0398,1,80.71,80.71,Search result 18 Nov,"Out of stock when indexed; alt element14 NZ SC0874 ~NZ$69",https://www.pbtech.co.nz/product/SEVRBP0398
+PB Tech,Pi 5 camera cable 200mm,SEVRBP0541,1,2.12,2.12,Search result 18 Nov (1.84 probably ex GST),,https://www.pbtech.com/pacific/product/SEVRBP0541
+PB Tech,Raspberry Pi Pico 2 5-pack,SEVRBP0628,1,47.20,47.20,Checked 17 Nov,In stock,https://www.pbtech.co.nz/product/SEVRBP0628
+PB Tech,Vention micro HDMI to HDMI 2m,VNT1306,1,12.41,12.41,Checked 17 Nov,"No stock, ships about 28 Jan; alt Jaycar PA3649 NZ$20.90",https://www.pbtech.co.nz/product/VNT1306
+PB Tech,Raspberry Pi 27W USB-C power supply (bench),SEVRBP0512,1,24.90,24.90,Search result 18 Nov (21.65 probably ex GST),Bench only,https://www.pbtech.co.nz/product/SEVRBP0512
+PB Tech,EasyCAP DC60 USB capture (only if rear cam is RCA),SEVOEM9701,0,28.75,0.00,Search result 18 Nov,Optional,https://www.pbtech.co.nz/product/SEVOEM9701
+Core Electronics (AU),Waveshare RS485 CAN HAT,WS-14882,1,28.07,28.07,AU$22.75 x 1.234,In stock 17 Nov,https://core-electronics.com.au/catalog/product/view/sku/WS-14882
+Core Electronics (AU),Seeed MCP2515 + SN65HVD230 CAN board,,2,22.77,45.54,AU$18.45 x 1.234,15 in stock 17 Nov,https://core-electronics.com.au/seeed-studio-can-bus-breakout-board-for-xiao-and-qt-py-mcp2515-controller-sn65hvd230-transceiver-chip.html
+Core Electronics (AU),MCP23017 board,WS-15391,1,13.45,13.45,AU$10.90 x 1.234,9 in stock 17 Nov,https://core-electronics.com.au/catalog/product/view/sku/WS-15391
+Core Electronics (AU),Pololu D36V50F5 5V 5.5A regulator,POLOLU-4091,1,111.20,111.20,AU$90.11 x 1.234,In stock 17 Nov,https://core-electronics.com.au/catalog/product/view/sku/POLOLU-4091
+Core Electronics (AU),Shipping to NZ (estimate),,1,17.50,17.50,AU$12-16 from product page,Check at checkout,
+Jaycar,30mm 5V fan,YX2500,1,31.90,31.90,Checked 17 Nov,NZ stock,https://www.jaycar.co.nz/p/YX2500
+Jaycar,12-way fuse block,SZ2032,1,53.90,53.90,Checked 17 Nov,NZ stock,https://www.jaycar.co.nz/p/SZ2032
+Gogo:Tronics,Mini560 5V 5A buck,,2,2.95,5.90,Checked 17 Nov,,https://sparks.gogo.co.nz/catalog/DC-Power-260/Fixed-Output-Step-Down-Converter-Out-5v-up-to-5A-Continuous-In-7-20v-1009.html
+element14 NZ,1.5KE18A TVS diode,9884831,2,2.24,4.48,Checked 17 Nov (GST unclear),,https://nz.element14.com/stmicroelectronics/1-5ke18a/diode-tvs-1-5kw-18v/dp/9884831
+Narva stockist,Narva 7-pin flat socket with reed switch,82043BL,1,,,Not priced,Trailer detect,https://narva.com.au/products/narva-7-pin-flat-quickfit-trailer-socket-with-reed-switch-for-use-with-normally-closed-circuits-1-pack
+,TOTAL (priced items),,,,1332.63,,"PB Tech NZ$1,020.69 + others NZ$311.94",
