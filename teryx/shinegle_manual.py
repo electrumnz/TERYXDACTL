@@ -64,43 +64,39 @@ def render() -> str:
         "Made by `python -m teryx shinegle-manual` from",
         "[`config/shinegle-sg1810-params.yaml`](../config/shinegle-sg1810-params.yaml) and",
         "[`config/shinegle-faults.yaml`](../config/shinegle-faults.yaml). Edit those, not this file.",
-        "The rest of the manual (how to use the programmer, our notes) is in",
-        "[`shinegle-sg1810-programmer.md`](shinegle-sg1810-programmer.md).",
+        "The rest of the manual is in [`shinegle-sg1810-programmer.md`](shinegle-sg1810-programmer.md).",
         "",
-        "Copied from the manual's own tables, typos kept. **CN ours** is our own translation",
-        "of the Chinese, to check Shinegle's English against. Values are \"for reference only\"",
-        "(the manual's words) and won't match every controller.",
+        "The Chinese is from the manual. The English is our own translation of it.",
+        "Values are \"for reference only\" (the manual's words) and won't match every controller.",
         "",
-        "## Attached list 1: programmer parameters (附表1 编程器参数)",
+        "## Parameters (附表1 编程器参数)",
         "",
-        "**Green** = highlighted green in the manual, the only ones Shinegle say can be changed.",
+        "**Green** = green in the manual, the only ones Shinegle allow changing (to suit the vehicle's load).",
         "",
-        "| Page | Name | Value | Chinese | CN ours | Shinegle English | Remark (Chinese) | Remark CN ours | Remark (English) | Our note |",
-        "|---|---|---|---|---|---|---|---|---|---|",
+        "| Page | Name | Value | 说明 | Description | 备注 | Remark | Note |",
+        "|---|---|---|---|---|---|---|---|",
     ]
     for r in p["params"]:
         name = f'**{r["name"]}** (green)' if r.get("adjustable") else r["name"]
         out.append("| " + " | ".join(_cell(x) for x in (
-            r["page"], name, r.get("value"), r.get("cn"), r.get("cn_ours"), r.get("en"),
-            r.get("remark_cn"), r.get("remark_cn_ours"), r.get("remark_en"), r.get("note"))) + " |")
+            r["page"], name, r.get("value"), r.get("cn"), r.get("en"),
+            r.get("remark_cn"), r.get("remark"), r.get("note"))) + " |")
     fn = p["footnote"]
-    out += ["", "**Footnote (备注):**", "", f'> {fn["cn"]}', ">", f'> CN ours: {fn["cn_ours"]}', ">",
-            f'> {fn["en"]}', "", f'Our note: {fn["note"]}', ""]
+    out += ["", f'备注：{fn["cn"]}', "", f'Footnote: {fn["en"]}', ""]
 
     out += [
-        "## Attached list 2: fault codes (附表2 SHINEGLE 控制器故障代码列表及原因分析)",
+        "## Fault codes (附表2 SHINEGLE 控制器故障代码列表及原因分析)",
         "",
         "The code is the LED flash count and the ErrorCode the programmer shows.",
         "",
-        "| Code | Chinese | CN ours | Shinegle English | Cause (CN ours) | Cause (Shinegle English) | Fix (CN ours) | Fix (Shinegle English) | Our note |",
-        "|---|---|---|---|---|---|---|---|---|",
+        "| Code | Fault | Causes | Fixes | Note |",
+        "|---|---|---|---|---|",
     ]
     for f in load_faults():
         out.append("| " + " | ".join(_cell(x) for x in (
-            f["code"], f.get("cn"), f.get("cn_ours"), f.get("en"), f.get("cause_cn_ours"),
-            f.get("cause_en"), f.get("fix_cn_ours"), f.get("fix_en"), f.get("note"))) + " |")
-    out += ["", "### Fault causes and fixes in the original Chinese", "",
-            "| Code | 编程器显示 | 故障原因 | 解决方法 |", "|---|---|---|---|"]
+            f["code"], f.get("en"), f.get("cause"), f.get("fix"), f.get("note"))) + " |")
+    out += ["", "### 中文原文 (the Chinese)", "",
+            "| 代码 | 编程器显示 | 故障原因 | 解决方法 |", "|---|---|---|---|"]
     for f in load_faults():
         out.append("| " + " | ".join(_cell(x) for x in (
             f["code"], f.get("cn"), f.get("cause_cn"), f.get("fix_cn"))) + " |")
