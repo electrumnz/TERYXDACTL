@@ -78,6 +78,7 @@ runs up to about 5 m). Go one size up for bundled or hot runs.
 - [ ] **Screen 12 V supply** (SCREEN_PSU): Read the label on the screen's power brick (volts and amps)
 - [ ] **16-ch relay board, channels 1-8** (RELAYS): Does the relay board click from 3.3 V logic? Active high or low? Relays are SRD-05VDC type, 10 A at 28-30 V DC. Keep each load under about 7 A. Only rear floods (relay 1) could get near that, so read the pod labels (two pods + trailer reverse under about 80 W). If over, relay 1 drives a 40 A automotive relay instead
 - [ ] **16-ch relay board, channels 9-16 (2 used, 6 spare)** (RELAYS2): Relay 10 is rated 30 V DC. If the Shinegle KSI turns out to be 72 V (see KIT_KEY), swap relay 10 for one rated 80 V DC or more
+- [ ] **8-ch isolated MOSFET board (low side, 5 used, 3 spare)** (MOSFET): The listing must say 3.3 V input, at least 24 V load and 10 A per channel. If it only says 5 A, use single LR7843 modules instead
 - [ ] **Rear flood left (4 in pod)** (FLOOD_L): Light bars and pods dim with PWM? Test one on a cheap dimmer
 - [ ] **Winch isolator contactor** (WINCH_ISO): Do the remote and hand switches need to work with the dash dead? If so the isolator needs a second coil feed from a hidden key switch
 - [ ] **XBull solenoid box** (WINCH_SOL): Photo the XBull solenoid box terminals and the remote plug pins
@@ -115,8 +116,8 @@ Wires marked TBC, with what's unknown:
 | F3 | 10 A | relay 1 rear floods | LT16 |
 | F4 | 7.5 A | relays 2-3 trailer tail + stop | T01, T03 |
 | F5 | 3 A | relays 4-6 winch coils | WN07, WN08, WN09 |
-| F6 | 3 A | winch hand switches | I13, WN13, WN14 |
-| F7 | 10 A | extras - interior bar + relay 7 accessory (phone charger | P15, LT05 |
+| F6 | 3 A | winch hand switches, tray limits, trailer reed | I13, WN13, WN14 |
+| F7 | 10 A | extras - interior bar + relay 7 accessory (phone charger, trailer cam) | P15, LT05 |
 | F8 | 7.5 A | relay 8 power hold | P04 |
 | F9 | 10 A | BTS7960 1 diff | D05 |
 | F10 | 10 A | BTS7960 2 4WD | D15 |
@@ -513,7 +514,7 @@ Fuses not in the block (inline, at the battery or on a board):
 | BTS1 | BTS7960 1 (front diff) | control_box | confirmed |  |
 | BTS2 | BTS7960 2 (2WD/4WD) | control_box | planned |  |
 | BTS3 | BTS7960 3 (tray) | control_box | planned |  |
-| MOSFET | 5 x LR7843 isolated MOSFET modules (low side) | control_box | planned | One single-channel LR7843 module per light bar (opto input, 30 V MOSFET), plus a spare in the AliExpress cart. About 6 A per front bar, so no heatsink. Each module's ground is shown here as one pin |
+| MOSFET | 8-ch isolated MOSFET board (low side, 5 used, 3 spare) | control_box | planned | One 8-channel opto-isolated MOSFET board (3.3 V input version), one channel per light bar, 3 spare. About 6 A per front bar. Low side switching, so each bar's + comes from its fuse and its - goes to an OUT pin |
 | LB1 | Front bar 1 (far left) | front | confirmed |  |
 | LB2 | Front bar 2 (inner left) | front | confirmed |  |
 | LB3 | Front bar 3 (inner right) | front | confirmed |  |

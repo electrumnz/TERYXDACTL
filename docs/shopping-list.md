@@ -9,7 +9,7 @@
 > video SSD as "later". **Later on 18 Nov the Pi box went sealed and fanless** for wash-downs:
 > aluminium lid with a heatsink outside, no lid fan, Active Cooler only with the HAT later
 > ([`pi-box-cooling.md`](pi-box-cooling.md)). **The list for buying tomorrow (19 Nov), by shop with SKUs and a
-> total, is [`pbtech-order.md`](pbtech-order.md).** Cameras have their own write-up in
+> total, is [`pbtech-order.md`](pbtech-order.md), made from the wiring plan.** Cameras have their own write-up in
 > [`cameras.md`](cameras.md).
 
 Prices checked live on **17 November 2026** (NZ time), incl GST unless it says otherwise.
@@ -296,7 +296,7 @@ From [`io-list.md`](io-list.md) and [`wiring.md`](wiring.md).
 | ADS1115 board | 1 (io-list says on hand) | [Core Electronics (AU), DFRobot](https://core-electronics.com.au/gravity-i2c-ads1115-16-bit-adc-module-arduino-raspberry-pi-compatible.html) | AU$24.53 (about NZ$30) | In stock. Cheap ADS1115 boards on AliExpress, not verified |
 | BTS7960 H-bridge | 3 (io-list says 1 on hand) | AliExpress | **Not verified** | No NZ shop stocks them that I could find. Fruugo NZ lists them but the prices and dates on the page looked stale |
 | 8-channel PC817 opto board, 12V in | 2 | AliExpress | ~NZ$9 each estimate | Board 1 takes all 8 inputs; board 2 is 8 spare |
-| Isolated MOSFET switch module, LR7843 | 6 (5 + spare) | AliExpress | ~NZ$5 each estimate | Needed: switches and dims the light bars, one per bar |
+| 8-channel opto-isolated MOSFET board, 3.3V input | 1 (5 used, 3 spare) | AliExpress | ~NZ$22 estimate | Needed: switches and dims the light bars, one channel per bar. Must say 10 A per channel |
 | 16-channel 5V relay board, mechanical, opto + JD-VCC jumper (AliExpress cart) | 1 | | ~NZ$21 | All 10 relays plus 6 spare, aux box. The solid state G3MB-202P board on order is AC only and can't switch 12 V DC. Its 10 A relays are fine for every load in the plan (all under about 7 A, winch motor goes through its own contactor) |
 | Micro switch with lever (tray limits) | 2 | Jaycar SM1038 | **NZ price not verified** | [Australian page](https://jaycar-prod.australia-southeast1.gcp.storefrontcloud.io/spdt-250v-3a-miniature-micro-switch-with-lever/p/SM1038) shows $4.95. Wants to be sealed for under a tray: look for IP67 |
 | Resistors, diodes, 3.3V zener, 4.7k pull-ups | a few | Gogo:Tronics or Jaycar | **Not verified** | Values in `wiring.md` |

@@ -198,8 +198,8 @@ devices:
       F3:  {v: 12v, supply: true, fuse_a: 10,  desc: relay 1 rear floods}
       F4:  {v: 12v, supply: true, fuse_a: 7.5, multi: true, desc: relays 2-3 trailer tail + stop}
       F5:  {v: 12v, supply: true, fuse_a: 3,   multi: true, desc: relays 4-6 winch coils}
-      F6:  {v: 12v, supply: true, fuse_a: 3,   multi: true, desc: winch hand switches, tray limits, trailer reed}
-      F7:  {v: 12v, supply: true, fuse_a: 10,  multi: true, desc: extras - interior bar + relay 7 accessory (phone charger, trailer cam)}
+      F6:  {v: 12v, supply: true, fuse_a: 3,   multi: true, desc: "winch hand switches, tray limits, trailer reed"}
+      F7:  {v: 12v, supply: true, fuse_a: 10,  multi: true, desc: "extras - interior bar + relay 7 accessory (phone charger, trailer cam)"}
       F8:  {v: 12v, supply: true, fuse_a: 7.5, desc: relay 8 power hold}
       F9:  {v: 12v, supply: true, fuse_a: 10,  desc: BTS7960 1 diff}
       F10: {v: 12v, supply: true, fuse_a: 10,  desc: BTS7960 2 4WD}
@@ -372,10 +372,11 @@ devices:
     status: planned
     pins: *bts
   MOSFET:
-    name: 5 x LR7843 isolated MOSFET modules (low side)
+    name: 8-ch isolated MOSFET board (low side, 5 used, 3 spare)
     zone: control_box
     status: planned
-    note: One single-channel LR7843 module per light bar (opto input, 30 V MOSFET), plus a spare in the AliExpress cart. About 6 A per front bar, so no heatsink. Each module's ground is shown here as one pin
+    note: One 8-channel opto-isolated MOSFET board (3.3 V input version), one channel per light bar, 3 spare. About 6 A per front bar. Low side switching, so each bar's + comes from its fuse and its - goes to an OUT pin
+    check: The listing must say 3.3 V input, at least 24 V load and 10 A per channel. If it only says 5 A, use single LR7843 modules instead
     pins: {GND: gnd, IN1: 3v3, IN2: 3v3, IN3: 3v3, IN4: 3v3, IN5: 3v3, OUT1: 12v, OUT2: 12v, OUT3: 12v, OUT4: 12v, OUT5: 12v}
 
   # ---------------------------------------------------------- lights

@@ -1,77 +1,187 @@
-# Shopping list for Thursday 19 November (PB Tech and the rest)
+# Shopping list: everything for the build
 
 Updated **18 November 2026** (NZ time). Prices are NZ$ incl GST. "Checked 17 Nov" means I
-opened the shop's page then. "Search result" means the shop's page wouldn't open for me on
-18 Nov (PB Tech blocks my requests), so the price came from a search engine's copy of the
-page and **may be out of date**. Check each link before you pay. Why each part is needed:
-[`shopping-list.md`](shopping-list.md). Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv).
+opened the shop's page then. "Search result" or "Estimate" means the shop's page wouldn't open
+for me (PB Tech and AliExpress block my requests), so **check each price before you pay**.
+USD to NZD at 1.822, AUD to NZD at 1.234 (Wise, 17-18 Nov).
 
-**What changed today:** the AI HAT+ 2 is off the list for now (moved to "Later"), the CarPlay
-dongle is on, a fourth CAN board is added for the power steering column, and the 4G modem
-and video SSD are listed as "later". The Pi box stays sized for the AI HAT. Later on 18 Nov: the Pi box went sealed and fanless for wash-downs, so the 30 mm fan and the Active Cooler are out and heatsink parts are in the AliExpress cart.
+**This list is made from the wiring plan.** Every part in [`config/wiring.yaml`](../config/wiring.yaml)
+is on it, as something to buy, something you've got, part of the Shinegle kit, or "later".
+Wire by size, CAN cable, fuses, fuse holders, lugs, plugs, diodes and resistors are counted
+straight from the wires in the plan. A test fails if a part is added to the wiring and not to
+this list. The source is [`config/bom.yaml`](../config/bom.yaml); run `python -m teryx bom` after
+changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each part is needed:
+[`shopping-list.md`](shopping-list.md).
 
-## Buy tomorrow (in store or click and collect)
+<!-- parts list: made by `python -m teryx bom` from config/bom.yaml + config/wiring.yaml. Don't edit by hand -->
 
-| # | Part | Shop | SKU | Qty | Price | Price from | Stock / notes |
-|---|---|---|---|---|---|---|---|
-| 1 | [Raspberry Pi 5 8GB](https://www.pbtech.co.nz/product/SEVRBP0502/Raspberry-Pi-5-8GB-LPDDR4-24GHz-Quad-Core-ARM-Cort) | PB Tech | SEVRBP0502 | 1 | NZ$371.39 | Checked 17 Nov | Was on order, ships about 30 Nov. Ask in store if any have come in. A search result showed NZ$254.15, maybe an old price |
-| 2 | ~~[Raspberry Pi Active Cooler](https://www.pbtech.co.nz/product/SEVRBP0531)~~ | PB Tech | SEVRBP0531 | 0 | ~~NZ$11.21~~ | Checked 17 Nov | **Not now (18 Nov).** The Pi box is now sealed and fanless: an aluminium pillar takes the chip's heat to a heatsink on the outside of the lid ([`pi-box-cooling.md`](pi-box-cooling.md)). Buy it later with the AI HAT. Keep your passive heatsink for the bench |
-| 3 | [Raspberry Pi A2 SD card 128GB](https://www.pbtech.co.nz/product/SEVRBP0538/Raspberry-Pi-Official-A2---Class-UltraSD-Card-128G) | PB Tech | SEVRBP0538 | 1 | NZ$47.32 | Search result | In stock when indexed |
-| 4 | [Camera Module 3 Wide](https://www.pbtech.co.nz/product/SEVRBP0398/Raspberry-Pi-Official-Camera-Module-3-Wide-Version) | PB Tech | SEVRBP0398 | 1 | NZ$80.71 | Search result | **Out of stock** when indexed. Alternative: [element14 NZ SC0874](https://nz.element14.com/raspberry-pi/sc0874/rpi-wide-camera-mod-3-wide-lens/dp/4132320) ~NZ$69, also out then. Not needed for the first bench tests, so skip it if there's none |
-| 5 | [Pi 5 camera cable 200 mm](https://www.pbtech.com/pacific/product/SEVRBP0541) | PB Tech | SEVRBP0541 | 1 | ~NZ$2.12 | Search result | Only with the camera |
-| 6 | [Raspberry Pi Pico 2, 5-pack](https://www.pbtech.co.nz/product/SEVRBP0628/Raspberry-Pi-Kit-Pack-Microcontrollers-Board---Pic) | PB Tech | SEVRBP0628 | 1 | NZ$47.20 | Checked 17 Nov | In stock. Control box, CAN sniffer, power steering bench test, 2 spares |
-| 7 | [Raspberry Pi 27W USB-C power supply](https://www.pbtech.co.nz/product/SEVRBP0512) | PB Tech | SEVRBP0512 | 1 | ~NZ$24.90 | Search result | Bench only. In the Teryx the Pololu regulator powers the Pi |
-| 8 | [Raspberry Pi official micro HDMI to HDMI cable, 1 m, white](https://www.pbtech.co.nz/product/SEVRBP0207/Raspberry-Pi-Official-1M-White-Cable-Micro-HDMI-to) | PB Tech | SEVRBP0207 | 1 | NZ$11.80 | Search result | Stock not confirmed. Same cable in black: [SEVRBP0262](https://www.pbtech.co.nz/product/SEVRBP0262/Raspberry-Pi-Official-1M-Black-Cable-Micro-HDMI-to) ~NZ$11.10. If neither is in, [Jaycar PA3649 adaptor](https://jaycar.co.nz/micro-hdmi-plug-to-hdmi-socket-adaptor/p/PA3649) NZ$20.90 plus any HDMI cable. Use a **cable**, not a plug-in adaptor: a stiff adaptor hanging off the micro HDMI socket will work loose or crack the socket on the trail. The screen sits right over the Pi box, so 1 m is plenty; zip-tie the cable down close to the plug. Stay with HDMI, not VGA: the Pi has no VGA out, so it would need an active converter box, which is one more thing to fail and gives a softer picture. A printed clamp for the plug in the Pi box is a follow-up |
-| | **Buy tomorrow total (all PB Tech)** | | | | **about NZ$585** | | NZ$505 if the camera is out of stock |
+### PB Tech (buy Thursday)
 
-Everything for tomorrow is at PB Tech now. The fuse block moved to the AliExpress cart (Sam,
-18 Nov), as it isn't needed until wiring the Teryx. The lid fan and the Active Cooler are off the
-list: the Pi box is now sealed for wash-downs with a heatsink on the outside, no fan (see
-"Cooling" below).
+| Part | Qty | Each NZ$ | Total NZ$ | Price from | Notes |
+|---|---|---|---|---|---|
+| [Raspberry Pi 5 8GB](https://www.pbtech.co.nz/product/SEVRBP0502) (SEVRBP0502) | 1 | 371.39 | 371.39 | Checked 17 Nov | On order, ships about 30 Nov; ask in store |
+| [Raspberry Pi A2 SD card 128GB](https://www.pbtech.co.nz/product/SEVRBP0538) (SEVRBP0538) | 1 | 47.32 | 47.32 | Search result 18 Nov |  |
+| [Raspberry Pi Camera Module 3 Wide (front)](https://www.pbtech.co.nz/product/SEVRBP0398) (SEVRBP0398) | 1 | 80.71 | 80.71 | Search result 18 Nov | Out of stock when indexed; alt element14 SC0874 ~NZ$69 |
+| [Raspberry Pi Camera Module 3 NoIR Wide (cabin / sentry face shot)](https://www.pbtech.co.nz/product/SEVRBP0399) (SEVRBP0399) | 1 | 70.00 | 70.00 | About NZ$70 (search result) | Second camera port on the Pi 5 |
+| [Pi 5 camera cable 200mm](https://www.pbtech.com/pacific/product/SEVRBP0541) (SEVRBP0541) | 2 | 2.12 | 4.24 | Search result 18 Nov | One per camera |
+| [Raspberry Pi Pico 2 5-pack](https://www.pbtech.co.nz/product/SEVRBP0628) (SEVRBP0628) | 1 | 47.20 | 47.20 | Checked 17 Nov | Control box, CAN sniffer, steering bench test, 2 spare |
+| [Raspberry Pi 27W USB-C power supply (bench)](https://www.pbtech.co.nz/product/SEVRBP0512) (SEVRBP0512) | 1 | 24.90 | 24.90 | Search result 18 Nov | Bench only |
+| [Raspberry Pi micro HDMI to HDMI cable 1m](https://www.pbtech.co.nz/product/SEVRBP0207) (SEVRBP0207) | 1 | 11.80 | 11.80 | Search result 18 Nov | Alt black SEVRBP0262 ~11.10 |
+| [Kingston XS1000 1TB USB-C SSD (dashcam / sentry video)](https://www.pbtech.co.nz/product/HDDKCP225100) (HDDKCP225100) | 1 | 189.00 | 189.00 | NZ$189-253, price moved between checks | USB, so the PCIe slot stays free for the AI HAT; cradle in the Pi box |
+| **Total** | | | **846.56** | | |
 
-**CarPlay dongle:** Sam has decided to get it from AliExpress (see the AliExpress cart below).
-Audio City's one (NZ$180, [link](https://www.audiocity.co.nz/ottocast/carlinkit-android-system-to-wireless-apple-carplay-android-auto-dongle.html))
-shows the right CCPA part code in its photo, so it's the backup if you want it straight away.
-**Not these:** the Carlinkit 5.0 / 2Air at Mighty Ape, or the MINIX CA525 at PB Tech (see
-"Getting the right CarPlay dongle").
+### AliExpress (one order, 2 to 4 weeks)
 
-## AliExpress cart (one order, about 2 to 4 weeks)
+| Part | Qty | Each NZ$ | Total NZ$ | Price from | Notes |
+|---|---|---|---|---|---|
+| Carlinkit CPC200-CCPA (or CCPA-MIC) CarPlay dongle | 1 | 65.00 | 65.00 | US$33-39 x 1.822 | Title must say CCPA + Android head unit; lsusb 1314:1520/1521 |
+| 4-channel class D amp 12V (RCA in + remote turn-on) | 1 | 82.00 | 82.00 | ~US$45 x 1.822 | Not waterproof; under the seat |
+| USB sound card / DAC 3.5mm out | 1 | 8.00 | 8.00 | Estimate | Pi 5 has no audio jack |
+| BTS7960 43A H-bridge | 2 | 12.00 | 24.00 | ~US$6-7 each | You have one already; 3 needed |
+| 8-channel PC817 opto board 12V in | 2 | 9.00 | 18.00 | ~US$5 estimate | Board 1 = all 8 inputs; board 2 = 8 spare on MCP2 |
+| 8-channel opto-isolated MOSFET board, 3.3V input version (PWM) | 1 | 22.00 | 22.00 | ~US$12 estimate | Light bars: 5 used, 3 spare. Listing must say 3.3V input, 24V+ load, 10A per channel; if it says 5A, buy 6 single LR7843 modules (~NZ$30) instead |
+| 16-channel 5V relay board, mechanical, opto + JD-VCC jumper, 10A | 1 | 21.00 | 21.00 | ~US$11.28 x 1.822 | 10 used, 6 spare; must have the JD-VCC jumper |
+| 20-way blade fuse block with cover + negative bus | 1 | 40.00 | 40.00 | ~US$15-25 estimate | 12 used, 8 spare; stud feed |
+| Winch isolator contactor, 12V coil, 200A continuous duty | 1 | 30.00 | 30.00 | Estimate | Continuous duty, not a starter solenoid |
+| 250A manual reset circuit breaker (winch) | 1 | 30.00 | 30.00 | Estimate | Leave it out of the cart if one came in the winch box |
+| Waterproof micro limit switch, roller lever (NC) | 3 | 2.67 | 8.01 | Estimate | Tray up/down + 1 spare |
+| Powered USB 3.0 hub, 7-port, 12V DC input | 1 | 35.00 | 35.00 | Estimate | Screen touch, GPS, CarPlay, DAC, 4G, SSD: more than the Pi's 4 ports. Fed from the dash rail |
+| 12V to 12V 5A stabiliser (buck-boost), sealed | 1 | 15.00 | 15.00 | Estimate | Screen gets a steady 12V when the battery swings 11-14.4V. Check the screen brick label first |
+| 12V USB-C PD panel socket, 30W, waterproof cap | 1 | 15.00 | 15.00 | Estimate | Glove box phone (RC remote) |
+| MPU-6050 IMU board (roll / pitch) | 1 | 5.00 | 5.00 | Estimate | I2C to the Pi |
+| 12V AHD reversing camera (trailer) | 1 | 30.00 | 30.00 | Estimate |  |
+| 4-pin waterproof aviation plug + socket (trailer camera) | 1 | 8.00 | 8.00 | Estimate | Next to the 7-pin |
+| AHD to USB (UVC) capture dongle | 1 | 25.00 | 25.00 | Estimate |  |
+| SIMCom A7670SA 4G board (B28, GPS 'FASE' option) | 1 | 28.00 | 28.00 | US$15.46 x 1.822 | Must list B28; V pin from the 2nd Mini560, never raw 12V |
+| 4-channel BSS138 level shifter | 1 | 2.00 | 2.00 | Estimate | Probably not needed; measure the T pin first |
+| Active GPS antenna, SMA male | 1 | 8.00 | 8.00 | Estimate |  |
+| LTE antenna 698-2700MHz, SMA male | 1 | 12.00 | 12.00 | Estimate | Must cover 700MHz B28 |
+| u.FL to SMA female bulkhead pigtail with O-ring, 15cm | 2 | 3.00 | 6.00 | Estimate | Through the Pi box wall for both aerials |
+| Finned heatsink 100x100x40mm, flat 5mm+ base | 1 | 20.00 | 20.00 | Estimate | Pi box lid |
+| Thermal pad 1mm, 4 W/mK+ | 1 | 5.00 | 5.00 | Estimate |  |
+| Solid aluminium block 20x20x50mm | 1 | 5.00 | 5.00 | Estimate | Cut to ~45.3mm |
+| Thermal paste small tube | 1 | 3.00 | 3.00 | Estimate |  |
+| M12x1.5 breather vent plug | 2 | 2.00 | 4.00 | Estimate | One spare |
+| Nylon cable glands IP68: PG7 x3, PG9 x5, PG16 x5, M20 x1 | 1 | 15.00 | 15.00 | Estimate | Pi box 4, control box 5, relay box 5 (cad/measurements.scad) |
+| M3 brass heat-set inserts 4.0mm OD x 5.7mm, 100 pack | 1 | 8.00 | 8.00 | Estimate | About 40 used |
+| M2 + M2.5 heat-set inserts, 50 each | 1 | 8.00 | 8.00 | Estimate | Pi and 4G board standoffs |
+| Stainless bolt kit: M2, M2.5, M3 (6-16mm), M4 (12-20mm), nuts, nylocs, washers | 1 | 25.00 | 25.00 | Estimate | cad/README.md hardware table: ~50 small bolts, 16 M4, 4 M5 nuts |
+| Bootlace ferrule kit 0.5-6mm² with ratchet crimper | 1 | 30.00 | 30.00 | Estimate | Every wire end into a screw terminal in the boxes |
+| Heatshrink ring / spade / butt terminal kit 0.5-6mm² | 1 | 25.00 | 25.00 | Estimate |  |
+| Dupont jumper wires (F-F, M-F) + 2.54mm pin headers | 1 | 10.00 | 10.00 | Estimate | Pico, Pi and board-to-board links inside the boxes; debug header |
+| Waterproof 2-pin plug pair (DT style) | 14 | 2.50 | 35.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
+| Waterproof 3-pin plug pair (DT style) | 2 | 3.00 | 6.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
+| Waterproof 4-pin plug pair (DT style) | 2 | 3.50 | 7.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
+| Waterproof 6-pin plug pair (DT style) | 2 | 5.00 | 10.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
+| **Total** | | | **753.01** | | |
 
-Sam wants one AliExpress order at about half NZ shop prices. **AliExpress pages won't open for
-me**, so these prices are from search-engine snapshots and deal sites, in US$ at 1.822. They
-move daily with coupons, so check each one in the app before paying. AliExpress adds NZ GST at
-checkout. Delivery to NZ is usually 2 to 4 weeks, and only the travel part is covered by
-AliExpress's delivery promises, not customs
-([findniche](https://findniche.com/blog/aliexpress-shipping-time),
-[parcelmonitor](https://www.parcelmonitor.com/blog/aliexpress-shipping-time-tracking)).
-Pick listings marked "Choice" where you can: they usually ship free and faster.
+### Core Electronics (AU, online)
 
-| Part | Search for | Qty | Rough price | What to check |
-|---|---|---|---|---|
-| **Carlinkit CPC200-CCPA** CarPlay / Android Auto dongle | "Carlinkit CCPA" | 1 | US$33-39 (~NZ$60-71). Snapshots: [US$33.17, 2,000+ sold](https://www.aliexpress.us/item/3256809220614383.html), [CCPA with mic US$38.77](https://www.aliexpress.com/item/32983926178.html) | Title must say **CCPA** (or Autokit) and "for Android head unit / car radio", and mention the Autokit app. The **CCPA-MIC** option has a built-in mic, worth the few dollars more for Siri and calls. I couldn't confirm which AliExpress shop is Carlinkit's own, so pick one with thousands sold and good reviews. On arrival `lsusb` must show `1314:1520` or `1314:1521`, or send it back (see "Getting the right CarPlay dongle") |
-| **4-channel class D amp, 12V** | "4 channel class D amplifier 12V marine" | 1 | ~US$45 (~NZ$82). Snapshot: a Sennuopu 4-channel "400W RMS" listing at [US$44.79](https://www.aliexpress.com/w/wholesale-amplifier-4-channel-class-d.html) | Must have **RCA line inputs** and a **remote turn-on wire** ([`audio.md`](audio.md) section 2). Cheap amps overstate power: "400W" usually means about 4 x 25-50 W real, which is fine for a pair of marine speakers. The one I found **doesn't say it's waterproof**, so mount it under the seat out of the weather. If you want a proper IPX5/6 sealed one, that's a brand-name marine amp from an NZ car audio shop (about NZ$150-300 budget, NZ$400-900 good) |
-| **BTS7960 43A H-bridge** | "BTS7960" | 2 | ~US$6-7 each (~NZ$12). Not found on AliExpress itself; [Walmart](https://www.walmart.com/ip/BTS7960-43A-High-Power-Motor-Driver-Module-Smart-Car-Driver-Module-for-Current-Limit/8904873796) has 2 for US$11.56 | Actuators. You have one already (io-list), 3 needed |
-| **8-channel PC817 opto board, 12V in** | "8 channel optocoupler PC817 12V" | **2** | ~US$5 each (~NZ$18 for 2), my estimate | **Needed.** The first takes all 8 inputs in the plan: key, brake, reverse, tray down, tray up, winch switches, park brake, trailer. That's every channel used, so the second board gives 8 spare, read by the second MCP23017. Keeps 12 V off the 3.3 V side. Must say **12V input** |
-| **Isolated MOSFET switch module, LR7843** (single channel, PC817 opto on the input) | "LR7843 MOSFET module isolated" | **6** (5 + 1 spare) | ~US$1.70-3 each (~NZ$5), ~NZ$30 for 6. e.g. [US$3.07 at Abra](https://abra-electronics.com/electromechanical/relays/relay-modules-shields/mod-lr7843-30v-161a-mosfet-isolation-module-for-arduino.html) | **Needed: it's what switches and dims the light bars** (4 front bars, about 6 A each so 12 A per pair, plus the interior bar). One module per bar. The LR7843 is rated 30 V, which is plenty over 14.4 V, and its tiny on-resistance means about 0.1 W of heat at 6 A, so no heatsink. Works from the Pico's 3.3 V (opto input), and fine at our 500 Hz dimming. Pick the version with the **screw terminals and opto chip**, not the bare D4184 kind |
-| **16-channel 5V relay board, opto-isolated, JD-VCC jumper** (Songle SRD-05VDC type, 10 A contacts with NO and NC) | "16 channel 5V relay module optocoupler JD-VCC" | 1 | ~US$11-15 (~NZ$21). Snapshot: [US$11.28 on eBay](https://www.ebay.de/itm/143395133451) | All 10 relays in the wiring plan plus 6 spare, in an aux box with the other boards. **Mechanical relays** (blue cubes), not solid state. **Must have a JD-VCC / VCC jumper** so board VCC goes to the Pico's 3.3 V and the coils to the 5 V buck. Skip 16-channel boards without it: a 3.3 V "off" can leave relays half on. Active low, which the firmware expects |
-| **Blade fuse block, 20-way, with cover and negative bus** | "20 way blade fuse box negative bus cover" | 1 | ~US$15-25 (~NZ$27-46), my estimate. AliExpress search pages show bait prices like [US$1.09](https://www.aliexpress.com/w/wholesale-Modular%20Fuse%20Block.html); a similar 12-way Nilight is [US$22.99 at Walmart](https://www.walmart.com/c/kp/electrical-box-bus) | The wiring plan has **12 fused circuits** (`config/wiring.yaml`, F1-F12), so get a 20-way for spares. Look for: clip-on cover (ideally a seal), built-in negative bus, 30 A per way and 100 A total, studs or screw terminals for the feed (not a push-on spade), and blown-fuse LEDs are a bonus. A proper brand (Blue Sea, Narva) is better if it'll live where it gets wet |
-| **Finned heatsink, 100 x 100 x 40 mm, black anodised** | "heatsink 100x100x40 aluminium" | 1 | ~NZ$20, my estimate | Pi box lid, outside. **Flat base 5 mm or thicker** (it gets tapped M3). Straight fins, not pins. The rated version is the Fischer SK 92/100 SA (1.4 K/W) from [element14 NZ](https://nz.element14.com/fischer-elektronik/sk-92-100-sa/heat-sink-100mm-1-4-c-w/dp/4621580) if you'd rather. Replaces the 30 mm fan, which is gone |
-| Thermal pad, 1 mm, 4 W/mK or better | "thermal pad 1mm 6W/mK" | 1 sheet | ~NZ$5, my estimate | 20 x 20 mm piece on the Pi's chip, under the pillar |
-| Solid aluminium block, 20 x 20 mm, about 50 mm long | "aluminium block 20x20x50" | 1-2 | ~NZ$5, my estimate | The pillar from the Pi's chip to the lid. Or any 20 x 20 solid offcut. Cut to about 45.3 mm |
-| Thermal paste, small tube | "thermal paste" | 1 | ~NZ$3, my estimate | Lid plate to heatsink |
-| M12 x 1.5 breather vent plug, membrane type | "M12 waterproof breathable vent plug" | 2 | ~NZ$4, my estimate | Pi box bottom wall. Stops the sealed box sucking in water as it cools. One spare |
-| USB sound card / DAC with 3.5 mm out | "USB sound card 3.5mm" | 1 | ~NZ$8, my estimate | **Needed for the amp.** The Pi 5 has no headphone jack. 3.5 mm to RCA lead into the amp |
-| Winch isolator contactor, 12 V coil, 200 A continuous | "12V 200A continuous duty solenoid contactor" | 1 | ~NZ$30, my estimate | Cuts the winch feed unless it's armed on the dash (relay 6). **Continuous duty**, not a starter solenoid |
-| Waterproof micro limit switch, roller lever, NC contact | "waterproof micro switch roller lever" | 2 (+1 spare) | ~NZ$8 for 3, my estimate | Tray up and tray down limits. Wired normally closed |
-| **4G module board, SIMCom A7670SA** (Sam's pick: a bare board to solder in, not a stick) | "A7670SA core board B28" | 1 | ~US$15.46 (~NZ$28). [Listing with B1/B2/B3/B4/B5/B7/B8/B28/B66](https://www.aliexpress.us/item/3256808314829525.html) | **Must be the A7670SA**, and the listing must show **B28** (700 MHz, the NZ country band). The A7670E and some "A7670SA" listings only have B1/B3/B5/B7/B8/B20, no B28 ([SIMCom table via manuals.plus](https://manuals.plus/ae/1005008976290540)). Cat-1 LTE, about 10 Mbps down: plenty for light data and SMS. SIM slot and TTL UART on the board. Talks plain AT commands, so SMS is easy on Linux. **Over UART only it does texts, WHERE and LOCK, but the data is far too slow for live cameras or RC over 4G.** Better buy if you can find one: an A7670SA board whose USB-C goes to the module's **own USB pins** (not a CH340-type USB-serial chip), so it plugs into the Pi over USB at full speed. **Pick the GPS option ("FASE" or "GNSS"; "LASE" has no GPS)**: it can track with the key off for anti-theft. Keep the TEL0138 puck for the dash until the module's GPS proves itself. Skip the flat FPC antenna option. Sam found a candidate at ~NZ$34, still to check against these points |
-| 4-channel BSS138 level shifter | "BSS138 level shifter 4 channel" | 1 | ~NZ$2 (estimate) | **Probably not needed.** Sam's board has its own regulator and TTL serial pins. Before wiring T to the Pi, power the board and measure the T pin against G with a multimeter: about 3.3 V is fine straight to the Pi; 5 V or 1.8 V needs this shifter. It's NZ$2, so worth having in the cart anyway |
-| Active GPS antenna, IPEX/u.FL (only with the GPS version) | "active GPS antenna ipex" | 1 | ~NZ$8 (estimate) | Check the board powers an active antenna |
-| LTE antenna, wideband 698-2700 MHz, u.FL to SMA lead | "4G LTE antenna 698-2700 SMA" | 1 | ~NZ$12 (estimate) | The little PCB stick antennas are poor at 700 MHz (B28), which is what you'll be on out in the country. Mount it outside the metal, near the GPS puck |
-| | | | **about NZ$413** | Dongle 65, amp 82, BTS7960s 24, opto boards 18, MOSFET modules 30, relay board 21, fuse block 40, USB DAC 8, winch contactor 30, limit switches 8, Pi box heatsink parts 37, 4G board + antennas + shifter 50 |
+| Part | Qty | Each NZ$ | Total NZ$ | Price from | Notes |
+|---|---|---|---|---|---|
+| [Seeed MCP2515 + SN65HVD230 CAN board](https://core-electronics.com.au) | 4 | 22.77 | 91.08 | AU$18.45 x 1.234 | Pi, control box, steering bus, sniffer |
+| [MCP23017 board](https://core-electronics.com.au/catalog/product/view/sku/WS-15391) (WS-15391) | 2 | 13.45 | 26.90 | AU$10.90 x 1.234 |  |
+| [DFRobot USB GPS receiver](https://core-electronics.com.au/catalog/product/view/sku/TEL0138) (TEL0138) | 1 | 25.98 | 25.98 | AU$21.05 x 1.234 |  |
+| [Pololu D36V50F5 5V 5.5A regulator](https://core-electronics.com.au/catalog/product/view/sku/POLOLU-4091) (POLOLU-4091) | 1 | 111.20 | 111.20 | AU$90.11 x 1.234 |  |
+| Shipping to NZ (estimate) | 1 | 17.50 | 17.50 | AU$12-16 |  |
+| **Total** | | | **272.66** | | |
+
+### Gogo:Tronics and element14 (NZ, online)
+
+| Part | Qty | Each NZ$ | Total NZ$ | Price from | Notes |
+|---|---|---|---|---|---|
+| [Mini560 5V 5A buck (Gogo:Tronics)](https://sparks.gogo.co.nz/catalog/DC-Power-260/Fixed-Output-Step-Down-Converter-Out-5v-up-to-5A-Continuous-In-7-20v-1009.html) | 2 | 2.95 | 5.90 | Checked 17 Nov | Control box + 4G board |
+| [1.5KE18A TVS diode (element14)](https://nz.element14.com/stmicroelectronics/1-5ke18a/diode-tvs-1-5kw-18v/dp/9884831) (9884831) | 2 | 2.24 | 4.48 | Checked 17 Nov |  |
+| **Total** | | | **10.38** | | |
+
+### Local: Jaycar, Narva stockist, Repco, auto electrical
+
+| Part | Qty | Each NZ$ | Total NZ$ | Price from | Notes |
+|---|---|---|---|---|---|
+| [Narva 7-pin flat socket with reed switch](https://narva.com.au/products/narva-7-pin-flat-quickfit-trailer-socket-with-reed-switch-for-use-with-normally-closed-circuits-1-pack) (82043BL) | 1 | 35.00 | 35.00 | Estimate |  |
+| F-N-R switch, DPDT centre-off, 10A+ | 1 | 20.00 | 20.00 | Estimate |  |
+| E-stop mushroom button, twist release, NC, IP65 | 1 | 25.00 | 25.00 | Estimate | RC mode: cuts KSI with no software |
+| Momentary (ON)-OFF-(ON) toggle, 10A, with waterproof boot | 2 | 15.00 | 30.00 | Estimate | Hidden winch switches |
+| Marine speakers (pair) | 1 | 100.00 | 100.00 | Estimate |  |
+| 3.5mm to 2 x RCA lead 1.5m | 1 | 10.00 | 10.00 | Estimate | DAC to amp |
+| Short right-angle USB-C to USB-A leads | 2 | 10.00 | 20.00 | Estimate | SSD, 4G board |
+| Prepaid SIM | 1 | 10.00 | 10.00 | Estimate |  |
+| Ground bus bar, M8 studs, 6+ ways, with cover | 1 | 25.00 | 25.00 | Estimate |  |
+| Wago 221 lever connectors, 5-way pack | 1 | 20.00 | 20.00 | Estimate | Dash 12V rail splits |
+| Diodes and resistors (see contents) | 1 | 20.00 | 20.00 | Estimate | Contents, counted from the wiring: 10k resistor x1, 1N4007 x1, 1N4148 x11, 1N5408 x7, 1k resistor x3, 2.2k resistor x1, 3.3 V zener x1. Buy a few spare of each |
+| Heatshrink assortment (glue-lined) | 1 | 20.00 | 20.00 | Estimate |  |
+| Split corrugated loom 10mm + 16mm, 10m each | 1 | 30.00 | 30.00 | Estimate |  |
+| UV-black cable ties + adhesive P-clips | 1 | 20.00 | 20.00 | Estimate |  |
+| 2mm closed-cell foam tape, 1m+ | 1 | 10.00 | 10.00 | Estimate | Bezel to panel |
+| ASA filament 1.75mm 1kg (dash panel, hood, back plate) | 2 | 45.00 | 90.00 | Estimate | Leave out what you already have |
+| PETG filament 1.75mm 1kg (boxes, liner) | 1 | 35.00 | 35.00 | Estimate |  |
+| 3mm aluminium cut from DXF: back plate + Pi lid plate | 1 | 80.00 | 80.00 | Estimate | Laser or waterjet shop; cad/stl/*.dxf |
+| Auto cable 0.5 mm² (metres) | 90 | 0.90 | 81.00 | Estimate; counted from config/wiring.yaml | About 70 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
+| Auto cable 0.75 mm² (metres) | 10 | 1.10 | 11.00 | Estimate; counted from config/wiring.yaml | About 7 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
+| Auto cable 1 mm² (metres) | 30 | 1.40 | 42.00 | Estimate; counted from config/wiring.yaml | About 24 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
+| Auto cable 1.5 mm² (metres) | 60 | 1.90 | 114.00 | Estimate; counted from config/wiring.yaml | About 48 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
+| Auto cable 2.5 mm² (metres) | 15 | 2.90 | 43.50 | Estimate; counted from config/wiring.yaml | About 12 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
+| Auto cable 4 mm² (metres) | 5 | 4.50 | 22.50 | Estimate; counted from config/wiring.yaml | About 3 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
+| Auto cable 10 mm² (metres) | 7 | 11.00 | 77.00 | Estimate; counted from config/wiring.yaml | About 5 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
+| Auto cable 35 mm² (metres) | 3 | 30.00 | 90.00 | Estimate; counted from config/wiring.yaml | About 2 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
+| CAN cable, 2-core twisted + screen (metres) | 10 | 2.50 | 25.00 | Estimate; counted from config/wiring.yaml |  |
+| Speaker cable (metres) | 10 | 1.50 | 15.00 | Estimate; counted from config/wiring.yaml |  |
+| Standard blade fuses, Narva or Jaycar (not AliExpress) | 34 | 1.50 | 51.00 | Estimate; counted from config/wiring.yaml | 1 A x3, 2 A x5, 3 A x7, 7.5 A x5, 10 A x6, 15 A x5, 30 A x3 (2 spare of each) |
+| Waterproof inline blade fuse holder | 8 | 6.00 | 48.00 | Estimate; counted from config/wiring.yaml | Feeds that don't come off the fuse block (bucks, screen, amp, 12V sense, accessories) |
+| 60 A MIDI fuse + bolt-down holder | 2 | 31.00 | 62.00 | Estimate; counted from config/wiring.yaml | At the battery: main feed to the fuse block, and the power steering |
+| Tinned lugs for 4 mm², M8 hole | 6 | 2.00 | 12.00 | Estimate; counted from config/wiring.yaml | 2 spare |
+| Tinned lugs for 10 mm², M8 hole | 10 | 2.00 | 20.00 | Estimate; counted from config/wiring.yaml | 2 spare |
+| Tinned lugs for 35 mm², M8 hole | 6 | 2.00 | 12.00 | Estimate; counted from config/wiring.yaml | 2 spare |
+| **Total** | | | **1,326.00** | | |
+
+### Separate pickup
+
+| Part | Qty | Each NZ$ | Total NZ$ | Price from | Notes |
+|---|---|---|---|---|---|
+| Toyota Aqua EPS column (ECU 89650-52B51) | 1 | 115.00 | 115.00 | About NZ$115 | Dodson's, picking up 19 Nov |
+| **Total** | | | **115.00** | | |
+
+### Totals
+
+| Shop | NZ$ |
+|---|---|
+| PB Tech (buy Thursday) | 846.56 |
+| AliExpress (one order, 2 to 4 weeks) | 753.01 |
+| Core Electronics (AU, online) | 272.66 |
+| Gogo:Tronics and element14 (NZ, online) | 10.38 |
+| Local: Jaycar, Narva stockist, Repco, auto electrical | 1,326.00 |
+| Separate pickup | 115.00 |
+| **Everything** | **3,323.61** |
+
+### Already got (not in the totals)
+
+10.1 in touch screen, 12 V battery, 12 in light bar, 2K rear camera, 4 in pod, 400 mm actuator, 50 mm actuator, 50 mm actuator with pot, 7 in light bar, ADS1115, XBull 5000 lb winch (and its 35 mm² cables), XBull remote, XBull solenoid box, one BTS7960. Samsung Galaxy XCover 5 (RC remote) (NZ$187).
+
+### Comes with the Shinegle kit or the stock Teryx
+
+Traction battery pack, 150 A air-break switch, Main contactor, Shinegle SG1202 controller, 7.5 kW AC motor, DC-DC converter 72 V to 12 V, Shinegle kit key switch, Throttle pedal (kit accelerator), Shinegle dash / speed panel, SG1810 handheld programmer, Teryx key switch, Brake light switch (stock), Parking brake switch (stock).
+
+### Later (not in the totals)
+
+| Part | Shop | About NZ$ | Notes |
+|---|---|---|---|
+| Raspberry Pi AI HAT+ 2 | PB Tech | 423.43 | Not now |
+| Raspberry Pi Active Cooler | PB Tech | 11.21 | Only with the AI HAT |
+| Noctua NF-A4x10 5V fan | Newegg NZ | 21.85 | Only if the Pi box runs hot |
+| Second ADS1115 + brake pedal Hall sensor (+ pressure sensor) | Core / AliExpress | 40.00 | Brake regen |
+| GameSir G8 Galileo phone gamepad | AliExpress | 78.00 | RC mode, Sam: not now |
+| EasyCAP DC60 USB capture | PB Tech | 28.75 | Only if the rear camera turns out to be RCA |
+| Carlinkit CCPA from Audio City (NZ stock) | Audio City | 180.00 | Backup if the AliExpress one is slow |
+
+Wiring parts waiting on that: AIHAT: AI HAT+ 2, ~NZ$423 (Sam: not now). Box, power and cooling stay sized for it; ADS2: Brake regen only, after the Shinegle regen check passes; BRAKE_PEDAL: Brake regen only, after the Shinegle regen check passes; BRAKE_PRESS: Brake regen cross-check only.
+
+Tools aren't listed (crimpers, soldering iron, heat gun, multimeter, 3D printer).
+
+<!-- end parts list -->
 
 **The 8-channel solid state relay board you've got coming won't work here.** Those boards use Omron G3MB-202P relays, which are for AC only. On 12 V DC they switch on but never switch off again until the power is cut ([Omron FAQ](https://www.ia.omron.com/support/faq/answer/18/faq02101/index.html)). Keep it for a mains project, or send it back if you can.
 
-### Better bought in NZ or from a proper shop, not AliExpress
+## Better bought in NZ or from a proper shop, not AliExpress
 
 | Part | Why |
 |---|---|
@@ -83,57 +193,6 @@ Pick listings marked "Choice" where you can: they usually ship free and faster.
 | TVS diodes | Fake parts are common in cheap diodes, and element14 has them for NZ$2.24 |
 | Mini560 bucks | Already cheap in NZ (Gogo:Tronics NZ$2.95). Not worth the wait |
 | 4G dongle (later) | The Huawei E3372h-607 is fine from AliExpress or Trade Me if the label checks out. If you go Waveshare SIM7600G-H, buy it from [Waveshare](https://www.waveshare.com/sim7600g-h-4g-dongle.htm) directly: third-party listings call it "unbranded" |
-
-## Order online this week (other shops)
-
-| Part | Where | Qty | Price | Notes |
-|---|---|---|---|---|
-| [Seeed MCP2515 + SN65HVD230 CAN board](https://core-electronics.com.au/seeed-studio-can-bus-breakout-board-for-xiao-and-qt-py-mcp2515-controller-sn65hvd230-transceiver-chip.html) | Core Electronics (AU) | **4** | AU$18.45 each (~NZ$91 for 4) | Pi, control box, sniffer, and **new: the Pico's own CAN link to the Toyota Aqua power steering column** ([`power-steering-wrecker.md`](power-steering-wrecker.md)). Check the crystal |
-| [MCP23017 board](https://core-electronics.com.au/catalog/product/view/sku/WS-15391) | Core Electronics (AU) | **2** | AU$10.90 each (~NZ$27 for 2) | Control box inputs and relays. The second one drives relays 9-10 (steering enable, drive lock) |
-| [DFRobot USB GPS TEL0138](https://core-electronics.com.au/catalog/product/view/sku/TEL0138) | Core Electronics (AU) | 1 | AU$21.05 (~NZ$26) | Search result. Or [RS NZ](https://nz.rs-online.com/web/p/gnss-gps-modules/2473251) NZ$30.85 |
-| [Pololu D36V50F5 5V 5.5A regulator](https://core-electronics.com.au/catalog/product/view/sku/POLOLU-4091) | Core Electronics (AU) | 1 | AU$90.11 (~NZ$111) | Powers the Pi from the 12V battery. Big enough for the AI HAT later |
-| Core Electronics shipping | | | ~NZ$15-20 | Check at checkout |
-| [Mini560 5V 5A buck](https://sparks.gogo.co.nz/catalog/DC-Power-260/Fixed-Output-Step-Down-Converter-Out-5v-up-to-5A-Continuous-In-7-20v-1009.html) | Gogo:Tronics | 2 | NZ$2.95 each | Pico control box power, and the second one powers the 4G board (5 V into its V pin). Grab a third (NZ$2.95) if you want a spare |
-| [1.5KE18A TVS diode](https://nz.element14.com/stmicroelectronics/1-5ke18a/diode-tvs-1-5kw-18v/dp/9884831) | element14 NZ | 2 | NZ$2.24 each | Spike clamp on the dash 12V |
-| [Narva 7-pin flat socket with reed switch 82043BL](https://narva.com.au/products/narva-7-pin-flat-quickfit-trailer-socket-with-reed-switch-for-use-with-normally-closed-circuits-1-pack) | Narva stockists | 1 | **Not priced** | Trailer detect |
-| | | | **about NZ$283** | Priced items |
-
-AUD to NZD at 1.234 (Wise, 17 Nov). USD to NZD at 1.822 (Wise, 18 Nov, no time shown on the page).
-
-## Buy locally (Jaycar, Narva stockist, Repco)
-
-| Part | Qty | Rough price | Notes |
-|---|---|---|---|
-| Blade fuse assortment (Narva or Jaycar), 3/5/7.5/10/15 A | 1 pack | ~NZ$25 | Real fuses, not AliExpress ones |
-| [Narva 7-pin flat socket with reed switch 82043BL](https://narva.com.au/products/narva-7-pin-flat-quickfit-trailer-socket-with-reed-switch-for-use-with-normally-closed-circuits-1-pack) | 1 | ~NZ$35, my estimate | Trailer detect |
-| F-N-R switch: DPDT centre-off toggle or rocker, 10 A+ | 1 | ~NZ$20, my estimate | Forward / neutral / reverse into the Shinegle, reverse side also tapped for the control box |
-| Marine speakers, pair | 1 pair | ~NZ$100, my estimate | For the amp |
-| Prepaid SIM | 1 | ~NZ$10 | For the 4G board. Top up once a year |
-| Wire, crimp terminals, heatshrink, loom | | Not priced | Sizes are in `config/wiring.yaml` |
-| | | **about NZ$190** | |
-
-## Already got (don't buy)
-
-10.1" touch screen, passive Pi heatsink (bench), 1 x BTS7960, ADS1115, the three actuators (50 mm with pot, 50 mm, 400 mm), trailer plug, 2K rear camera, 4 x 12" light bars, 7" light bar, 2 x 4" pods, XBull 5000 lb winch with solenoid box and remote (check its 250 A breaker came with it), a 5 V buck, the 12 V battery, Samsung XCover 5 (RC remote). The 8-channel solid state relay board doesn't count: it can't switch 12 V DC.
-
-## Separate pickup
-
-| Part | Where | Price | Notes |
-|---|---|---|---|
-| Toyota Aqua power steering column, ECU 89650-52B51 | Dodson's, Trade Me | about NZ$115 | Picking up 19 Nov. A cheap gamble, see [`power-steering-wrecker.md`](power-steering-wrecker.md). Needs the 4th CAN board above to bench test |
-
-## Totals
-
-| | NZ$ |
-|---|---|
-| Buy tomorrow (all PB Tech) | ~585 |
-| AliExpress cart | ~413 |
-| Other online orders (Core, Gogo, element14) | ~283 |
-| Buy locally | ~190 |
-| Aqua column | ~115 |
-| **Everything** | **about NZ$1,586** |
-
-Without the audio (amp, speakers, USB DAC) it's about NZ$1,396. Not counted: wire and terminals, and everything under "Later".
 
 ## Wiring the 4G board
 
