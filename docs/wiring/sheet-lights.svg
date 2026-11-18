@@ -18,19 +18,19 @@
 <g data-wire="LT03" data-from="FB.F2" data-to="LB3.pos" data-status="planned"><title>LT03: FB.F2 -&gt; LB3.pos</title><path d="M310,217 C395,217 395,530 480,530" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="LT04" data-from="FB.F1" data-to="LB4.pos" data-status="planned"><title>LT04: FB.F1 -&gt; LB4.pos</title><path d="M310,197 C395,197 395,308 480,308" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="LT05" data-from="FB.F7" data-to="LB_INT.pos" data-status="planned"><title>LT05: FB.F7 -&gt; LB_INT.pos</title><path d="M310,257 C395,257 395,752 480,752" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="LT06" data-from="LB1.neg" data-to="MOSFET.OUT1" data-status="planned"><title>LT06: LB1.neg -&gt; MOSFET.OUT1</title><path d="M750,217 C835,217 835,297 920,297" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="LT07" data-from="LB2.neg" data-to="MOSFET.OUT2" data-status="planned"><title>LT07: LB2.neg -&gt; MOSFET.OUT2</title><path d="M750,439 C835,439 835,317 920,317" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="LT08" data-from="LB3.neg" data-to="MOSFET.OUT3" data-status="planned"><title>LT08: LB3.neg -&gt; MOSFET.OUT3</title><path d="M750,550 C835,550 835,337 920,337" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="LT09" data-from="LB4.neg" data-to="MOSFET.OUT4" data-status="planned"><title>LT09: LB4.neg -&gt; MOSFET.OUT4</title><path d="M750,328 C835,328 835,357 920,357" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="LT10" data-from="LB_INT.neg" data-to="MOSFET.OUT5" data-status="planned"><title>LT10: LB_INT.neg -&gt; MOSFET.OUT5</title><path d="M750,772 C835,772 835,377 920,377" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="LT11" data-from="PICO.GP16" data-to="MOSFET.IN1" data-status="planned"><title>LT11: PICO.GP16 -&gt; MOSFET.IN1 - light.front_1 PWM</title><path d="M1360,197 C1275,197 1275,197 1190,197" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="LT12" data-from="PICO.GP17" data-to="MOSFET.IN2" data-status="planned"><title>LT12: PICO.GP17 -&gt; MOSFET.IN2 - light.front_2 PWM</title><path d="M1360,217 C1275,217 1275,217 1190,217" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="LT13" data-from="PICO.GP18" data-to="MOSFET.IN3" data-status="planned"><title>LT13: PICO.GP18 -&gt; MOSFET.IN3 - light.front_3 PWM</title><path d="M1360,237 C1275,237 1275,237 1190,237" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="LT14" data-from="PICO.GP19" data-to="MOSFET.IN4" data-status="planned"><title>LT14: PICO.GP19 -&gt; MOSFET.IN4 - light.front_4 PWM</title><path d="M1360,257 C1275,257 1275,257 1190,257" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="LT15" data-from="PICO.GP20" data-to="MOSFET.IN5" data-status="planned"><title>LT15: PICO.GP20 -&gt; MOSFET.IN5 - light.interior PWM</title><path d="M1360,277 C1275,277 1275,277 1190,277" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="LT06" data-from="LB1.neg" data-to="MOSFET.OUT1" data-status="planned"><title>LT06: LB1.neg -&gt; MOSFET.OUT1</title><path d="M750,217 C835,217 835,312 920,312" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT07" data-from="LB2.neg" data-to="MOSFET.OUT2" data-status="planned"><title>LT07: LB2.neg -&gt; MOSFET.OUT2</title><path d="M750,439 C835,439 835,332 920,332" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT08" data-from="LB3.neg" data-to="MOSFET.OUT3" data-status="planned"><title>LT08: LB3.neg -&gt; MOSFET.OUT3</title><path d="M750,550 C835,550 835,352 920,352" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT09" data-from="LB4.neg" data-to="MOSFET.OUT4" data-status="planned"><title>LT09: LB4.neg -&gt; MOSFET.OUT4</title><path d="M750,328 C835,328 835,372 920,372" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT10" data-from="LB_INT.neg" data-to="MOSFET.OUT5" data-status="planned"><title>LT10: LB_INT.neg -&gt; MOSFET.OUT5</title><path d="M750,772 C835,772 835,392 920,392" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT11" data-from="PICO.GP16" data-to="MOSFET.IN1" data-status="planned"><title>LT11: PICO.GP16 -&gt; MOSFET.IN1 - light.front_1 PWM</title><path d="M1360,197 C1275,197 1275,212 1190,212" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="LT12" data-from="PICO.GP17" data-to="MOSFET.IN2" data-status="planned"><title>LT12: PICO.GP17 -&gt; MOSFET.IN2 - light.front_2 PWM</title><path d="M1360,217 C1275,217 1275,232 1190,232" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="LT13" data-from="PICO.GP18" data-to="MOSFET.IN3" data-status="planned"><title>LT13: PICO.GP18 -&gt; MOSFET.IN3 - light.front_3 PWM</title><path d="M1360,237 C1275,237 1275,252 1190,252" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="LT14" data-from="PICO.GP19" data-to="MOSFET.IN4" data-status="planned"><title>LT14: PICO.GP19 -&gt; MOSFET.IN4 - light.front_4 PWM</title><path d="M1360,257 C1275,257 1275,272 1190,272" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="LT15" data-from="PICO.GP20" data-to="MOSFET.IN5" data-status="planned"><title>LT15: PICO.GP20 -&gt; MOSFET.IN5 - light.interior PWM</title><path d="M1360,277 C1275,277 1275,292 1190,292" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
 <g data-wire="LT16" data-from="FB.F3" data-to="RELAYS.COM1" data-status="planned"><title>LT16: FB.F3 -&gt; RELAYS.COM1</title><path d="M310,237 C395,237 395,641 480,641" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="LT17" data-from="RELAYS.NO1" data-to="FLOOD_L.pos" data-status="planned"><title>LT17: RELAYS.NO1 -&gt; FLOOD_L.pos - light.rear, auto on in reverse</title><path d="M750,661 C835,661 835,468 920,468" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="LT18" data-from="RELAYS.NO1" data-to="FLOOD_R.pos" data-status="planned"><title>LT18: RELAYS.NO1 -&gt; FLOOD_R.pos</title><path d="M750,661 C835,661 835,559 920,559" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT17" data-from="RELAYS.NO1" data-to="FLOOD_L.pos" data-status="planned"><title>LT17: RELAYS.NO1 -&gt; FLOOD_L.pos - light.rear, auto on in reverse</title><path d="M750,661 C835,661 835,483 920,483" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT18" data-from="RELAYS.NO1" data-to="FLOOD_R.pos" data-status="planned"><title>LT18: RELAYS.NO1 -&gt; FLOOD_R.pos</title><path d="M750,661 C835,661 835,574 920,574" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-device="FB" data-status="tbc"><title>FB: Blade fuse block - 12 fuses in use. Small loads that can go out together share a fuse (front bars in pairs, trailer tail + stop, interior bar + accessory). All four front bars are NOT on one fuse, so one fault can&#x27;t black out the front at night. The winch, control box power, key, power hold and each actuator keep their own. A 20-way leaves 8 spares</title><rect x="40" y="150" width="270" height="129" rx="6" fill="#f0f6ff" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
 <text x="50" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Blade fuse block</text>
 <text x="50" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#bf8700">FB · tbc</text>
@@ -75,8 +75,8 @@
 <line x1="480" y1="550" x2="750" y2="550" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="554" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">neg</text>
 </g>
-<g data-device="RELAYS" data-status="planned"><title>RELAYS: 8-ch relay board - Mechanical 5 V relays with opto and JD-VCC jumper (AliExpress cart). The solid state G3MB-202P board Sam has is AC only and won&#x27;t turn off on 12 V DC. JD-VCC jumper off, coils on 5 V, inputs from 3.3 V</title><rect x="480" y="594" width="270" height="89" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
-<text x="490" y="612" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">8-ch relay board</text>
+<g data-device="RELAYS" data-status="planned"><title>RELAYS: 16-ch relay board, channels 1-8 - One 16-channel board of mechanical 5 V relays with opto and JD-VCC jumper (AliExpress cart), in an aux box next to the control box. RELAYS2 is channels 9-16 of the same board. The solid state G3MB-202P board Sam has is AC only and won&#x27;t turn off on 12 V DC. JD-VCC jumper off, coils on 5 V, inputs from 3.3 V</title><rect x="480" y="594" width="270" height="89" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="490" y="612" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">16-ch relay board, channels 1-8</text>
 <text x="490" y="627" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">RELAYS · planned</text>
 <line x1="480" y1="641" x2="750" y2="641" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="645" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">COM1</text>
@@ -91,41 +91,42 @@
 <line x1="480" y1="772" x2="750" y2="772" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="776" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">neg</text>
 </g>
-<g data-device="MOSFET" data-status="planned"><title>MOSFET: 5-ch MOSFET board (low side) - Logic-level MOSFETs that fully turn on from 3.3 V</title><rect x="920" y="150" width="270" height="249" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
-<text x="930" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">5-ch MOSFET board (low side)</text>
-<text x="930" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">MOSFET · planned</text>
-<line x1="920" y1="197" x2="1190" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN1</text>
-<line x1="920" y1="217" x2="1190" y2="217" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN2</text>
-<line x1="920" y1="237" x2="1190" y2="237" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="241" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN3</text>
-<line x1="920" y1="257" x2="1190" y2="257" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="261" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN4</text>
-<line x1="920" y1="277" x2="1190" y2="277" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="281" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN5</text>
-<line x1="920" y1="297" x2="1190" y2="297" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="301" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT1</text>
-<line x1="920" y1="317" x2="1190" y2="317" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="321" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT2</text>
-<line x1="920" y1="337" x2="1190" y2="337" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="341" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT3</text>
-<line x1="920" y1="357" x2="1190" y2="357" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="361" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT4</text>
-<line x1="920" y1="377" x2="1190" y2="377" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="381" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT5</text>
+<g data-device="MOSFET" data-status="planned"><title>MOSFET: 5 x LR7843 isolated MOSFET modules (low side) - One single-channel LR7843 module per light bar (opto input, 30 V MOSFET), plus a spare in the AliExpress cart. About 6 A per front bar, so no heatsink. Each module&#x27;s ground is shown here as one pin</title><rect x="920" y="150" width="270" height="264" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="930" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">5 x LR7843 isolated MOSFET modules</text>
+<text x="930" y="183" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">(low side)</text>
+<text x="930" y="198" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">MOSFET · planned</text>
+<line x1="920" y1="212" x2="1190" y2="212" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="216" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN1</text>
+<line x1="920" y1="232" x2="1190" y2="232" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="236" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN2</text>
+<line x1="920" y1="252" x2="1190" y2="252" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="256" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN3</text>
+<line x1="920" y1="272" x2="1190" y2="272" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="276" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN4</text>
+<line x1="920" y1="292" x2="1190" y2="292" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="296" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN5</text>
+<line x1="920" y1="312" x2="1190" y2="312" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="316" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT1</text>
+<line x1="920" y1="332" x2="1190" y2="332" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="336" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT2</text>
+<line x1="920" y1="352" x2="1190" y2="352" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="356" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT3</text>
+<line x1="920" y1="372" x2="1190" y2="372" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="376" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT4</text>
+<line x1="920" y1="392" x2="1190" y2="392" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="396" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT5</text>
 </g>
-<g data-device="FLOOD_L" data-status="confirmed"><title>FLOOD_L: Rear flood left (4 in pod) - Outside of the roll cage mounting plate. Also the reverse light</title><rect x="920" y="421" width="270" height="69" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
-<text x="930" y="439" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Rear flood left (4 in pod)</text>
-<text x="930" y="454" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">FLOOD_L · confirmed</text>
-<line x1="920" y1="468" x2="1190" y2="468" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="472" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">pos</text>
+<g data-device="FLOOD_L" data-status="confirmed"><title>FLOOD_L: Rear flood left (4 in pod) - Outside of the roll cage mounting plate. Also the reverse light</title><rect x="920" y="436" width="270" height="69" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
+<text x="930" y="454" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Rear flood left (4 in pod)</text>
+<text x="930" y="469" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">FLOOD_L · confirmed</text>
+<line x1="920" y1="483" x2="1190" y2="483" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="487" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">pos</text>
 </g>
-<g data-device="FLOOD_R" data-status="confirmed"><title>FLOOD_R: Rear flood right (4 in pod)</title><rect x="920" y="512" width="270" height="69" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
-<text x="930" y="530" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Rear flood right (4 in pod)</text>
-<text x="930" y="545" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">FLOOD_R · confirmed</text>
-<line x1="920" y1="559" x2="1190" y2="559" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="563" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">pos</text>
+<g data-device="FLOOD_R" data-status="confirmed"><title>FLOOD_R: Rear flood right (4 in pod)</title><rect x="920" y="527" width="270" height="69" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
+<text x="930" y="545" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Rear flood right (4 in pod)</text>
+<text x="930" y="560" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">FLOOD_R · confirmed</text>
+<line x1="920" y1="574" x2="1190" y2="574" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="578" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">pos</text>
 </g>
 <g data-device="PICO" data-status="planned"><title>PICO: Raspberry Pi Pico 2</title><rect x="1360" y="150" width="270" height="149" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
 <text x="1370" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Raspberry Pi Pico 2</text>
@@ -157,6 +158,6 @@
 <text x="1352" y="254" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT14</text>
 <text x="1352" y="274" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT15</text>
 <text x="318" y="234" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT16  1.5 mm²</text>
-<text x="912" y="465" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT17  1.5 mm²  10 A</text>
-<text x="912" y="556" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT18  1.5 mm²  10 A</text>
+<text x="912" y="480" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT17  1.5 mm²  10 A</text>
+<text x="912" y="571" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT18  1.5 mm²  10 A</text>
 </svg>
