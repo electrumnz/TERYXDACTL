@@ -7,10 +7,15 @@ Buy tomorrow,PB Tech,Pi 5 camera cable 200mm,SEVRBP0541,1,2.12,2.12,Search resul
 Buy tomorrow,PB Tech,Raspberry Pi Pico 2 5-pack,SEVRBP0628,1,47.20,47.20,Checked 17 Nov,In stock,https://www.pbtech.co.nz/product/SEVRBP0628
 Buy tomorrow,PB Tech,Raspberry Pi 27W USB-C power supply (bench),SEVRBP0512,1,24.90,24.90,Search result 18 Nov (21.65 probably ex GST),Bench only,https://www.pbtech.co.nz/product/SEVRBP0512
 Buy tomorrow,Jaycar,Micro HDMI plug to HDMI socket adaptor,PA3649,1,20.90,20.90,Checked 17 Nov,"Instead of PB Tech Vention VNT1306 (no stock till ~28 Jan)",https://jaycar.co.nz/micro-hdmi-plug-to-hdmi-socket-adaptor/p/PA3649
-Buy tomorrow,Jaycar,30mm 5V fan,YX2500,1,31.90,31.90,Checked 17 Nov,"Pi box lid; less critical without the AI HAT, still recommended",https://www.jaycar.co.nz/p/YX2500
-Buy tomorrow,Jaycar,12-way fuse block,SZ2032,1,53.90,53.90,Checked 17 Nov,NZ stock,https://www.jaycar.co.nz/p/SZ2032
-Buy tomorrow (if confirmed),Audio City,"Carlinkit 'Android system to wireless CarPlay' dongle (ring to confirm it's CPC200-CCPA / Autokit)",Carlinkit Dongle,0,180.00,0.00,Fetched 18 Nov,"In stock; no model number on the page; not in totals",https://www.audiocity.co.nz/ottocast/carlinkit-android-system-to-wireless-apple-carplay-android-auto-dongle.html
-Order online,Carlinkit Autokit store,Carlinkit CPC200-CCPA (Autokit) CarPlay/Android Auto dongle,CPC200-CCPA,1,118.00,118.00,"US$65 x 1.822 (18 Nov)","Only if Audio City's isn't the CCPA; check lsusb shows 1314:1520 or 1314:1521",https://autokitcarplay.com/products/autokit-ccpa-wireless-carplay-dongle-special-for-android-head-unit
+Backup (now),Audio City,Carlinkit CPC200-CCPA dongle (photo shows CCPA code),Carlinkit Dongle,0,180.00,0.00,Fetched 18 Nov,"In stock; backup if wanted now; not in totals",https://www.audiocity.co.nz/ottocast/carlinkit-android-system-to-wireless-apple-carplay-android-auto-dongle.html
+AliExpress,AliExpress (search "Carlinkit CCPA"),Carlinkit CPC200-CCPA (or CCPA-MIC) dongle,,1,65.00,65.00,"US$33-39 snapshots x 1.822","Title must say CCPA + Android head unit + Autokit; lsusb must show 1314:1520 or 1314:1521",https://www.aliexpress.us/item/3256809220614383.html
+AliExpress,AliExpress,4-channel class D amp 12V (RCA in + remote turn-on),,1,82.00,82.00,"~US$45 snapshot x 1.822","Not waterproof; mount under the seat",https://www.aliexpress.com/w/wholesale-amplifier-4-channel-class-d.html
+AliExpress,AliExpress,BTS7960 43A H-bridge,,2,12.00,24.00,"~US$6-7 each (Walmart 2-pack US$11.56)",One on hand; 3 needed,
+AliExpress,AliExpress,8-channel PC817 opto board 12V,,1,,,Not priced,,
+AliExpress,AliExpress,MOSFET PWM board 5ch (AOD4184),,1,,,Not priced,Only once a light bar dims,
+AliExpress,AliExpress,20-way blade fuse block with cover + negative bus (16 fuses planned),,1,40.00,40.00,"~US$15-25 estimate","Buy the blade fuses in NZ; 30A/way, 100A total, stud feed",https://www.aliexpress.com/w/wholesale-Modular%20Fuse%20Block.html
+AliExpress,AliExpress,30mm 5V 2-pin fan (3007),,1,6.00,6.00,"~US$2-5 estimate","Pi box lid; 30x30x7mm",
+AliExpress,GameSir official store on AliExpress,GameSir G8 Galileo USB-C phone gamepad grip (RC mode),,1,78.00,78.00,"US$40-45 deals x 1.822 (list US$79.99)","Instead of Razer Kishi V3 NZ$167.58 at PB Tech",https://gamesir.com/collections/all-products/products/gamesir-g8-galileo
 Order online,Core Electronics (AU),Seeed MCP2515 + SN65HVD230 CAN board (Pi + control box + sniffer + power steering),,4,22.77,91.08,AU$18.45 x 1.234,15 in stock 17 Nov,https://core-electronics.com.au/seeed-studio-can-bus-breakout-board-for-xiao-and-qt-py-mcp2515-controller-sn65hvd230-transceiver-chip.html
 Order online,Core Electronics (AU),MCP23017 board,WS-15391,1,13.45,13.45,AU$10.90 x 1.234,9 in stock 17 Nov,https://core-electronics.com.au/catalog/product/view/sku/WS-15391
 Order online,Core Electronics (AU),DFRobot USB GPS receiver,TEL0138,1,25.98,25.98,AU$21.05 x 1.234 (search result),"Alt RS NZ 247-3251 NZ$30.85",https://core-electronics.com.au/catalog/product/view/sku/TEL0138
@@ -29,6 +34,7 @@ Later (optional),TBC,Short right-angle USB-C to USB-A lead,,0,,0.00,Not priced,F
 Later (optional),PB Tech,Raspberry Pi Camera Module 3 NoIR Wide (cabin camera),SEVRBP0399,0,70.00,0.00,About NZ$70,Plus a second SEVRBP0541 cable,https://www.pbtech.co.nz/product/SEVRBP0399
 Later,TBC,Powered USB hub,,0,,0.00,Not priced,Pi 5 has 4 USB ports,
 Later,PB Tech,EasyCAP DC60 USB capture (only if rear cam is RCA),SEVOEM9701,0,28.75,0.00,Search result 18 Nov,Optional,https://www.pbtech.co.nz/product/SEVOEM9701
-,,TOTAL buy tomorrow,,,,691.55,,"PB Tech 584.85 + Jaycar 106.70",
-,,TOTAL order online (priced),,,,387.59,,,
-,,TOTAL everything priced incl Aqua column,,,,1194.14,,,
+,,TOTAL buy tomorrow,,,,605.75,,"PB Tech 584.85 + Jaycar adaptor 20.90",
+,,TOTAL AliExpress (priced),,,,295.00,,,
+,,TOTAL other online (priced),,,,269.59,,,
+,,TOTAL everything priced incl Aqua column,,,,1285.34,,,

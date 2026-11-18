@@ -23,25 +23,59 @@ and video SSD are listed as "later". The Pi box stays sized for the AI HAT.
 | 7 | [Raspberry Pi 27W USB-C power supply](https://www.pbtech.co.nz/product/SEVRBP0512) | PB Tech | SEVRBP0512 | 1 | ~NZ$24.90 | Search result | Bench only. In the Teryx the Pololu regulator powers the Pi |
 | | **PB Tech subtotal** | | | | **NZ$584.85** | | |
 | 8 | [Micro HDMI to HDMI adaptor](https://jaycar.co.nz/micro-hdmi-plug-to-hdmi-socket-adaptor/p/PA3649) | Jaycar | PA3649 | 1 | NZ$20.90 | Checked 17 Nov | PB Tech's [Vention cable VNT1306](https://www.pbtech.co.nz/product/VNT1306/Vention-VAA-D03-B200-Micro-HDMI-Cable---2m---Black) (NZ$12.41) has no stock until about 28 Jan. Use with any normal HDMI cable you've got |
-| 9 | [30 mm 5V fan](https://www.jaycar.co.nz/5vdc-30mm-thin-2-wire-fan/p/YX2500) | Jaycar | YX2500 | 1 | NZ$31.90 | Checked 17 Nov | Pi box lid. **Still worth it without the AI HAT**, see "Cooling" below |
-| 10 | [12-way fuse block](https://www.jaycar.co.nz/12-way-fuse-block-with-bus-bar/p/SZ2032) | Jaycar | SZ2032 | 1 | NZ$53.90 | Checked 17 Nov | |
-| | **Jaycar subtotal** | | | | **NZ$106.70** | | |
-| | **Buy tomorrow total** | | | | **about NZ$692** | | NZ$611 if the camera is out of stock |
+| | **Jaycar subtotal** | | | | **NZ$20.90** | | |
+| | **Buy tomorrow total** | | | | **about NZ$606** | | NZ$525 if the camera is out of stock |
 
-**CarPlay dongle, if you want it now:** [Audio City](https://www.audiocity.co.nz/ottocast/carlinkit-android-system-to-wireless-apple-carplay-android-auto-dongle.html)
-(Auckland and Christchurch) lists a "Carlinkit Android system to wireless CarPlay / Android Auto
-dongle" at **NZ$180** (was NZ$199), in stock. That name fits the right type, but the page gives
-**no model number**, so ring them first and ask: "Is it the CPC200-CCPA that uses the Autokit
-app?" If yes, it's about NZ$60 dearer than ordering online but you have it now with NZ returns.
-If no or not sure, order online (next section). It's not in the totals below either way.
+Only the bench-test bits are local now. The lid fan and fuse block moved to the AliExpress cart
+(Sam, 18 Nov): the bench Pi runs fine on the Active Cooler alone, and the fuse block isn't needed
+until wiring the Teryx.
+
+**CarPlay dongle:** Sam has decided to get it from AliExpress (see the AliExpress cart below).
+Audio City's one (NZ$180, [link](https://www.audiocity.co.nz/ottocast/carlinkit-android-system-to-wireless-apple-carplay-android-auto-dongle.html))
+shows the right CCPA part code in its photo, so it's the backup if you want it straight away.
 **Not these:** the Carlinkit 5.0 / 2Air at Mighty Ape, or the MINIX CA525 at PB Tech (see
 "Getting the right CarPlay dongle").
 
-## Order online this week (not in NZ shops)
+## AliExpress cart (one order, about 2 to 4 weeks)
+
+Sam wants one AliExpress order at about half NZ shop prices. **AliExpress pages won't open for
+me**, so these prices are from search-engine snapshots and deal sites, in US$ at 1.822. They
+move daily with coupons, so check each one in the app before paying. AliExpress adds NZ GST at
+checkout. Delivery to NZ is usually 2 to 4 weeks, and only the travel part is covered by
+AliExpress's delivery promises, not customs
+([findniche](https://findniche.com/blog/aliexpress-shipping-time),
+[parcelmonitor](https://www.parcelmonitor.com/blog/aliexpress-shipping-time-tracking)).
+Pick listings marked "Choice" where you can: they usually ship free and faster.
+
+| Part | Search for | Qty | Rough price | What to check |
+|---|---|---|---|---|
+| **Carlinkit CPC200-CCPA** CarPlay / Android Auto dongle | "Carlinkit CCPA" | 1 | US$33-39 (~NZ$60-71). Snapshots: [US$33.17, 2,000+ sold](https://www.aliexpress.us/item/3256809220614383.html), [CCPA with mic US$38.77](https://www.aliexpress.com/item/32983926178.html) | Title must say **CCPA** (or Autokit) and "for Android head unit / car radio", and mention the Autokit app. The **CCPA-MIC** option has a built-in mic, worth the few dollars more for Siri and calls. I couldn't confirm which AliExpress shop is Carlinkit's own, so pick one with thousands sold and good reviews. On arrival `lsusb` must show `1314:1520` or `1314:1521`, or send it back (see "Getting the right CarPlay dongle") |
+| **4-channel class D amp, 12V** | "4 channel class D amplifier 12V marine" | 1 | ~US$45 (~NZ$82). Snapshot: a Sennuopu 4-channel "400W RMS" listing at [US$44.79](https://www.aliexpress.com/w/wholesale-amplifier-4-channel-class-d.html) | Must have **RCA line inputs** and a **remote turn-on wire** ([`audio.md`](audio.md) section 2). Cheap amps overstate power: "400W" usually means about 4 x 25-50 W real, which is fine for a pair of marine speakers. The one I found **doesn't say it's waterproof**, so mount it under the seat out of the weather. If you want a proper IPX5/6 sealed one, that's a brand-name marine amp from an NZ car audio shop (about NZ$150-300 budget, NZ$400-900 good) |
+| **BTS7960 43A H-bridge** | "BTS7960" | 2 | ~US$6-7 each (~NZ$12). Not found on AliExpress itself; [Walmart](https://www.walmart.com/ip/BTS7960-43A-High-Power-Motor-Driver-Module-Smart-Car-Driver-Module-for-Current-Limit/8904873796) has 2 for US$11.56 | Actuators. You have one already (io-list), 3 needed |
+| **8-channel PC817 opto board, 12V in** | "8 channel optocoupler PC817 12V" | 1 | Not priced | See `shopping-list.md` section 6 |
+| **MOSFET PWM board, 5 channels** | "AOD4184 MOSFET module" | 1 (or 5 singles) | Not priced | Only once a light bar is shown to dim |
+| **Phone gamepad grip** (Razer Kishi style) for RC mode | "GameSir G8 Galileo", from the **GameSir official store** | 1 | US$40-45 on deals (~NZ$73-82), list price [US$79.99](https://gamesir.com/collections/all-products/products/gamesir-g8-galileo). Deal posts: [Slickdeals](https://slickdeals.net/f/19268917-gamesir-phone-controllers-g8-galileo-usb-c-gray-44-79-g8-bluetooth-black-free-u-s-shipping-aliexpress) | Half the [Razer Kishi V3](https://www.pbtech.co.nz/product/JOYRAZ112682) at PB Tech (NZ$167.58, [`rc-beach-launch.md`](rc-beach-launch.md)). USB-C, Hall effect sticks and triggers, stretches to fit the phone. Get the **USB-C** one, not the Bluetooth G8+, so it plugs straight into the phone like the Kishi. Test it on the RC page (HTTPS) when it arrives |
+| **Blade fuse block, 20-way, with cover and negative bus** | "20 way blade fuse box negative bus cover" | 1 | ~US$15-25 (~NZ$27-46), my estimate. AliExpress search pages show bait prices like [US$1.09](https://www.aliexpress.com/w/wholesale-Modular%20Fuse%20Block.html); a similar 12-way Nilight is [US$22.99 at Walmart](https://www.walmart.com/c/kp/electrical-box-bus) | The wiring plan has **16 fused circuits** (`config/wiring.yaml`, F1-F16), so get a 20-way for spares. Look for: clip-on cover (ideally a seal), built-in negative bus, 30 A per way and 100 A total, studs or screw terminals for the feed (not a push-on spade), and blown-fuse LEDs are a bonus. A proper brand (Blue Sea, Narva) is better if it'll live where it gets wet |
+| **30 mm 5V fan, 2-pin (3007)** | "3007 5V fan 2 pin" | 1-2 | ~US$2-5 (~NZ$4-9), my estimate. A [reseller copy of an AliExpress listing](https://ubbthreads.com/store/item/4x-2-Pin-30MMx30MM-3007-5V-Cooling-Fan-radiating-For-Raspberry-Pi-2-3-Model-B-4B_285308377334.html) shows US$8.89 for 4 | Pi box lid. Must be 30 x 30 x 7 mm to fit the printed lid. Get a spare, they're cheap |
+| | | | **about NZ$295** | Dongle NZ$65, amp NZ$82, 2 x BTS7960 NZ$24, grip NZ$78, fuse block ~NZ$40, fan ~NZ$6. Opto and MOSFET boards on top |
+
+### Better bought in NZ or from a proper shop, not AliExpress
+
+| Part | Why |
+|---|---|
+| Raspberry Pi 5, Active Cooler, Camera Module 3, Pico 2 | Fakes and grey stock are common on AliExpress, and PB Tech gives you a local warranty. Prices are about the same once shipping is on |
+| SD card | Fake cards that lie about their size are very common on AliExpress. They lose files and corrupt the OS |
+| The fuses themselves | The fuse block from AliExpress is fine (it's plastic and brass), but buy the **blade fuses** in NZ (Narva or Jaycar packs, 3/5/7.5/10/15 A). Cheap fuses often don't blow at their rated current, and they're the safety part |
+| Pololu 5V regulator | It powers the Pi and has to survive winch spikes. Pololu copies exist; buy it genuine from Core Electronics |
+| Seeed CAN boards | They're 3.3V all through, which is what the firmware and `wiring.md` expect. The cheap blue AliExpress MCP2515 boards are 5V and need extra wiring. Already in the Core parcel, so no extra shipping |
+| TVS diodes | Fake parts are common in cheap diodes, and element14 has them for NZ$2.24 |
+| Mini560 bucks | Already cheap in NZ (Gogo:Tronics NZ$2.95). Not worth the wait |
+| 4G dongle (later) | Get the real Waveshare SIM7600G-H from [Waveshare](https://www.waveshare.com/sim7600g-h-4g-dongle.htm) (AU$115.90 on their site). Third-party listings call it "unbranded" |
+
+## Order online this week (other shops)
 
 | Part | Where | Qty | Price | Notes |
 |---|---|---|---|---|
-| **Carlinkit CPC200-CCPA** (also sold as "Autokit") CarPlay / Android Auto dongle | [Carlinkit's Autokit store](https://autokitcarplay.com/products/autokit-ccpa-wireless-carplay-dongle-special-for-android-head-unit), or AliExpress | 1 | US$65 (~NZ$118 at 1.822) on the store. AliExpress listings US$45-66 (search results) | Only if Audio City's one turns out not to be the CCPA. PB Tech and Mighty Ape don't have the right type. See "Getting the right CarPlay dongle" below |
 | [Seeed MCP2515 + SN65HVD230 CAN board](https://core-electronics.com.au/seeed-studio-can-bus-breakout-board-for-xiao-and-qt-py-mcp2515-controller-sn65hvd230-transceiver-chip.html) | Core Electronics (AU) | **4** | AU$18.45 each (~NZ$91 for 4) | Pi, control box, sniffer, and **new: the Pico's own CAN link to the Toyota Aqua power steering column** ([`power-steering-wrecker.md`](power-steering-wrecker.md)). Check the crystal |
 | [MCP23017 board](https://core-electronics.com.au/catalog/product/view/sku/WS-15391) | Core Electronics (AU) | 1 | AU$10.90 (~NZ$13) | Control box inputs and relays |
 | [DFRobot USB GPS TEL0138](https://core-electronics.com.au/catalog/product/view/sku/TEL0138) | Core Electronics (AU) | 1 | AU$21.05 (~NZ$26) | Search result. Or [RS NZ](https://nz.rs-online.com/web/p/gnss-gps-modules/2473251) NZ$30.85 |
@@ -50,11 +84,9 @@ If no or not sure, order online (next section). It's not in the totals below eit
 | [Mini560 5V 5A buck](https://sparks.gogo.co.nz/catalog/DC-Power-260/Fixed-Output-Step-Down-Converter-Out-5v-up-to-5A-Continuous-In-7-20v-1009.html) | Gogo:Tronics | 2 | NZ$2.95 each | Pico control box power and a spare |
 | [1.5KE18A TVS diode](https://nz.element14.com/stmicroelectronics/1-5ke18a/diode-tvs-1-5kw-18v/dp/9884831) | element14 NZ | 2 | NZ$2.24 each | Spike clamp on the dash 12V |
 | [Narva 7-pin flat socket with reed switch 82043BL](https://narva.com.au/products/narva-7-pin-flat-quickfit-trailer-socket-with-reed-switch-for-use-with-normally-closed-circuits-1-pack) | Narva stockists | 1 | **Not priced** | Trailer detect |
-| BTS7960 x2, 8-ch opto board, MOSFET board | AliExpress | | **Not priced** | See `shopping-list.md` section 6 |
-| | | | **about NZ$388** | Priced items, with the dongle at NZ$118 |
+| | | | **about NZ$270** | Priced items |
 
-AUD to NZD at 1.234 (Wise, 17 Nov). USD to NZD at 1.822 (Wise, 18 Nov, no time shown on the
-page). The Carlinkit store may add NZ GST or shipping at checkout, so allow up to about NZ$136.
+AUD to NZD at 1.234 (Wise, 17 Nov). USD to NZD at 1.822 (Wise, 18 Nov, no time shown on the page).
 
 ## Separate pickup
 
@@ -66,14 +98,15 @@ page). The Carlinkit store may add NZ GST or shipping at checkout, so allow up t
 
 | | NZ$ |
 |---|---|
-| Buy tomorrow | ~692 |
-| Order online this week | ~388 |
+| Buy tomorrow (PB Tech + Jaycar adaptor) | ~606 |
+| AliExpress cart | ~295 |
+| Other online orders (Core, Gogo, element14) | ~270 |
 | Aqua column | ~115 |
-| **Everything priced** | **about NZ$1,195** |
+| **Everything priced** | **about NZ$1,285** |
 
-Not counted: the Narva socket, AliExpress parts, trailer camera bits, and everything under "Later".
-That's about NZ$160 less than yesterday's list, mostly from dropping the AI HAT+ 2 (NZ$423)
-and adding the dongle (NZ$118), the 4th CAN board (NZ$23) and the column (NZ$115).
+The amp (NZ$82) and the gamepad grip (NZ$78) are new to the list today. Without those two it's
+about NZ$1,125. Not counted: blade fuses, the opto and MOSFET boards, Narva socket, trailer camera bits,
+speakers and amp wiring, and everything under "Later".
 
 ## Cooling without the AI HAT
 
@@ -135,7 +168,8 @@ screens. Most "wireless CarPlay adapters" in NZ shops are the wrong kind.
 |---|---|---|---|
 | Pi 5 8GB | NZ$371.39 | [Core Electronics](https://core-electronics.com.au/raspberry-pi-5-model-b-8gb.html) AU$283.85 (~NZ$350-366 landed) + shipping | **No.** About the same once shipping is on. Buy at PB Tech for the local warranty |
 | Camera Module 3 Wide | ~NZ$80.71, out of stock | element14 NZ ~NZ$69, out of stock | Whoever has stock first |
-| CarPlay dongle | Not stocked (CA525 is the wrong type) | Audio City NZ$180 (model to confirm), Carlinkit store US$65 (~NZ$118), AliExpress US$45-66 | Audio City if they confirm CCPA and you want it now. Otherwise the Carlinkit store (1-year warranty, 30-day returns) |
+| CarPlay dongle | Not stocked (CA525 is the wrong type) | AliExpress ~NZ$60-71, Carlinkit's own store ~NZ$118, Audio City NZ$180 | **AliExpress** (Sam's pick). Audio City if you want it now |
+| Phone gamepad grip | Razer Kishi V3 NZ$167.58 | GameSir G8 Galileo ~NZ$73-82 on AliExpress | **Yes**, about half |
 | AI HAT+ 2 (later) | ~NZ$423 | Core Electronics ~NZ$357-373 landed | **Yes**, when the time comes |
 | Everything small | | | Not worth splitting: savings would be smaller than a shipping fee |
 
