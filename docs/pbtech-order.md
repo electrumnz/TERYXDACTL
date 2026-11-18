@@ -21,12 +21,10 @@ and video SSD are listed as "later". The Pi box stays sized for the AI HAT.
 | 5 | [Pi 5 camera cable 200 mm](https://www.pbtech.com/pacific/product/SEVRBP0541) | PB Tech | SEVRBP0541 | 1 | ~NZ$2.12 | Search result | Only with the camera |
 | 6 | [Raspberry Pi Pico 2, 5-pack](https://www.pbtech.co.nz/product/SEVRBP0628/Raspberry-Pi-Kit-Pack-Microcontrollers-Board---Pic) | PB Tech | SEVRBP0628 | 1 | NZ$47.20 | Checked 17 Nov | In stock. Control box, CAN sniffer, power steering bench test, 2 spares |
 | 7 | [Raspberry Pi 27W USB-C power supply](https://www.pbtech.co.nz/product/SEVRBP0512) | PB Tech | SEVRBP0512 | 1 | ~NZ$24.90 | Search result | Bench only. In the Teryx the Pololu regulator powers the Pi |
-| | **PB Tech subtotal** | | | | **NZ$584.85** | | |
-| 8 | [Micro HDMI to HDMI adaptor](https://jaycar.co.nz/micro-hdmi-plug-to-hdmi-socket-adaptor/p/PA3649) | Jaycar | PA3649 | 1 | NZ$20.90 | Checked 17 Nov | PB Tech's [Vention cable VNT1306](https://www.pbtech.co.nz/product/VNT1306/Vention-VAA-D03-B200-Micro-HDMI-Cable---2m---Black) (NZ$12.41) has no stock until about 28 Jan. Use with any normal HDMI cable you've got |
-| | **Jaycar subtotal** | | | | **NZ$20.90** | | |
-| | **Buy tomorrow total** | | | | **about NZ$606** | | NZ$525 if the camera is out of stock |
+| 8 | [Raspberry Pi official micro HDMI to HDMI cable, 1 m, white](https://www.pbtech.co.nz/product/SEVRBP0207/Raspberry-Pi-Official-1M-White-Cable-Micro-HDMI-to) | PB Tech | SEVRBP0207 | 1 | NZ$11.80 | Search result | Stock not confirmed. Same cable in black: [SEVRBP0262](https://www.pbtech.co.nz/product/SEVRBP0262/Raspberry-Pi-Official-1M-Black-Cable-Micro-HDMI-to) ~NZ$11.10. If neither is in, [Jaycar PA3649 adaptor](https://jaycar.co.nz/micro-hdmi-plug-to-hdmi-socket-adaptor/p/PA3649) NZ$20.90 plus any HDMI cable. 1 m is fine for the bench; the car may need longer once the Pi's spot is fixed (the 2 m Vention VNT1306 is out until about 28 Jan) |
+| | **Buy tomorrow total (all PB Tech)** | | | | **about NZ$597** | | NZ$516 if the camera is out of stock |
 
-Only the bench-test bits are local now. The lid fan and fuse block moved to the AliExpress cart
+Everything for tomorrow is at PB Tech now. The lid fan and fuse block moved to the AliExpress cart
 (Sam, 18 Nov): the bench Pi runs fine on the Active Cooler alone, and the fuse block isn't needed
 until wiring the Teryx.
 
@@ -98,14 +96,14 @@ AUD to NZD at 1.234 (Wise, 17 Nov). USD to NZD at 1.822 (Wise, 18 Nov, no time s
 
 | | NZ$ |
 |---|---|
-| Buy tomorrow (PB Tech + Jaycar adaptor) | ~606 |
+| Buy tomorrow (all PB Tech) | ~597 |
 | AliExpress cart | ~295 |
 | Other online orders (Core, Gogo, element14) | ~270 |
 | Aqua column | ~115 |
-| **Everything priced** | **about NZ$1,285** |
+| **Everything priced** | **about NZ$1,276** |
 
 The amp (NZ$82) and the gamepad grip (NZ$78) are new to the list today. Without those two it's
-about NZ$1,125. Not counted: blade fuses, the opto and MOSFET boards, Narva socket, trailer camera bits,
+about NZ$1,116. Not counted: blade fuses, the opto and MOSFET boards, Narva socket, trailer camera bits,
 speakers and amp wiring, and everything under "Later".
 
 ## Cooling without the AI HAT

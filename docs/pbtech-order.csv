@@ -6,7 +6,7 @@ Buy tomorrow,PB Tech,Raspberry Pi Camera Module 3 Wide,SEVRBP0398,1,80.71,80.71,
 Buy tomorrow,PB Tech,Pi 5 camera cable 200mm,SEVRBP0541,1,2.12,2.12,Search result 18 Nov (1.84 probably ex GST),Only with the camera,https://www.pbtech.com/pacific/product/SEVRBP0541
 Buy tomorrow,PB Tech,Raspberry Pi Pico 2 5-pack,SEVRBP0628,1,47.20,47.20,Checked 17 Nov,In stock,https://www.pbtech.co.nz/product/SEVRBP0628
 Buy tomorrow,PB Tech,Raspberry Pi 27W USB-C power supply (bench),SEVRBP0512,1,24.90,24.90,Search result 18 Nov (21.65 probably ex GST),Bench only,https://www.pbtech.co.nz/product/SEVRBP0512
-Buy tomorrow,Jaycar,Micro HDMI plug to HDMI socket adaptor,PA3649,1,20.90,20.90,Checked 17 Nov,"Instead of PB Tech Vention VNT1306 (no stock till ~28 Jan)",https://jaycar.co.nz/micro-hdmi-plug-to-hdmi-socket-adaptor/p/PA3649
+Buy tomorrow,PB Tech,Raspberry Pi official micro HDMI to HDMI cable 1m (white),SEVRBP0207,1,11.80,11.80,Search result 18 Nov,"Stock not confirmed; alt black SEVRBP0262 ~11.10; fallback Jaycar PA3649 20.90",https://www.pbtech.co.nz/product/SEVRBP0207
 Backup (now),Audio City,Carlinkit CPC200-CCPA dongle (photo shows CCPA code),Carlinkit Dongle,0,180.00,0.00,Fetched 18 Nov,"In stock; backup if wanted now; not in totals",https://www.audiocity.co.nz/ottocast/carlinkit-android-system-to-wireless-apple-carplay-android-auto-dongle.html
 AliExpress,AliExpress (search "Carlinkit CCPA"),Carlinkit CPC200-CCPA (or CCPA-MIC) dongle,,1,65.00,65.00,"US$33-39 snapshots x 1.822","Title must say CCPA + Android head unit + Autokit; lsusb must show 1314:1520 or 1314:1521",https://www.aliexpress.us/item/3256809220614383.html
 AliExpress,AliExpress,4-channel class D amp 12V (RCA in + remote turn-on),,1,82.00,82.00,"~US$45 snapshot x 1.822","Not waterproof; mount under the seat",https://www.aliexpress.com/w/wholesale-amplifier-4-channel-class-d.html
@@ -34,7 +34,7 @@ Later (optional),TBC,Short right-angle USB-C to USB-A lead,,0,,0.00,Not priced,F
 Later (optional),PB Tech,Raspberry Pi Camera Module 3 NoIR Wide (cabin camera),SEVRBP0399,0,70.00,0.00,About NZ$70,Plus a second SEVRBP0541 cable,https://www.pbtech.co.nz/product/SEVRBP0399
 Later,TBC,Powered USB hub,,0,,0.00,Not priced,Pi 5 has 4 USB ports,
 Later,PB Tech,EasyCAP DC60 USB capture (only if rear cam is RCA),SEVOEM9701,0,28.75,0.00,Search result 18 Nov,Optional,https://www.pbtech.co.nz/product/SEVOEM9701
-,,TOTAL buy tomorrow,,,,605.75,,"PB Tech 584.85 + Jaycar adaptor 20.90",
+,,TOTAL buy tomorrow (all PB Tech),,,,596.65,,,
 ,,TOTAL AliExpress (priced),,,,295.00,,,
 ,,TOTAL other online (priced),,,,269.59,,,
-,,TOTAL everything priced incl Aqua column,,,,1285.34,,,
+,,TOTAL everything priced incl Aqua column,,,,1276.24,,,
