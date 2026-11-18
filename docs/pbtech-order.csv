@@ -1,22 +1,30 @@
-Shop,Part,SKU,Qty,Price NZ$ incl GST (each),Line total NZ$,Price source,Stock / notes,Link
-PB Tech,Raspberry Pi 5 8GB,SEVRBP0502,1,371.39,371.39,Checked 17 Nov,"On order, ships about 30 Nov",https://www.pbtech.co.nz/product/SEVRBP0502
-PB Tech,Raspberry Pi AI HAT+ 2,SEVRBP0446,1,423.43,423.43,Search result 18 Nov,"Cheaper at Core Electronics (about NZ$357-373)",https://www.pbtech.co.nz/product/SEVRBP0446
-PB Tech,Raspberry Pi Active Cooler,SEVRBP0531,1,11.21,11.21,Checked 17 Nov,In stock,https://www.pbtech.co.nz/product/SEVRBP0531
-PB Tech,Raspberry Pi A2 SD card 128GB,SEVRBP0538,1,47.32,47.32,Search result 18 Nov,In stock when indexed,https://www.pbtech.co.nz/product/SEVRBP0538
-PB Tech,Raspberry Pi Camera Module 3 Wide,SEVRBP0398,1,80.71,80.71,Search result 18 Nov,"Out of stock when indexed; alt element14 NZ SC0874 ~NZ$69",https://www.pbtech.co.nz/product/SEVRBP0398
-PB Tech,Pi 5 camera cable 200mm,SEVRBP0541,1,2.12,2.12,Search result 18 Nov (1.84 probably ex GST),,https://www.pbtech.com/pacific/product/SEVRBP0541
-PB Tech,Raspberry Pi Pico 2 5-pack,SEVRBP0628,1,47.20,47.20,Checked 17 Nov,In stock,https://www.pbtech.co.nz/product/SEVRBP0628
-PB Tech,Vention micro HDMI to HDMI 2m,VNT1306,1,12.41,12.41,Checked 17 Nov,"No stock, ships about 28 Jan; alt Jaycar PA3649 NZ$20.90",https://www.pbtech.co.nz/product/VNT1306
-PB Tech,Raspberry Pi 27W USB-C power supply (bench),SEVRBP0512,1,24.90,24.90,Search result 18 Nov (21.65 probably ex GST),Bench only,https://www.pbtech.co.nz/product/SEVRBP0512
-PB Tech,EasyCAP DC60 USB capture (only if rear cam is RCA),SEVOEM9701,0,28.75,0.00,Search result 18 Nov,Optional,https://www.pbtech.co.nz/product/SEVOEM9701
-Core Electronics (AU),Seeed MCP2515 + SN65HVD230 CAN board (Pi + control box + sniffer),,3,22.77,68.31,AU$18.45 x 1.234,15 in stock 17 Nov,https://core-electronics.com.au/seeed-studio-can-bus-breakout-board-for-xiao-and-qt-py-mcp2515-controller-sn65hvd230-transceiver-chip.html
-Core Electronics (AU),MCP23017 board,WS-15391,1,13.45,13.45,AU$10.90 x 1.234,9 in stock 17 Nov,https://core-electronics.com.au/catalog/product/view/sku/WS-15391
-Core Electronics (AU),DFRobot USB GPS receiver,TEL0138,1,25.98,25.98,AU$21.05 x 1.234 (search result),"Alt RS NZ 247-3251 NZ$30.85",https://core-electronics.com.au/catalog/product/view/sku/TEL0138
-Core Electronics (AU),Pololu D36V50F5 5V 5.5A regulator,POLOLU-4091,1,111.20,111.20,AU$90.11 x 1.234,In stock 17 Nov,https://core-electronics.com.au/catalog/product/view/sku/POLOLU-4091
-Core Electronics (AU),Shipping to NZ (estimate),,1,17.50,17.50,AU$12-16 from product page,Check at checkout,
-Jaycar,30mm 5V fan,YX2500,1,31.90,31.90,Checked 17 Nov,NZ stock,https://www.jaycar.co.nz/p/YX2500
-Jaycar,12-way fuse block,SZ2032,1,53.90,53.90,Checked 17 Nov,NZ stock,https://www.jaycar.co.nz/p/SZ2032
-Gogo:Tronics,Mini560 5V 5A buck,,2,2.95,5.90,Checked 17 Nov,,https://sparks.gogo.co.nz/catalog/DC-Power-260/Fixed-Output-Step-Down-Converter-Out-5v-up-to-5A-Continuous-In-7-20v-1009.html
-element14 NZ,1.5KE18A TVS diode,9884831,2,2.24,4.48,Checked 17 Nov (GST unclear),,https://nz.element14.com/stmicroelectronics/1-5ke18a/diode-tvs-1-5kw-18v/dp/9884831
-Narva stockist,Narva 7-pin flat socket with reed switch,82043BL,1,,,Not priced,Trailer detect,https://narva.com.au/products/narva-7-pin-flat-quickfit-trailer-socket-with-reed-switch-for-use-with-normally-closed-circuits-1-pack
-,TOTAL (priced items),,,,1353.31,,"PB Tech NZ$1,020.69 + others NZ$332.62",
+Group,Shop,Part,SKU,Qty,Price NZ$ incl GST (each),Line total NZ$,Price source,Stock / notes,Link
+Buy tomorrow,PB Tech,Raspberry Pi 5 8GB,SEVRBP0502,1,371.39,371.39,Checked 17 Nov,"On order then, ships about 30 Nov; ask in store",https://www.pbtech.co.nz/product/SEVRBP0502
+Buy tomorrow,PB Tech,Raspberry Pi Active Cooler,SEVRBP0531,1,11.21,11.21,Checked 17 Nov,"In stock; still needed without the AI HAT",https://www.pbtech.co.nz/product/SEVRBP0531
+Buy tomorrow,PB Tech,Raspberry Pi A2 SD card 128GB,SEVRBP0538,1,47.32,47.32,Search result 18 Nov,In stock when indexed,https://www.pbtech.co.nz/product/SEVRBP0538
+Buy tomorrow,PB Tech,Raspberry Pi Camera Module 3 Wide,SEVRBP0398,1,80.71,80.71,Search result 18 Nov,"Out of stock when indexed; skip if none; alt element14 NZ SC0874 ~NZ$69",https://www.pbtech.co.nz/product/SEVRBP0398
+Buy tomorrow,PB Tech,Pi 5 camera cable 200mm,SEVRBP0541,1,2.12,2.12,Search result 18 Nov (1.84 probably ex GST),Only with the camera,https://www.pbtech.com/pacific/product/SEVRBP0541
+Buy tomorrow,PB Tech,Raspberry Pi Pico 2 5-pack,SEVRBP0628,1,47.20,47.20,Checked 17 Nov,In stock,https://www.pbtech.co.nz/product/SEVRBP0628
+Buy tomorrow,PB Tech,Raspberry Pi 27W USB-C power supply (bench),SEVRBP0512,1,24.90,24.90,Search result 18 Nov (21.65 probably ex GST),Bench only,https://www.pbtech.co.nz/product/SEVRBP0512
+Buy tomorrow,Jaycar,Micro HDMI plug to HDMI socket adaptor,PA3649,1,20.90,20.90,Checked 17 Nov,"Instead of PB Tech Vention VNT1306 (no stock till ~28 Jan)",https://jaycar.co.nz/micro-hdmi-plug-to-hdmi-socket-adaptor/p/PA3649
+Buy tomorrow,Jaycar,30mm 5V fan,YX2500,1,31.90,31.90,Checked 17 Nov,"Pi box lid; less critical without the AI HAT, still recommended",https://www.jaycar.co.nz/p/YX2500
+Buy tomorrow,Jaycar,12-way fuse block,SZ2032,1,53.90,53.90,Checked 17 Nov,NZ stock,https://www.jaycar.co.nz/p/SZ2032
+Buy tomorrow (if confirmed),Audio City,"Carlinkit 'Android system to wireless CarPlay' dongle (ring to confirm it's CPC200-CCPA / Autokit)",Carlinkit Dongle,0,180.00,0.00,Fetched 18 Nov,"In stock; no model number on the page; not in totals",https://www.audiocity.co.nz/ottocast/carlinkit-android-system-to-wireless-apple-carplay-android-auto-dongle.html
+Order online,Carlinkit Autokit store,Carlinkit CPC200-CCPA (Autokit) CarPlay/Android Auto dongle,CPC200-CCPA,1,118.00,118.00,"US$65 x 1.822 (18 Nov)","Only if Audio City's isn't the CCPA; check lsusb shows 1314:1520 or 1314:1521",https://autokitcarplay.com/products/autokit-ccpa-wireless-carplay-dongle-special-for-android-head-unit
+Order online,Core Electronics (AU),Seeed MCP2515 + SN65HVD230 CAN board (Pi + control box + sniffer + power steering),,4,22.77,91.08,AU$18.45 x 1.234,15 in stock 17 Nov,https://core-electronics.com.au/seeed-studio-can-bus-breakout-board-for-xiao-and-qt-py-mcp2515-controller-sn65hvd230-transceiver-chip.html
+Order online,Core Electronics (AU),MCP23017 board,WS-15391,1,13.45,13.45,AU$10.90 x 1.234,9 in stock 17 Nov,https://core-electronics.com.au/catalog/product/view/sku/WS-15391
+Order online,Core Electronics (AU),DFRobot USB GPS receiver,TEL0138,1,25.98,25.98,AU$21.05 x 1.234 (search result),"Alt RS NZ 247-3251 NZ$30.85",https://core-electronics.com.au/catalog/product/view/sku/TEL0138
+Order online,Core Electronics (AU),Pololu D36V50F5 5V 5.5A regulator,POLOLU-4091,1,111.20,111.20,AU$90.11 x 1.234,In stock 17 Nov,https://core-electronics.com.au/catalog/product/view/sku/POLOLU-4091
+Order online,Core Electronics (AU),Shipping to NZ (estimate),,1,17.50,17.50,AU$12-16 from product page,Check at checkout,
+Order online,Gogo:Tronics,Mini560 5V 5A buck,,2,2.95,5.90,Checked 17 Nov,,https://sparks.gogo.co.nz/catalog/DC-Power-260/Fixed-Output-Step-Down-Converter-Out-5v-up-to-5A-Continuous-In-7-20v-1009.html
+Order online,element14 NZ,1.5KE18A TVS diode,9884831,2,2.24,4.48,Checked 17 Nov (GST unclear),,https://nz.element14.com/stmicroelectronics/1-5ke18a/diode-tvs-1-5kw-18v/dp/9884831
+Order online,Narva stockist,Narva 7-pin flat socket with reed switch,82043BL,1,,,Not priced,Trailer detect,https://narva.com.au/products/narva-7-pin-flat-quickfit-trailer-socket-with-reed-switch-for-use-with-normally-closed-circuits-1-pack
+Separate pickup,Dodson's (Trade Me),Toyota Aqua EPS column (ECU 89650-52B51),,1,115.00,115.00,About NZ$115,Picking up 19 Nov,
+Later,PB Tech / Core Electronics,Raspberry Pi AI HAT+ 2,SEVRBP0446,0,423.43,0.00,Search result 18 Nov,"Not buying now; Core ~NZ$357-373 landed; box stays sized for it",https://www.pbtech.co.nz/product/SEVRBP0446
+Later (optional),TBC,4G USB modem with NZ bands,,0,,0.00,Not priced,"Model TBC by the 4G anti-theft work; goes in the Pi box",
+Later (optional),TBC,Compact USB SSD for video (e.g. Samsung T7 500GB),HDDSSM17051,0,,0.00,Not priced,"USB not NVMe; goes in the Pi box",https://www.pbtech.com/product/HDDSSM17051/reg
+Later,TBC,Powered USB hub,,0,,0.00,Not priced,Pi 5 has 4 USB ports,
+Later,PB Tech,EasyCAP DC60 USB capture (only if rear cam is RCA),SEVOEM9701,0,28.75,0.00,Search result 18 Nov,Optional,https://www.pbtech.co.nz/product/SEVOEM9701
+,,TOTAL buy tomorrow,,,,691.55,,"PB Tech 584.85 + Jaycar 106.70",
+,,TOTAL order online (priced),,,,387.59,,,
+,,TOTAL everything priced incl Aqua column,,,,1194.14,,,
