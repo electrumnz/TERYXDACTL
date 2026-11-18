@@ -49,8 +49,7 @@ faults:
   fix_cn:
   - 重新开启钥匙开关，如问题继续存在，更换控制器
   fix:
-  - Cycle the key switch. If it keeps happening
-  - replace the controller
+  - Cycle the key switch. If it keeps happening, replace the controller
 - code: 4
   cn: V相电流传感器故障
   en: Phase V current sensor fault
@@ -65,8 +64,7 @@ faults:
   fix_cn:
   - 重新开启钥匙开关，如问题继续存在，更换控制器
   fix:
-  - Cycle the key switch. If it keeps happening
-  - replace the controller
+  - Cycle the key switch. If it keeps happening, replace the controller
 - code: 5
   cn: 系统错误
   en: System error
@@ -79,8 +77,7 @@ faults:
   fix_cn:
   - 重新开启钥匙开关，如问题继续存在，更换控制器
   fix:
-  - Cycle the key switch. If it keeps happening
-  - replace the controller
+  - Cycle the key switch. If it keeps happening, replace the controller
 - code: 6
   cn: U 相故障
   en: Phase U fault
@@ -99,8 +96,7 @@ faults:
   fix:
   - Reduce the noise
   - Adjust the dead time
-  - If it keeps happening
-  - replace the controller
+  - If it keeps happening, replace the controller
 - code: 7
   cn: V 相故障
   en: Phase V fault
@@ -119,8 +115,7 @@ faults:
   fix:
   - Reduce the noise
   - Adjust the dead time
-  - If it keeps happening
-  - replace the controller
+  - If it keeps happening, replace the controller
 - code: 8
   cn: W 相故障
   en: Phase W fault
@@ -139,8 +134,7 @@ faults:
   fix:
   - Reduce the noise
   - Adjust the dead time
-  - If it keeps happening
-  - replace the controller
+  - If it keeps happening, replace the controller
 - code: 9
   cn: 电机温度传感器故障
   en: Motor temperature sensor fault
@@ -189,8 +183,7 @@ faults:
   fix_cn:
   - 重新开启钥匙开关，如问题继续存在，更换控制器
   fix:
-  - Cycle the key switch. If it keeps happening
-  - replace the controller
+  - Cycle the key switch. If it keeps happening, replace the controller
 - code: 12
   cn: 控制器温升故障
   en: Controller over-temperature

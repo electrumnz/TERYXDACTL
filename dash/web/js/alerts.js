@@ -2,11 +2,22 @@
 // itself (battery low, temps, 12V, tilt, lost link). Worst one shows as a banner along the
 // bottom with a sound. "bad" alerts beep again every few seconds until you tap OK.
 import { PICO_FAULTS, MC_FAULTS, faultText, asList } from "./text.js";
+import { SHINEGLE_CODES } from "./shinegle-codes.js";
 import { Sound } from "./sound.js";
 
 export const SEV_RANK = { bad: 3, warn: 2, info: 1 };
 const REPEAT_BAD_MS = 6000;
 const LINK_GRACE_MS = 3000;   // don't shout about a blip in the link
+const DCDC_HOLD_MS = 20000;   // 12V has to sit low this long while READY before we blame the DC-DC
+const DCDC_MIN_V = 12.9;      // a DC-DC that's working holds the 12V battery up around 13.5-14.4 V
+
+// Something has to be true for a while before it counts (a winch pull or a big load can
+// pull the 12V down for a few seconds). timers keeps when each one started.
+function held(timers, key, cond, now, ms) {
+  if (!cond) { timers.delete(key); return false; }
+  if (!timers.has(key)) timers.set(key, now);
+  return now - timers.get(key) >= ms;
+}
 
 // A threshold with a little gap before it clears, so a value sitting on the line doesn't
 // make the alert flick on and off.
@@ -14,13 +25,19 @@ function over(active, v, limit, gap) { return v != null && (active ? v > limit -
 function under(active, v, limit, gap) { return v != null && (active ? v < limit + gap : v <= limit); }
 
 /** Work out which alerts are on right now. Pure, so it's easy to test. */
-export function evaluate(st, settings, prev = new Set(), now = Date.now(), linkLostAt = null) {
+export function evaluate(st, settings, prev = new Set(), now = Date.now(), linkLostAt = null, timers = new Map()) {
   const out = [];
   const add = (key, sev, text, code = key) => out.push({ key, sev, text, code });
   const was = (k) => prev.has(k);
 
   asList(st.get("pico.faults")).forEach((c) => add(`p:${c}`, (PICO_FAULTS[c] || {}).sev || "bad", faultText(c, PICO_FAULTS), c));
   asList(st.get("mc.faults")).forEach((c) => add(`m:${c}`, (MC_FAULTS[c] || {}).sev || "bad", faultText(c, MC_FAULTS), c));
+  // The controller's own ErrorCode (LED flash count), in the words of its manual.
+  const ec = st.get("mc.error_code") || 0;
+  if (ec > 1 && st.get("mc.online") !== false) {
+    const row = SHINEGLE_CODES[ec];
+    add(`m:code${ec}`, "bad", row ? `Motor controller code ${ec}: ${row.text}.${row.fix ? ` ${row.fix}` : ""}` : `Motor controller code ${ec}.`, `code${ec}`);
+  }
 
   const demo = st.get("link.demo");
   if (!demo && linkLostAt != null && now - linkLostAt > LINK_GRACE_MS) {
@@ -54,6 +71,23 @@ export function evaluate(st, settings, prev = new Set(), now = Date.now(), linkL
   const v12 = st.get("an.aux_12v");
   if (!asList(st.get("pico.faults")).includes("low_12v") && st.get("pico.online") !== false && under(was("a:12v"), v12, 11.8, 0.3))
     add("a:12v", "warn", `12V battery low (${v12.toFixed(1)} V). Check the DC-DC.`);
+  // The car "battery light": READY, but the 12V isn't being charged. Not while the winch runs.
+  const winching = st.get("winch.in") || st.get("winch.out") || st.get("in.winch_remote");
+  const dcdcLow = mcOn && st.get("mc.ready") && !winching && st.get("pico.online") !== false && under(was("a:dcdc"), v12, DCDC_MIN_V, 0.2);
+  if (held(timers, "dcdc", dcdcLow, now, DCDC_HOLD_MS) && !out.some((a) => a.key === "a:12v"))
+    add("a:dcdc", "warn", `12V isn't charging (${v12.toFixed(1)} V while READY). Check the DC-DC and its fuse.`);
+
+  // Tray up while driving: like a door open on the move.
+  const tray = st.get("act.tray", "down");
+  if (tray !== "down" && (st.get("mc.speed") || 0) > 3) add("a:tray_moving", "bad", "Tray isn't down and you're moving. Stop and lower it.");
+
+  // Power steering: the control box powers the column with the key on. If it says it's off, steering is heavy.
+  if (st.get("in.ignition") !== false && st.get("pico.online") !== false && st.get("steer.on") === false && st.get("lock.state") !== "locked")
+    add("a:steer_off", "warn", "Power steering is off, so steering will be heavy. Check relay 9 and the steering fuse.");
+
+  // Service reminder from the odometer (Settings > Display). 0 = off.
+  const due = settings.get("service.dueKm") || 0, odo = st.get("mc.odometer");
+  if (due > 0 && odo != null && odo >= due) add("a:service", "info", `Service due (${Math.round(due)} km). Set the next one in Settings > Display.`);
 
   // Winch motor heat: the dash's own guess (winchheat.js), as there's no sensor on the winch.
   const wh = st.get("dash.winch_heat");
@@ -103,13 +137,14 @@ export class Alerts {
     this.lastBeep = 0;
     this.linkLostAt = null;
     this.subs = new Set();
+    this.timers = new Map();
   }
   on(fn) { this.subs.add(fn); }
 
   tick(st, now = Date.now()) {
     const linkOk = st.get("link.online") && st.get("pico.online");
     if (linkOk) this.linkLostAt = null; else if (this.linkLostAt == null) this.linkLostAt = now;
-    const list = evaluate(st, this.settings, this.keys, now, this.linkLostAt);
+    const list = evaluate(st, this.settings, this.keys, now, this.linkLostAt, this.timers);
     const keys = new Set(list.map((a) => a.key));
     const fresh = list.filter((a) => !this.keys.has(a.key));
     for (const k of this.acked) if (!keys.has(k)) this.acked.delete(k);   // cleared, so it can come back loud

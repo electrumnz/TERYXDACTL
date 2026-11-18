@@ -76,3 +76,10 @@ def test_dbc_file_is_up_to_date():
     from teryx.canbus.dbc import render
     dbc = Path(__file__).resolve().parent.parent / "docs" / "teryx.dbc"
     assert dbc.read_text(encoding="utf-8") == render(), "run: python -m teryx canmap"
+
+
+def test_shinegle_error_code_decodes():
+    from teryx.canbus import shinegle as SG
+    m = SG.BY_NAME["SG_FAULTS"]
+    raw = m.encode({"error_code": 13})
+    assert SG.decode(m, m.decode(raw))["mc.error_code"] == 13

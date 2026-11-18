@@ -41,6 +41,7 @@ BO_ 387 SG_FAULTS: 8 SHINEGLE
  SG_ fault_battery_over_temp : 8|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ fault_precharge : 9|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ odometer : 16|32@1+ (0.1,0) [0|4.29497e+08] "km" Vector__XXX
+ SG_ error_code : 48|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ counter : 56|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 1792 PI_HEARTBEAT: 8 PI_DASH
@@ -125,6 +126,7 @@ BO_ 1809 PICO_OUTPUTS: 8 PICO_BOX
  SG_ front_4 : 32|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ interior : 40|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ effect : 48|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ relays2 : 56|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 1810 PICO_ACTUATORS: 8 PICO_BOX
  SG_ diff_pct : 0|8@1+ (1,0) [0|255] "%" Vector__XXX
@@ -210,6 +212,7 @@ CM_ SG_ 387 fault_throttle "Throttle fault";
 CM_ SG_ 387 fault_comms "Controller comms fault";
 CM_ SG_ 387 fault_battery_over_temp "Battery too hot";
 CM_ SG_ 387 fault_precharge "Precharge fault";
+CM_ SG_ 387 error_code "Controller ErrorCode, same number as the LED flash count (0 or 1 = no fault). Text in config/shinegle-faults.yaml";
 CM_ BO_ 387 "PLACEHOLDER layout.";
 CM_ BO_ 1792 "Pico stops tray, winch and actuators if this goes quiet for 500 ms.";
 CM_ SG_ 1793 rear_auto "Rear pods on automatically in reverse";
@@ -245,6 +248,7 @@ CM_ SG_ 1808 sentry_hold "Key off, power kept on because the Pi asked for sentry
 CM_ SG_ 1808 sentry_flat "Sentry refused: 12V under setting 32 (until the key goes on)";
 CM_ SG_ 1808 speed "Speed as the Pico sees it, 255 = unknown";
 CM_ SG_ 1809 relays "See RELAY_BITS";
+CM_ SG_ 1809 relays2 "Second relay board, see RELAY2_BITS (power steering on, drive lock)";
 CM_ BO_ 1809 "What the outputs are actually doing (after effects and safety).";
 CM_ SG_ 1810 diff_pct "From the actuator pot";
 CM_ SG_ 1810 tray_pct "Estimate from run time, no pot on the tray";

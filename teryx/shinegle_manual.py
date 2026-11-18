@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parent.parent
 PARAMS = ROOT / "config" / "shinegle-sg1810-params.yaml"
 FAULTS = ROOT / "config" / "shinegle-faults.yaml"
 OUTPUT = ROOT / "docs" / "shinegle-sg1810-tables.md"
+DASH_JS = ROOT / "dash" / "web" / "js" / "shinegle-codes.js"
 
 
 def _load(path: Path) -> dict:
@@ -103,6 +104,24 @@ def render() -> str:
     return "\n".join(out) + "\n"
 
 
-def write(path: Path = OUTPUT) -> Path:
+def render_js() -> str:
+    """The fault table as a JS module for the dash, so a controller ErrorCode shows the
+    manual's words (and what to do) instead of a bare number."""
+    import json
+    rows = {}
+    for f in load_faults():
+        if f["code"] == 1 or "Reserved" in f["en"]:
+            continue
+        fix = [x for x in (f.get("fix") or []) if x and x != "None"]
+        for code in _codes(f):
+            rows[code] = {"text": f["en"], "fix": (". ".join(x.rstrip(". …") for x in fix) + ".") if fix else ""}
+    body = ",\n".join(f"  {k}: {json.dumps(v, ensure_ascii=False)}" for k, v in sorted(rows.items()))
+    return ("// Shinegle SG1810 controller ErrorCodes (same number as the LED flash count).\n"
+            "// Made by `python -m teryx shinegle-manual` from config/shinegle-faults.yaml. Don't edit by hand.\n"
+            "export const SHINEGLE_CODES = {\n" + body + ",\n};\n")
+
+
+def write(path: Path = OUTPUT, js: Path = DASH_JS) -> Path:
     path.write_text(render(), encoding="utf-8")
+    js.write_text(render_js(), encoding="utf-8")
     return path

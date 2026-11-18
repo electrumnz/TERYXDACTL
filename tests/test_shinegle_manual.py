@@ -38,3 +38,10 @@ def test_fault_lookup():
 
 def test_tables_doc_is_up_to_date():
     assert M.OUTPUT.read_text(encoding="utf-8") == M.render(), "run: python -m teryx shinegle-manual"
+
+
+def test_dash_codes_are_up_to_date():
+    assert M.DASH_JS.read_text(encoding="utf-8") == M.render_js(), "run: python -m teryx shinegle-manual"
+    js = M.render_js()
+    assert '7: {"text": "Phase V fault"' in js
+    assert "\n  1: " not in js and "\n  27: " not in js   # normal and reserved codes left out

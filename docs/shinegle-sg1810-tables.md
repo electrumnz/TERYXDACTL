@@ -90,15 +90,15 @@ The code is the LED flash count and the ErrorCode the programmer shows.
 |---|---|---|---|---|
 | 1 | Normal | 1. None | 1. None | The status screen shows ErrorCode 0 when there is no fault. |
 | 2 | Battery voltage low | 1. Battery voltage below the controller's minimum working voltage<br>2. Battery terminal corrosion<br>3. Battery or controller terminal loose | 1. Bring the battery voltage above the controller's minimum working voltage |  |
-| 3 | Phase U current sensor fault | 1. Wrong vehicle operation caused a high current spike<br>2. Current sensor out of range<br>3. Controller fault | 1. Cycle the key switch. If it keeps happening<br>2. replace the controller |  |
-| 4 | Phase V current sensor fault | 1. Wrong vehicle operation caused a high current spike<br>2. Current sensor out of range<br>3. Controller fault | 1. Cycle the key switch. If it keeps happening<br>2. replace the controller |  |
-| 5 | System error | 1. Heavy electrical noise<br>2. Overload | 1. Cycle the key switch. If it keeps happening<br>2. replace the controller |  |
-| 6 | Phase U fault | 1. Heavy electrical noise<br>2. Dead time set wrong<br>3. Controller fault | 1. Reduce the noise<br>2. Adjust the dead time<br>3. If it keeps happening<br>4. replace the controller |  |
-| 7 | Phase V fault | 1. Heavy electrical noise<br>2. Dead time set wrong<br>3. Controller fault | 1. Reduce the noise<br>2. Adjust the dead time<br>3. If it keeps happening<br>4. replace the controller |  |
-| 8 | Phase W fault | 1. Heavy electrical noise<br>2. Dead time set wrong<br>3. Controller fault | 1. Reduce the noise<br>2. Adjust the dead time<br>3. If it keeps happening<br>4. replace the controller |  |
+| 3 | Phase U current sensor fault | 1. Wrong vehicle operation caused a high current spike<br>2. Current sensor out of range<br>3. Controller fault | 1. Cycle the key switch. If it keeps happening, replace the controller |  |
+| 4 | Phase V current sensor fault | 1. Wrong vehicle operation caused a high current spike<br>2. Current sensor out of range<br>3. Controller fault | 1. Cycle the key switch. If it keeps happening, replace the controller |  |
+| 5 | System error | 1. Heavy electrical noise<br>2. Overload | 1. Cycle the key switch. If it keeps happening, replace the controller |  |
+| 6 | Phase U fault | 1. Heavy electrical noise<br>2. Dead time set wrong<br>3. Controller fault | 1. Reduce the noise<br>2. Adjust the dead time<br>3. If it keeps happening, replace the controller |  |
+| 7 | Phase V fault | 1. Heavy electrical noise<br>2. Dead time set wrong<br>3. Controller fault | 1. Reduce the noise<br>2. Adjust the dead time<br>3. If it keeps happening, replace the controller |  |
+| 8 | Phase W fault | 1. Heavy electrical noise<br>2. Dead time set wrong<br>3. Controller fault | 1. Reduce the noise<br>2. Adjust the dead time<br>3. If it keeps happening, replace the controller |  |
 | 9 | Motor temperature sensor fault | 1. Motor temp sensor broken<br>2. Motor running too hot<br>3. Motor temp sensor wire loose | 1. Replace the motor temp sensor<br>2. Let the motor cool back to normal<br>3. Reconnect the sensor wire |  |
 | 10 | Precharge voltage low | 1. Precharge voltage below the set value<br>2. Precharge resistor fault | 1. Bring the battery voltage back to normal<br>2. Replace the precharge resistor |  |
-| 11 | Hardware safety fault | 1. Heavy electrical noise<br>2. Self-test or watchdog error<br>3. Controller fault | 1. Cycle the key switch. If it keeps happening<br>2. replace the controller |  |
+| 11 | Hardware safety fault | 1. Heavy electrical noise<br>2. Self-test or watchdog error<br>3. Controller fault | 1. Cycle the key switch. If it keeps happening, replace the controller |  |
 | 12 | Controller over-temperature | 1. Temperature too high<br>2. Vehicle overloaded<br>3. Controller mounted wrong | 1. Let the temperature come back to normal |  |
 | 13 | Main contactor or brake fault | 1. Main contactor fault<br>2. Brake fault | 1. Replace the main contactor<br>2. Replace the brake | 制动器 is a brake device, so the controller watches some kind of brake. Which pin is not documented. See docs/brake-regen.md. |
 | 14 | Battery voltage too high | 1. Battery voltage above the controller's top cut-off voltage<br>2. Braking too hard while power is coming back (charging or regen) | 1. Bring the battery voltage below the controller's upper cut-off voltage | Regen can push a full pack over the limit. Fix by lowering the brake rate (B_Rat) or decel rate (DecRat). |

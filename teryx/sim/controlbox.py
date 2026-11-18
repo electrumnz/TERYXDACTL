@@ -772,6 +772,11 @@ class ControlBox:
                 "relays": M.names_to_bits([n for n, on in self.relays().items() if on], M.RELAY_BITS),
                 **{f"front_{n}": lo[f"front_{n}"] for n in range(1, 5)},
                 "interior": lo["interior"], "effect": lo["effect"],
+                # Same rule as the firmware: steering powered with the key on and not locked,
+                # drive lock relay open while locked.
+                "relays2": M.names_to_bits(
+                    (["steer.on"] if self.inp("in.ignition") and not self.locked else [])
+                    + (["drive.lock_relay"] if self.locked else []), M.RELAY2_BITS),
             }),
             ("PICO_ACTUATORS", {
                 "diff_pct": self.diff.pos * 100,

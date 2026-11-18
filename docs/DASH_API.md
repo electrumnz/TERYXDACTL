@@ -31,6 +31,7 @@ Keys follow the io-map ids in `config/io-map.yaml`.
 | `mc.motor_temp`, `mc.ctrl_temp`, `mc.batt_temp` | °C | |
 | `mc.faults` | list of strings | `over_current`, `over_voltage`, `under_voltage`, `motor_over_temp`, `controller_over_temp`, `hall_sensor`, `throttle`, `comms`, `battery_over_temp`, `precharge` (placeholder until sniffed) |
 | `mc.odometer` | km | |
+| `mc.error_code` | int | Controller ErrorCode, same as its LED flash count. 0 or 1 = fine. Text from `config/shinegle-faults.yaml` (placeholder byte until sniffed) |
 
 **Control box (Pico)**
 
@@ -42,7 +43,7 @@ Keys follow the io-map ids in `config/io-map.yaml`.
 | `pico.speed`, `pico.speed_valid` | km/h, bool | Speed as the Pico sees it (`null` when unknown) |
 | `pico.parked` | bool | Stopped and safe for an OTA update |
 | `pico.shutdown_request` | bool | Key is off: the Pi should shut down cleanly |
-| `pico.faults` | list of strings | `dash_link`, `speed_unknown`, `fourwd_timeout`, `fourwd_overcurrent`, `diff_timeout`, `diff_pot_stuck`, `tray_timeout`, `tray_overcurrent`, `tray_limit_switch`, `winch_interlock`, `low_12v`, `pico_hot`, `watchdog_reset`, `diff_overcurrent`, `io_bus` |
+| `pico.faults` | list of strings | `dash_link`, `speed_unknown`, `fourwd_timeout`, `fourwd_overcurrent`, `diff_timeout`, `diff_pot_stuck`, `tray_timeout`, `tray_overcurrent`, `tray_limit_switch`, `winch_interlock`, `low_12v`, `pico_hot`, `watchdog_reset`, `diff_overcurrent`, `io_bus`, `brake_pedal` |
 | `pico.reject` | string | Why the last request was refused: `none`, `too_fast`, `not_stopped`, `speed_unknown`, `not_armed`, `interlock`, `actuator_fault`, `low_12v`, `dash_link`, `ignition_off`, `at_limit`, `not_parked`, `winch_remote`, `bad_frame` |
 | `pico.reject_text` | string | Plain-English version |
 | `pico.reject_count` | 0-15 | Goes up by one per refusal, so you can tell a new one from an old one |
@@ -56,6 +57,8 @@ Keys follow the io-map ids in `config/io-map.yaml`.
 | `regen.limit` | none / low_speed / speed_unknown / not_forward / battery_full / two_wd / sensor / throttle | What is holding regen back |
 | `an.brake_pedal_raw` | 0-32767 | Raw pedal sensor reading, for calibrating settings 28/29 |
 | `in.ignition`, `in.brake`, `in.reverse`, `in.tray_down`, `in.tray_up`, `in.winch_remote`, `in.park`, `in.trailer` | bool | Wired inputs (`in.trailer` = trailer plugged in) |
+| `steer.on` | bool | Power steering column powered (relay 9, 0x711 byte 7). Missing on old firmware |
+| `drive.lock_relay` | bool | Shinegle key line opened because the Teryx is locked (relay 10) |
 | `an.diff_pos` | % | Diff actuator actual position |
 | `an.aux_12v` | V | |
 | `an.diff_current`, `an.4wd_current`, `an.tray_current` | A | |
