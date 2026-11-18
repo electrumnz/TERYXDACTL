@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 738" width="1200" height="738" font-family="Arial, Helvetica, sans-serif">
+<rect width="1200" height="738" fill="#ffffff"/>
+<text x="40" y="40" font-size="22" text-anchor="start" font-weight="bold" fill="#1f2328">Shinegle SG1202 wiring (Teryx OS redraw)</text>
+<text x="40" y="62" font-size="12" text-anchor="start" font-weight="normal" fill="#57606a">Source: Shinegle SG12X2 manual, Fig. 2 and 3. Data: config/shinegle-sg1202.yaml</text>
+<line x1="40" y1="90" x2="74" y2="90" stroke="#1f6feb" stroke-width="2"/>
+<text x="80" y="94" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">From the manual</text>
+<line x1="260" y1="90" x2="294" y2="90" stroke="#1a7f37" stroke-width="2"/>
+<text x="300" y="94" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">Measured on the Teryx</text>
+<line x1="480" y1="90" x2="514" y2="90" stroke="#bf8700" stroke-width="2" stroke-dasharray="6 4"/>
+<text x="520" y="94" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">Expected, pin TBC</text>
+<line x1="700" y1="90" x2="734" y2="90" stroke="#8c959f" stroke-width="2" stroke-dasharray="2 4"/>
+<text x="740" y="94" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">Unknown</text>
+<text x="40" y="112" font-size="12" text-anchor="start" font-weight="bold" fill="#cf222e">Programmer lead carries +12 V on J1-25: never plug it into a USB port.</text>
+<rect x="470" y="120" width="260" height="492" rx="10" fill="#ffffff" stroke="#1f2328" stroke-width="2"/>
+<text x="600.0" y="150" font-size="18" text-anchor="middle" font-weight="bold" fill="#1f2328">Shinegle SG1202</text>
+<text x="600.0" y="170" font-size="12" text-anchor="middle" font-weight="normal" fill="#1f2328">AC motor controller</text>
+<text x="600.0" y="188" font-size="12" text-anchor="middle" font-weight="normal" fill="#57606a">56-80 V, 400 A max</text>
+<text x="600.0" y="598" font-size="11" text-anchor="middle" font-weight="normal" fill="#57606a">J1: AMP 35-way 776163-1</text>
+<rect x="40" y="150" width="260" height="44" rx="6" fill="#f6f8fa" stroke="#57606a"/>
+<text x="50" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Key switch + 10 A fuse</text>
+<rect x="40" y="210" width="260" height="62" rx="6" fill="#f6f8fa" stroke="#57606a"/>
+<text x="50" y="228" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">F/N/R switch</text>
+<rect x="40" y="288" width="260" height="106" rx="6" fill="#f6f8fa" stroke="#57606a"/>
+<text x="50" y="306" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Throttle pedal</text>
+<rect x="40" y="410" width="260" height="106" rx="6" fill="#f6f8fa" stroke="#57606a"/>
+<text x="50" y="428" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">SG1810 handheld programmer</text>
+<text x="50" y="508" font-size="10" text-anchor="start" font-weight="normal" fill="#57606a">Plugs into J3 (6-pin). J3 to J1 pins TBC</text>
+<rect x="40" y="532" width="260" height="44" rx="6" fill="#f6f8fa" stroke="#57606a"/>
+<text x="50" y="550" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Speedo / Shinegle dash</text>
+<rect x="900" y="150" width="260" height="106" rx="6" fill="#f6f8fa" stroke="#57606a"/>
+<text x="910" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Motor speed sensor</text>
+<text x="910" y="248" font-size="10" text-anchor="start" font-weight="normal" fill="#57606a">via J6/J7</text>
+<rect x="900" y="272" width="260" height="62" rx="6" fill="#f6f8fa" stroke="#57606a"/>
+<text x="910" y="290" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Motor temp sensor</text>
+<text x="910" y="326" font-size="10" text-anchor="start" font-weight="normal" fill="#57606a">via J8/J9</text>
+<text x="910" y="364" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">Battery + via 150 A air-break switch</text>
+<text x="910" y="390" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">Battery -</text>
+<text x="910" y="416" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">Motor U</text>
+<text x="910" y="442" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">Motor V</text>
+<text x="910" y="468" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">Motor W</text>
+<g data-pin="J1-1" data-name="KSI" data-status="from_manual"><line x1="300" y1="180" x2="470" y2="180" stroke="#1f6feb" stroke-width="2"/><text x="385.0" y="176" font-size="11" text-anchor="middle" font-weight="normal" fill="#1f6feb">J1-1 KSI</text></g>
+<g data-pin="J1-22" data-name="FORWARD" data-status="from_manual"><line x1="300" y1="240" x2="470" y2="240" stroke="#1f6feb" stroke-width="2"/><text x="385.0" y="236" font-size="11" text-anchor="middle" font-weight="normal" fill="#1f6feb">J1-22 FORWARD</text></g>
+<g data-pin="J1-33" data-name="REVERSE" data-status="from_manual"><line x1="300" y1="262" x2="470" y2="262" stroke="#1f6feb" stroke-width="2"/><text x="385.0" y="258" font-size="11" text-anchor="middle" font-weight="normal" fill="#1f6feb">J1-33 REVERSE</text></g>
+<g data-pin="J1-25" data-name="V12_OUT" data-status="from_manual"><line x1="300" y1="318" x2="470" y2="318" stroke="#1f6feb" stroke-width="2"/><text x="385.0" y="314" font-size="11" text-anchor="middle" font-weight="normal" fill="#1f6feb">J1-25 V12_OUT</text></g>
+<g data-pin="J1-16" data-name="THROTTLE_WIPER" data-status="from_manual"><line x1="300" y1="340" x2="470" y2="340" stroke="#1f6feb" stroke-width="2"/><text x="385.0" y="336" font-size="11" text-anchor="middle" font-weight="normal" fill="#1f6feb">J1-16 THROTTLE_WIPER</text></g>
+<g data-pin="J1-18" data-name="THROTTLE_GND" data-status="from_manual"><line x1="300" y1="362" x2="470" y2="362" stroke="#1f6feb" stroke-width="2"/><text x="385.0" y="358" font-size="11" text-anchor="middle" font-weight="normal" fill="#1f6feb">J1-18 THROTTLE_GND</text></g>
+<g data-pin="J1-9" data-name="THROTTLE_SW" data-status="from_manual"><line x1="300" y1="384" x2="470" y2="384" stroke="#1f6feb" stroke-width="2"/><text x="385.0" y="380" font-size="11" text-anchor="middle" font-weight="normal" fill="#1f6feb">J1-9 THROTTLE_SW</text></g>
+<g data-pin="J1-25" data-name="V12_OUT" data-status="from_manual"><line x1="300" y1="440" x2="470" y2="440" stroke="#1f6feb" stroke-width="2"/><text x="385.0" y="436" font-size="11" text-anchor="middle" font-weight="normal" fill="#1f6feb">J1-25 V12_OUT</text></g>
+<g data-pin="J1-28" data-name="SCI_TX" data-status="from_manual"><line x1="300" y1="462" x2="470" y2="462" stroke="#1f6feb" stroke-width="2"/><text x="385.0" y="458" font-size="11" text-anchor="middle" font-weight="normal" fill="#1f6feb">J1-28 SCI_TX</text></g>
+<g data-pin="J1-29" data-name="SCI_RX" data-status="from_manual"><line x1="300" y1="484" x2="470" y2="484" stroke="#1f6feb" stroke-width="2"/><text x="385.0" y="480" font-size="11" text-anchor="middle" font-weight="normal" fill="#1f6feb">J1-29 SCI_RX</text></g>
+<g data-pin="J1-7" data-name="GND" data-status="from_manual"><line x1="300" y1="506" x2="470" y2="506" stroke="#1f6feb" stroke-width="2"/><text x="385.0" y="502" font-size="11" text-anchor="middle" font-weight="normal" fill="#1f6feb">J1-7 GND</text></g>
+<g data-pin="J1-6" data-name="SPEED_PULSE" data-status="from_manual"><line x1="300" y1="562" x2="470" y2="562" stroke="#1f6feb" stroke-width="2"/><text x="385.0" y="558" font-size="11" text-anchor="middle" font-weight="normal" fill="#1f6feb">J1-6 SPEED_PULSE</text></g>
+<g data-pin="J1-25" data-name="V12_OUT" data-status="from_manual"><line x1="730" y1="180" x2="900" y2="180" stroke="#1f6feb" stroke-width="2"/><text x="815.0" y="176" font-size="11" text-anchor="middle" font-weight="normal" fill="#1f6feb">J1-25 V12_OUT</text></g>
+<g data-pin="J1-31" data-name="SPEED_A" data-status="from_manual"><line x1="730" y1="202" x2="900" y2="202" stroke="#1f6feb" stroke-width="2"/><text x="815.0" y="198" font-size="11" text-anchor="middle" font-weight="normal" fill="#1f6feb">J1-31 SPEED_A</text></g>
+<g data-pin="J1-32" data-name="SPEED_B" data-status="from_manual"><line x1="730" y1="224" x2="900" y2="224" stroke="#1f6feb" stroke-width="2"/><text x="815.0" y="220" font-size="11" text-anchor="middle" font-weight="normal" fill="#1f6feb">J1-32 SPEED_B</text></g>
+<g data-pin="J1-7" data-name="GND" data-status="from_manual"><line x1="730" y1="246" x2="900" y2="246" stroke="#1f6feb" stroke-width="2"/><text x="815.0" y="242" font-size="11" text-anchor="middle" font-weight="normal" fill="#1f6feb">J1-7 GND</text></g>
+<g data-pin="J1-8" data-name="MOTOR_TEMP_1" data-status="from_manual"><line x1="730" y1="302" x2="900" y2="302" stroke="#1f6feb" stroke-width="2"/><text x="815.0" y="298" font-size="11" text-anchor="middle" font-weight="normal" fill="#1f6feb">J1-8 MOTOR_TEMP_1</text></g>
+<g data-pin="J1-7" data-name="GND" data-status="from_manual"><line x1="730" y1="324" x2="900" y2="324" stroke="#1f6feb" stroke-width="2"/><text x="815.0" y="320" font-size="11" text-anchor="middle" font-weight="normal" fill="#1f6feb">J1-7 GND</text></g>
+<g data-pin="B+" data-status="from_manual"><line x1="730" y1="360" x2="900" y2="360" stroke="#cf222e" stroke-width="4"/><text x="740" y="354" font-size="12" text-anchor="start" font-weight="bold" fill="#cf222e">B+</text></g>
+<g data-pin="B-" data-status="from_manual"><line x1="730" y1="386" x2="900" y2="386" stroke="#cf222e" stroke-width="4"/><text x="740" y="380" font-size="12" text-anchor="start" font-weight="bold" fill="#cf222e">B-</text></g>
+<g data-pin="U" data-status="from_manual"><line x1="730" y1="412" x2="900" y2="412" stroke="#cf222e" stroke-width="4"/><text x="740" y="406" font-size="12" text-anchor="start" font-weight="bold" fill="#cf222e">U</text></g>
+<g data-pin="V" data-status="from_manual"><line x1="730" y1="438" x2="900" y2="438" stroke="#cf222e" stroke-width="4"/><text x="740" y="432" font-size="12" text-anchor="start" font-weight="bold" fill="#cf222e">V</text></g>
+<g data-pin="W" data-status="from_manual"><line x1="730" y1="464" x2="900" y2="464" stroke="#cf222e" stroke-width="4"/><text x="740" y="458" font-size="12" text-anchor="start" font-weight="bold" fill="#cf222e">W</text></g>
+<text x="470" y="642" font-size="13" text-anchor="start" font-weight="bold" fill="#9a6700">Not drawn in the manual (pins TBC):</text>
+<g data-pin="TBC" data-name="CAN_H / CAN_L" data-status="tbc"><text x="470" y="662" font-size="12" text-anchor="start" font-weight="normal" fill="#9a6700">CAN_H / CAN_L: CANopen, 29-bit IDs, optional. Check if fitted on Sam&#x27;s unit</text></g>
+<g data-pin="TBC" data-name="BRAKE input" data-status="tbc"><text x="470" y="680" font-size="12" text-anchor="start" font-weight="normal" fill="#9a6700">BRAKE input: Not mentioned at all. Needed for brake pedal regen (docs/brake-regen.md)</text></g>
+<text x="470" y="698" font-size="12" text-anchor="start" font-weight="normal" fill="#57606a">J1 pins with no known use: 2, 3, 4, 5, 10, 11, 12, 13, 14, 15, 17, 19, 20, 21, 23, 24, 26, 27, 30, 34, 35</text>
+</svg>

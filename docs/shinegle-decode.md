@@ -1,5 +1,11 @@
 # Decoding the Shinegle CAN bus: step by step
 
+> **From the controller manual (2026-11-18):** CAN is *optional* on the
+> SG1202, and when fitted it's CANopen with 29-bit (extended) IDs. If the bus
+> is silent, check Sam's controller actually has CAN before blaming the
+> wiring. The programmer uses a separate serial (SCI) link on J1-28/29. See
+> [`shinegle-controller.md`](shinegle-controller.md).
+
 Shinegle don't publish their CAN layout, so we work it out by listening. You
 plug a small sniffer into the Shinegle's CAN wires, do one thing at a time
 (brake, throttle, forward/reverse ...) while the laptop records, and the tools

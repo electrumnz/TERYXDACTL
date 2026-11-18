@@ -1,0 +1,403 @@
+# Shinegle SG1810 programmer: "Attached list 1 Parameters of programmer"
+# (附表1 编程器参数), transcribed from Sam's screenshots of the SG1810 manual
+# ("6_Programmer SG1810 Instruction English 20220415"), 2026-11-18.
+#
+# Fields:
+#   page, name, value (as printed, "for reference only")
+#   cn          the Chinese description exactly as printed
+#   cn_ours     our own translation of the Chinese
+#   en          Shinegle's English, as printed (typos kept)
+#   remark_cn / remark_cn_ours / remark_en   same for the Remark column
+#   adjustable  true = highlighted green in the manual (the only ones Shinegle
+#               say may be changed, to suit the vehicle's load)
+#   note        where the Chinese and English disagree, or something looks off
+# A field is left out when the cell is empty. Nothing here is guessed: cells we
+# couldn't read are marked "unreadable".
+#
+# Rendered to docs/shinegle-sg1810-tables.md by `python -m teryx shinegle-manual`.
+# Edit this file, not the markdown. A test fails if they get out of step.
+
+params:
+  - page: "0"
+    name: F_Spd
+    value: "8000-13800"
+    cn: 最大前进速度系数
+    cn_ours: Max forward speed coefficient
+    en: Coefficient for Max.forward speed
+    remark_cn: 已最优，无需调整，乘 0.5 为设定的最大速度 F_Spd :8000~16000
+    remark_cn_ours: "Already optimal, no need to adjust. x 0.5 = the set top speed. F_Spd: 8000-16000"
+    remark_en: "Optimized,no change, Max.speed=0.5*F_Spd"
+    adjustable: true
+    note: Value column says 8000-13800 but the remark says 8000-16000. The English drops the range. Highlighted green (adjustable) even though the remark says no need to adjust.
+  - page: "0"
+    name: F_Spd2
+    value: "5000"
+    cn: 最大前进速度 2 系数
+    cn_ours: Max forward speed 2 coefficient
+    en: Coefficient for Max.forward speed2
+    remark_cn: 特殊车辆用，乘 0.5 为设定速度
+    remark_cn_ours: For special vehicles. x 0.5 = the set speed
+    remark_en: "For special vechicle, Max.speed=0.5*F_Spd2"
+  - page: "0"
+    name: R_Spd
+    value: "6144"
+    cn: 最大后退速度系数
+    cn_ours: Max reverse speed coefficient
+    en: Coefficient for Max.backward speed
+    remark_cn: "可适当调整，乘 0.5 为设定的最大速度 R_Spd: 6000~10000"
+    remark_cn_ours: "Can be adjusted to suit. x 0.5 = the set top speed. R_Spd: 6000-10000"
+    remark_en: "R_Spd: 6000~10000 Max.speed=0.5*R_Spd"
+    adjustable: true
+    note: The English leaves out "can be adjusted to suit". The Fig. 3 photo shows R_Spd 3500 (below the 6000 bottom of the range), F_Spd 8300 and Kf 300, so real units differ from the table.
+  - page: "0"
+    name: Kf
+    cn: 系统参数
+    cn_ours: System parameter
+    en: system parameter
+    remark_cn: 内部数据，禁止修改
+    remark_cn_ours: Internal data, do not change
+    remark_en: Internal data, Prohibition of modification
+    note: No value printed.
+  - page: "1"
+    name: R_Trat2
+    value: "24"
+    cn: 后退电流 2 响应系数
+    cn_ours: Reverse current 2 response coefficient
+    en: Respond coefficient for backward current 2
+    remark_cn: 特殊车辆用
+    remark_cn_ours: For special vehicles
+    remark_en: For special vechicle
+  - page: "1"
+    name: B_Trat2
+    value: "24"
+    cn: 制动电流 2 响应系数
+    cn_ours: Braking current 2 response coefficient
+    en: Respond coefficient for break current 2
+    remark_cn: 特殊车辆用
+    remark_cn_ours: For special vehicles
+    remark_en: For special vechicle
+    note: 制动 means braking. Shinegle's English writes "break" for "brake" throughout.
+  - page: "1"
+    name: F_Trat
+    value: "64"
+    cn: 前进电流响应系数
+    cn_ours: Forward current response coefficient
+    en: Respond coefficient for forward current
+    remark_cn: "已优化 , F_Trat: 24~72"
+    remark_cn_ours: "Already optimised. F_Trat: 24-72"
+    remark_en: "optimized , F_Trat: 24~72"
+  - page: "1"
+    name: R_Trat
+    value: "24"
+    cn: 后退电流响应系数
+    cn_ours: Reverse current response coefficient
+    en: Respond coefficient for backward current
+    remark_cn: "已优化 R_Trat: 24~64"
+    remark_cn_ours: "Already optimised. R_Trat: 24-64"
+    remark_en: "optimized, R_Trat: 24~64"
+  - page: "2"
+    name: B_Trat
+    value: "32"
+    cn: 制动电流响应系数
+    cn_ours: Braking current response coefficient
+    en: Respond coefficient for break current 2
+    remark_cn: "已优化 B_Trat: 24~64"
+    remark_cn_ours: "Already optimised. B_Trat: 24-64"
+    remark_en: "optimized, B_Trat: 24~64"
+    note: The Chinese is the plain braking current response. The English wrongly adds "2" (that's B_Trat2 on page 1).
+  - page: "2"
+    name: F_Trat3
+    value: "32"
+    cn: 前进电流 3 响应系数
+    cn_ours: Forward current 3 response coefficient
+    en: Respond coefficient for forward current 3
+    remark_cn: 特殊车辆用
+    remark_cn_ours: For special vehicles
+    remark_en: For special vechicle
+  - page: "2"
+    name: Neut_K
+    value: "32"
+    cn: 预留
+    cn_ours: Reserved
+    en: reserved
+    remark_cn: 预留
+    remark_cn_ours: Reserved
+    remark_en: Rreserved
+  - page: "2"
+    name: B_Trat3
+    value: "24"
+    cn: 后退电流 3 响应系数
+    cn_ours: Reverse current 3 response coefficient
+    en: Respond coefficient for backward current3
+    remark_cn: 特殊车辆用
+    remark_cn_ours: For special vehicles
+    remark_en: For special vechicle
+    note: The name starts B_ (brake) but both languages say reverse (后退) current 3. Name or description is wrong in the manual.
+  - page: "3"
+    name: F_Rat2
+    value: "10"
+    cn: 前进加速率 2
+    cn_ours: Forward acceleration rate 2
+    en: ramp-up rate for forward
+    remark_cn: 特殊车辆用
+    remark_cn_ours: For special vehicles
+    remark_en: For special vechicle
+  - page: "3"
+    name: R_Rat2
+    value: "18"
+    cn: 后退加速率 2
+    cn_ours: Reverse acceleration rate 2
+    en: ramp-up rate for
+    remark_cn: 特殊车辆用
+    remark_cn_ours: For special vehicles
+    remark_en: For special vechicle
+    note: The English is cut short in the manual ("ramp-up rate for").
+  - page: "3"
+    name: DecRat2
+    value: "10"
+    cn: 减速率 2
+    cn_ours: Deceleration rate 2
+    en: deceleration rate for backward 2
+    remark_cn: 特殊车辆用
+    remark_cn_ours: For special vehicles
+    remark_en: For special vechicle
+    note: The Chinese just says deceleration rate 2. The English adds "for backward", which isn't in the Chinese.
+  - page: "3"
+    name: BrkRat2
+    value: "24"
+    cn: 制动速率 2
+    cn_ours: Braking rate 2
+    en: break rate 2
+    remark_cn: 特殊车辆用
+    remark_cn_ours: For special vehicles
+    remark_en: For special vechicle
+  - page: "4"
+    name: F_Rat
+    value: "18"
+    cn: 前进加速率
+    cn_ours: Forward acceleration rate
+    en: ramp-up rate for forward
+    remark_cn: "可修改，F_Rat: 3~36"
+    remark_cn_ours: "Can be changed. F_Rat: 3-36"
+    remark_en: "Modifiable, F_Rat: 3-36"
+    adjustable: true
+  - page: "4"
+    name: R_Rat
+    value: "12"
+    cn: 后退加速率
+    cn_ours: Reverse acceleration rate
+    en: ramp-up rate for backward
+    remark_cn: "可修改，R_Rat: 3~36"
+    remark_cn_ours: "Can be changed. R_Rat: 3-36"
+    remark_en: "Modifiable, R_Rat: 3-36"
+    adjustable: true
+  - page: "4"
+    name: DecRat
+    value: "12"
+    cn: 减速率
+    cn_ours: Deceleration rate
+    en: deceleration
+    remark_cn: "可修改，DecRat: 3~36"
+    remark_cn_ours: "Can be changed. DecRat: 3-36"
+    remark_en: "Modifiable, DecRat: 3-36"
+    adjustable: true
+  - page: "4"
+    name: B_Rat
+    value: "12"
+    cn: 制动速率
+    cn_ours: Braking rate
+    en: break rate
+    remark_cn: "可修改，B_Rat: 3~36"
+    remark_cn_ours: "Can be changed. B_Rat: 3-36"
+    remark_en: "Modifiable, B_Rat: 3-36"
+    adjustable: true
+  - page: "5"
+    name: EmrgK
+    value: "24"
+    cn: 预留
+    cn_ours: Reserved
+    en: reserved
+    remark_cn: 预留
+    remark_cn_ours: Reserved
+    remark_en: Reserved
+  - page: "5"
+    name: IncRat3
+    value: "18"
+    cn: 加速率 3
+    cn_ours: Acceleration rate 3
+    en: ramp-up rate 3
+    remark_cn: 特殊车辆用
+    remark_cn_ours: For special vehicles
+    remark_en: For special vechicle
+  - page: "5"
+    name: F_Rat2
+    value: "18"
+    cn: 加速率 2
+    cn_ours: Acceleration rate 2
+    en: ramp-up rate forward speed 3
+    remark_cn: 特殊车辆用
+    remark_cn_ours: For special vehicles
+    remark_en: For special vechicle
+    note: Same name as F_Rat2 on page 3 (value 10 there, 18 here). The Chinese says rate 2, the English says "forward speed 3". Check on the handheld which one it really shows.
+  - page: "5"
+    name: Pls_Mt
+    value: "32/48/64"
+    cn: 电机脉冲
+    cn_ours: Motor pulses (speed sensor pulses per rev)
+    en: motor pulse
+    remark_cn: 严禁修改
+    remark_cn_ours: Strictly do not change
+    remark_en: prohibited to change without authorized
+  - page: "6"
+    name: Func
+    value: "224"
+    cn: 系统特殊功能
+    cn_ours: System special function
+    en: special function
+    remark_cn: 系统参数
+    remark_cn_ours: System parameter
+    remark_en: System parameter, prohibited to change without authorized
+  - page: "6"
+    name: ConstT
+    value: "200"
+    cn: 预留
+    cn_ours: Reserved
+    en: reserved
+    remark_en: "Reserved,ConstT: 20~1500"
+  - page: "6"
+    name: TorqM
+    cn: 预留
+    cn_ours: Reserved
+    en: reserved
+    remark_en: prohibited to modify
+    note: No value printed.
+  - page: "6"
+    name: Bvolt
+    value: "24~144"
+    cn: 电池电压
+    cn_ours: Battery voltage
+    en: battery voltage
+    remark_cn: 预设好
+    remark_cn_ours: Preset
+    remark_en: preset value, prohibited to change without authorized
+  - page: "7"
+    name: Func2
+    value: "0/2"
+    cn: 系统特殊功能 2
+    cn_ours: System special function 2
+    en: special function 2
+    remark_cn: 系统参数
+    remark_cn_ours: System parameter
+    remark_en: system parameter, prohibited to modify
+  - page: "7"
+    name: NC
+    value: "0/2"
+    cn: 预留
+    cn_ours: Reserved
+    en: reserved
+    remark_cn: 系统参数
+    remark_cn_ours: System parameter
+    remark_en: System parameter
+  - {page: "7", name: K1, value: "6144", cn: 预留, cn_ours: Reserved, en: reserved, remark_cn: 严禁擅自修改, remark_cn_ours: Strictly do not change without permission, remark_en: prohibited to change}
+  - {page: "7", name: K2, value: "480", cn: 预留, cn_ours: Reserved, en: reserved, remark_cn: 严禁擅自修改, remark_cn_ours: Strictly do not change without permission, remark_en: prohibited to change without authorized}
+  - {page: "8", name: K3, value: "590", cn: 预留, cn_ours: Reserved, en: reserved, remark_cn: 严禁擅自修改, remark_cn_ours: Strictly do not change without permission, remark_en: prohibited to change without authorized}
+  - {page: "8", name: K4, value: "4096", cn: 预留, cn_ours: Reserved, en: reserved, remark_cn: 严禁擅自修改, remark_cn_ours: Strictly do not change without permission, remark_en: prohibited to change without authorized}
+  - {page: "8", name: K5, value: "480", cn: 预留, cn_ours: Reserved, en: reserved, remark_cn: 严禁擅自修改, remark_cn_ours: Strictly do not change without permission, remark_en: prohibited to change without authorized}
+  - {page: "8", name: K6, value: "650", cn: 预留, cn_ours: Reserved, en: reserved, remark_cn: 严禁擅自修改, remark_cn_ours: Strictly do not change without permission, remark_en: prohibited to change without authorized}
+  - page: "9"
+    name: B_Cur
+    value: "512-4096"
+    cn: 刹车系数
+    cn_ours: Brake coefficient
+    en: For Coefficient brake
+    remark_en: Prohibited to change without authorized. Regenerative brake Coefficient
+    note: Only the English remark says "regenerative". No Chinese remark printed.
+  - page: "9"
+    name: Slope
+    cn: 预留
+    cn_ours: Reserved
+    en: reserved. Stop Voltgage Coefficient
+    remark_cn: 预留
+    remark_cn_ours: Reserved
+    remark_en: Prohibited to change without authorized
+    note: No value printed. The English "Stop Voltgage Coefficient" has no Chinese match.
+  - {page: "9", name: EmgSpd, value: "378", cn: 预留, cn_ours: Reserved, en: reserved, remark_cn: 预留, remark_cn_ours: Reserved, remark_en: Reserved}
+  - {page: "9", name: EmgTm, value: "141", cn: 预留, cn_ours: Reserved, en: reserved, remark_cn: 预留, remark_cn_ours: Reserved, remark_en: Reserved}
+  - {page: a, name: KF0, cn: 预留, cn_ours: Reserved, en: reserved, remark_cn: 严禁擅自修改, remark_cn_ours: Strictly do not change without permission, remark_en: prohibited to change without authorized}
+  - {page: a, name: KF1, cn: 预留, cn_ours: Reserved, en: reserved, remark_cn: 严禁擅自修改, remark_cn_ours: Strictly do not change without permission, remark_en: prohibited to change without authorized}
+  - {page: a, name: KF2, cn: 预留, cn_ours: Reserved, en: reserved, remark_cn: 严禁擅自修改, remark_cn_ours: Strictly do not change without permission, remark_en: prohibited to change without authorized}
+  - {page: a, name: KF3, cn: 预留, cn_ours: Reserved, en: reserved, remark_cn: 严禁擅自修改, remark_cn_ours: Strictly do not change without permission, remark_en: prohibited to unauthorized modify}
+  - {page: b, name: KD5, cn: 预留, cn_ours: Reserved, en: reserved, remark_cn: 严禁擅自修改, remark_cn_ours: Strictly do not change without permission, remark_en: prohibited to change}
+  - {page: b, name: KD4, cn: 预留, cn_ours: Reserved, en: reserved, remark_cn: 严禁擅自修改, remark_cn_ours: Strictly do not change without permission, remark_en: prohibited to change without authorized}
+  - {page: b, name: KD3, cn: 预留, cn_ours: Reserved, en: reserved, remark_cn: 严禁擅自修改, remark_cn_ours: Strictly do not change without permission, remark_en: prohibited to unauthorized modify}
+  - {page: b, name: KD2, cn: 预留, cn_ours: Reserved, en: reserved, remark_cn: 严禁擅自修改, remark_cn_ours: Strictly do not change without permission, remark_en: prohibited to change without authorized}
+  - {page: c, name: KD1, cn: 预留, cn_ours: Reserved, en: reserved, remark_cn: 严禁擅自修改, remark_cn_ours: Strictly do not change without permission, remark_en: prohibited to change without authorized}
+  - {page: c, name: KD0, cn: 预留, cn_ours: Reserved, en: reserved, remark_cn: 严禁擅自修改, remark_cn_ours: Strictly do not change without permission, remark_en: prohibited to change}
+  - page: c
+    name: BrkTm
+    value: "20000"
+    cn: 预留
+    cn_ours: Reserved
+    en: reserved. Different controller type different meaning
+    remark_cn: 关断延时，已优化
+    remark_cn_ours: Switch-off delay, already optimised
+    remark_en: "delay time to turn off(ms) BrkTm: 5000-20000"
+  - {page: c, name: OffTm, value: "0", cn: 预留, cn_ours: Reserved, en: reserved, remark_cn: 预留, remark_cn_ours: Reserved, remark_en: Reserved}
+  - page: d
+    name: PedSet
+    value: "50"
+    cn: 油门初始值
+    cn_ours: Throttle starting value (offset)
+    en: offset value of peddal
+    remark_cn: 严禁擅自修改
+    remark_cn_ours: Strictly do not change without permission
+    remark_en: prohibited to change without authorized
+  - page: d
+    name: CDMax
+    cn: 预留
+    cn_ours: Reserved
+    en: reserved
+    remark_cn: 严禁擅自修改
+    remark_cn_ours: Strictly do not change without permission
+    remark_en: system parameter, prohibited to change without authorized
+    note: No value printed.
+  - page: d
+    name: F_Trat2
+    value: "24"
+    cn: 前进电流 2 响应系数
+    cn_ours: Forward current 2 response coefficient
+    en: respond coefficient for forward current 2
+    remark_cn: 特殊车辆用
+    remark_cn_ours: For special vehicles
+    remark_en: For special vehicle
+  - page: d
+    name: TypDia
+    value: "52"
+    cn: 轮胎参数，预留
+    cn_ours: Tyre parameter, reserved
+    en: Tire Parameter. Just for controller inside
+    remark_cn: 系统参数
+    remark_cn_ours: System parameter
+    remark_en: system parameter, prohibited to change without authorized
+  - page: e
+    name: Ra_X10
+    value: "100"
+    cn: 差速器参数，预留
+    cn_ours: Differential (final drive) parameter, reserved
+    en: Reduction Ratio Parameter. Just for controller inside
+    remark_cn: 系统参数
+    remark_cn_ours: System parameter
+    remark_en: system parameter, prohibited to change without authorized
+    note: Name suggests the ratio x 10, so 100 = 10:1. Not stated in the manual.
+  - {page: e, name: V3Set, value: "10240", cn: 系统预留, cn_ours: System reserved, en: reserved, remark_cn: 严禁擅自修改, remark_cn_ours: Strictly do not change without permission, remark_en: prohibited to change without authorized}
+  - {page: e, name: T3Set, value: "5120", cn: 系统预留, cn_ours: System reserved, en: reserved, remark_cn: 严禁擅自修改, remark_cn_ours: Strictly do not change without permission, remark_en: prohibited to change without authorized}
+  - {page: e, name: V1Set, value: "8192", cn: 系统预留, cn_ours: System reserved, en: reserved, remark_cn: 严禁擅自修改, remark_cn_ours: Strictly do not change without permission, remark_en: prohibited to change without authorized}
+  - {page: f, name: T1Set, value: "5120", cn: 系统预留, cn_ours: System reserved, en: reserved, remark_cn: 严禁擅自修改, remark_cn_ours: Strictly do not change without permission, remark_en: prohibited to change without authorized}
+  - {page: f, name: Soff3, cn: 系统预留, cn_ours: System reserved, en: reserved. For the future, remark_cn: 严禁擅自修改, remark_cn_ours: Strictly do not change without permission, remark_en: prohibited to change without authorized}
+  - {page: f, name: Soff1, cn: 系统预留, cn_ours: System reserved, en: reserved. For the future, remark_cn: 严禁擅自修改, remark_cn_ours: Strictly do not change without permission, remark_en: prohibited to change without authorized}
+
+footnote:
+  cn: 正常情况下，出厂的控制器均经过优化，性能达到最佳，第 0 页和 4 页的绿色标注的参数可以根据车辆的载重量进行适当修改，以获得最佳的客户体验和舒适度。
+  cn_ours: Normally every controller is optimised at the factory for best performance. The green parameters on pages 0 and 4 can be adjusted to suit the vehicle's load, for the best experience and comfort.
+  en: "Note: The default value(different controller has different default value) of controller is optimized and the peformance is the best normally, if you really want to adjust some value of parameter, please just adjust those parameters which is labeled green according to your electric vehicle with our permission in order to get the best user-experience. We don't suggest you to modify them without permission."
+  note: The English adds "with our permission" and "different controller has different default value". The Chinese just says the green ones can be adjusted for load.

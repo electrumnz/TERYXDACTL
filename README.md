@@ -13,6 +13,8 @@ control box does the safety-critical switching, and they talk over CAN.
 | Sound, music, Bluetooth phone, CarPlay / Android Auto | `dash/` | [`docs/audio.md`](docs/audio.md) |
 | 3D-printed screen mount, sun hood and boxes | `cad/` | [`cad/README.md`](cad/README.md), [`cad/MEASURING.md`](cad/MEASURING.md) |
 | Decoding the Shinegle CAN bus (sniffer + tools) | `firmware/can-sniffer/`, `teryx/decode/` | [`docs/shinegle-decode.md`](docs/shinegle-decode.md) |
+| Shinegle SG1202 controller: manual summary and J1 pinout | `docs/` | [`docs/shinegle-controller.md`](docs/shinegle-controller.md) |
+| Shinegle SG1810 programmer: manual copy (EN + CN), parameters, fault codes | `config/shinegle-*.yaml`, `teryx/shinegle_manual.py` | [`docs/shinegle-sg1810-programmer.md`](docs/shinegle-sg1810-programmer.md) |
 | Brake pedal regen (test feature, off by default) | `teryx/regen.py` | [`docs/brake-regen.md`](docs/brake-regen.md) |
 | Ideas and open-source projects to learn from | `docs/` | [`inspiration.md`](docs/inspiration.md) |
 | What the AI HAT+ 2 could do, and is it worth it | `docs/` | [`ai-hat-ideas.md`](docs/ai-hat-ideas.md) |
