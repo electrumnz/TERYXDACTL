@@ -20,6 +20,7 @@ from ..canbus import messages as M
 from ..canbus import shinegle as SG
 from ..canbus.bus import open_bus
 from ..canbus.node import Node
+from ..vehicle_lock import encode_digits
 
 log = logging.getLogger("teryx.dash")
 
@@ -57,6 +58,7 @@ class Gateway:
         self.winch_timed_s = 0   # timed pull length for the current winch hold, 0 = plain hold
         self._dirty = {"lights": True, "drive": True}
         self._last_reject_count = None
+        self._lock_counter = 0
         # Settings: what we want the Pico to use, and what it has acked
         self.wanted_settings = M.default_settings()
         self.settings: dict[str, int] = {}
@@ -124,6 +126,20 @@ class Gateway:
             self.holds[id] = (value, time.monotonic())
             if value == 0:
                 self._send_hold(force=True)
+
+    def lock(self, cmd: str, digits: str | None = None) -> None:
+        """Vehicle lock (docs/vehicle-lock.md). cmd: lock, unlock, verify, set_pin, set_puk, remove.
+
+        The control box decides and answers on 0x716 (lock.* in the state). The PIN only
+        passes through here; nothing on the Pi keeps it.
+        """
+        codes = {v: k for k, v in M.LOCK_CMD.items()}
+        if cmd not in codes:
+            raise ValueError(f"unknown lock command {cmd}")
+        with self._lock:
+            self._lock_counter = (self._lock_counter + 1) & 0xFF
+            self.node.send(M.PI_LOCK, {"cmd": codes[cmd], **encode_digits(digits or ""),
+                                       "counter": self._lock_counter})
 
     def set_setting(self, key, value: int, timeout: float = 1.0) -> bool:
         """Send one 0x704 setting and wait for the 0x714 ack. Key is a number or a name."""
@@ -210,6 +226,8 @@ class Gateway:
                 st["pico.on_defaults"] = bool(v["on_defaults"])
                 st["pico.reject"] = M.REJECT_REASON.get(v["reject_reason"], "none")
                 st["pico.reject_text"] = M.REJECT_TEXT.get(st["pico.reject"], "")
+                if st["pico.reject"] == "interlock" and st.get("lock.state") == "locked":
+                    st["pico.reject_text"] = "Vehicle is locked"
                 st["pico.reject_count"] = v["reject_count"]
                 st["winch.armed"] = bool(v["winch_armed"])
                 st["pico.speed"] = None if v["speed"] == 255 else v["speed"]
@@ -252,10 +270,22 @@ class Gateway:
                 st["regen.state"] = M.REGEN_STATE.get(v["state"], "off")
                 st["regen.limit"] = M.REGEN_LIMIT.get(v["limit"], "none")
                 st["an.brake_pedal_raw"] = v["pedal_raw"]
+            elif msg.name == "PICO_LOCK":
+                st["lock.state"] = M.LOCK_STATE.get(v["state"], "off")
+                st["lock.tries_left"] = v["tries_left"]
+                st["lock.lockout_s"] = v["lockout_s"]
+                st["lock.window"] = bool(v["window"])
+                st["lock.puk_set"] = bool(v["puk_set"])
+                st["lock.inhibit"] = bool(v["inhibit"])
+                st["lock.lockout"] = bool(v["lockout"])
+                st["lock.result"] = M.LOCK_RESULT.get(v["result"], "none")
+                st["lock.result_text"] = M.LOCK_RESULT_TEXT.get(st["lock.result"], "")
+                st["lock.result_count"] = v["result_count"]
+                st["lock.fails"] = v["fails"]
             elif msg.name == "PICO_SETTINGS_ACK":
                 key = int(v["key"])
                 self.last_ack = {"key": key, "status": v["status"], "value": int(v["value"])}
-                if key in M.SETTINGS and v["status"] != 1:
+                if key in M.SETTINGS and v["status"] not in (1, 3):
                     self.settings[M.SETTINGS[key][0]] = int(v["value"])
                 ev = self._acks.pop(key, None)
                 if ev:

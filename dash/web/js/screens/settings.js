@@ -7,6 +7,7 @@ import { REGIONS } from "../theme.js";
 import { LOOKS } from "../look.js";
 import { FEATURES, featureOn } from "../features.js";
 import { Sound } from "../sound.js";
+import { lockCommand, askPin, showRecoveryCode, newRecoveryCode, lockResultText } from "../lock.js";
 
 async function api(path, opts = {}) {
   const r = await fetch(`/api/${path}`, { cache: "no-store", headers: { "content-type": "application/json" }, ...opts, body: opts.body ? JSON.stringify(opts.body) : undefined });
@@ -15,7 +16,7 @@ async function api(path, opts = {}) {
 }
 
 const SECTIONS = [
-  ["display", "Display"], ["sounds", "Sounds and alerts"], ["audio", "Audio and media"], ["lights", "Lights setup"], ["camera", "Cameras"], ["limits", "Safety limits"],
+  ["display", "Display"], ["lock", "Vehicle lock"], ["sounds", "Sounds and alerts"], ["audio", "Audio and media"], ["lights", "Lights setup"], ["camera", "Cameras"], ["limits", "Safety limits"],
   ["diff", "Diff calibration"], ["features", "Features"], ["faults", "Faults"], ["updates", "Updates"], ["wifi", "Wi-Fi"], ["about", "About"],
 ];
 
@@ -88,6 +89,97 @@ export class SettingsScreen {
     body.appendChild(row("Power bar scale", "Full scale of the power bar on the drive screen.", stepper(s.get("powerMaxKw"), { step: 1, min: 5, max: 30, fmt: (v) => `${v} kW`, onChange: (v) => s.set("powerMaxKw", v) })));
     body.appendChild(row("Battery pack size", "Usable energy in the traction pack, for the range estimate. 72 V x 105 Ah is about 7.5 kWh.", stepper(s.get("packKwh"), { step: 0.5, min: 1, max: 40, fmt: (v) => `${v.toFixed(1)} kWh`, onChange: (v) => s.set("packKwh", v) })));
     body.appendChild(row("Battery cells in series", "Only used to estimate battery % from voltage if the motor controller doesn't send one.", stepper(s.get("cells"), { step: 1, min: 10, max: 40, onChange: (v) => s.set("cells", v) })));
+  }
+
+  // ---------- Vehicle lock (docs/vehicle-lock.md) ----------
+  // The control box keeps the lock, the PIN hash and the wrong-try count. This only asks.
+  sec_lock(body) {
+    const ctx = this.ctx, st = ctx.store;
+    this.title(body, "Vehicle lock", "Locks the Teryx down when you leave it, like at the beach. Once locked there's no drive, no 4WD or diff changes, no tray, no winch and the lights go off until the PIN goes in. The control box holds the lock, so turning the screen off or pulling its plug doesn't unlock it.");
+    const box = el(`<div class="lk-set"></div>`);
+    body.appendChild(box);
+    const say = (r, okText) => {
+      if (r === "ok" || r === "recovered") { if (okText) toast(okText, "good"); return true; }
+      toast(r === "no_link" || r === "no_answer" ? "No answer from the control box." : lockResultText(r) || `Control box said no (${r}).`, "bad");
+      return false;
+    };
+    // New PIN twice, then a fresh recovery code. Needs the change window (or no PIN yet).
+    const newPin = async () => {
+      const a = await askPin("New PIN", "4 to 6 digits.");
+      if (a == null) return false;
+      const b = await askPin("Same PIN again", "To make sure.");
+      if (b == null) return false;
+      if (a !== b) { toast("Those didn't match. Nothing changed.", "bad"); return false; }
+      if (!say(await lockCommand(ctx, "set_pin", a))) return false;
+      const code = newRecoveryCode();
+      if (!say(await lockCommand(ctx, "set_puk", code))) return false;
+      await showRecoveryCode(code);
+      toast("PIN set.", "good");
+      return true;
+    };
+    const verify = async (why) => {
+      const p = await askPin("Current PIN", why);
+      if (p == null) return false;
+      return say(await lockCommand(ctx, "verify", p));
+    };
+    const draw = () => {
+      const state = st.get("lock.state");
+      box.innerHTML = "";
+      if (state === undefined) {
+        box.appendChild(el(`<div class="muted">Waiting for the control box…</div>`));
+        return;
+      }
+      if (state === "off") {
+        const b = el(`<button class="btn">Set a PIN</button>`);
+        b.onclick = async () => { if (await newPin()) draw(); };
+        box.appendChild(row("Lock is off", "Set a 4 to 6 digit PIN to use the lock. You'll also get a one-off recovery code to write down.", b));
+        return;
+      }
+      // Lock now: the big padlock button, with what's needed first.
+      const speedOk = st.get("pico.speed_valid") !== false && (st.get("mc.speed", 0) < 0.5);
+      const parkOk = !!st.get("in.park");
+      const ready = speedOk && parkOk;
+      const lockBtn = el(`<button class="lk-now ${ready ? "" : "not-ready"}"><img src="img/dino/padlock.webp" alt=""><span>LOCK NOW</span></button>`);
+      lockBtn.onclick = async () => {
+        if (!ready) { toast("Stop and put the park brake on first.", "bad"); return; }
+        say(await lockCommand(ctx, "lock"));
+      };
+      const checks = el(`<div class="lk-checks">
+        <div class="${speedOk ? "ok" : ""}">${speedOk ? "✓" : "✗"} Stopped</div>
+        <div class="${parkOk ? "ok" : ""}">${parkOk ? "✓" : "✗"} Park brake on</div></div>`);
+      const lockRow = el(`<div class="lk-now-row"></div>`);
+      lockRow.appendChild(lockBtn); lockRow.appendChild(checks);
+      box.appendChild(lockRow);
+      const puk = st.get("lock.puk_set");
+      const ch = el(`<button class="btn sm">Change PIN</button>`);
+      ch.onclick = async () => { if (await verify("To change it.")) await newPin(); };
+      box.appendChild(row("PIN", "Change it any time. You need the current one.", ch));
+      const rc = el(`<button class="btn sm">New code</button>`);
+      rc.onclick = async () => {
+        if (!(await verify("To make a new recovery code."))) return;
+        const code = newRecoveryCode();
+        if (say(await lockCommand(ctx, "set_puk", code))) await showRecoveryCode(code);
+        draw();
+      };
+      box.appendChild(row("Recovery code", puk ? "Set. A new one replaces the old one." : "Not set. Make one so a forgotten PIN isn't a workshop job.", rc));
+      const rm = el(`<button class="btn sm danger">Turn off</button>`);
+      rm.onclick = async () => {
+        if (!(await verify("To turn the lock off."))) return;
+        if (say(await lockCommand(ctx, "remove"), "Lock turned off. PIN and recovery code wiped.")) draw();
+      };
+      box.appendChild(row("Turn the lock off", "Wipes the PIN and the recovery code.", rm));
+      const fails = st.get("lock.fails", 0);
+      if (fails) box.appendChild(el(`<div class="muted small">${fails} wrong ${fails === 1 ? "try" : "tries"} since the last right one.</div>`));
+      box.appendChild(el(`<div class="muted small" style="margin-top:8px">Forgot the PIN and lost the code? There's a workshop reset inside the control box. See docs/vehicle-lock.md.</div>`));
+    };
+    draw();
+    // Redraw when the lock state or the "ready to lock" checks change.
+    let last = "";
+    clearInterval(this._poll);
+    this._poll = setInterval(() => {
+      const k = [st.get("lock.state"), st.get("lock.puk_set"), st.get("in.park"), st.get("mc.speed", 0) < 0.5, st.get("lock.fails")].join();
+      if (k !== last && !document.querySelector(".lk-modal")) { if (last) draw(); last = k; }
+    }, 300);
   }
 
   // ---------- Sounds and alerts ----------

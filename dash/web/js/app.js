@@ -29,6 +29,7 @@ import { featureOn, featureName } from "./features.js";
 import { volumeControl } from "./ui/volume.js";
 import { WinchHeat } from "./winchheat.js";
 import { ShiftWatch } from "./ui/shift.js";
+import { LockScreen } from "./lock.js";
 
 // Fallback limits if the control box settings can't be read (match config/io-map.yaml safety defaults).
 const LIMIT_DEFAULTS = { fourwd_max_kmh: 1, diff_max_kmh: 15, tray_overcurrent_da: 10, winch_auto_disarm_s: 120, shift_wait_ms: 10000 };
@@ -261,7 +262,12 @@ async function main() {
   try { first = new URLSearchParams(location.search).get("screen") || localStorage.getItem("teryx.screen") || "drive"; } catch {}
   show(byId[first] ? first : "drive");
 
-  store.on("reject", (code) => { Sound.play("reject"); toast(REJECTS[code] || `Control box said no (${code}).`, "bad"); });
+  store.on("reject", (code) => {
+    Sound.play("reject");
+    const locked = store.get("lock.state") === "locked" && code === "interlock";
+    toast(locked ? "The Teryx is locked." : REJECTS[code] || `Control box said no (${code}).`, "bad");
+  });
+  ctx.lock = new LockScreen(ctx);
   ctx.alerts.on((fresh) => store.emit("faults-changed", fresh));
   // A tick on every press, so a gloved tap is felt (heard) even if nothing moves yet.
   document.addEventListener("pointerdown", (e) => { if (e.target.closest("button, .lt-big, .slider, select")) Sound.play("click"); }, true);
@@ -273,6 +279,7 @@ async function main() {
     ctx.applyTheme();
     ctx.shift.update(st);
     topbar(st); alertBanner(st); reverseCamera(st); player.update(st);
+    ctx.lock.update(st);
     byId.fun.background(st);   // camp mode and games stop by themselves if the Teryx moves
     // Only the screen on show is redrawn, to keep the Pi cool.
     if (ctx.current) ctx.current.update(st);

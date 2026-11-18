@@ -41,6 +41,14 @@ bool ctl_parked(const controller_t *c, uint32_t now) {
     return stopped(c, now) || !ignition(c) || (c->in.din & BIT(IN_PARK));
 }
 
+bool ctl_locked(const controller_t *c) { return vlock_is_locked(&c->lock); }
+
+bool ctl_can_lock(const controller_t *c, uint32_t now) {
+    if (anything_moving(c)) return false;
+    if (!(c->in.din & BIT(IN_PARK))) return false;   // park brake on
+    return stopped(c, now) || !ignition(c);
+}
+
 static bool reverse_active(const controller_t *c, uint32_t now) {
     if (c->in.din & BIT(IN_REVERSE)) return true;
     return ctl_speed_valid(c, now) && c->mc_dir == 2;
@@ -86,6 +94,11 @@ void ctl_init(controller_t *c, const settings_t *saved, bool watchdog_reset,
     c->last_tx_slow_ms = now;
     c->winch.off_since_ms = now;
     c->in.io_ok = true;
+    vlock_init(&c->lock, NULL, now);
+}
+
+void ctl_load_lock(controller_t *c, const lock_blob_t *saved, uint32_t now) {
+    vlock_init(&c->lock, saved, now);
 }
 
 // ---------------------------------------------------------------------------
@@ -100,6 +113,9 @@ void ctl_init(controller_t *c, const settings_t *saved, bool watchdog_reset,
 // that times out is dropped, so nothing happens later by surprise.
 // While one drive change waits or runs, the other is refused (REJ_BUSY),
 // except taking diff lock off, which always works.
+
+static void stop_all_motion(controller_t *c);
+static void send_lock(controller_t *c, uint32_t now, cb_send_fn send, void *u);
 
 static bool speed_reason(uint8_t r) { return r == REJ_TOO_FAST || r == REJ_NOT_STOPPED; }
 static bool fwd_busy(const controller_t *c) { return c->fwd.moving || c->fwd.waiting; }
@@ -287,6 +303,16 @@ void ctl_on_frame(controller_t *c, const can_frame_t *f, uint32_t now,
         // The dash resends every second so a rebooted Pico catches up, but a
         // refused 4WD request must not quietly happen later when we slow down.
         if (f->dlc < 2) { reject(c, REJ_BAD_FRAME); return; }
+        if (ctl_locked(c)) {
+            // Locked: no 4WD / diff changes. Remember the values so nothing
+            // happens by surprise on unlock (change-only rule).
+            if (c->drive_seen && (f->data[0] != c->last_drive[0] || f->data[1] != c->last_drive[1]))
+                reject(c, REJ_INTERLOCK);
+            c->drive_seen = true;
+            c->last_drive[0] = f->data[0];
+            c->last_drive[1] = f->data[1];
+            break;
+        }
         bool first = !c->drive_seen;
         c->drive_seen = true;
         bool fwd_valid = f->data[0] == REQ_2WD || f->data[0] == REQ_4WD;
@@ -317,6 +343,18 @@ void ctl_on_frame(controller_t *c, const can_frame_t *f, uint32_t now,
         c->hold_winch = winch > 0 ? 1 : winch < 0 ? -1 : 0;
         c->hold_winch_timed_s = f->dlc >= 4 ? f->data[3] : 0;
         bool arm = (f->data[2] & HOLD_FLAG_WINCH_ARMED) != 0;
+        if (ctl_locked(c)) {
+            // Locked: no tray, no winch. Refuse a new press once, not every frame.
+            if ((c->hold_tray && c->hold_tray != c->tray.prev_req) ||
+                (c->hold_winch && c->hold_winch != c->winch.prev_req) || (arm && !c->winch.armed))
+                reject(c, REJ_INTERLOCK);
+            c->tray.prev_req = c->hold_tray;
+            c->winch.prev_req = c->hold_winch;
+            c->hold_tray = 0;
+            c->hold_winch = 0;
+            c->hold_winch_timed_s = 0;
+            break;
+        }
         if (arm && !c->winch.armed) try_arm_winch(c, now);
         else if (!arm && c->winch.armed) winch_disarm(c);
         break;
@@ -326,7 +364,9 @@ void ctl_on_frame(controller_t *c, const can_frame_t *f, uint32_t now,
         if (f->dlc < 4) { reject(c, REJ_BAD_FRAME); return; }
         uint8_t key = f->data[0];
         uint8_t res = SET_ACK_OK;
-        if (key == SET_CMD_SAVE) {
+        if (ctl_locked(c)) {
+            res = SET_ACK_LOCKED;  // no setting changes while locked
+        } else if (key == SET_CMD_SAVE) {
             c->out.save_settings = true;
         } else if (key == SET_CMD_DEFAULTS) {
             settings_defaults(&c->settings);
@@ -347,8 +387,17 @@ void ctl_on_frame(controller_t *c, const can_frame_t *f, uint32_t now,
             return;
         }
         if (!ctl_parked(c, now)) { reject(c, REJ_NOT_PARKED); return; }
+        if (ctl_locked(c)) { reject(c, REJ_INTERLOCK); return; }  // no updates while locked
         c->bootloader_pending = true;
         break;
+
+    case CAN_ID_PI_LOCK: {
+        bool was = ctl_locked(c);
+        vlock_on_frame(&c->lock, f->data, f->dlc, ctl_can_lock(c, now), now);
+        if (!was && ctl_locked(c)) stop_all_motion(c);
+        send_lock(c, now, send, user);  // answer straight away, not on the next 100 ms
+        break;
+    }
 
     default:
         break;
@@ -736,6 +785,12 @@ static void send_status(controller_t *c, uint32_t now, cb_send_fn send, void *u)
     send(&a, u);
 }
 
+static void send_lock(controller_t *c, uint32_t now, cb_send_fn send, void *u) {
+    can_frame_t f = {.id = CAN_ID_PICO_LOCK, .dlc = 8};
+    vlock_status(&c->lock, now, ctl_locked(c), f.data);
+    send(&f, u);
+}
+
 static void send_power(controller_t *c, uint32_t now, cb_send_fn send, void *u) {
     can_frame_t f = {.id = CAN_ID_PICO_POWER, .dlc = 8};
     put_u16(&f.data[0], c->in.aux_mv);
@@ -772,6 +827,13 @@ void ctl_tick(controller_t *c, const cb_in_t *in, cb_out_t *out, cb_send_fn send
     c->hold_winch_timed_s = 0;
     }
 
+    // Vehicle lock: nothing moves, lights off, drive inhibited. The lock
+    // sits in flash, so this holds from the first tick after a power cut.
+    vlock_tick(&c->lock, now);
+    bool locked = ctl_locked(c);
+    if (locked && (anything_moving(c) || c->fwd.waiting || c->diff.waiting || c->winch.armed))
+        stop_all_motion(c);
+
     // Rule 8: key-off. Keep power on until the Pi has shut down, or time's up.
     if (ign) {
         c->power_hold = true;
@@ -802,11 +864,12 @@ void ctl_tick(controller_t *c, const cb_in_t *in, cb_out_t *out, cb_send_fn send
     out->throttle_hold = c->throttle_hold;
     run_tray(c, now, out, dash_ok);
     run_winch(c, now, out, dash_ok);
+    if (locked) memset(c->light_req, 0, sizeof(c->light_req));
     run_lights(c, now, out);
 
     // Rule 7 and the simple relays.
     bool rev = reverse_active(c, now);
-    if ((c->light_flags & LIGHTS_FLAG_REAR_ON) || ((c->light_flags & LIGHTS_FLAG_AUTO_REAR) && rev))
+    if (!locked && ((c->light_flags & LIGHTS_FLAG_REAR_ON) || ((c->light_flags & LIGHTS_FLAG_AUTO_REAR) && rev)))
         out->relays |= BIT(R_REAR);
     bool any_front = false;
     for (int i = L_FRONT_1; i <= L_FRONT_4; i++) any_front |= c->light_req[i] != 0;
@@ -814,6 +877,11 @@ void ctl_tick(controller_t *c, const cb_in_t *in, cb_out_t *out, cb_send_fn send
     if (in->din & BIT(IN_BRAKE)) out->relays |= BIT(R_TRAILER_BRAKE);
     if (ign) out->relays |= BIT(R_ACCESSORY);
     if (c->power_hold) out->relays |= BIT(R_POWER_HOLD);
+    out->drive_inhibit = locked;
+    if (c->lock.dirty) {
+        out->save_lock = true;
+        c->lock.dirty = false;
+    }
 
     // Faults
     uint16_t live = 0;
@@ -851,6 +919,7 @@ void ctl_tick(controller_t *c, const cb_in_t *in, cb_out_t *out, cb_send_fn send
     if (since(now, c->last_tx_fast_ms) >= 100u) {
         c->last_tx_fast_ms = now;
         send_status(c, now, send, user);
+        send_lock(c, now, send, user);
     }
     if (since(now, c->last_tx_slow_ms) >= 1000u) {
         c->last_tx_slow_ms = now;

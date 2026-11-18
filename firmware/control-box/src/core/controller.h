@@ -11,6 +11,7 @@
 
 #include "protocol.h"
 #include "settings.h"
+#include "lock.h"
 
 // Digital inputs (MCP23017 port B), as logical bits: 1 = active.
 // The two tray limits are normally closed, so 1 = "at limit or wire broken".
@@ -48,6 +49,8 @@ typedef struct {
     bool enter_bootloader;     // hardware layer: make outputs safe, reboot to USB boot
     bool save_settings;        // hardware layer: write settings to flash, then clear
     bool throttle_hold;        // ask the Shinegle to hold throttle (how is TBC until it's decoded)
+    bool drive_inhibit;        // vehicle locked: no drive at all (how is TBC, docs/vehicle-lock.md)
+    bool save_lock;            // hardware layer: write c->lock.saved to its flash sector, then clear
 } cb_out_t;
 
 typedef void (*cb_send_fn)(const can_frame_t *f, void *user);
@@ -153,6 +156,9 @@ typedef struct {
 
     bool bootloader_pending;
 
+    // Vehicle lock (docs/vehicle-lock.md)
+    vlock_t lock;
+
     uint8_t tx_counter;
     uint32_t last_tx_fast_ms;
     uint32_t last_tx_slow_ms;
@@ -166,6 +172,8 @@ typedef struct {
 // reset during key-off doesn't cut the Pi off mid shutdown.
 void ctl_init(controller_t *c, const settings_t *saved, bool watchdog_reset,
               bool power_hold_on, uint32_t now_ms);
+// lock_saved: the lock sector read from flash, or NULL. Call right after ctl_init.
+void ctl_load_lock(controller_t *c, const lock_blob_t *lock_saved, uint32_t now_ms);
 void ctl_on_frame(controller_t *c, const can_frame_t *f, uint32_t now_ms,
                   cb_send_fn send, void *user);
 void ctl_tick(controller_t *c, const cb_in_t *in, cb_out_t *out,
@@ -175,3 +183,6 @@ void ctl_tick(controller_t *c, const cb_in_t *in, cb_out_t *out,
 bool ctl_dash_ok(const controller_t *c, uint32_t now_ms);
 bool ctl_speed_valid(const controller_t *c, uint32_t now_ms);
 bool ctl_parked(const controller_t *c, uint32_t now_ms);
+bool ctl_locked(const controller_t *c);
+// Can the lock be put on now: stopped (or key off), park brake on, nothing moving.
+bool ctl_can_lock(const controller_t *c, uint32_t now_ms);

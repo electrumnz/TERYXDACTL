@@ -12,6 +12,8 @@ are kept outside the repo (project files, `dash-dino/`).
 | `hide-night.webp` | Predator and Night Hunt background | T. rex hide texture |
 | `teeth.webp` | Battery meter: fangs light up to the charge level | Teeth strip cutout, trimmed |
 | `badge.webp` | Top bar and boot splash | Forged steel skull badge, 256x256 |
+| `lock-sleep.webp`, `lock-awake.webp` | Lock screen. The T. rex sleeps while locked and opens its eye on a wrong PIN or a lockout. Both line up, so they cross-fade | Made 2026-11-18 from the closed head and hide as references, 1440 wide |
+| `padlock.webp` | Lock button in Settings and the lock screen badge (black background, use `mix-blend-mode: screen`) | Forged padlock with glowing claw marks, 512x512 |
 
 All WebP, about 1.1 MB in total, so the Pi 5 loads them in a blink. To change one, keep the
 same size and file name and nothing else needs touching.

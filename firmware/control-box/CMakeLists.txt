@@ -26,11 +26,13 @@ add_compile_definitions(FW_VERSION_MAJOR=${CMAKE_MATCH_1} FW_VERSION_MINOR=${CMA
 set(CORE_SRC
     src/core/controller.c
     src/core/settings.c
+    src/core/lock.c
+    src/core/sha256.c
 )
 
 if(TERYX_HOST)
     add_compile_options(-Wall -Wextra -Werror -Wno-unused-parameter)
-    add_library(cb_core STATIC ${CORE_SRC} src/host/plant.c)
+    add_library(cb_core STATIC ${CORE_SRC} src/host/plant.c src/host/rand_host.c)
     target_include_directories(cb_core PUBLIC src/core)
 
     add_executable(control-box-host src/host/main_host.c src/host/canio.c)
@@ -56,7 +58,7 @@ else()
     )
     target_compile_options(teryx_control_box PRIVATE -Wall -Wextra -Wno-unused-parameter)
     target_link_libraries(teryx_control_box
-        pico_stdlib pico_flash hardware_spi hardware_i2c hardware_pwm hardware_adc
+        pico_stdlib pico_flash pico_rand hardware_spi hardware_i2c hardware_pwm hardware_adc
         hardware_watchdog hardware_flash
     )
     # USB serial for logs, and so "picotool reboot -f -u" works from the Pi.

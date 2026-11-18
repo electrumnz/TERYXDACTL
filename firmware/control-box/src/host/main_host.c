@@ -44,9 +44,25 @@ static void save_settings(const char *path, const settings_t *s) {
     fclose(fp);
 }
 
+// Vehicle lock sector (docs/vehicle-lock.md), a file here.
+static bool load_lock(const char *path, lock_blob_t *b) {
+    FILE *fp = fopen(path, "rb");
+    if (!fp) return false;
+    bool ok = fread(b, sizeof(*b), 1, fp) == 1;
+    fclose(fp);
+    return ok;
+}
+
+static void save_lock(const char *path, const lock_blob_t *b) {
+    FILE *fp = fopen(path, "wb");
+    if (!fp) { perror(path); return; }
+    fwrite(b, sizeof(*b), 1, fp);
+    fclose(fp);
+}
+
 static void usage(void) {
     puts("control-box-host [--bus udp|udp:<group>:<port>|socketcan:<if>] [--settings FILE]\n"
-         "                 [--key-off] [--quiet]\n"
+         "                 [--lock FILE] [--lock-reset] [--key-off] [--quiet]\n"
          "Plays the Pico 2 control box on a shared bus. The simulator drives the\n"
          "wired inputs with 0x7E0 bench frames.");
 }
@@ -54,10 +70,13 @@ static void usage(void) {
 int main(int argc, char **argv) {
     const char *bus = "udp";
     const char *settings_path = "control-box-settings.bin";
-    bool quiet = false, key_off = false;
+    const char *lock_path = "control-box-lock.bin";
+    bool quiet = false, key_off = false, lock_reset = false;
     for (int i = 1; i < argc; i++) {
         if (!strcmp(argv[i], "--bus") && i + 1 < argc) bus = argv[++i];
         else if (!strcmp(argv[i], "--settings") && i + 1 < argc) settings_path = argv[++i];
+        else if (!strcmp(argv[i], "--lock") && i + 1 < argc) lock_path = argv[++i];
+        else if (!strcmp(argv[i], "--lock-reset")) lock_reset = true;  // workshop recovery
         else if (!strcmp(argv[i], "--quiet")) quiet = true;
         else if (!strcmp(argv[i], "--key-off")) key_off = true;
         else { usage(); return 2; }
@@ -75,6 +94,13 @@ int main(int argc, char **argv) {
     bool have = load_settings(settings_path, &saved);
     uint32_t t = now_ms();
     ctl_init(&ctl, have ? &saved : NULL, false, false, t);
+    lock_blob_t lock_saved;
+    bool have_lock = load_lock(lock_path, &lock_saved);
+    ctl_load_lock(&ctl, have_lock ? &lock_saved : NULL, t);
+    if (lock_reset) {
+        vlock_workshop_reset(&ctl.lock);
+        printf("vehicle lock: workshop reset, PIN and recovery code wiped\n");
+    }
     printf("Teryx control box host build v%d.%d.%d on %s (%s settings)\n",
            FW_VERSION_MAJOR, FW_VERSION_MINOR, FW_VERSION_PATCH, bus, have ? "saved" : "default");
     fflush(stdout);
@@ -106,6 +132,7 @@ int main(int argc, char **argv) {
             ctl.out.save_settings = false;
             printf("settings saved to %s\n", settings_path);
         }
+        if (out.save_lock) save_lock(lock_path, &ctl.lock.saved);
         if (out.enter_bootloader) {
             // On the Pico this reboots into the USB bootloader. Here we act out
             // the reboot: the flash tool on the Pi would now copy new firmware.
@@ -113,6 +140,8 @@ int main(int argc, char **argv) {
             fflush(stdout);
             have = load_settings(settings_path, &saved);
             ctl_init(&ctl, have ? &saved : NULL, false, (out.relays & BIT(R_POWER_HOLD)) != 0, now_ms());
+            have_lock = load_lock(lock_path, &lock_saved);
+            ctl_load_lock(&ctl, have_lock ? &lock_saved : NULL, now_ms());
             memset(&out, 0, sizeof(out));
             continue;
         }

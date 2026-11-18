@@ -89,6 +89,7 @@ If CAN is down it falls back to `picotool reboot -f -u` over USB. Needs
 | 6 Winch | Arm only when stopped. Hold-to-run. In and out never together, with 100 ms of both-off between them. Disarms on lost dash, key off, any speed, or 2 min idle. Tray and winch can't run at the same time. If the handheld remote or a hand switch is in use, the dash can't drive the winch. **Timed pull:** if `0x703` byte 3 is set (seconds), the Pico starts its own timer when the winch actually starts and stops it on time even if the dash keeps sending, capped at setting 21 (default 30 s). It won't run again until the dash lets go and presses again. A timed pull cut short (remote, interlock) also needs a new press. The 300 ms hold timeout still applies the whole time |
 | 7 Reverse | Reverse = the wired input or the Shinegle's direction. Rear pods on when "auto rear" is set |
 | 8 Key-off | Accessory off, motion stops, winch disarmed. `0x710` asks the Pi to shut down. Power hold drops 10 s after the Pi stops heartbeating, or after 30 s at most. Key back on cancels it |
+| 10 Vehicle lock | `lock.c` (`docs/vehicle-lock.md`). PIN lock kept in its own flash sector with a salted SHA-256 hash and the wrong-try count, so a power cut doesn't unlock it. Locks only when stopped, park brake on and nothing moving. Locked: drive inhibit flag, no 4WD/diff/tray/winch, lights off, no settings or OTA. 5 wrong tries, then 30 s doubling to 15 min. Recovery code, or `LOCK RESET` on the debug UART inside the box |
 | 9 Watchdog | 250 ms hardware watchdog. Everything starts off at boot. A watchdog reset shows as a fault for 30 s |
 
 Other things it does:
@@ -126,6 +127,11 @@ These are in the firmware and need adding to the test environment's
   reject reasons 14 wait timed out, 15 busy; settings 30 `shift_wait_ms`,
   31 `shift_throttle_hold`. `cb_out_t.throttle_hold` is there for the hardware
   layer, but nothing sends it to the Shinegle until its CAN is decoded.
+- Vehicle lock (`docs/vehicle-lock.md`, in `messages.py` too): `0x705` lock command,
+  `0x716` lock state, `0x714` status 3 "locked". `cb_out_t.drive_inhibit` is set while locked,
+  but like throttle hold nothing reaches the Shinegle yet. `cb_out_t.save_lock` asks the
+  hardware layer to write the lock sector. Debug UART (GP0/GP1, 115200) now runs the
+  `LOCK RESET` workshop command.
 
 ## Check on the bench before it goes on the Teryx
 

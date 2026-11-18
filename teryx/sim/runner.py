@@ -196,11 +196,16 @@ class Simulator:
                 self.vehicle.regen_request = self.cb.regen.out.request_pct / 100
                 # ...and so does its throttle hold during a shift from a standstill (also TBC)
                 self.vehicle.throttle_hold = self.cb.throttle_hold
+                # ...and the vehicle lock's drive inhibit (also TBC, docs/vehicle-lock.md)
+                self.vehicle.drive_inhibit = self.cb.drive_inhibit
                 self.cb_node.enabled = self.links["controlbox"]
                 for name, values in self.cb.frames():
                     self.cb_node.send_due(BY_NAME[name], lambda values=values: values, now)
                 while self.cb.acks:
                     self.cb_node.send(M.PICO_SETTINGS_ACK, self.cb.acks.pop(0))
+                if self.cb.lock_replies:
+                    self.cb.lock_replies = 0
+                    self.cb_node.send(M.PICO_LOCK, self.cb.lock.frame(cb_now, self.cb.drive_inhibit))
 
     def run(self) -> None:
         period = 1 / TICK_HZ
