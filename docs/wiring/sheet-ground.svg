@@ -134,7 +134,7 @@
 <line x1="480" y1="1486" x2="750" y2="1486" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="1490" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">coil_neg</text>
 </g>
-<g data-device="OPTO" data-status="planned"><title>OPTO: 8-ch opto board (PC817, 12 V in)</title><rect x="480" y="1530" width="270" height="69" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<g data-device="OPTO" data-status="planned"><title>OPTO: 8-ch opto board (PC817, 12 V in) - All 8 channels used. A second 8-ch board (AliExpress cart) gives 8 spare inputs, read on MCP2 port B</title><rect x="480" y="1530" width="270" height="69" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
 <text x="490" y="1548" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">8-ch opto board (PC817, 12 V in)</text>
 <text x="490" y="1563" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">OPTO · planned</text>
 <line x1="480" y1="1577" x2="750" y2="1577" stroke="#d0d7de" stroke-width="0.5"/>

@@ -332,6 +332,7 @@ devices:
     name: 8-ch opto board (PC817, 12 V in)
     zone: control_box
     status: planned
+    note: All 8 channels used. A second 8-ch board (AliExpress cart) gives 8 spare inputs, read on MCP2 port B
     pins: {VCC: 3v3, GND: gnd, COM12: gnd,
            IN1: 12v, IN2: 12v, IN3: {v: 12v, multi: true}, IN4: 12v, IN5: 12v, IN6: {v: 12v, multi: true}, IN7: 12v, IN8: 12v,
            OUT1: 3v3, OUT2: 3v3, OUT3: 3v3, OUT4: 3v3, OUT5: 3v3, OUT6: 3v3, OUT7: 3v3, OUT8: 3v3}

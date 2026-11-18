@@ -10,7 +10,7 @@ Backup (now),Audio City,Carlinkit CPC200-CCPA dongle (photo shows CCPA code),Car
 AliExpress,AliExpress (search "Carlinkit CCPA"),Carlinkit CPC200-CCPA (or CCPA-MIC) dongle,,1,65.00,65.00,"US$33-39 snapshots x 1.822","Title must say CCPA + Android head unit + Autokit; lsusb must show 1314:1520 or 1314:1521",https://www.aliexpress.us/item/3256809220614383.html
 AliExpress,AliExpress,4-channel class D amp 12V (RCA in + remote turn-on),,1,82.00,82.00,"~US$45 snapshot x 1.822","Not waterproof; mount under the seat",https://www.aliexpress.com/w/wholesale-amplifier-4-channel-class-d.html
 AliExpress,AliExpress,BTS7960 43A H-bridge,,2,12.00,24.00,"~US$6-7 each (Walmart 2-pack US$11.56)",One on hand; 3 needed,
-AliExpress,AliExpress,8-channel PC817 opto board 12V in,,1,9.00,9.00,"~US$5 estimate","Needed: all 8 control box inputs",
+AliExpress,AliExpress,8-channel PC817 opto board 12V in,,2,9.00,18.00,"~US$5 estimate","Needed: board 1 = all 8 inputs; board 2 = 8 spare on MCP2",
 AliExpress,AliExpress,"Isolated MOSFET switch module LR7843 (opto input, screw terminals)",,6,5.00,30.00,"~US$1.70-3.07 each","Needed: one per light bar (4 front ~6A each + interior) + 1 spare; 30V, no heatsink; 3.3V input; 500Hz PWM ok",https://abra-electronics.com/electromechanical/relays/relay-modules-shields/mod-lr7843-30v-161a-mosfet-isolation-module-for-arduino.html
 AliExpress,AliExpress,"16-channel 5V relay board, mechanical, opto + JD-VCC jumper, 10A NO/NC",,1,21.00,21.00,"~US$11.28 eBay snapshot x 1.822","All 10 relays + 6 spare; aux box; must have JD-VCC jumper; not solid state",https://www.ebay.de/itm/143395133451
 AliExpress,AliExpress,20-way blade fuse block with cover + negative bus (16 fuses planned),,1,40.00,40.00,"~US$15-25 estimate","Buy the blade fuses in NZ; 30A/way, 100A total, stud feed",https://www.aliexpress.com/w/wholesale-Modular%20Fuse%20Block.html
@@ -54,7 +54,7 @@ Later (optional),PB Tech,Raspberry Pi Camera Module 3 NoIR Wide (cabin camera),S
 Later,TBC,Powered USB hub,,0,,0.00,Not priced,Pi 5 has 4 USB ports,
 Later,PB Tech,EasyCAP DC60 USB capture (only if rear cam is RCA),SEVOEM9701,0,28.75,0.00,Search result 18 Nov,Optional,https://www.pbtech.co.nz/product/SEVOEM9701
 ,,TOTAL buy tomorrow (all PB Tech),,,,585.44,,,
-,,TOTAL AliExpress (priced),,,,404.00,,,
+,,TOTAL AliExpress (priced),,,,413.00,,,
 ,,TOTAL other online (priced),,,,283.04,
 ,,TOTAL buy locally (priced),,,,190.00,,,,,
-,,TOTAL everything priced incl Aqua column,,,,1577.48,,,
+,,TOTAL everything priced incl Aqua column,,,,1586.48,,,
