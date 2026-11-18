@@ -194,7 +194,7 @@ and programmer plugged in.
 | `pi.touch` | Touch screen | USB |
 | `pi.camera` | Rear camera | USB, or AHD/RCA via a USB capture dongle (**TBC**) |
 | `pi.imu` | Roll / pitch | I2C, optional |
-| `pi.gps` | Position / speed backup | USB GPS, optional |
+| `pi.gps` | Position / speed backup | USB GPS (DFRobot TEL0138), see `shopping-list.md` 4b |
 
 ---
 

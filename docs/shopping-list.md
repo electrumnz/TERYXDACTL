@@ -196,6 +196,48 @@ box wall. Check the stack on the real parts before printing.
 11.6 W (section 3) plus up to about 4.5 W for the HAT, so about 16 W of the regulator's 27 W
 before USB devices. Power 12 V cameras from 12 V, not from the Pi's USB.
 
+### 4b. GPS (added 18 November)
+
+**The Pi 5 has no GPS built in, so it isn't free, but it's cheap.** The dash already knows
+what to do with one: it reads `pi.gps.*` (see [`DASH_API.md`](DASH_API.md)) and shows "not
+fitted" until those turn up. What's still to write is the small Pi-side bit that reads the
+receiver (through `gpsd`, BSD licence, fine for us) and sends those keys.
+
+| Part | Why | Where | Price | Notes |
+|---|---|---|---|---|
+| **DFRobot USB GPS receiver, TEL0138** | Position, speed, heading, height | [Core Electronics (AU)](https://core-electronics.com.au/catalog/product/view/sku/TEL0138), goes in the same parcel as the CAN boards | AU$21.05 (~NZ$26) (search result) | Local option: [RS NZ 247-3251](https://nz.rs-online.com/web/p/gnss-gps-modules/2473251) NZ$30.85 (search result). u-blox UBX-G7020 chip, 56 channels, under 2.5 m accuracy, 1 update a second, -40 to 85°C, magnetic base, 2 m USB lead ([DFRobot wiki](https://wiki.dfrobot.com/tel0138/), [Mouser](https://www.mouser.co.uk/new/dfrobot/dfrobot-tel0138-gps-receiver/)). The aerial is inside the puck. **No waterproof rating found**, so it goes under plastic, not out in the weather |
+
+**Where it goes.** GPS goes through plastic but not metal. Stick the puck under the plastic
+dash top or the roof panel with a clear view of the sky, and run the 2 m lead to the Pi. If
+the Pi ends up under the bonnet and 2 m won't reach, a USB extension is fine (USB 2 is good
+to 5 m).
+
+**Why this one and not a fancier one.** On this dash GPS is a backup and a nice extra: speed
+comes from the motor controller, and night mode already works from the clock. The TEL0138
+is an older chip and I couldn't confirm it uses more than the American GPS satellites at
+once, which can mean a slower or patchier fix under thick bush. If that bites, the upgrade is
+a plug-in swap with no code change:
+
+| Upgrade (only if needed) | Where | Price | Notes |
+|---|---|---|---|
+| u-blox NEO-M9N USB dongle with SMA aerial plug, ELT0103 | [gnss.store](https://gnss.store/products/elt0103) (Europe) | €66.99 ex VAT (search result), shipping to NZ **not checked** | Uses GPS, Galileo, GLONASS and BeiDou together, so more satellites under trees ([gnss.store](https://gnss.store/collections/standard-precision-dongles)) |
+| Active magnetic GPS aerial, SMA, 3 m lead | [PB Tech CCTMLS1025 (Milesight)](https://www.pbtech.com/pacific/product/CCTMLS1025/Milesight-ACC-AM3M-G-GPS-Magnetic-Antenna-28dBi-wi) or [Core Electronics GPS-14986](https://core-electronics.com.au/catalog/product/view/sku/GPS-14986) | NZ$29.57 / AU$29.25 (search results) | Goes on the roof or roll cage, outside. Needed with the dongle above |
+
+**What the dash uses it for:**
+
+| Use | Status |
+|---|---|
+| Night mode from sunrise and sunset at where you actually are | **Works now** with a fix (a light sensor wins if one is fitted). Without GPS it uses the region picked in Settings. Position stays on the Pi, never saved or sent |
+| Compass heading, height and satellite count on the Sensors panel | **Works now** with a fix |
+| Speed backup if the motor controller speed is missing or wrong (wheelspin, locked wheels) | Key is there (`pi.gps.speed_kmh`), not wired into the speedo yet |
+| Trail logging (record a ride, show where you've been) | **Not built yet.** Would need Sam's OK, since it saves where he goes |
+| Offline maps | **Not built yet.** Would need map tiles stored on the SD card |
+| Clock | The Pi has no clock battery fitted by default, so GPS can set the time with no wifi |
+
+**USB ports are getting full.** The Pi 5 has 4 USB ports. Touch, rear camera, trailer camera
+dongle, CarPlay dongle, USB audio, GPS and a mic later makes 6 or 7. Plan on a **powered USB
+hub** in the Pi box for the low-speed ones (GPS, audio, mic, touch). Not priced yet.
+
 AUD to NZD: 1 AUD = 1.234 NZD on [Wise](https://wise.com/us/currency-converter/aud-to-nzd-rate)
 when checked (no timestamp on the page). Core Electronics prices are AUD incl Australian GST;
 NZ GST may be charged on import instead.
@@ -262,6 +304,7 @@ and I didn't check them.
   (PB Tech's pages wouldn't open on 18 November, so these came from search results).
 - Memory used by camera feeds and camera AI on the Pi (guessed in section 1).
 - The screen's power brick voltage and current.
+- Whether the TEL0138 GPS uses GLONASS as well as GPS, and the landed price of the NEO-M9N upgrade.
 
 ## Sources
 

@@ -11,6 +11,7 @@ PB Tech,Raspberry Pi 27W USB-C power supply (bench),SEVRBP0512,1,24.90,24.90,Sea
 PB Tech,EasyCAP DC60 USB capture (only if rear cam is RCA),SEVOEM9701,0,28.75,0.00,Search result 18 Nov,Optional,https://www.pbtech.co.nz/product/SEVOEM9701
 Core Electronics (AU),Seeed MCP2515 + SN65HVD230 CAN board (Pi + control box + sniffer),,3,22.77,68.31,AU$18.45 x 1.234,15 in stock 17 Nov,https://core-electronics.com.au/seeed-studio-can-bus-breakout-board-for-xiao-and-qt-py-mcp2515-controller-sn65hvd230-transceiver-chip.html
 Core Electronics (AU),MCP23017 board,WS-15391,1,13.45,13.45,AU$10.90 x 1.234,9 in stock 17 Nov,https://core-electronics.com.au/catalog/product/view/sku/WS-15391
+Core Electronics (AU),DFRobot USB GPS receiver,TEL0138,1,25.98,25.98,AU$21.05 x 1.234 (search result),"Alt RS NZ 247-3251 NZ$30.85",https://core-electronics.com.au/catalog/product/view/sku/TEL0138
 Core Electronics (AU),Pololu D36V50F5 5V 5.5A regulator,POLOLU-4091,1,111.20,111.20,AU$90.11 x 1.234,In stock 17 Nov,https://core-electronics.com.au/catalog/product/view/sku/POLOLU-4091
 Core Electronics (AU),Shipping to NZ (estimate),,1,17.50,17.50,AU$12-16 from product page,Check at checkout,
 Jaycar,30mm 5V fan,YX2500,1,31.90,31.90,Checked 17 Nov,NZ stock,https://www.jaycar.co.nz/p/YX2500
@@ -18,4 +19,4 @@ Jaycar,12-way fuse block,SZ2032,1,53.90,53.90,Checked 17 Nov,NZ stock,https://ww
 Gogo:Tronics,Mini560 5V 5A buck,,2,2.95,5.90,Checked 17 Nov,,https://sparks.gogo.co.nz/catalog/DC-Power-260/Fixed-Output-Step-Down-Converter-Out-5v-up-to-5A-Continuous-In-7-20v-1009.html
 element14 NZ,1.5KE18A TVS diode,9884831,2,2.24,4.48,Checked 17 Nov (GST unclear),,https://nz.element14.com/stmicroelectronics/1-5ke18a/diode-tvs-1-5kw-18v/dp/9884831
 Narva stockist,Narva 7-pin flat socket with reed switch,82043BL,1,,,Not priced,Trailer detect,https://narva.com.au/products/narva-7-pin-flat-quickfit-trailer-socket-with-reed-switch-for-use-with-normally-closed-circuits-1-pack
-,TOTAL (priced items),,,,1327.33,,"PB Tech NZ$1,020.69 + others NZ$306.64",
+,TOTAL (priced items),,,,1353.31,,"PB Tech NZ$1,020.69 + others NZ$332.62",
