@@ -92,11 +92,9 @@ lines:
   # ------------------------------------------------------------- AliExpress
   - {id: ccpa, shop: aliexpress, part: Carlinkit CPC200-CCPA (or CCPA-MIC) CarPlay dongle, qty: 1, each: 65.00, source: "US$33-39 x 1.822", covers: [CARPLAY], notes: "Title must say CCPA + Android head unit; lsusb 1314:1520/1521"}
   - {id: amp, shop: aliexpress, part: "4-channel class D amp, 4 x 63W RMS at 4 ohm, 2 x 200W bridged, 90Hz HPF/LPF (Sam's pick)", qty: 1, each: 100.00, source: "Sam, AliExpress ~NZ$100", covers: [AMP], notes: "Ch 1-2 Kenwoods, ch 3-4 kept for a bridged sub later; under the seat, not waterproof"}
-  - {id: bts, shop: aliexpress, part: BTS7960 43A H-bridge, qty: 2, each: 12.00, source: "~US$6-7 each", covers: [BTS2, BTS3], notes: You have one already; 3 needed}
   - {id: opto, shop: aliexpress, part: 8-channel PC817 opto board 12V in, qty: 2, each: 9.00, source: "~US$5 estimate", covers: [OPTO], notes: "Board 1 = all 8 inputs; board 2 = 8 spare on MCP2"}
   - {id: mosfet, shop: aliexpress, part: "8-channel opto-isolated MOSFET board, 3.3V input version (PWM)", qty: 1, each: 22.00, source: "~US$12 estimate", covers: [MOSFET], notes: "Light bars: 5 used, 3 spare. Listing must say 3.3V input, 24V+ load, 10A per channel; if it says 5A, buy 6 single LR7843 modules (~NZ$30) instead"}
   - {id: relay16, shop: aliexpress, part: "16-channel 5V relay board, mechanical, opto + JD-VCC jumper, 10A", qty: 1, each: 21.00, source: "~US$11.28 x 1.822", covers: [RELAYS, RELAYS2], notes: "10 used, 6 spare; must have the JD-VCC jumper"}
-  - {id: fuseblock, shop: aliexpress, part: 20-way blade fuse block with cover + negative bus, qty: 1, each: 40.00, source: "~US$15-25 estimate", covers: [FB], notes: "12 used, 8 spare; stud feed"}
   - {id: winch_iso, shop: aliexpress, part: "Winch isolator contactor, 12V coil, 200A continuous duty", qty: 1, each: 30.00, source: Estimate, covers: [WINCH_ISO], notes: "Continuous duty, not a starter solenoid"}
   - {id: winch_brk, shop: aliexpress, part: 250A manual reset circuit breaker (winch), qty: 1, each: 30.00, source: Estimate, covers: [BRK_WINCH], notes: "Leave it out of the cart if one came in the winch box"}
   - {id: limits, shop: aliexpress, part: "Waterproof micro limit switch, roller lever (NC)", qty: 3, each: 2.67, source: Estimate, covers: [LIM_DN, LIM_UP], notes: Tray up/down + 1 spare}
@@ -131,7 +129,7 @@ lines:
   - {id: core_ship, shop: core, part: Shipping to NZ (estimate), qty: 1, each: 17.50, source: "AU$12-16"}
 
   # ------------------------------------------------------------- NZ online
-  - {id: mini560, shop: nz_online, part: Mini560 5V 5A buck (Gogo:Tronics), qty: 2, each: 2.95, source: Checked 17 Nov, covers: [PICO_BUCK], notes: "Control box + 4G board", link: "https://sparks.gogo.co.nz/catalog/DC-Power-260/Fixed-Output-Step-Down-Converter-Out-5v-up-to-5A-Continuous-In-7-20v-1009.html"}
+  - {id: mini560, shop: nz_online, part: Mini560 5V 5A buck (Gogo:Tronics), qty: 1, each: 2.95, source: Checked 17 Nov, notes: "4G board only; the control box uses Sam's own 5A buck", link: "https://sparks.gogo.co.nz/catalog/DC-Power-260/Fixed-Output-Step-Down-Converter-Out-5v-up-to-5A-Continuous-In-7-20v-1009.html"}
   - {id: tvs, shop: nz_online, part: 1.5KE18A TVS diode (element14), sku: "9884831", qty: 2, each: 2.24, source: Checked 17 Nov, covers: [TVS], link: "https://nz.element14.com/stmicroelectronics/1-5ke18a/diode-tvs-1-5kw-18v/dp/9884831"}
 
   # ------------------------------------------------------------- local
@@ -158,9 +156,14 @@ lines:
 # Already got (not in the totals).
 owned:
   SCREEN: 10.1 in touch screen
-  CAM_REAR: 2K rear camera
-  ADS1: ADS1115
-  BTS1: one BTS7960
+  CAM_REAR: 200 degree rear camera (in the post)
+  ADS1: ADS1115 (3 in the post)
+  ADS2: ADS1115 (3 in the post)
+  BTS1: BTS7960 (3 in the post)
+  BTS2: BTS7960 (3 in the post)
+  BTS3: BTS7960 (3 in the post)
+  FB: 12-way fuse box (in the post; 12 fuses planned, so it is full)
+  PICO_BUCK: 5 A step-down buck (in the post; input must take 20 V+)
   LB1: 12 in light bar
   LB2: 12 in light bar
   LB3: 12 in light bar
@@ -171,9 +174,9 @@ owned:
   WINCH_SOL: XBull solenoid box
   WINCH_MOTOR: XBull 5000 lb winch (and its 35 mm² cables)
   WINCH_REMOTE: XBull remote
-  ACT_DIFF: 50 mm actuator with pot
-  ACT_4WD: 50 mm actuator
-  ACT_TRAY: 400 mm actuator
+  ACT_DIFF: smart actuator with position feedback (in the post)
+  ACT_4WD: short actuator (in the post)
+  ACT_TRAY: tray actuator (in the post)
   BAT12: 12 V battery
   SPEAKERS: Kenwood KFC-2053MRB 8 in marine speakers (pair)
 
@@ -196,7 +199,6 @@ kit:
 # Not part of this build (Sam's call, or waiting on a check).
 later:
   AIHAT: "AI HAT+ 2, ~NZ$423 (Sam: not now). Box, power and cooling stay sized for it"
-  ADS2: "Brake regen only, after the Shinegle regen check passes"
   BRAKE_PEDAL: "Brake regen only, after the Shinegle regen check passes"
   BRAKE_PRESS: "Brake regen cross-check only"
 
@@ -206,7 +208,8 @@ later_lines:
   - {part: Raspberry Pi AI HAT+ 2, shop: PB Tech, each: 423.43, notes: Not now}
   - {part: Raspberry Pi Active Cooler, shop: PB Tech, each: 11.21, notes: Only with the AI HAT}
   - {part: Noctua NF-A4x10 5V fan, shop: Newegg NZ, each: 21.85, notes: Only if the Pi box runs hot}
-  - {part: "Second ADS1115 + brake pedal Hall sensor (+ pressure sensor)", shop: Core / AliExpress, each: 40.00, notes: Brake regen}
+  - {part: "Brake pedal Hall sensor (+ pressure sensor)", shop: AliExpress, each: 30.00, notes: "Brake regen; the second ADS1115 is already owned"}
+  - {part: "Small 6-way blade fuse block", shop: AliExpress, each: 15.00, notes: "Only if more fused circuits get added; the 12-way is full"}
   - {part: GameSir G8 Galileo phone gamepad, shop: AliExpress, each: 78.00, notes: "RC mode, Sam: not now"}
   - {part: EasyCAP DC60 USB capture, shop: PB Tech, each: 28.75, notes: Only if the rear camera turns out to be RCA}
   - {part: Carlinkit CCPA from Audio City (NZ stock), shop: Audio City, each: 180.00, notes: Backup if the AliExpress one is slow}

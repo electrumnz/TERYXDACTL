@@ -36,11 +36,9 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 |---|---|---|---|---|---|
 | Carlinkit CPC200-CCPA (or CCPA-MIC) CarPlay dongle | 1 | 65.00 | 65.00 | US$33-39 x 1.822 | Title must say CCPA + Android head unit; lsusb 1314:1520/1521 |
 | 4-channel class D amp, 4 x 63W RMS at 4 ohm, 2 x 200W bridged, 90Hz HPF/LPF (Sam's pick) | 1 | 100.00 | 100.00 | Sam, AliExpress ~NZ$100 | Ch 1-2 Kenwoods, ch 3-4 kept for a bridged sub later; under the seat, not waterproof |
-| BTS7960 43A H-bridge | 2 | 12.00 | 24.00 | ~US$6-7 each | You have one already; 3 needed |
 | 8-channel PC817 opto board 12V in | 2 | 9.00 | 18.00 | ~US$5 estimate | Board 1 = all 8 inputs; board 2 = 8 spare on MCP2 |
 | 8-channel opto-isolated MOSFET board, 3.3V input version (PWM) | 1 | 22.00 | 22.00 | ~US$12 estimate | Light bars: 5 used, 3 spare. Listing must say 3.3V input, 24V+ load, 10A per channel; if it says 5A, buy 6 single LR7843 modules (~NZ$30) instead |
 | 16-channel 5V relay board, mechanical, opto + JD-VCC jumper, 10A | 1 | 21.00 | 21.00 | ~US$11.28 x 1.822 | 10 used, 6 spare; must have the JD-VCC jumper |
-| 20-way blade fuse block with cover + negative bus | 1 | 40.00 | 40.00 | ~US$15-25 estimate | 12 used, 8 spare; stud feed |
 | Winch isolator contactor, 12V coil, 200A continuous duty | 1 | 30.00 | 30.00 | Estimate | Continuous duty, not a starter solenoid |
 | 250A manual reset circuit breaker (winch) | 1 | 30.00 | 30.00 | Estimate | Leave it out of the cart if one came in the winch box |
 | Waterproof micro limit switch, roller lever (NC) | 3 | 2.67 | 8.01 | Estimate | Tray up/down + 1 spare |
@@ -71,7 +69,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Waterproof 3-pin plug pair (DT style) | 2 | 3.00 | 6.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
 | Waterproof 4-pin plug pair (DT style) | 2 | 3.50 | 7.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
 | Waterproof 6-pin plug pair (DT style) | 2 | 5.00 | 10.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
-| **Total** | | | **731.01** | | |
+| **Total** | | | **667.01** | | |
 
 ### Core Electronics (AU, online)
 
@@ -87,9 +85,9 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 
 | Part | Qty | Each NZ$ | Total NZ$ | Price from | Notes |
 |---|---|---|---|---|---|
-| [Mini560 5V 5A buck (Gogo:Tronics)](https://sparks.gogo.co.nz/catalog/DC-Power-260/Fixed-Output-Step-Down-Converter-Out-5v-up-to-5A-Continuous-In-7-20v-1009.html) | 2 | 2.95 | 5.90 | Checked 17 Nov | Control box + 4G board |
+| [Mini560 5V 5A buck (Gogo:Tronics)](https://sparks.gogo.co.nz/catalog/DC-Power-260/Fixed-Output-Step-Down-Converter-Out-5v-up-to-5A-Continuous-In-7-20v-1009.html) | 1 | 2.95 | 2.95 | Checked 17 Nov | 4G board only; the control box uses Sam's own 5A buck |
 | [1.5KE18A TVS diode (element14)](https://nz.element14.com/stmicroelectronics/1-5ke18a/diode-tvs-1-5kw-18v/dp/9884831) (9884831) | 2 | 2.24 | 4.48 | Checked 17 Nov |  |
-| **Total** | | | **10.38** | | |
+| **Total** | | | **7.43** | | |
 
 ### Local: Jaycar, Narva stockist, Repco, auto electrical
 
@@ -142,16 +140,16 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Shop | NZ$ |
 |---|---|
 | PB Tech (buy Thursday) | 693.21 |
-| AliExpress (one order, 2 to 4 weeks) | 731.01 |
+| AliExpress (one order, 2 to 4 weeks) | 667.01 |
 | Core Electronics (AU, online) | 246.68 |
-| Gogo:Tronics and element14 (NZ, online) | 10.38 |
+| Gogo:Tronics and element14 (NZ, online) | 7.43 |
 | Local: Jaycar, Narva stockist, Repco, auto electrical | 1,241.50 |
 | Separate pickup | 115.00 |
-| **Everything** | **3,037.78** |
+| **Everything** | **2,970.83** |
 
 ### Already got (not in the totals)
 
-10.1 in touch screen, 12 V battery, 12 in light bar, 2K rear camera, 4 in pod, 400 mm actuator, 50 mm actuator, 50 mm actuator with pot, 7 in light bar, ADS1115, Kenwood KFC-2053MRB 8 in marine speakers (pair), XBull 5000 lb winch (and its 35 mm² cables), XBull remote, XBull solenoid box, one BTS7960. Samsung Galaxy XCover 5 (RC remote) (NZ$187).
+10.1 in touch screen, 12 V battery, 12 in light bar, 12-way fuse box (in the post; 12 fuses planned, so it is full), 200 degree rear camera (in the post), 4 in pod, 5 A step-down buck (in the post; input must take 20 V+), 7 in light bar, ADS1115 (3 in the post), BTS7960 (3 in the post), Kenwood KFC-2053MRB 8 in marine speakers (pair), XBull 5000 lb winch (and its 35 mm² cables), XBull remote, XBull solenoid box, short actuator (in the post), smart actuator with position feedback (in the post), tray actuator (in the post). Samsung Galaxy XCover 5 (RC remote) (NZ$187).
 
 ### Comes with the Shinegle kit or the stock Teryx
 
@@ -165,12 +163,13 @@ Traction battery pack, 150 A air-break switch, Main contactor, Shinegle SG1202 c
 | Raspberry Pi AI HAT+ 2 | PB Tech | 423.43 | Not now |
 | Raspberry Pi Active Cooler | PB Tech | 11.21 | Only with the AI HAT |
 | Noctua NF-A4x10 5V fan | Newegg NZ | 21.85 | Only if the Pi box runs hot |
-| Second ADS1115 + brake pedal Hall sensor (+ pressure sensor) | Core / AliExpress | 40.00 | Brake regen |
+| Brake pedal Hall sensor (+ pressure sensor) | AliExpress | 30.00 | Brake regen; the second ADS1115 is already owned |
+| Small 6-way blade fuse block | AliExpress | 15.00 | Only if more fused circuits get added; the 12-way is full |
 | GameSir G8 Galileo phone gamepad | AliExpress | 78.00 | RC mode, Sam: not now |
 | EasyCAP DC60 USB capture | PB Tech | 28.75 | Only if the rear camera turns out to be RCA |
 | Carlinkit CCPA from Audio City (NZ stock) | Audio City | 180.00 | Backup if the AliExpress one is slow |
 
-Wiring parts waiting on that: AIHAT: AI HAT+ 2, ~NZ$423 (Sam: not now). Box, power and cooling stay sized for it; ADS2: Brake regen only, after the Shinegle regen check passes; BRAKE_PEDAL: Brake regen only, after the Shinegle regen check passes; BRAKE_PRESS: Brake regen cross-check only.
+Wiring parts waiting on that: AIHAT: AI HAT+ 2, ~NZ$423 (Sam: not now). Box, power and cooling stay sized for it; BRAKE_PEDAL: Brake regen only, after the Shinegle regen check passes; BRAKE_PRESS: Brake regen cross-check only.
 
 Tools aren't listed (crimpers, soldering iron, heat gun, multimeter, 3D printer).
 
