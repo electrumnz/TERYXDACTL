@@ -9,6 +9,12 @@
 
 import { DemoVehicle } from "./demo.js";
 
+// The online copy for phones (Vercel) has no Pi behind it, so it always runs the demo vehicle.
+// Only these web hosts count: the Pi and the bench laptop are never on them.
+export function isHostedDemo(host = location.hostname) {
+  return /\.vercel\.app$/.test(host) || /\.github\.io$/.test(host);
+}
+
 export class Link {
   constructor(store) {
     this.store = store;
@@ -21,7 +27,7 @@ export class Link {
 
   start() {
     const params = new URLSearchParams(location.search);
-    if (params.has("demo") || location.protocol === "file:") {
+    if (params.has("demo") || location.protocol === "file:" || isHostedDemo()) {
       this.startDemo(params.get("demo") || "drive");
       return;
     }
