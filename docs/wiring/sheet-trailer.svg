@@ -71,9 +71,9 @@
 <line x1="920" y1="217" x2="1190" y2="217" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="1055" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F4  relays 2-3 trailer tail + stop</text>
 </g>
-<g data-device="TCAM_PLUG" data-status="planned"><title>TCAM_PLUG: Trailer 8-pin plug (camera + light bar), Deutsch DT - Own waterproof Deutsch DT 8-pin next to the 7-pin (DT04-08PA on the Teryx, DT06-08SA on the trailer lead), 13 A per pin. 1 cam +12 V, 2 cam ground, 3 video, 4 video shield, 5 light bar +12 V, 6 light bar - (switched), 7-8 spare</title><rect x="1360" y="150" width="270" height="164" rx="6" fill="#f4f4f4" stroke="#424a53" stroke-width="1.5"/>
-<text x="1370" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Trailer 8-pin plug (camera + light</text>
-<text x="1370" y="183" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">bar), Deutsch DT</text>
+<g data-device="TCAM_PLUG" data-status="planned"><title>TCAM_PLUG: Trailer EU 7-pin round plug (camera + light bar, Sam&#x27;s) - Sam&#x27;s EU round 7-pin, next to the flat NZ/AU 7-pin for the main trailer lights, so they can&#x27;t be mixed up. NOT wired to the EU light standard. 1 cam +12 V, 2 video, 3 cam ground, 4 video shield, 5 light bar +12 V, 6 light bar - (switched), 7 spare. Light bar on 1.5 mm² (pins are good for 10 A+). Spring cap on the socket and dielectric grease on the pins</title><rect x="1360" y="150" width="270" height="164" rx="6" fill="#f4f4f4" stroke="#424a53" stroke-width="1.5"/>
+<text x="1370" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Trailer EU 7-pin round plug</text>
+<text x="1370" y="183" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">(camera + light bar, Sam&#x27;s)</text>
 <text x="1370" y="198" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">TCAM_PLUG · planned · optional</text>
 <line x1="1360" y1="212" x2="1630" y2="212" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="1495" y="216" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">V12</text>

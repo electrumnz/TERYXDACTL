@@ -92,7 +92,7 @@ lines:
   - {id: ccpa, shop: aliexpress, part: Carlinkit CPC200-CCPA (or CCPA-MIC) CarPlay dongle, qty: 1, each: 65.00, source: "US$33-39 x 1.822", covers: [CARPLAY], notes: "Title must say CCPA + Android head unit; lsusb 1314:1520/1521"}
   - {id: amp, shop: aliexpress, part: "4-channel class D amp, 4 x 63W RMS at 4 ohm, 2 x 200W bridged, 90Hz HPF/LPF (Sam's pick)", qty: 1, each: 100.00, source: "Sam, AliExpress ~NZ$100", covers: [AMP], notes: "Ch 1-2 Kenwoods, ch 3-4 kept for a bridged sub later; under the seat, not waterproof"}
   - {id: opto, shop: aliexpress, part: 8-channel PC817 opto board 12V in, qty: 2, each: 9.00, source: "~US$5 estimate", covers: [OPTO], notes: "Board 1 = all 8 inputs; board 2 = 8 spare on MCP2"}
-  - {id: mosfet, shop: aliexpress, part: "8-channel opto-isolated MOSFET board, 3.3V input version (PWM)", qty: 1, each: 22.00, source: "~US$12 estimate", covers: [MOSFET], notes: "Light bars: 5 used, 3 spare. Listing must say 3.3V input, 24V+ load, 10A per channel; if it says 5A, buy 6 single LR7843 modules (~NZ$30) instead"}
+  - {id: mosfet, shop: aliexpress, part: "8-channel opto-isolated MOSFET board, 3.3V input version (PWM)", qty: 1, each: 22.00, source: "~US$12 estimate", covers: [MOSFET], notes: "Pick the 3.3V input, PNP (high-level trigger) version: Pico pin high = channel on, which is what the firmware does. Not NPN (low-level trigger). Light bars: 5 used, 3 spare. Listing must say 3.3V input, 24V+ load, 10A per channel; if it says 5A, buy 6 single LR7843 modules (~NZ$30) instead"}
   - {id: relay16, shop: aliexpress, part: "16-channel 5V relay board, mechanical, opto + JD-VCC jumper, 10A", qty: 1, each: 21.00, source: "~US$11.28 x 1.822", covers: [RELAYS, RELAYS2], notes: "10 used, 6 spare; must have the JD-VCC jumper"}
   - {id: winch_iso, shop: aliexpress, part: "Winch isolator contactor, 12V coil, 200A continuous duty", qty: 1, each: 30.00, source: Estimate, covers: [WINCH_ISO], notes: "Continuous duty, not a starter solenoid"}
   - {id: winch_brk, shop: aliexpress, part: 250A manual reset circuit breaker (winch), qty: 1, each: 30.00, source: Estimate, covers: [BRK_WINCH], notes: "Leave it out of the cart if one came in the winch box"}
@@ -101,7 +101,6 @@ lines:
   - {id: glove_usb, shop: aliexpress, part: "12V USB-C PD panel socket, 30W, waterproof cap", qty: 1, each: 15.00, source: Estimate, covers: [GLOVE_USB], notes: Glove box phone (RC remote)}
   - {id: imu, shop: aliexpress, part: MPU-6050 IMU board (roll / pitch), qty: 1, each: 5.00, source: Estimate, covers: [IMU], notes: "I2C to the Pi"}
   - {id: tcam, shop: aliexpress, part: "12V AHD reversing camera (trailer)", qty: 1, each: 30.00, source: Estimate, covers: [CAM_TRAILER]}
-  - {id: tcam_plug, shop: aliexpress, part: "Deutsch DT 8-pin kit: DT04-08PA + DT06-08SA, wedgelocks, size 16 pins, seals", qty: 1, each: 15.00, source: Estimate, covers: [TCAM_PLUG], notes: "Trailer camera + light bar, next to the 7-pin. Needs the Deutsch crimp tool or a careful plier crimp"}
   - {id: tcam_dongle, shop: aliexpress, part: "CVBS (PAL) to MIPI CSI-2 board, ADV7280-M, multi-input", qty: 1, each: 120.00, source: "Estimate. AliExpress search: ADV7282 MIPI CSI (or ADV7280 CSI Raspberry Pi). No official Pi product does this", covers: [TCAM_DONGLE], notes: "Chip must be ADV7280-M, ADV7281-M or ADV7282-M (the -M is the ribbon output), 2+ CVBS inputs, Pi camera ribbon socket. Not TP28xx (no Pi driver) or HDMI-to-CSI. Bench test on the Pi 5"}
   - {id: a7670, shop: aliexpress, part: "SIMCom A7670SA 4G board (B28, GPS 'FASE' option)", qty: 1, each: 28.00, source: "US$15.46 x 1.822", covers: [MODEM_4G], notes: "Must list B28; V pin from the 2nd Mini560, never raw 12V"}
   - {id: bss138, shop: aliexpress, part: 4-channel BSS138 level shifter, qty: 1, each: 2.00, source: Estimate, notes: "Probably not needed; measure the T pin first"}
@@ -144,6 +143,7 @@ lines:
   - {id: heatshrink, shop: local, part: Heatshrink assortment (glue-lined), qty: 1, each: 20.00, source: Estimate}
   - {id: loom, shop: local, part: "Split corrugated loom 10mm + 16mm, 10m each", qty: 1, each: 30.00, source: Estimate}
   - {id: ties, shop: local, part: "UV-black cable ties + adhesive P-clips", qty: 1, each: 20.00, source: Estimate}
+  - {id: grease, shop: local, part: "Dielectric grease, small tube", qty: 1, each: 12.00, source: Estimate, notes: "Trailer plugs and outdoor connectors"}
   - {id: foam, shop: local, part: "2mm closed-cell foam tape, 1m+", qty: 1, each: 10.00, source: Estimate, notes: Bezel to panel}
   - {id: asa, shop: local, part: "ASA filament 1.75mm 1kg (dash panel, hood, back plate)", qty: 2, each: 45.00, source: Estimate, notes: Leave out what you already have}
   - {id: petg, shop: local, part: "PETG filament 1.75mm 1kg (boxes, liner)", qty: 1, each: 35.00, source: Estimate}
@@ -169,6 +169,7 @@ owned:
   LB4: 12 in light bar
   LB_INT: 7 in light bar
   LB_TRL: spare light bar (trailer)
+  TCAM_PLUG: EU 7-pin round trailer plug (check the socket half and cap came too)
   FLOOD_L: 4 in pod
   FLOOD_R: 4 in pod
   WINCH_SOL: XBull solenoid box
