@@ -595,9 +595,10 @@ devices:
     check: Pick a 12 V USB-C PD panel socket (waterproof cap, about 20-30 W)
     pins: {VIN: 12v, GND: gnd, USBC: usb}
   CAM_REAR:
-    name: Rear camera (2K)
+    name: Rear camera (200 degree, Sam's)
     zone: rear
     status: tbc
+    note: "If it's analogue (RCA/AHD), it shares one capture dongle with the trailer camera, swapped by a spare relay when the trailer plug is in. Only 2 streams ever (front + rear or trailer). No cabin camera (Sam 18 Nov)"
     check: Rear camera USB or RCA/AHD? Photo its plug
     pins: {USB: usb}
   CAM_FRONT:
@@ -605,13 +606,6 @@ devices:
     zone: dash
     status: planned
     note: Inside the screen housing, 200-300 mm ribbon
-    pins: {CSI: csi}
-  CAM_CABIN:
-    name: Cabin camera (sentry)
-    zone: dash
-    status: placeholder
-    optional: true
-    note: Being worked out in the 4G / sentry thread. Port TBC
     pins: {CSI: csi}
   MODEM_4G:
     name: SIMCom A7670SA 4G board
@@ -912,7 +906,6 @@ wires:
   - {id: X04, from: TCAM_DONGLE.USB, to: PI5.USB3_B, sys: dash, status: planned, optional: true, note: "Other USB controller from the rear camera"}
   - {id: X07, from: CARPLAY.USB, to: PI5.USB2_A, sys: dash, status: planned, optional: true, note: "CarPlay dongle is USB only. Right-angle lead, dongle zip-tied down inside the box"}
   - {id: X11, from: CAM_FRONT.CSI, to: PI5.CSI0, sys: dash, status: planned}
-  - {id: X12, from: CAM_CABIN.CSI, to: PI5.CSI1, sys: dash, status: placeholder, optional: true}
   - {id: X13, from: AIHAT.PCIE, to: PI5.PCIE, sys: dash, status: placeholder, optional: true, note: "Keep the PCIe port free for this"}
   - {id: X14, from: AIHAT.HDR, to: PI5.HAT_HDR, sys: dash, status: placeholder, optional: true, note: "16 mm stacking header over the Active Cooler"}
   - {id: X15, from: PI5.P1_3V3, to: PI_CAN.VCC, sys: dash, status: planned}

@@ -10,7 +10,7 @@ Why things are wired this way (power hold, diodes, CAN rules): [`docs/wiring.md`
 Viewer with search: [`index.html`](index.html), also online at
 <https://electrumnz.github.io/TERYXDACTL/wiring/>.
 
-**79 devices, 250 wires.** By status: 19 from_manual, 3 confirmed, 197 planned, 26 tbc, 5 placeholder.
+**78 devices, 249 wires.** By status: 19 from_manual, 3 confirmed, 197 planned, 26 tbc, 4 placeholder.
 Nothing has been checked on the real Teryx yet.
 
 Wire sizes follow the conservative table in the YAML (from
@@ -89,7 +89,7 @@ runs up to about 5 m). Go one size up for bundled or hot runs.
 - [ ] **Aqua steering column (motor + torque sensor)** (EPS_COL): Measure the space from the steering wheel to where the Teryx shaft goes to the rack
 - [ ] **7-pin flat trailer socket (Narva 82043BL, reed switch)** (TRAILER): Which way does the Narva reed switch switch, and what triggers it?
 - [ ] **Glove box USB-C charger (RC phone)** (GLOVE_USB): Pick a 12 V USB-C PD panel socket (waterproof cap, about 20-30 W)
-- [ ] **Rear camera (2K)** (CAM_REAR): Rear camera USB or RCA/AHD? Photo its plug
+- [ ] **Rear camera (200 degree, Sam's)** (CAM_REAR): Rear camera USB or RCA/AHD? Photo its plug
 
 Wires marked TBC, with what's unknown:
 
@@ -454,7 +454,6 @@ Fuses not in the block (inline, at the battery or on a board):
 | X04 | TCAM_DONGLE.USB | PI5.USB3_B |  |  |  | planned (optional) | Other USB controller from the rear camera |
 | X07 | CARPLAY.USB | PI5.USB2_A |  |  |  | planned (optional) | CarPlay dongle is USB only. Right-angle lead, dongle zip-tied down inside the box |
 | X11 | CAM_FRONT.CSI | PI5.CSI0 |  |  |  | planned |  |
-| X12 | CAM_CABIN.CSI | PI5.CSI1 |  |  |  | placeholder (optional) |  |
 | X13 | AIHAT.PCIE | PI5.PCIE |  |  |  | placeholder (optional) | Keep the PCIe port free for this |
 | X14 | AIHAT.HDR | PI5.HAT_HDR |  |  |  | placeholder (optional) | 16 mm stacking header over the Active Cooler |
 | X15 | PI5.P1_3V3 | PI_CAN.VCC |  |  |  | planned |  |
@@ -551,9 +550,8 @@ Fuses not in the block (inline, at the battery or on a board):
 | PI_CAN | MCP2515 CAN module (Pi) | dash | planned | Seeed MCP2515 + SN65HVD230 on the Pi box wall |
 | SCREEN | 10.1 in touch screen | dash | confirmed | 1280x800, HDMI + USB touch, 3.5 mm audio in |
 | GLOVE_USB | Glove box USB-C charger (RC phone) | dash | planned (optional) | 12 V to USB-C PD socket for the phone that lives in the glove box (docs/rc-beach-launch.md 4b). Fed from the accessory relay so it's off with the key off |
-| CAM_REAR | Rear camera (2K) | rear | tbc |  |
+| CAM_REAR | Rear camera (200 degree, Sam's) | rear | tbc | If it's analogue (RCA/AHD), it shares one capture dongle with the trailer camera, swapped by a spare relay when the trailer plug is in. Only 2 streams ever (front + rear or trailer). No cabin camera (Sam 18 Nov) |
 | CAM_FRONT | Camera Module 3 Wide (front) | dash | planned | Inside the screen housing, 200-300 mm ribbon |
-| CAM_CABIN | Cabin camera (sentry) | dash | placeholder (optional) | Being worked out in the 4G / sentry thread. Port TBC |
 | MODEM_4G | SIMCom A7670SA 4G board | dash | placeholder (optional) | 6-pin header S G V K T R G. V takes 5-10 V from the spare Mini560 5 V buck. NEVER raw 12 V (10 V max, and the car runs 14.4 V with spikes). K is tied to ground on the board, so it starts by itself. T/R are 115200 baud TTL to the Pi's GPIO 15/14; measure T before connecting (3.3 V ok, else BSS138). Micro USB also on board. Its GNSS (FASE version, u.FL GPS socket on Sam's board) is the dash GPS too, so there is no separate USB GPS. Check on arrival that it gets a fix with the SIM out / 4G off. No USB: it's on the header pins (soldered leads), so texts, GPS and slow data only, no live video over 4G |
 | CARPLAY | Carlinkit CPC200-CCPA | dash | planned (optional) |  |
 | DAC_HAT | Raspberry Pi DAC+ (on jumper leads) | dash | planned (optional) | PCM5122 DAC HAT (ex IQaudio DAC+), RCA line out to the amp. Sits on standoffs in the right-hand end of the Pi box, off the Pi, so the top of the Pi stays free for the AI HAT+ 2. Joined by 7 male-to-female jumper leads (about 20 cm), not a full 40-way ribbon: a ribbon would cover the header pins the CAN board, 4G board and IMU leads plug onto. Uses GPIO 18, 19, 21 (I2S), 2 and 3 (I2C, shared with the IMU: DAC 0x4D, IMU 0x68), 5 V and GND. Nothing else on the Pi uses 18-21 (CAN is SPI0 + GPIO 25, 4G is UART GPIO 14/15). The ID EEPROM pins 27/28 are left off, so it never fights the AI HAT's EEPROM; set the overlay by hand: scripts/audio-setup.sh --i2s iqaudio-dacplus. A dab of hot glue on the leads at both ends against vibration. Later the leads move onto the AI HAT's stacking header pins See [`docs/audio.md`](../../docs/audio.md). |

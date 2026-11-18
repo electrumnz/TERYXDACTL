@@ -1,8 +1,7 @@
 Group,Shop,Part,SKU,Qty,Price NZ$ incl GST (each),Line total NZ$,Price source,Notes,Link
 PB Tech (buy Thursday),pbtech,Raspberry Pi 5 8GB,SEVRBP0502,1,371.39,371.39,Checked 17 Nov,"On order, ships about 30 Nov; ask in store",https://www.pbtech.co.nz/product/SEVRBP0502
 PB Tech (buy Thursday),pbtech,Raspberry Pi Camera Module 3 Wide (front),SEVRBP0398,1,80.71,80.71,Search result 18 Nov,Out of stock when indexed; alt element14 SC0874 ~NZ$69,https://www.pbtech.co.nz/product/SEVRBP0398
-PB Tech (buy Thursday),pbtech,Raspberry Pi Camera Module 3 NoIR Wide (cabin / sentry face shot),SEVRBP0399,1,70.00,70.00,About NZ$70 (search result),Second camera port on the Pi 5,https://www.pbtech.co.nz/product/SEVRBP0399
-PB Tech (buy Thursday),pbtech,Pi 5 camera cable 200mm,SEVRBP0541,2,2.12,4.24,Search result 18 Nov,One per camera,https://www.pbtech.com/pacific/product/SEVRBP0541
+PB Tech (buy Thursday),pbtech,Pi 5 camera cable 200mm,SEVRBP0541,1,2.12,2.12,Search result 18 Nov,Front camera,https://www.pbtech.com/pacific/product/SEVRBP0541
 PB Tech (buy Thursday),pbtech,Raspberry Pi Pico 2 5-pack,SEVRBP0628,1,47.20,47.20,Checked 17 Nov,"Control box, CAN sniffer, steering bench test, 2 spare",https://www.pbtech.co.nz/product/SEVRBP0628
 PB Tech (buy Thursday),pbtech,Raspberry Pi 27W USB-C power supply (bench),SEVRBP0512,1,24.90,24.90,Search result 18 Nov,Bench only,https://www.pbtech.co.nz/product/SEVRBP0512
 PB Tech (buy Thursday),pbtech,Raspberry Pi micro HDMI to HDMI cable 1m,SEVRBP0207,1,11.80,11.80,Search result 18 Nov,Alt black SEVRBP0262 ~11.10,https://www.pbtech.co.nz/product/SEVRBP0207
@@ -83,6 +82,7 @@ PB Tech (buy Thursday),pbtech,"Raspberry Pi DAC+ HAT (ex IQaudio DAC+, SC0368)",
 "Local: Jaycar, Narva stockist, Repco, auto electrical",local,"Tinned lugs for 10 mm², M8 hole",,10,2.00,20.00,Estimate; counted from config/wiring.yaml,2 spare,
 "Local: Jaycar, Narva stockist, Repco, auto electrical",local,"Tinned lugs for 35 mm², M8 hole",,6,2.00,12.00,Estimate; counted from config/wiring.yaml,2 spare,
 Separate pickup,pickup,Toyota Aqua EPS column (ECU 89650-52B51),,1,115.00,115.00,About NZ$115,"Dodson's, picking up 19 Nov",
+Later,PB Tech,Raspberry Pi Camera Module 3 NoIR Wide (cabin / Sentry face shot) + 200mm cable,,0,72.12,0.00,,"SEVRBP0399 + SEVRBP0541. Goes on the Pi's 2nd camera ribbon port, which stays free for it",
 Later,PB Tech,"Recording storage (e.g. Samsung PRO Endurance 128GB, MEMSAM11230)",,0,114.90,0.00,,For dashcam/Sentry. Sam to sort later,
 Later,PB Tech,Raspberry Pi AI HAT+ 2,,0,423.43,0.00,,Not now,
 Later,PB Tech,Raspberry Pi Active Cooler,,0,11.21,0.00,,Only with the AI HAT,
@@ -92,10 +92,10 @@ Later,AliExpress,Small 6-way blade fuse block,,0,15.00,0.00,,Only if more fused 
 Later,AliExpress,GameSir G8 Galileo phone gamepad,,0,78.00,0.00,,"RC mode, Sam: not now",
 Later,PB Tech,EasyCAP DC60 USB capture,,0,28.75,0.00,,Only if the rear camera turns out to be RCA,
 Later,Audio City,Carlinkit CCPA from Audio City (NZ stock),,0,180.00,0.00,,Backup if the AliExpress one is slow,
-,,TOTAL PB Tech (buy Thursday),,,,693.21,,,
+,,TOTAL PB Tech (buy Thursday),,,,621.09,,,
 ,,"TOTAL AliExpress (one order, 2 to 4 weeks)",,,,667.01,,,
 ,,"TOTAL Core Electronics (AU, online)",,,,246.68,,,
 ,,"TOTAL Gogo:Tronics and element14 (NZ, online)",,,,7.43,,,
 ,,"TOTAL Local: Jaycar, Narva stockist, Repco, auto electrical",,,,1241.50,,,
 ,,TOTAL Separate pickup,,,,115.00,,,
-,,TOTAL everything,,,,2970.83,,,
+,,TOTAL everything,,,,2898.71,,,

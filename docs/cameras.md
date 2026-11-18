@@ -1,5 +1,7 @@
 # Cameras: rear, front, trailer and cabin
 
+> **Changed 18 Nov (Sam):** three cameras: front (CSI ribbon), rear (Sam's 200 degree camera) and trailer (only when a trailer is on). Cabin camera moved to "later" (the 2nd ribbon port stays free for it). If the rear camera is analogue, rear and trailer share one capture dongle, swapped by a spare relay when the trailer plug is in, so only two streams ever record.
+
 Researched 18 November 2026 (NZ time). Prices incl GST unless it says otherwise. Each price
 says where it came from. Some came from search results because the shop page wouldn't open,
 so check the link before you buy.

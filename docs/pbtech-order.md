@@ -21,14 +21,13 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 |---|---|---|---|---|---|
 | [Raspberry Pi 5 8GB](https://www.pbtech.co.nz/product/SEVRBP0502) (SEVRBP0502) | 1 | 371.39 | 371.39 | Checked 17 Nov | On order, ships about 30 Nov; ask in store |
 | [Raspberry Pi Camera Module 3 Wide (front)](https://www.pbtech.co.nz/product/SEVRBP0398) (SEVRBP0398) | 1 | 80.71 | 80.71 | Search result 18 Nov | Out of stock when indexed; alt element14 SC0874 ~NZ$69 |
-| [Raspberry Pi Camera Module 3 NoIR Wide (cabin / sentry face shot)](https://www.pbtech.co.nz/product/SEVRBP0399) (SEVRBP0399) | 1 | 70.00 | 70.00 | About NZ$70 (search result) | Second camera port on the Pi 5 |
-| [Pi 5 camera cable 200mm](https://www.pbtech.com/pacific/product/SEVRBP0541) (SEVRBP0541) | 2 | 2.12 | 4.24 | Search result 18 Nov | One per camera |
+| [Pi 5 camera cable 200mm](https://www.pbtech.com/pacific/product/SEVRBP0541) (SEVRBP0541) | 1 | 2.12 | 2.12 | Search result 18 Nov | Front camera |
 | [Raspberry Pi Pico 2 5-pack](https://www.pbtech.co.nz/product/SEVRBP0628) (SEVRBP0628) | 1 | 47.20 | 47.20 | Checked 17 Nov | Control box, CAN sniffer, steering bench test, 2 spare |
 | [Raspberry Pi 27W USB-C power supply (bench)](https://www.pbtech.co.nz/product/SEVRBP0512) (SEVRBP0512) | 1 | 24.90 | 24.90 | Search result 18 Nov | Bench only |
 | [Raspberry Pi micro HDMI to HDMI cable 1m](https://www.pbtech.co.nz/product/SEVRBP0207) (SEVRBP0207) | 1 | 11.80 | 11.80 | Search result 18 Nov | Alt black SEVRBP0262 ~11.10 |
 | [Raspberry Pi A2 SD card 128GB (OS)](https://www.pbtech.co.nz/product/SEVRBP0538) (SEVRBP0538) | 1 | 47.32 | 47.32 | Search result 18 Nov | Official card, in the Pi's own slot. Not made for non-stop writes, so dashcam/Sentry recording stays off or minimal until extra storage is added |
 | [Raspberry Pi DAC+ HAT (ex IQaudio DAC+, SC0368)](https://www.pbtech.co.nz/product/SEVRBP0313) (SEVRBP0313) | 1 | 35.65 | 35.65 | Search result 18 Nov (out of stock when indexed) | Official board, RCA out. If PB Tech has none: Pakronics NZ ~NZ$40 |
-| **Total** | | | **693.21** | | |
+| **Total** | | | **621.09** | | |
 
 ### AliExpress (one order, 2 to 4 weeks)
 
@@ -139,13 +138,13 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 
 | Shop | NZ$ |
 |---|---|
-| PB Tech (buy Thursday) | 693.21 |
+| PB Tech (buy Thursday) | 621.09 |
 | AliExpress (one order, 2 to 4 weeks) | 667.01 |
 | Core Electronics (AU, online) | 246.68 |
 | Gogo:Tronics and element14 (NZ, online) | 7.43 |
 | Local: Jaycar, Narva stockist, Repco, auto electrical | 1,241.50 |
 | Separate pickup | 115.00 |
-| **Everything** | **2,970.83** |
+| **Everything** | **2,898.71** |
 
 ### Already got (not in the totals)
 
@@ -159,6 +158,7 @@ Traction battery pack, 150 A air-break switch, Main contactor, Shinegle SG1202 c
 
 | Part | Shop | About NZ$ | Notes |
 |---|---|---|---|
+| Raspberry Pi Camera Module 3 NoIR Wide (cabin / Sentry face shot) + 200mm cable | PB Tech | 72.12 | SEVRBP0399 + SEVRBP0541. Goes on the Pi's 2nd camera ribbon port, which stays free for it |
 | Recording storage (e.g. Samsung PRO Endurance 128GB, MEMSAM11230) | PB Tech | 114.90 | For dashcam/Sentry. Sam to sort later |
 | Raspberry Pi AI HAT+ 2 | PB Tech | 423.43 | Not now |
 | Raspberry Pi Active Cooler | PB Tech | 11.21 | Only with the AI HAT |
