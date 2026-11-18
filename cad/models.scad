@@ -136,11 +136,43 @@ pi_cable    = [scr_cable_x - pi_box_pos[0], scr_cable_y - pi_box_pos[1]];  // sc
 pi_vesa = scr_has_vesa ? [for (sx = [-1, 1], sy = [-1, 1]) let (p = [sx * scr_vesa / 2 - pi_box_pos[0], sy * scr_vesa / 2 - pi_box_pos[1]])
     if (abs(p[0]) < pi_box_in[0] / 2 + box_wall && abs(p[1]) < pi_box_in[1] / 2 + box_wall) p] : [];
 
+// Micro HDMI cradle, box coords. The plug points -Y off the Pi's bottom edge.
+hdmi_pos  = [pi_pos[0] - pi_board[0] / 2 + pi_hdmi0_x, pi_pos[1] - pi_board[1] / 2];  // socket mouth, board edge
+hdmi_cz   = box_floor + pi_standoff + pi_pcb_t + hdmi_port_h / 2;   // height of the plug's centre line
+hdmi_bed  = hdmi_cz - hdmi_plug[1] / 2 - hdmi_pad;                  // top of the cradle
+hdmi_gap  = 0.5;          // clear of the board edge so the Pi still lifts out
+hdmi_cheek = 1.8;
+tie_w = 4.2; tie_h = 1.8; // tunnel for a 3.6 mm cable tie
+hdmi_anchor_y = hdmi_pos[1] - hdmi_gap - hdmi_plug[2] - 9;          // cable tie anchor, past the plug
+
+module hdmi_cradle() {
+    L = hdmi_plug[2] - 2;
+    W = hdmi_plug[0] + 1;                       // channel between the cheeks
+    y0 = hdmi_pos[1] - hdmi_gap;                // end nearest the Pi
+    translate([hdmi_pos[0], 0, 0]) difference() {
+        union() {
+            // bed under the plug
+            translate([-W / 2 - hdmi_cheek, y0 - L, box_floor - e]) cube([W + 2 * hdmi_cheek, L, hdmi_bed - box_floor + e]);
+            // cheeks either side, up to the plug's centre line, keep it square to the socket
+            for (s = [-1, 1]) translate([s > 0 ? W / 2 : -W / 2 - hdmi_cheek, y0 - L, box_floor - e])
+                cube([hdmi_cheek, L, hdmi_cz - box_floor + e]);
+            // anchor for the second tie, round the cable
+            translate([-5, hdmi_anchor_y - 4, box_floor - e]) cube([10, 8, hdmi_cz - hdmi_cable_d / 2 - box_floor + e]);
+        }
+        // tie tunnels along X, sitting on the floor
+        translate([-50, y0 - L / 2 - tie_w / 2, box_floor - 2 * e]) cube([100, tie_w, tie_h]);
+        translate([-50, hdmi_anchor_y - tie_w / 2, box_floor - 2 * e]) cube([100, tie_w, tie_h]);
+        // shallow groove so the cable sits centred on the anchor
+        translate([0, hdmi_anchor_y + 5, hdmi_cz]) rotate([90, 0, 0]) cylinder(d = hdmi_cable_d + 0.8, h = 10);
+    }
+}
+
 module pi_box_model() {
     in = pi_box_in;
     difference() {
         union() {
             sealed_box(in, pi_glands);
+            if (hdmi_clamp) hdmi_cradle();
             for (p = pi_hole_pts) translate([p[0], p[1], 0]) cylinder(d = 6.5, h = box_floor + pi_standoff);
             for (p = pi_vesa) translate([p[0], p[1], 0]) cylinder(d = 13, h = box_floor + 3);
         }
@@ -152,10 +184,39 @@ module pi_box_model() {
         translate([pi_cable[0], pi_cable[1], -1]) cylinder(d = scr_cable_d, h = box_floor + 2);
         translate([pi_cable[0], pi_cable[1], -e]) linear_extrude(groove_d)
             difference() { circle(d = scr_cable_d + 6 + groove_w); circle(d = scr_cable_d + 6 - groove_w); }
+        // SMA bulkheads for the 4G aerials, right-hand wall above the vents
+        if (modem_on) for (h = sma_holes) translate([in[0] / 2 - 1, h[0], h[1]]) rotate([0, 90, 0]) {
+            cylinder(d = sma_hole, h = box_wall + 2);
+            // ID ring engraved on the outside face
+            if (h[2] == 1) translate([0, 0, 1 + box_wall - 0.6]) difference() { cylinder(d = 17, h = 1); cylinder(d = 15, h = 1); }
+        }
         // air vents, louvred so the outside opening points down
         for (sx = [-1, 1], y = linspace(-in[1] / 2 + 10, -4, 4))
             translate([sx * (in[0] / 2 + box_wall / 2), y, box_floor + in[2] / 2])
                 rotate([0, 0, -sx * 35]) cube([box_wall * 3, 2.4, in[2] - 18], center = true);
+    }
+}
+
+// 4G board, its buck and capacitor on the inside of the lid (z < 0 hangs into
+// the box). Printed with the lid.
+modem_hole_pts = [for (sx = [-1, 1], sy = [-1, 1]) [modem_pos[0] + sx * modem_holes[0] / 2, modem_pos[1] + sy * modem_holes[1] / 2]];
+module tie_pad(size, h) {   // pad with a cable-tie tunnel across it (along X), at the lid face
+    difference() {
+        translate([-size[0] / 2, -size[1] / 2, -h]) cube([size[0], size[1], h + e]);
+        translate([-size[0] / 2 - 1, -tie_w / 2, -tie_h + e]) cube([size[0] + 2, tie_w, tie_h]);
+    }
+}
+module modem_mount() {
+    difference() {
+        for (p = modem_hole_pts) translate([p[0], p[1], -modem_gap]) cylinder(d = 6, h = modem_gap + e);
+        for (p = modem_hole_pts) translate([p[0], p[1], -modem_gap - 1]) cylinder(d = modem_hole_d, h = 5 + 1);
+    }
+    // buck: flat pad, tie round it
+    translate([modem_buck_pos[0], modem_buck_pos[1], 0]) tie_pad([modem_buck[0] + 4, 8], 3.5);
+    // capacitor: saddle with a groove, tie round it
+    translate([modem_cap_pos[0], modem_cap_pos[1], 0]) difference() {
+        rotate(90) tie_pad([modem_cap[0] + 4, modem_cap[1] - 6], 3.5 + modem_cap[0] / 3);
+        translate([-modem_cap[1], 0, -3.5 - modem_cap[0] / 2]) rotate([0, 90, 0]) cylinder(d = modem_cap[0], h = 2 * modem_cap[1]);
     }
 }
 
@@ -190,6 +251,7 @@ module pi_lid_model() {
             }
         }
     }
+    if (modem_on) modem_mount();
 }
 
 // Rain cowl over the fan, open at the bottom. The fan screws go through it,

@@ -156,8 +156,8 @@ pi_glands   = [PG9, PG9, PG7, PG7];   // 12V in, CAN, camera, spare
 // free strip below the Pi, so it's clear of the AI HAT stack, the lid fan and the side vents.
 // A short right-angle USB-C to USB-A lead goes to one of the Pi's USB 3 ports. Held in with a
 // cable tie through the two slots. Another small USB SSD fits if it's within ssd_size.
-// The 4G stick is NOT in here: it hangs outside on its own 20 cm lead so its aerial isn't
-// boxed in next to the Pi (docs/remote-access.md).
+// The 4G board (A7670SA) is under the lid too, right of the Pi, with its aerials outside
+// on SMA bulkheads: see "Pi box extras" at the end of this file.
 ssd_size    = [70.2, 33.2, 13.5];   // XS1000 plus 0.6 mm play in X and Y
 ssd_pos     = [-18, -30];           // centre, box coordinates (same X and Y as the box)
 ssd_on      = true;                 // false = plain lid
@@ -183,3 +183,58 @@ grid_pitch  = 10;
 grid_hole   = 2.6;
 grid_t      = 3;
 grid_post_h = 5;    // gap under the plate for wires and solder joints
+
+// ---------------------------------------------------------------------------
+// Pi box extras: micro HDMI clamp and the 4G board
+// ---------------------------------------------------------------------------
+// Screen's micro HDMI lead. Micro HDMI plugs work loose with vibration, so the
+// plug sits on a cradle printed into the box floor and two cable ties hold it:
+// one round the plug's moulding (stops it rocking) and one round the cable a bit
+// further on (takes any pull off the plug). Leave a small loop of slack between
+// the second tie and the floor hole.
+// The Pi sits with its HDMI edge facing the bottom wall (-Y), USB-C on the left.
+// Port spots from the Raspberry Pi 5 mechanical drawing (datasheets.raspberrypi.com):
+// HDMI0 centre 25.8 mm from the board's left edge, ports flush with the edge,
+// about 3.4 mm tall. Use HDMI0 (the one next to USB-C).
+hdmi_clamp   = true;              // false = no cradle
+pi_hdmi0_x   = 25.8;              // Raspberry Pi drawing
+pi_pcb_t     = 1.6;               // Pi board thickness
+hdmi_port_h  = 3.4;               // Raspberry Pi drawing, height of the socket
+// Official Raspberry Pi micro HDMI to HDMI cable, Pi end. Raspberry Pi don't
+// publish the moulding size: GUESS from a similar official adaptor's micro end
+// (11.26 x 8.16 mm). CHECK with calipers when the cable turns up.
+hdmi_plug    = [11.3, 8.2, 22];   // GUESS moulding width, thickness, length out from the board edge
+hdmi_cable_d = 5;                 // cable OD (reseller listing: 5 mm)
+hdmi_pad     = 1.0;               // gap left under the plug for foam tape, so the
+                                  // cradle never pushes the plug up
+
+// 4G board inside the Pi box, under the lid, over the strip right of the Pi
+// (clear of the lid fan, the SSD cradle and the AI HAT's leads).
+// Board: SIMCom A7670SA core board (AliExpress, must list B28, see the shopping
+// list). SIMCom's manual gives 44.45 x 31.75 x 12.44 mm including the header
+// pins, micro SIM holder and one IPEX (u.FL) aerial socket. It hangs parts-down
+// on four standoffs, so with the lid off and flipped the SIM slot is right there.
+// The header pins point up at the lid: solder the wires on (or use right-angle
+// plugs) so they fit in the modem_gap. Its UART goes to the Pi or a spare Pico.
+// Beside it on the lid: a pad for the small buck that feeds it (MP1584, 22 x 17
+// mm, set to about 3.8-4.0 V) and a saddle for the 1000 uF capacitor, each held
+// with a cable tie through a tunnel. One u.FL to SMA lead goes to an SMA
+// bulkhead in the right-hand wall, so the aerial sits outside the box.
+modem_on       = true;              // false = no 4G board
+modem_board    = [31.75, 44.45];    // X, Y as it sits in the box (long side along Y)
+modem_holes    = [25.75, 38.45];    // GUESS holes 3 mm in from each edge. CHECK on the board
+modem_hole_d   = 3.2;               // hole for an M2 heat-set insert (or 2.2 for an M2 self-tapper)
+modem_pos      = [39, 10];          // board centre, box coordinates
+modem_gap      = 12;                // lid to the back of the board (room for the header pins)
+modem_buck     = [17, 22];          // MP1584 module, X and Y
+modem_buck_pos = [39, -37.5];
+modem_cap      = [10.5, 21];        // 1000 uF capacitor, diameter and length (16 V is usually 10 x 20)
+modem_cap_pos  = [39, -20];         // lies along X
+// SMA bulkheads in the right-hand wall: [y, z, ring] each. y along the wall,
+// z up from the box floor's underside. ring = 1 engraves a ring round the hole on
+// the outside, so you can tell them apart: plain hole = 4G, ringed and higher = GPS
+// (for the A7670SA FASE/GNSS board's active GPS aerial). Delete the GPS row if the
+// board has no GPS.
+sma_holes      = [[4, 38, 0],       // 4G (LTE) aerial
+                  [22, 48, 1]];     // GPS aerial, ringed
+sma_hole       = 6.6;               // 1/4"-36 SMA bulkhead thread is 6.35 mm

@@ -7,7 +7,7 @@ OpenSCAD designs for everything that gets 3D printed:
 | Dash panel | Flat face with the 217 x 135 cut-out. The screen's bezel sits on the front and its own clips clamp it from behind, as in its install guide. A rim round the back boxes in the screen's body, with ribs to stop flex | `dash_panel_left/right` |
 | Back plate | Closes the back, bolts to the screen's wall-bracket holes (this carries the 2.8 kg), carries the Pi box and bolts to the dash. Also comes as a DXF to have it cut from 3 mm aluminium | `back_plate_left/right`, `back_plate.dxf` |
 | Sun hood | Top shade and side cheeks, tipped up 8° so rain runs off | `sun_hood_left/right` + `sun_hood_splice` |
-| Pi 5 box | Pi 5 with the Active Cooler and AI HAT+ 2, a small MCP2515 CAN module and the 5V 5A buck. The lid has a cradle for the video SSD (Kingston XS1000, [`docs/sentry.md`](../docs/sentry.md)) Bolts to the back of the back plate; the screen's cables come straight in through the floor | `pi_box_box/lid/cowl/gasket` |
+| Pi 5 box | Pi 5 with the Active Cooler and AI HAT+ 2, a small MCP2515 CAN module, the 5V 5A buck and a 4G board with its buck and capacitor under the lid (SMA bulkheads for the 4G and GPS aerials in the wall). The lid also has a cradle for the video SSD (Kingston XS1000, [`docs/sentry.md`](../docs/sentry.md)). A cradle in the floor holds the micro HDMI plug still. Bolts to the back of the back plate; the screen's cables come straight in through the floor | `pi_box_box/lid/cowl/gasket` |
 | Control box | Pico 2, MCP2515, MCP23017, ADS1115, opto board, MOSFET boards, 5V 2A buck | `control_box_box/lid/gasket/plate` |
 | Relay box | 8-channel relay board and the three BTS7960 drivers | `relay_box_box/lid/gasket/plate` |
 | Fit test | One corner of the dash panel (cut-out corner, bezel recess, inserts), to check the fit before the big print | `fit_test_corner` |
@@ -15,7 +15,10 @@ OpenSCAD designs for everything that gets 3D printed:
 ![Front](img/assembly-front.png)
 ![Exploded](img/assembly-exploded.png)
 ![Back, with the Pi box](img/assembly-back.png)
+![Pi box with the lid off: Pi and AI HAT+ 2 (purple), 4G board under the lid (blue), SSD (red)](img/pi-box-4g.png)
 ![Video SSD in the Pi box lid](img/pi-box-ssd.png)
+![Micro HDMI cradle, plug in grey](img/pi-box-hdmi-cradle.png)
+![Aerial holes: plain = 4G, ringed = GPS](img/pi-box-sma.png)
 
 **Check the sizes before the big print.** The screen's outside size
 (273 x 192 x 41 mm) and cut-out (217 x 135 mm) come from its listing and are
@@ -38,13 +41,18 @@ weighs **2.8 kg**. That's heavy for a printed part on a bouncing dash, so:
 - Use the M4 bolts with nyloc nuts or threadlocker everywhere, and check them
   after the first few rides.
 
-Two things on the listing to check:
+Things on the listing to check:
 
 - **Power**: it comes with a mains plug pack. Read the label on the brick.
   Most of these run on 12V DC. If yours says 12V, it can run off the dash
   12V rail through a 3A fuse, ideally via a 12V-to-12V stabiliser (the
   Teryx's 12V swings from about 11 to 14.8V). If it's anything else, tell
   Claude and we'll sort a converter.
+- **Why HDMI, not VGA, even though VGA screws in**: VGA is analogue, so
+  the Pi would need an active converter (another box and another failure
+  point), and the 1280x800 picture goes soft and can shimmer. The weak spot
+  with HDMI is the little micro HDMI plug on the Pi, so the Pi box has a
+  cradle and two cable ties to hold it still (see step 8 below).
 - **Video input**: the listing says VGA. The Pi 5 only has micro HDMI. If the
   screen only has VGA, you'll need a micro HDMI to VGA adapter (one with its
   own chip, about NZ$20). If it has HDMI as well, use that.
@@ -99,6 +107,10 @@ well.
 | M3 x 8 bolts | 12 | Box lids |
 | M3 x 6 bolts | 8 | Grid plates |
 | M2.5 inserts + M2.5 x 6 bolts | 4 | Pi 5 standoffs |
+| M2 inserts + M2 x 5 bolts (or M2 self-tappers) | 4 | 4G board standoffs under the Pi box lid |
+| Cable ties, 3.6 mm wide or narrower, about 150 mm | 4 | Micro HDMI plug and cable (Pi box floor), 4G buck and capacitor (Pi box lid) |
+| 1 mm foam tape | a scrap | On top of the micro HDMI cradle, under the plug |
+| SMA female bulkheads with O-ring (6.35 mm thread), on u.FL leads | 2 | 4G aerial (plain hole) and active GPS aerial (higher hole with the ring round it), right-hand wall of the Pi box |
 | M3 x 20 bolts + nyloc nuts | 4 | 30 mm fan through the cowl and lid |
 | M3 x 10 bolts + nuts | 4 | Hood splice |
 | M4 x 12 bolts + M4 nuts + threadlocker | 4 | Pi box to back plate (nuts sit in hex pockets on the front of the plate) |
@@ -131,6 +143,24 @@ well.
 8. Fit the Pi (Active Cooler, then the AI HAT+ 2 on its 16 mm header and spacers), stick the CAN module to the box wall with foam tape and wire it to the HAT's stacking header pins, fit the buck, run the other cables through the glands in
    the bottom wall, then fit the gasket, lid, fan and cowl (cowl opening
    points down).
+   - **Micro HDMI.** The Pi sits with its HDMI edge towards the glands. Plug
+     the screen lead into HDMI0 (the one next to USB-C). Stick 1 mm foam on
+     the cradle, then one cable tie through the tunnel under the cradle and
+     round the plug's moulding, snug, not crushing. A second tie holds the
+     cable on the little anchor past the plug. Leave a small loop of slack
+     between the anchor and the floor hole, so nothing pulls on the plug.
+   - **4G board (A7670SA).** Solder its wires on first: the header pins point
+     up at the lid and there's 12 mm for them. Screw it to the four standoffs
+     under the lid, parts facing into the box. To swap the SIM, take the lid
+     off and flip it over. Tie the small buck to its pad and the 1000 uF
+     capacitor into its saddle next to the board, with short thick leads to
+     the board's power pins. Fit the two SMA bulkheads in the right-hand wall
+     (O-rings on the outside). The **lower plain hole is 4G**, the **higher
+     hole with a ring round it is GPS**. Clip each u.FL lead onto the matching
+     socket on the board (LTE/MAIN and GNSS), and label the leads before they
+     go in. The leads tie the lid to the box, so lay the lid beside the box
+     when it's off. Both aerials screw on outside, away from metal. The GPS
+     one is an active aerial, so it needs the board's GNSS socket to power it.
 9. Bolt the back plate to the dash (see MEASURING.md for the holes) or to a
    RAM ball mount on the AMPS holes while you work out the final mount.
 
