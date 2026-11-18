@@ -116,6 +116,22 @@ cutting). Same brands as above.
 | Pair of marine 6.5" coaxials | $150–400 |
 | Pair of 6.5" roll-cage pods | $300–700 |
 
+**Sam's speakers (18 Nov): Kenwood KFC-2053MRB, 8" 2-way marine, black.** Already got, so
+they're off the shopping list. Specs from retailers (I couldn't find Kenwood's own page for this
+model): 4 ohm, about 50 W RMS each (100 W RMS the pair, 300 W peak), 55 Hz to 20 kHz, about 86 dB,
+**180 mm (7-1/16") cut-out**, **about 86 mm (3-3/8") mounting depth**
+([Quality Mobile Video](https://www.qualitymobilevideo.com/kfc-2053mrb.html),
+[Online Car Stereo](https://www.onlinecarstereo.com/CarAudio/p_43004_Kenwood_KFC-2053MRB.aspx),
+[Autopro](https://autopro.com.au/ab/Autopro-Category/Brands/Kenwood/Kenwood-2-Way-2-Speaker---KFC-2053MRB/p/ME30640)).
+The 4-channel amp on the list (about 25-50 W real per channel) suits them: one channel each, and
+two channels spare.
+
+**For the printed pods** (not drawn yet): a 180 mm hole in the front face, at least **95 mm** clear
+depth behind the mounting face (86 mm plus room for the terminals and the cable), and room for the
+speaker's outer flange (measure it, roughly 210 mm across). Bigger inside is better for bass: an 8"
+likes about 10 litres or more per side if you can fit it. Measure the real speaker before printing,
+since one listing gives a different depth.
+
 ### 4. Wiring and bits
 
 | Part | Why | Approx |

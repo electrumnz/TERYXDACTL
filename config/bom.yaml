@@ -142,7 +142,6 @@ lines:
   - {id: fnr, shop: local, part: "F-N-R switch, DPDT centre-off, 10A+", qty: 1, each: 20.00, source: Estimate, covers: [FNR]}
   - {id: estop, shop: local, part: "E-stop mushroom button, twist release, NC, IP65", qty: 1, each: 25.00, source: Estimate, covers: [ESTOP], notes: "RC mode: cuts KSI with no software"}
   - {id: hsw, shop: local, part: "Momentary (ON)-OFF-(ON) toggle, 10A, with waterproof boot", qty: 2, each: 15.00, source: Estimate, covers: [HSW_WINCH, HSW_CAB], notes: Hidden winch switches}
-  - {id: speakers, shop: local, part: Marine speakers (pair), qty: 1, each: 100.00, source: Estimate, covers: [SPEAKERS]}
   - {id: rca, shop: local, part: 3.5mm to 2 x RCA lead 1.5m, qty: 1, each: 10.00, source: Estimate, notes: DAC to amp}
   - {id: usbc_leads, shop: local, part: "Short right-angle USB-C to USB-A leads", qty: 2, each: 10.00, source: Estimate, notes: "SSD, 4G board"}
   - {id: sim, shop: local, part: Prepaid SIM, qty: 1, each: 10.00, source: Estimate}
@@ -180,6 +179,7 @@ owned:
   ACT_4WD: 50 mm actuator
   ACT_TRAY: 400 mm actuator
   BAT12: 12 V battery
+  SPEAKERS: Kenwood KFC-2053MRB 8 in marine speakers (pair)
 
 # Comes with the Shinegle kit, or is stock Teryx.
 kit:

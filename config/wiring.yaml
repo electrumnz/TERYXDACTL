@@ -654,9 +654,10 @@ devices:
     doc: docs/audio.md
     pins: {B+: 12v, GND: gnd, REM: 12v, IN: audio, SPK: spk}
   SPEAKERS:
-    name: Marine speakers
+    name: Kenwood KFC-2053MRB 8 in marine speakers (pair)
     zone: cab
-    status: planned
+    status: confirmed
+    note: Sam has these. 8 in 2-way, 4 ohm, about 50 W RMS each (100 W the pair), 180 mm cut-out, about 86 mm mounting depth (retailer specs). One amp channel each; speaker cable 1.5 mm² is plenty
     optional: true
     pins: {IN: spk}
   IMU:
