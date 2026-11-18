@@ -204,6 +204,18 @@ jet ski. It doesn't need a SIM: it joins the Teryx's hotspot.
 | Speed | Slow chip (Helio G36). Fine for one camera at a time, **test it** | Varies | Better |
 | Cost | About €142-152 in Europe, US$127 in the US. NZ$396 at Rugged Phones NZ. AliExpress price **not checked** (it blocks us) | Trade Me, often under NZ$150 (**not checked**) | NZ$598.99 at PB Tech |
 
+**Samsung Galaxy Tab Active2 (SM-T395), second hand.** Sam found one on Trade
+Me. It's an 8" 1280x800 rugged tablet with Wi-Fi 5 (802.11ac), a 4450 mAh
+swappable battery and an Exynos chip with 3 GB RAM. Samsung's last update for it
+is Android 9 (security patch January 2022). **That works:** our Android app
+needs Android 8 or newer, and the layout gets bigger sticks on a tablet
+(checked at 962x601). The catches: Chrome and the WebView stopped updating on
+Android 9 at version 138 (Google, 2025). That's fine for everything the remote
+uses, and it only ever talks to the Teryx's own hotspot, but it gets no more
+security fixes. It's bigger too, so it may not fit the glove box. IP rating
+**not confirmed** from a Samsung page in our search (rugged tablets in this
+range are usually IP68), so check the listing or the back of the tablet.
+
 **Pick: Ulefone Armor X13 from AliExpress**, or the Armor X12 Pro (NZ$365 at
 Rugged Phones NZ) if you want it from an NZ shop. It's properly waterproof,
 has a big battery and USB-C, and costs about what a decent RC remote's battery
@@ -531,6 +543,8 @@ reason, throttle, brake, direction, link age).
 - iPhone support for DualSense and Xbox Series pads (iOS 14.5): https://www.gamesradar.com/iphone-finally-gets-ps5-and-xbox-series-x-controller-support ; pads tested in iOS Safari: https://docs.webrcade.com/platforms/ios/gamepads/
 - Backbone One USB-C on iPhone 15: https://www.engadget.com/the-backbone-one-android-controller-now-supports-iphone-15-190059914.html ; Kishi Ultra for USB-C iPhones: https://imore.com/iphone/iphone-accessories/razer-kishi-ultra-controller-vs-backbone-one-battle-of-the-extendable-iphone-gamepads
 - Ulefone Armor X13 specs: https://m.gsmarena.com/ulefone_armor_x13-12475.php , https://smartprix.com/mobiles/ulefone-armor-x13-ppd14y4ftqd8 ; EU prices: https://aio.lv/en/product--ulefone-uf-ax13bk--11204123.md , https://arvutitark.ee/en/smart-devices/phones/nutitelefon-ulefone-armor-x13-664gb-must-1360683 ; NZ prices: https://ruggedphones.co.nz/product-category/rugged-android-phones/
+- Galaxy Tab Active2 SM-T395 last firmware (Android 9, Jan 2022 patch): https://doc.samsungmobile.com/SM-T395/007628190704/mlt.html ; specs: https://icecat.co.uk/fl-ph/amp/p/samsung/sm-t395nzkaitv/galaxy+tab-tablets-8806088952352-sm-t395-39302007.html , https://devicebeast.com/tablets/galaxy-tab-active-2
+- Chrome 138 is the last for Android 8 and 9: https://www.androidauthority.com/chrome-dropping-support-android-8-9-3571442 , https://9to5google.com/2025/06/26/google-chrome-android-versions-no-longer-supported-2025/
 - Android kiosk: screen pinning vs kiosk app: https://help.virtualfrontdesk.com/en/article/android-tablets-chrome-in-full-screen-and-kiosk-mode-pinned-app ; Fully Kiosk launch on boot: https://community.home-assistant.io/t/fully-kiosk-not-launching-at-boot-on-my-android-tablet/1021331
 - PB Tech: Razer Kishi V3 https://www.pbtech.co.nz/product/JOYRAZ112682 , Backbone One Gen2 https://www.pbtech.co.nz/product/JOYBBN1006/BACKBONE-One-Classic-Gaming-Controller-Gen2-USB-C
 - Salt and connectors (dielectric grease, splices, washer distance): https://buywitchdoctors.com/blogs/news/ultimate-guide-on-how-to-protect-utv-atv-electronics-from-water-damage
