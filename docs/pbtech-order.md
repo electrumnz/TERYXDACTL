@@ -36,7 +36,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Carlinkit CPC200-CCPA (or CCPA-MIC) CarPlay dongle | 1 | 65.00 | 65.00 | US$33-39 x 1.822 | Title must say CCPA + Android head unit; lsusb 1314:1520/1521 |
 | 4-channel class D amp, 4 x 63W RMS at 4 ohm, 2 x 200W bridged, 90Hz HPF/LPF (Sam's pick) | 1 | 100.00 | 100.00 | Sam, AliExpress ~NZ$100 | Ch 1-2 Kenwoods, ch 3-4 kept for a bridged sub later; under the seat, not waterproof |
 | 8-channel PC817 opto board 12V in | 2 | 9.00 | 18.00 | ~US$5 estimate | Board 1 = all 8 inputs; board 2 = 8 spare on MCP2 |
-| 8-channel opto-isolated MOSFET board, 3.3V input version (PWM) | 1 | 22.00 | 22.00 | ~US$12 estimate | Light bars: 5 used, 3 spare. Listing must say 3.3V input, 24V+ load, 10A per channel; if it says 5A, buy 6 single LR7843 modules (~NZ$30) instead |
+| 8-channel opto-isolated MOSFET board, 3.3V input version (PWM) | 1 | 22.00 | 22.00 | ~US$12 estimate | Pick the 3.3V input, PNP (high-level trigger) version: Pico pin high = channel on, which is what the firmware does. Not NPN (low-level trigger). Light bars: 5 used, 3 spare. Listing must say 3.3V input, 24V+ load, 10A per channel; if it says 5A, buy 6 single LR7843 modules (~NZ$30) instead |
 | 16-channel 5V relay board, mechanical, opto + JD-VCC jumper, 10A | 1 | 21.00 | 21.00 | ~US$11.28 x 1.822 | 10 used, 6 spare; must have the JD-VCC jumper |
 | Winch isolator contactor, 12V coil, 200A continuous duty | 1 | 30.00 | 30.00 | Estimate | Continuous duty, not a starter solenoid |
 | 250A manual reset circuit breaker (winch) | 1 | 30.00 | 30.00 | Estimate | Leave it out of the cart if one came in the winch box |
