@@ -8,6 +8,7 @@
     python -m teryx canmap              write docs/CAN_PROTOCOL.md and docs/teryx.dbc
     python -m teryx shinegle-diagram    write docs/img/sg1202-wiring.svg from config/shinegle-sg1202.yaml
     python -m teryx wiring              check config/wiring.yaml, write docs/wiring/ (--check: check only)
+    python -m teryx bom                 write the parts list from config/bom.yaml + wiring (--check: check only)
     python -m teryx shinegle-manual     write docs/shinegle-sg1810-tables.md from the SG1810 YAML files
     python -m teryx decode ...          Shinegle decoding kit (docs/shinegle-decode.md)
 """
@@ -271,6 +272,9 @@ def main(argv=None) -> None:
     sp = sub.add_parser("wiring", help="check config/wiring.yaml and draw docs/wiring/ from it")
     sp.add_argument("--check", action="store_true", help="only check, write nothing")
     sp.set_defaults(fn=lambda a: sys.exit(__import__("teryx.wiring", fromlist=["main"]).main(a.check)))
+    sp = sub.add_parser("bom", help="check the parts list covers the wiring and write it to docs/")
+    sp.add_argument("--check", action="store_true", help="only check, write nothing")
+    sp.set_defaults(fn=lambda a: sys.exit(__import__("teryx.bom", fromlist=["main"]).main(a.check)))
 
     sp = sub.add_parser("shinegle-manual", help="write the SG1810 parameter and fault tables doc from its YAML")
     sp.set_defaults(fn=lambda a: print("wrote", __import__("teryx.shinegle_manual", fromlist=["write"]).write()))

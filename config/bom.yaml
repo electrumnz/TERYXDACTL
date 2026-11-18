@@ -1,0 +1,218 @@
+# Teryx OS: the parts list (bill of materials), machine readable.
+#
+#     python -m teryx bom           write the list (docs/pbtech-order.md block + .csv)
+#     python -m teryx bom --check   only check it (what CI runs, via tests)
+#
+# Every device in config/wiring.yaml must be in exactly one place here:
+#   a line's `covers`, `owned` (Sam has it), `kit` (comes with the Shinegle kit
+#   or the stock Teryx) or `later` (not part of this build). A test fails if one
+#   is missing, so a new part in the wiring can't be left off the list.
+# Every `via:` in the wiring (diodes, resistors, dividers) must be in `via_parts`.
+# Wire, CAN cable, fuses, fuse holders, lugs, ferrules and waterproof plugs are
+# worked out from the wiring by teryx/bom.py, not typed in here.
+#
+# Prices are NZ$ incl GST. `source` says where each one came from. "Estimate"
+# means I couldn't open a shop page for it (PB Tech and AliExpress block my
+# requests), so check before paying.
+
+version: 1
+
+shops:
+  pbtech:    {title: "PB Tech (buy Thursday)", order: 1}
+  aliexpress: {title: "AliExpress (one order, 2 to 4 weeks)", order: 2}
+  core:      {title: "Core Electronics (AU, online)", order: 3}
+  nz_online: {title: "Gogo:Tronics and element14 (NZ, online)", order: 4}
+  local:     {title: "Local: Jaycar, Narva stockist, Repco, auto electrical", order: 5}
+  pickup:    {title: "Separate pickup", order: 6}
+
+# One-way run length in metres between zones, along the frame, for the wire
+# estimate. Same zone: 0.5 m. The generator adds 25% and rounds up to 5 m.
+zone_m:
+  cab-control_box: 1.0
+  cab-dash: 1.0
+  cab-engine_bay: 1.5
+  cab-front: 2.0
+  cab-hv: 1.5
+  cab-rear: 2.0
+  control_box-dash: 1.5
+  control_box-engine_bay: 1.5
+  control_box-front: 2.5
+  control_box-hv: 1.5
+  control_box-rear: 2.5
+  dash-engine_bay: 1.5
+  dash-front: 2.0
+  dash-rear: 3.0
+  engine_bay-front: 1.5
+  engine_bay-hv: 1.0
+  engine_bay-rear: 2.5
+  front-front: 1.0
+  rear-rear: 1.0
+  rear-trailer: 0.5
+  same: 0.5
+
+# NZ$ per metre, auto cable (Jaycar / auto electrical, estimate).
+wire_price_m: {0.5: 0.9, 0.75: 1.1, 1.0: 1.4, 1.5: 1.9, 2.5: 2.9, 4.0: 4.5, 10: 11.0, 35: 30.0}
+can_cable_price_m: 2.5       # 2-core twisted, screened
+speaker_cable_price_m: 1.5
+blade_fuse_each: 1.5         # Narva standard blade
+inline_holder_each: 6.0      # waterproof standard blade holder with lead
+midi_fuse_each: 9.0
+midi_holder_each: 22.0
+lug_each: 2.0                # tinned copper lug, heatshrink
+plug_pair: {2: 2.5, 3: 3.0, 4: 3.5, 6: 5.0}   # waterproof DT-style pair, AliExpress estimate
+
+# What each `via:` in the wiring is made of. Counted up into one line.
+via_parts:
+  "3 A diode (1N5408)": {1N5408: 1}
+  "1N4148": {1N4148: 1}
+  "2 diodes + 1k to ground": {1N4148: 2, 1k resistor: 1}
+  "divider 10k / 20k": {10k resistor: 1, 20k resistor: 1}
+  "1 A diode": {1N4007: 1}
+  "divider 10k / 2.2k + 3.3 V zener": {10k resistor: 1, 2.2k resistor: 1, 3.3 V zener: 1}
+  "diode (backup)": {1N5408: 1}
+  "opto board": {}            # the opto board line covers it
+
+# Devices out in the weather that get a waterproof plug, so they unplug.
+# The plug size comes from how many of their pins are wired.
+plugs: [LB1, LB2, LB3, LB4, LB_INT, FLOOD_L, FLOOD_R, ACT_DIFF, ACT_4WD, ACT_TRAY,
+        LIM_DN, LIM_UP, HSW_WINCH, CAM_REAR, CAM_TRAILER, IMU]
+
+lines:
+  # ------------------------------------------------------------- PB Tech
+  - {id: pi5, shop: pbtech, part: Raspberry Pi 5 8GB, sku: SEVRBP0502, qty: 1, each: 371.39, source: Checked 17 Nov, covers: [PI5], notes: "On order, ships about 30 Nov; ask in store", link: "https://www.pbtech.co.nz/product/SEVRBP0502"}
+  - {id: sd, shop: pbtech, part: Raspberry Pi A2 SD card 128GB, sku: SEVRBP0538, qty: 1, each: 47.32, source: Search result 18 Nov, link: "https://www.pbtech.co.nz/product/SEVRBP0538"}
+  - {id: cam_front, shop: pbtech, part: Raspberry Pi Camera Module 3 Wide (front), sku: SEVRBP0398, qty: 1, each: 80.71, source: Search result 18 Nov, covers: [CAM_FRONT], notes: "Out of stock when indexed; alt element14 SC0874 ~NZ$69", link: "https://www.pbtech.co.nz/product/SEVRBP0398"}
+  - {id: cam_cabin, shop: pbtech, part: Raspberry Pi Camera Module 3 NoIR Wide (cabin / sentry face shot), sku: SEVRBP0399, qty: 1, each: 70.00, source: About NZ$70 (search result), covers: [CAM_CABIN], notes: Second camera port on the Pi 5, link: "https://www.pbtech.co.nz/product/SEVRBP0399"}
+  - {id: cam_cable, shop: pbtech, part: Pi 5 camera cable 200mm, sku: SEVRBP0541, qty: 2, each: 2.12, source: Search result 18 Nov, notes: One per camera, link: "https://www.pbtech.com/pacific/product/SEVRBP0541"}
+  - {id: pico, shop: pbtech, part: Raspberry Pi Pico 2 5-pack, sku: SEVRBP0628, qty: 1, each: 47.20, source: Checked 17 Nov, covers: [PICO], notes: "Control box, CAN sniffer, steering bench test, 2 spare", link: "https://www.pbtech.co.nz/product/SEVRBP0628"}
+  - {id: psu27, shop: pbtech, part: Raspberry Pi 27W USB-C power supply (bench), sku: SEVRBP0512, qty: 1, each: 24.90, source: Search result 18 Nov, notes: Bench only, link: "https://www.pbtech.co.nz/product/SEVRBP0512"}
+  - {id: hdmi, shop: pbtech, part: Raspberry Pi micro HDMI to HDMI cable 1m, sku: SEVRBP0207, qty: 1, each: 11.80, source: Search result 18 Nov, notes: "Alt black SEVRBP0262 ~11.10", link: "https://www.pbtech.co.nz/product/SEVRBP0207"}
+  - {id: ssd, shop: pbtech, part: Kingston XS1000 1TB USB-C SSD (dashcam / sentry video), sku: HDDKCP225100, qty: 1, each: 189.00, source: "NZ$189-253, price moved between checks", covers: [SSD], notes: "USB, so the PCIe slot stays free for the AI HAT; cradle in the Pi box", link: "https://www.pbtech.co.nz/product/HDDKCP225100"}
+
+  # ------------------------------------------------------------- AliExpress
+  - {id: ccpa, shop: aliexpress, part: Carlinkit CPC200-CCPA (or CCPA-MIC) CarPlay dongle, qty: 1, each: 65.00, source: "US$33-39 x 1.822", covers: [CARPLAY], notes: "Title must say CCPA + Android head unit; lsusb 1314:1520/1521"}
+  - {id: amp, shop: aliexpress, part: "4-channel class D amp 12V (RCA in + remote turn-on)", qty: 1, each: 82.00, source: "~US$45 x 1.822", covers: [AMP], notes: Not waterproof; under the seat}
+  - {id: dac, shop: aliexpress, part: USB sound card / DAC 3.5mm out, qty: 1, each: 8.00, source: Estimate, covers: [USB_DAC], notes: Pi 5 has no audio jack}
+  - {id: bts, shop: aliexpress, part: BTS7960 43A H-bridge, qty: 2, each: 12.00, source: "~US$6-7 each", covers: [BTS2, BTS3], notes: You have one already; 3 needed}
+  - {id: opto, shop: aliexpress, part: 8-channel PC817 opto board 12V in, qty: 2, each: 9.00, source: "~US$5 estimate", covers: [OPTO], notes: "Board 1 = all 8 inputs; board 2 = 8 spare on MCP2"}
+  - {id: mosfet, shop: aliexpress, part: "8-channel opto-isolated MOSFET board, 3.3V input version (PWM)", qty: 1, each: 22.00, source: "~US$12 estimate", covers: [MOSFET], notes: "Light bars: 5 used, 3 spare. Listing must say 3.3V input, 24V+ load, 10A per channel; if it says 5A, buy 6 single LR7843 modules (~NZ$30) instead"}
+  - {id: relay16, shop: aliexpress, part: "16-channel 5V relay board, mechanical, opto + JD-VCC jumper, 10A", qty: 1, each: 21.00, source: "~US$11.28 x 1.822", covers: [RELAYS, RELAYS2], notes: "10 used, 6 spare; must have the JD-VCC jumper"}
+  - {id: fuseblock, shop: aliexpress, part: 20-way blade fuse block with cover + negative bus, qty: 1, each: 40.00, source: "~US$15-25 estimate", covers: [FB], notes: "12 used, 8 spare; stud feed"}
+  - {id: winch_iso, shop: aliexpress, part: "Winch isolator contactor, 12V coil, 200A continuous duty", qty: 1, each: 30.00, source: Estimate, covers: [WINCH_ISO], notes: "Continuous duty, not a starter solenoid"}
+  - {id: winch_brk, shop: aliexpress, part: 250A manual reset circuit breaker (winch), qty: 1, each: 30.00, source: Estimate, covers: [BRK_WINCH], notes: "Leave it out of the cart if one came in the winch box"}
+  - {id: limits, shop: aliexpress, part: "Waterproof micro limit switch, roller lever (NC)", qty: 3, each: 2.67, source: Estimate, covers: [LIM_DN, LIM_UP], notes: Tray up/down + 1 spare}
+  - {id: usbhub, shop: aliexpress, part: "Powered USB 3.0 hub, 7-port, 12V DC input", qty: 1, each: 35.00, source: Estimate, covers: [USB_HUB], notes: "Screen touch, GPS, CarPlay, DAC, 4G, SSD: more than the Pi's 4 ports. Fed from the dash rail"}
+  - {id: screen_psu, shop: aliexpress, part: "12V to 12V 5A stabiliser (buck-boost), sealed", qty: 1, each: 15.00, source: Estimate, covers: [SCREEN_PSU], notes: "Screen gets a steady 12V when the battery swings 11-14.4V. Check the screen brick label first"}
+  - {id: glove_usb, shop: aliexpress, part: "12V USB-C PD panel socket, 30W, waterproof cap", qty: 1, each: 15.00, source: Estimate, covers: [GLOVE_USB], notes: Glove box phone (RC remote)}
+  - {id: imu, shop: aliexpress, part: MPU-6050 IMU board (roll / pitch), qty: 1, each: 5.00, source: Estimate, covers: [IMU], notes: "I2C to the Pi"}
+  - {id: tcam, shop: aliexpress, part: "12V AHD reversing camera (trailer)", qty: 1, each: 30.00, source: Estimate, covers: [CAM_TRAILER]}
+  - {id: tcam_plug, shop: aliexpress, part: "4-pin waterproof aviation plug + socket (trailer camera)", qty: 1, each: 8.00, source: Estimate, covers: [TCAM_PLUG], notes: Next to the 7-pin}
+  - {id: tcam_dongle, shop: aliexpress, part: AHD to USB (UVC) capture dongle, qty: 1, each: 25.00, source: Estimate, covers: [TCAM_DONGLE]}
+  - {id: a7670, shop: aliexpress, part: "SIMCom A7670SA 4G board (B28, GPS 'FASE' option)", qty: 1, each: 28.00, source: "US$15.46 x 1.822", covers: [MODEM_4G], notes: "Must list B28; V pin from the 2nd Mini560, never raw 12V"}
+  - {id: bss138, shop: aliexpress, part: 4-channel BSS138 level shifter, qty: 1, each: 2.00, source: Estimate, notes: "Probably not needed; measure the T pin first"}
+  - {id: gps_ant, shop: aliexpress, part: "Active GPS antenna, SMA male", qty: 1, each: 8.00, source: Estimate}
+  - {id: lte_ant, shop: aliexpress, part: "LTE antenna 698-2700MHz, SMA male", qty: 1, each: 12.00, source: Estimate, notes: Must cover 700MHz B28}
+  - {id: sma_pig, shop: aliexpress, part: "u.FL to SMA female bulkhead pigtail with O-ring, 15cm", qty: 2, each: 3.00, source: Estimate, notes: Through the Pi box wall for both aerials}
+  - {id: heatsink, shop: aliexpress, part: "Finned heatsink 100x100x40mm, flat 5mm+ base", qty: 1, each: 20.00, source: Estimate, notes: Pi box lid}
+  - {id: pad, shop: aliexpress, part: "Thermal pad 1mm, 4 W/mK+", qty: 1, each: 5.00, source: Estimate}
+  - {id: pillar, shop: aliexpress, part: Solid aluminium block 20x20x50mm, qty: 1, each: 5.00, source: Estimate, notes: Cut to ~45.3mm}
+  - {id: paste, shop: aliexpress, part: Thermal paste small tube, qty: 1, each: 3.00, source: Estimate}
+  - {id: vents, shop: aliexpress, part: M12x1.5 breather vent plug, qty: 2, each: 2.00, source: Estimate, notes: One spare}
+  - {id: glands, shop: aliexpress, part: "Nylon cable glands IP68: PG7 x3, PG9 x5, PG16 x5, M20 x1", qty: 1, each: 15.00, source: Estimate, notes: "Pi box 4, control box 5, relay box 5 (cad/measurements.scad)"}
+  - {id: inserts_m3, shop: aliexpress, part: "M3 brass heat-set inserts 4.0mm OD x 5.7mm, 100 pack", qty: 1, each: 8.00, source: Estimate, notes: About 40 used}
+  - {id: inserts_small, shop: aliexpress, part: "M2 + M2.5 heat-set inserts, 50 each", qty: 1, each: 8.00, source: Estimate, notes: Pi and 4G board standoffs}
+  - {id: bolts, shop: aliexpress, part: "Stainless bolt kit: M2, M2.5, M3 (6-16mm), M4 (12-20mm), nuts, nylocs, washers", qty: 1, each: 25.00, source: Estimate, notes: "cad/README.md hardware table: ~50 small bolts, 16 M4, 4 M5 nuts"}
+  - {id: ferrules, shop: aliexpress, part: "Bootlace ferrule kit 0.5-6mm² with ratchet crimper", qty: 1, each: 30.00, source: Estimate, notes: "Every wire end into a screw terminal in the boxes"}
+  - {id: rings, shop: aliexpress, part: "Heatshrink ring / spade / butt terminal kit 0.5-6mm²", qty: 1, each: 25.00, source: Estimate}
+  - {id: dupont, shop: aliexpress, part: "Dupont jumper wires (F-F, M-F) + 2.54mm pin headers", qty: 1, each: 10.00, source: Estimate, covers: [DEBUG], notes: "Pico, Pi and board-to-board links inside the boxes; debug header"}
+
+  # ------------------------------------------------------------- Core Electronics
+  - {id: can, shop: core, part: Seeed MCP2515 + SN65HVD230 CAN board, qty: 4, each: 22.77, source: "AU$18.45 x 1.234", covers: [PI_CAN, PICO_CAN, EPS_CAN], notes: "Pi, control box, steering bus, sniffer", link: "https://core-electronics.com.au"}
+  - {id: mcp23017, shop: core, part: MCP23017 board, sku: WS-15391, qty: 2, each: 13.45, source: "AU$10.90 x 1.234", covers: [MCP1, MCP2], link: "https://core-electronics.com.au/catalog/product/view/sku/WS-15391"}
+  - {id: gps, shop: core, part: DFRobot USB GPS receiver, sku: TEL0138, qty: 1, each: 25.98, source: "AU$21.05 x 1.234", covers: [GPS], link: "https://core-electronics.com.au/catalog/product/view/sku/TEL0138"}
+  - {id: pololu, shop: core, part: Pololu D36V50F5 5V 5.5A regulator, sku: POLOLU-4091, qty: 1, each: 111.20, source: "AU$90.11 x 1.234", covers: [PI_BUCK], link: "https://core-electronics.com.au/catalog/product/view/sku/POLOLU-4091"}
+  - {id: core_ship, shop: core, part: Shipping to NZ (estimate), qty: 1, each: 17.50, source: "AU$12-16"}
+
+  # ------------------------------------------------------------- NZ online
+  - {id: mini560, shop: nz_online, part: Mini560 5V 5A buck (Gogo:Tronics), qty: 2, each: 2.95, source: Checked 17 Nov, covers: [PICO_BUCK], notes: "Control box + 4G board", link: "https://sparks.gogo.co.nz/catalog/DC-Power-260/Fixed-Output-Step-Down-Converter-Out-5v-up-to-5A-Continuous-In-7-20v-1009.html"}
+  - {id: tvs, shop: nz_online, part: 1.5KE18A TVS diode (element14), sku: "9884831", qty: 2, each: 2.24, source: Checked 17 Nov, covers: [TVS], link: "https://nz.element14.com/stmicroelectronics/1-5ke18a/diode-tvs-1-5kw-18v/dp/9884831"}
+
+  # ------------------------------------------------------------- local
+  - {id: narva_7pin, shop: local, part: Narva 7-pin flat socket with reed switch, sku: 82043BL, qty: 1, each: 35.00, source: Estimate, covers: [TRAILER], link: "https://narva.com.au/products/narva-7-pin-flat-quickfit-trailer-socket-with-reed-switch-for-use-with-normally-closed-circuits-1-pack"}
+  - {id: fnr, shop: local, part: "F-N-R switch, DPDT centre-off, 10A+", qty: 1, each: 20.00, source: Estimate, covers: [FNR]}
+  - {id: estop, shop: local, part: "E-stop mushroom button, twist release, NC, IP65", qty: 1, each: 25.00, source: Estimate, covers: [ESTOP], notes: "RC mode: cuts KSI with no software"}
+  - {id: hsw, shop: local, part: "Momentary (ON)-OFF-(ON) toggle, 10A, with waterproof boot", qty: 2, each: 15.00, source: Estimate, covers: [HSW_WINCH, HSW_CAB], notes: Hidden winch switches}
+  - {id: speakers, shop: local, part: Marine speakers (pair), qty: 1, each: 100.00, source: Estimate, covers: [SPEAKERS]}
+  - {id: rca, shop: local, part: 3.5mm to 2 x RCA lead 1.5m, qty: 1, each: 10.00, source: Estimate, notes: DAC to amp}
+  - {id: usbc_leads, shop: local, part: "Short right-angle USB-C to USB-A leads", qty: 2, each: 10.00, source: Estimate, notes: "SSD, 4G board"}
+  - {id: sim, shop: local, part: Prepaid SIM, qty: 1, each: 10.00, source: Estimate}
+  - {id: busbar, shop: local, part: "Ground bus bar, M8 studs, 6+ ways, with cover", qty: 1, each: 25.00, source: Estimate, covers: [GND_STAR]}
+  - {id: wago, shop: local, part: "Wago 221 lever connectors, 5-way pack", qty: 1, each: 20.00, source: Estimate, covers: [RAIL], notes: Dash 12V rail splits}
+  - {id: smallparts, shop: local, part: "Diodes and resistors (see contents)", qty: 1, each: 20.00, source: Estimate, notes: "AUTO"}
+  - {id: heatshrink, shop: local, part: Heatshrink assortment (glue-lined), qty: 1, each: 20.00, source: Estimate}
+  - {id: loom, shop: local, part: "Split corrugated loom 10mm + 16mm, 10m each", qty: 1, each: 30.00, source: Estimate}
+  - {id: ties, shop: local, part: "UV-black cable ties + adhesive P-clips", qty: 1, each: 20.00, source: Estimate}
+  - {id: foam, shop: local, part: "2mm closed-cell foam tape, 1m+", qty: 1, each: 10.00, source: Estimate, notes: Bezel to panel}
+  - {id: asa, shop: local, part: "ASA filament 1.75mm 1kg (dash panel, hood, back plate)", qty: 2, each: 45.00, source: Estimate, notes: Leave out what you already have}
+  - {id: petg, shop: local, part: "PETG filament 1.75mm 1kg (boxes, liner)", qty: 1, each: 35.00, source: Estimate}
+  - {id: alu_cut, shop: local, part: "3mm aluminium cut from DXF: back plate + Pi lid plate", qty: 1, each: 80.00, source: Estimate, notes: "Laser or waterjet shop; cad/stl/*.dxf"}
+
+  # ------------------------------------------------------------- pickup
+  - {id: aqua, shop: pickup, part: Toyota Aqua EPS column (ECU 89650-52B51), qty: 1, each: 115.00, source: About NZ$115, covers: [EPS_ECU, EPS_COL], notes: "Dodson's, picking up 19 Nov"}
+
+# Already got (not in the totals).
+owned:
+  SCREEN: 10.1 in touch screen
+  CAM_REAR: 2K rear camera
+  ADS1: ADS1115
+  BTS1: one BTS7960
+  LB1: 12 in light bar
+  LB2: 12 in light bar
+  LB3: 12 in light bar
+  LB4: 12 in light bar
+  LB_INT: 7 in light bar
+  FLOOD_L: 4 in pod
+  FLOOD_R: 4 in pod
+  WINCH_SOL: XBull solenoid box
+  WINCH_MOTOR: XBull 5000 lb winch (and its 35 mm² cables)
+  WINCH_REMOTE: XBull remote
+  ACT_DIFF: 50 mm actuator with pot
+  ACT_4WD: 50 mm actuator
+  ACT_TRAY: 400 mm actuator
+  BAT12: 12 V battery
+
+# Comes with the Shinegle kit, or is stock Teryx.
+kit:
+  PACK: Shinegle kit / pack
+  HV_ISO: Shinegle kit
+  CONTACTOR: Shinegle kit
+  SG1202: Shinegle kit
+  MOTOR: Shinegle kit
+  DCDC: Shinegle kit
+  KIT_KEY: Shinegle kit
+  THROTTLE: Shinegle kit
+  SPEEDO: Shinegle kit
+  PROG: Shinegle kit
+  KEY: stock Teryx
+  BRAKE_SW: stock Teryx
+  PARK_SW: stock Teryx
+
+# Not part of this build (Sam's call, or waiting on a check).
+later:
+  AIHAT: "AI HAT+ 2, ~NZ$423 (Sam: not now). Box, power and cooling stay sized for it"
+  ADS2: "Brake regen only, after the Shinegle regen check passes"
+  BRAKE_PEDAL: "Brake regen only, after the Shinegle regen check passes"
+  BRAKE_PRESS: "Brake regen cross-check only"
+
+# Not in the totals; shown so nothing is forgotten.
+later_lines:
+  - {part: Raspberry Pi AI HAT+ 2, shop: PB Tech, each: 423.43, notes: Not now}
+  - {part: Raspberry Pi Active Cooler, shop: PB Tech, each: 11.21, notes: Only with the AI HAT}
+  - {part: Noctua NF-A4x10 5V fan, shop: Newegg NZ, each: 21.85, notes: Only if the Pi box runs hot}
+  - {part: "Second ADS1115 + brake pedal Hall sensor (+ pressure sensor)", shop: Core / AliExpress, each: 40.00, notes: Brake regen}
+  - {part: GameSir G8 Galileo phone gamepad, shop: AliExpress, each: 78.00, notes: "RC mode, Sam: not now"}
+  - {part: EasyCAP DC60 USB capture, shop: PB Tech, each: 28.75, notes: Only if the rear camera turns out to be RCA}
+  - {part: Carlinkit CCPA from Audio City (NZ stock), shop: Audio City, each: 180.00, notes: Backup if the AliExpress one is slow}
+
+bought:
+  - {part: Samsung Galaxy XCover 5 (RC remote), shop: Trade Me, each: 187.00}
