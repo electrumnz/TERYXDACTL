@@ -17,7 +17,7 @@
 <g data-wire="D02" data-from="PICO.GP8" data-to="BTS1.LPWM" data-status="planned"><title>D02: PICO.GP8 -&gt; BTS1.LPWM</title><path d="M310,237 C395,237 395,237 480,237" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
 <g data-wire="D03" data-from="PICO.GP9" data-to="BTS1.EN" data-status="planned"><title>D03: PICO.GP9 -&gt; BTS1.EN - R_EN and L_EN joined</title><path d="M310,257 C395,257 395,257 480,257" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
 <g data-wire="D04" data-from="BTS1.IS" data-to="PICO.GP28" data-status="planned"><title>D04: BTS1.IS -&gt; PICO.GP28 - an.diff_current</title><path d="M480,277 C395,277 395,397 310,397" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="D05" data-from="FB.F13" data-to="BTS1.B+" data-status="planned"><title>D05: FB.F13 -&gt; BTS1.B+</title><path d="M920,383 C835,383 835,297 750,297" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="D05" data-from="FB.F10" data-to="BTS1.B+" data-status="planned"><title>D05: FB.F10 -&gt; BTS1.B+</title><path d="M920,383 C835,383 835,297 750,297" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="D06" data-from="BTS1.M+" data-to="ACT_DIFF.M+" data-status="planned"><title>D06: BTS1.M+ -&gt; ACT_DIFF.M+ - Wrong way? Change DIFF_LOCK_DIR in firmware, not the wires</title><path d="M750,317 C835,317 835,212 920,212" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="D07" data-from="BTS1.M-" data-to="ACT_DIFF.M-" data-status="planned"><title>D07: BTS1.M- -&gt; ACT_DIFF.M-</title><path d="M750,337 C835,337 835,232 920,232" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="D08" data-from="ADS1.VDD" data-to="ACT_DIFF.POT_HI" data-status="planned"><title>D08: ADS1.VDD -&gt; ACT_DIFF.POT_HI - Pot on 3.3 V, never 12 V</title><path d="M1190,625 C1250,625 1250,252 1190,252" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
@@ -27,14 +27,14 @@
 <g data-wire="D12" data-from="PICO.GP11" data-to="BTS2.LPWM" data-status="planned"><title>D12: PICO.GP11 -&gt; BTS2.LPWM</title><path d="M310,297 C395,297 395,468 480,468" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
 <g data-wire="D13" data-from="PICO.GP12" data-to="BTS2.EN" data-status="planned"><title>D13: PICO.GP12 -&gt; BTS2.EN</title><path d="M310,317 C395,317 395,488 480,488" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
 <g data-wire="D14" data-from="BTS2.IS" data-to="ADS1.A2" data-status="planned"><title>D14: BTS2.IS -&gt; ADS1.A2 - an.4wd_current</title><path d="M750,508 C835,508 835,705 920,705" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="D15" data-from="FB.F14" data-to="BTS2.B+" data-status="planned"><title>D15: FB.F14 -&gt; BTS2.B+</title><path d="M920,403 C835,403 835,528 750,528" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="D15" data-from="FB.F11" data-to="BTS2.B+" data-status="planned"><title>D15: FB.F11 -&gt; BTS2.B+</title><path d="M920,403 C835,403 835,528 750,528" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="D16" data-from="BTS2.M+" data-to="ACT_4WD.M+" data-status="tbc"><title>D16: BTS2.M+ -&gt; ACT_4WD.M+</title><path d="M750,548 C835,548 835,514 920,514" fill="none" stroke="#bf8700" stroke-width="2.2" stroke-dasharray="7 4"/></g>
 <g data-wire="D17" data-from="BTS2.M-" data-to="ACT_4WD.M-" data-status="tbc"><title>D17: BTS2.M- -&gt; ACT_4WD.M-</title><path d="M750,568 C835,568 835,534 920,534" fill="none" stroke="#bf8700" stroke-width="2.2" stroke-dasharray="7 4"/></g>
 <g data-wire="D18" data-from="PICO.GP13" data-to="BTS3.RPWM" data-status="planned"><title>D18: PICO.GP13 -&gt; BTS3.RPWM - act.tray</title><path d="M310,337 C395,337 395,679 480,679" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
 <g data-wire="D19" data-from="PICO.GP14" data-to="BTS3.LPWM" data-status="planned"><title>D19: PICO.GP14 -&gt; BTS3.LPWM</title><path d="M310,357 C395,357 395,699 480,699" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
 <g data-wire="D20" data-from="PICO.GP15" data-to="BTS3.EN" data-status="planned"><title>D20: PICO.GP15 -&gt; BTS3.EN</title><path d="M310,377 C395,377 395,719 480,719" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
 <g data-wire="D21" data-from="BTS3.IS" data-to="ADS1.A3" data-status="planned"><title>D21: BTS3.IS -&gt; ADS1.A3 - an.tray_current</title><path d="M750,739 C835,739 835,725 920,725" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="D22" data-from="FB.F15" data-to="BTS3.B+" data-status="planned"><title>D22: FB.F15 -&gt; BTS3.B+</title><path d="M920,423 C835,423 835,759 750,759" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="D22" data-from="FB.F12" data-to="BTS3.B+" data-status="planned"><title>D22: FB.F12 -&gt; BTS3.B+</title><path d="M920,423 C835,423 835,759 750,759" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="D23" data-from="BTS3.M+" data-to="ACT_TRAY.M+" data-status="planned"><title>D23: BTS3.M+ -&gt; ACT_TRAY.M+</title><path d="M750,779 C835,779 835,816 920,816" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="D24" data-from="BTS3.M-" data-to="ACT_TRAY.M-" data-status="planned"><title>D24: BTS3.M- -&gt; ACT_TRAY.M-</title><path d="M750,799 C835,799 835,836 920,836" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="D25" data-from="PICO.3V3" data-to="BTS1.VCC" data-status="planned"><title>D25: PICO.3V3 -&gt; BTS1.VCC</title><path d="M310,197 C395,197 395,197 480,197" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
@@ -185,15 +185,15 @@
 <line x1="920" y1="292" x2="1190" y2="292" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="1055" y="296" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">POT_LO</text>
 </g>
-<g data-device="FB" data-status="tbc"><title>FB: Blade fuse block - Needs 16 ways. The 12-way on the parts list is too small, so use an 18 to 20-way or two 12-ways</title><rect x="920" y="336" width="270" height="109" rx="6" fill="#f0f6ff" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
+<g data-device="FB" data-status="tbc"><title>FB: Blade fuse block - 13 fuses in use. Small loads that can go out together share a fuse (front bars in pairs, trailer tail + stop). The winch, control box power, key, power hold and each actuator keep their own. A 20-way leaves 7 spares</title><rect x="920" y="336" width="270" height="109" rx="6" fill="#f0f6ff" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
 <text x="930" y="354" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Blade fuse block</text>
 <text x="930" y="369" font-size="10" text-anchor="start" font-weight="normal" fill="#bf8700">FB · tbc</text>
 <line x1="920" y1="383" x2="1190" y2="383" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="387" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F13  BTS7960 1 diff</text>
+<text x="1055" y="387" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F10  BTS7960 1 diff</text>
 <line x1="920" y1="403" x2="1190" y2="403" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="407" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F14  BTS7960 2 4WD</text>
+<text x="1055" y="407" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F11  BTS7960 2 4WD</text>
 <line x1="920" y1="423" x2="1190" y2="423" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="427" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F15  BTS7960 3 tray</text>
+<text x="1055" y="427" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F12  BTS7960 3 tray</text>
 </g>
 <g data-device="ACT_4WD" data-status="tbc"><title>ACT_4WD: 2WD/4WD actuator - 50 mm actuator, or drive the stock Kawasaki electric 4WD actuator instead</title><rect x="920" y="467" width="270" height="89" rx="6" fill="#f4f4f4" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
 <text x="930" y="485" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">2WD/4WD actuator</text>

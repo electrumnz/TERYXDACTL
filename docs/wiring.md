@@ -17,6 +17,12 @@ starting point for the bench build.
 - Disconnect the 12V battery (and the traction pack isolator) before any work.
 - Every 12V feed gets a fuse **as close to the battery or fuse block as you can**.
 - Grounds: one solid ground point near the fuse block, star-wired from there.
+- Sharing a fuse is fine only for small loads that can go out together without
+  making anything unsafe: the front bars in pairs (outer 1+4, inner 2+3, so a
+  blown fuse still leaves light on both sides) and the trailer tail + stop.
+  The winch coils, the hand winch switches, the key, the power hold and each
+  actuator keep their own fuse, so one fault can't take out the backup too or
+  let a stalled actuator blow another one's fuse.
   Keep the traction pack (72V) completely separate from the 12V system.
 - The Pi, Pico and their boards are 3.3V/5V logic. **Never** put 12V on a Pico,
   Pi, MCP23017 or ADS1115 pin. 12V signals go through the opto board first.
@@ -29,7 +35,7 @@ starting point for the bench build.
 flowchart LR
   BATT["12V aux battery<br/>(charged by Shinegle DC-DC)"]
   BATT -- "35mm² + 250A breaker" --> WSOL["Winch solenoid box"] --> WINCH["XBull 5000lb winch"]
-  BATT -- "10mm² + 60A main fuse" --> FB["18-20 way fuse block"]
+  BATT -- "10mm² + 60A main fuse" --> FB["20 way fuse block (13 used)"]
   KEY["Key switch (12V when on)"] --> RAIL
   FB -- "7.5A" --> HOLD["Relay 8 power.hold<br/>(contacts parallel to key)"] --> RAIL["Dash 12V rail"]
   RAIL -- "5V 5A buck" --> PI["Pi 5 + 10.1in screen"]
@@ -122,8 +128,8 @@ ground (0x48). RESET on the MCP23017 to 3.3V through 10kΩ.
 | MCP23017 | Relay | Load side (COM → NO) |
 |---|---|---|
 | A0 | 1 | Fuse block 10A → rear pods + |
-| A1 | 2 | Fuse block 5A → trailer plug tail pin |
-| A2 | 3 | Fuse block 5A → trailer plug brake pin |
+| A1 | 2 | Fuse block 7.5A (shared with relay 3) → trailer plug tail pin |
+| A2 | 3 | Fuse block 7.5A (shared with relay 2) → trailer plug brake pin |
 | A3 | 4 | Fuse block 3A → winch solenoid box "in" coil wire |
 | A4 | 5 | Fuse block 3A → winch solenoid box "out" coil wire |
 | A5 | 6 | Fuse block 3A → winch isolator/contactor coil |
@@ -175,10 +181,10 @@ limit" and stops the tray instead of letting it run.
 ### Lights (MOSFET board)
 | Pico | MOSFET channel | Light | Fuse | Wire |
 |---|---|---|---|---|
-| GP16 | 1 | Front bar 1 (far left) | 10A | 1.5mm² |
-| GP17 | 2 | Front bar 2 (inner left) | 10A | 1.5mm² |
-| GP18 | 3 | Front bar 3 (inner right) | 10A | 1.5mm² |
-| GP19 | 4 | Front bar 4 (far right) | 10A | 1.5mm² |
+| GP16 | 1 | Front bar 1 (far left) | 15A (shared with bar 4) | 1.5mm² |
+| GP17 | 2 | Front bar 2 (inner left) | 15A (shared with bar 3) | 1.5mm² |
+| GP18 | 3 | Front bar 3 (inner right) | 15A (shared with bar 2) | 1.5mm² |
+| GP19 | 4 | Front bar 4 (far right) | 15A (shared with bar 1) | 1.5mm² |
 | GP20 | 5 | Interior bar | 5A | 1mm² |
 
 These are low-side switches: the light's **+** goes to its fuse, the light's

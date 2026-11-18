@@ -14,38 +14,34 @@
 <text x="920" y="96" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">Placeholder / later</text>
 <text x="40" y="120" font-size="11" text-anchor="start" font-weight="normal" fill="#57606a">Labels: wire id, size, fuse (if the wire has its own), and anything in between. Faded = optional. Hover for notes. Full table: docs/wiring/README.md</text>
 <g data-wire="LT01" data-from="FB.F1" data-to="LB1.pos" data-status="planned"><title>LT01: FB.F1 -&gt; LB1.pos</title><path d="M310,197 C395,197 395,197 480,197" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="LT02" data-from="FB.F2" data-to="LB2.pos" data-status="planned"><title>LT02: FB.F2 -&gt; LB2.pos</title><path d="M310,217 C395,217 395,308 480,308" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="LT03" data-from="FB.F3" data-to="LB3.pos" data-status="planned"><title>LT03: FB.F3 -&gt; LB3.pos</title><path d="M310,237 C395,237 395,419 480,419" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="LT04" data-from="FB.F4" data-to="LB4.pos" data-status="planned"><title>LT04: FB.F4 -&gt; LB4.pos</title><path d="M310,257 C395,257 395,530 480,530" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="LT05" data-from="FB.F5" data-to="LB_INT.pos" data-status="planned"><title>LT05: FB.F5 -&gt; LB_INT.pos</title><path d="M310,277 C395,277 395,641 480,641" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT02" data-from="FB.F2" data-to="LB2.pos" data-status="planned"><title>LT02: FB.F2 -&gt; LB2.pos</title><path d="M310,217 C395,217 395,419 480,419" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT03" data-from="FB.F2" data-to="LB3.pos" data-status="planned"><title>LT03: FB.F2 -&gt; LB3.pos</title><path d="M310,217 C395,217 395,530 480,530" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT04" data-from="FB.F1" data-to="LB4.pos" data-status="planned"><title>LT04: FB.F1 -&gt; LB4.pos</title><path d="M310,197 C395,197 395,308 480,308" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT05" data-from="FB.F3" data-to="LB_INT.pos" data-status="planned"><title>LT05: FB.F3 -&gt; LB_INT.pos</title><path d="M310,237 C395,237 395,641 480,641" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="LT06" data-from="LB1.neg" data-to="MOSFET.OUT1" data-status="planned"><title>LT06: LB1.neg -&gt; MOSFET.OUT1</title><path d="M750,217 C835,217 835,297 920,297" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="LT07" data-from="LB2.neg" data-to="MOSFET.OUT2" data-status="planned"><title>LT07: LB2.neg -&gt; MOSFET.OUT2</title><path d="M750,328 C835,328 835,317 920,317" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="LT08" data-from="LB3.neg" data-to="MOSFET.OUT3" data-status="planned"><title>LT08: LB3.neg -&gt; MOSFET.OUT3</title><path d="M750,439 C835,439 835,337 920,337" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="LT09" data-from="LB4.neg" data-to="MOSFET.OUT4" data-status="planned"><title>LT09: LB4.neg -&gt; MOSFET.OUT4</title><path d="M750,550 C835,550 835,357 920,357" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT07" data-from="LB2.neg" data-to="MOSFET.OUT2" data-status="planned"><title>LT07: LB2.neg -&gt; MOSFET.OUT2</title><path d="M750,439 C835,439 835,317 920,317" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT08" data-from="LB3.neg" data-to="MOSFET.OUT3" data-status="planned"><title>LT08: LB3.neg -&gt; MOSFET.OUT3</title><path d="M750,550 C835,550 835,337 920,337" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT09" data-from="LB4.neg" data-to="MOSFET.OUT4" data-status="planned"><title>LT09: LB4.neg -&gt; MOSFET.OUT4</title><path d="M750,328 C835,328 835,357 920,357" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="LT10" data-from="LB_INT.neg" data-to="MOSFET.OUT5" data-status="planned"><title>LT10: LB_INT.neg -&gt; MOSFET.OUT5</title><path d="M750,661 C835,661 835,377 920,377" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="LT11" data-from="PICO.GP16" data-to="MOSFET.IN1" data-status="planned"><title>LT11: PICO.GP16 -&gt; MOSFET.IN1 - light.front_1 PWM</title><path d="M1360,197 C1275,197 1275,197 1190,197" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
 <g data-wire="LT12" data-from="PICO.GP17" data-to="MOSFET.IN2" data-status="planned"><title>LT12: PICO.GP17 -&gt; MOSFET.IN2 - light.front_2 PWM</title><path d="M1360,217 C1275,217 1275,217 1190,217" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
 <g data-wire="LT13" data-from="PICO.GP18" data-to="MOSFET.IN3" data-status="planned"><title>LT13: PICO.GP18 -&gt; MOSFET.IN3 - light.front_3 PWM</title><path d="M1360,237 C1275,237 1275,237 1190,237" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
 <g data-wire="LT14" data-from="PICO.GP19" data-to="MOSFET.IN4" data-status="planned"><title>LT14: PICO.GP19 -&gt; MOSFET.IN4 - light.front_4 PWM</title><path d="M1360,257 C1275,257 1275,257 1190,257" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
 <g data-wire="LT15" data-from="PICO.GP20" data-to="MOSFET.IN5" data-status="planned"><title>LT15: PICO.GP20 -&gt; MOSFET.IN5 - light.interior PWM</title><path d="M1360,277 C1275,277 1275,277 1190,277" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="LT16" data-from="FB.F6" data-to="RELAYS.COM1" data-status="planned"><title>LT16: FB.F6 -&gt; RELAYS.COM1</title><path d="M310,297 C395,297 395,752 480,752" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT16" data-from="FB.F4" data-to="RELAYS.COM1" data-status="planned"><title>LT16: FB.F4 -&gt; RELAYS.COM1</title><path d="M310,257 C395,257 395,752 480,752" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="LT17" data-from="RELAYS.NO1" data-to="FLOOD_L.pos" data-status="planned"><title>LT17: RELAYS.NO1 -&gt; FLOOD_L.pos - light.rear, auto on in reverse</title><path d="M750,772 C835,772 835,468 920,468" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="LT18" data-from="RELAYS.NO1" data-to="FLOOD_R.pos" data-status="planned"><title>LT18: RELAYS.NO1 -&gt; FLOOD_R.pos</title><path d="M750,772 C835,772 835,559 920,559" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-device="FB" data-status="tbc"><title>FB: Blade fuse block - Needs 16 ways. The 12-way on the parts list is too small, so use an 18 to 20-way or two 12-ways</title><rect x="40" y="150" width="270" height="169" rx="6" fill="#f0f6ff" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
+<g data-device="FB" data-status="tbc"><title>FB: Blade fuse block - 13 fuses in use. Small loads that can go out together share a fuse (front bars in pairs, trailer tail + stop). The winch, control box power, key, power hold and each actuator keep their own. A 20-way leaves 7 spares</title><rect x="40" y="150" width="270" height="129" rx="6" fill="#f0f6ff" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
 <text x="50" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Blade fuse block</text>
 <text x="50" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#bf8700">FB · tbc</text>
 <line x1="40" y1="197" x2="310" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F1  front bar 1</text>
+<text x="175" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F1  front bars 1 + 4 (outer pair)</text>
 <line x1="40" y1="217" x2="310" y2="217" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F2  front bar 2</text>
+<text x="175" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F2  front bars 2 + 3 (inner pair)</text>
 <line x1="40" y1="237" x2="310" y2="237" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="241" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F3  front bar 3</text>
+<text x="175" y="241" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F3  interior bar</text>
 <line x1="40" y1="257" x2="310" y2="257" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="261" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F4  front bar 4</text>
-<line x1="40" y1="277" x2="310" y2="277" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="281" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F5  interior bar</text>
-<line x1="40" y1="297" x2="310" y2="297" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="301" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F6  relay 1 rear floods</text>
+<text x="175" y="261" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F4  relay 1 rear floods</text>
 </g>
 <g data-device="LB1" data-status="confirmed"><title>LB1: Front bar 1 (far left)</title><rect x="480" y="150" width="270" height="89" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
 <text x="490" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Front bar 1 (far left)</text>
@@ -55,25 +51,25 @@
 <line x1="480" y1="217" x2="750" y2="217" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">neg</text>
 </g>
-<g data-device="LB2" data-status="confirmed"><title>LB2: Front bar 2 (inner left)</title><rect x="480" y="261" width="270" height="89" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
-<text x="490" y="279" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Front bar 2 (inner left)</text>
-<text x="490" y="294" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">LB2 · confirmed</text>
+<g data-device="LB4" data-status="confirmed"><title>LB4: Front bar 4 (far right)</title><rect x="480" y="261" width="270" height="89" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
+<text x="490" y="279" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Front bar 4 (far right)</text>
+<text x="490" y="294" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">LB4 · confirmed</text>
 <line x1="480" y1="308" x2="750" y2="308" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="312" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">pos</text>
 <line x1="480" y1="328" x2="750" y2="328" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="332" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">neg</text>
 </g>
-<g data-device="LB3" data-status="confirmed"><title>LB3: Front bar 3 (inner right)</title><rect x="480" y="372" width="270" height="89" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
-<text x="490" y="390" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Front bar 3 (inner right)</text>
-<text x="490" y="405" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">LB3 · confirmed</text>
+<g data-device="LB2" data-status="confirmed"><title>LB2: Front bar 2 (inner left)</title><rect x="480" y="372" width="270" height="89" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
+<text x="490" y="390" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Front bar 2 (inner left)</text>
+<text x="490" y="405" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">LB2 · confirmed</text>
 <line x1="480" y1="419" x2="750" y2="419" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="423" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">pos</text>
 <line x1="480" y1="439" x2="750" y2="439" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="443" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">neg</text>
 </g>
-<g data-device="LB4" data-status="confirmed"><title>LB4: Front bar 4 (far right)</title><rect x="480" y="483" width="270" height="89" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
-<text x="490" y="501" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Front bar 4 (far right)</text>
-<text x="490" y="516" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">LB4 · confirmed</text>
+<g data-device="LB3" data-status="confirmed"><title>LB3: Front bar 3 (inner right)</title><rect x="480" y="483" width="270" height="89" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
+<text x="490" y="501" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Front bar 3 (inner right)</text>
+<text x="490" y="516" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">LB3 · confirmed</text>
 <line x1="480" y1="530" x2="750" y2="530" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="534" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">pos</text>
 <line x1="480" y1="550" x2="750" y2="550" stroke="#d0d7de" stroke-width="0.5"/>
@@ -145,22 +141,22 @@
 <line x1="1360" y1="277" x2="1630" y2="277" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="1495" y="281" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP20</text>
 </g>
-<text x="318" y="194" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT01  1.5 mm²</text>
-<text x="318" y="214" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT02  1.5 mm²</text>
-<text x="318" y="234" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT03  1.5 mm²</text>
-<text x="318" y="254" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT04  1.5 mm²</text>
-<text x="318" y="274" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT05  1 mm²</text>
+<text x="472" y="194" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT01  1.5 mm²</text>
+<text x="472" y="416" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT02  1.5 mm²</text>
+<text x="472" y="527" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT03  1.5 mm²</text>
+<text x="472" y="305" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT04  1.5 mm²</text>
+<text x="318" y="234" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT05  1 mm²</text>
 <text x="758" y="214" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT06  1.5 mm²</text>
-<text x="758" y="325" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT07  1.5 mm²</text>
-<text x="758" y="436" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT08  1.5 mm²</text>
-<text x="758" y="547" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT09  1.5 mm²</text>
+<text x="758" y="436" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT07  1.5 mm²</text>
+<text x="758" y="547" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT08  1.5 mm²</text>
+<text x="758" y="325" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT09  1.5 mm²</text>
 <text x="758" y="658" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT10  1 mm²</text>
 <text x="1352" y="194" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT11</text>
 <text x="1352" y="214" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT12</text>
 <text x="1352" y="234" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT13</text>
 <text x="1352" y="254" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT14</text>
 <text x="1352" y="274" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT15</text>
-<text x="318" y="294" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT16  1.5 mm²</text>
+<text x="318" y="254" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT16  1.5 mm²</text>
 <text x="912" y="465" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT17  1.5 mm²  10 A</text>
 <text x="912" y="556" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT18  1.5 mm²  10 A</text>
 </svg>

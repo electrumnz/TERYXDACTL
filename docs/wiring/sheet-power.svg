@@ -14,9 +14,9 @@
 <text x="920" y="96" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">Placeholder / later</text>
 <text x="40" y="120" font-size="11" text-anchor="start" font-weight="normal" fill="#57606a">Labels: wire id, size, fuse (if the wire has its own), and anything in between. Faded = optional. Hover for notes. Full table: docs/wiring/README.md</text>
 <g data-wire="P01" data-from="BAT12.pos" data-to="FB.IN" data-status="planned"><title>P01: BAT12.pos -&gt; FB.IN - 60 A main fuse at the battery. Was 6 mm² in wiring.md, which the table only rates to 40 A</title><path d="M310,197 C395,197 395,197 480,197" fill="none" stroke="#424a53" stroke-width="3.2"/></g>
-<g data-wire="P02" data-from="FB.F16" data-to="KEY.BAT" data-status="planned"><title>P02: FB.F16 -&gt; KEY.BAT</title><path d="M750,257 C835,257 835,368 920,368" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="P02" data-from="FB.F13" data-to="KEY.BAT" data-status="planned"><title>P02: FB.F13 -&gt; KEY.BAT</title><path d="M750,257 C835,257 835,368 920,368" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="P03" data-from="KEY.IGN" data-to="RAIL.BUS" data-status="planned"><title>P03: KEY.IGN -&gt; RAIL.BUS</title><path d="M1190,388 C1250,388 1250,479 1190,479" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="P04" data-from="FB.F12" data-to="RELAYS.COM8" data-status="planned"><title>P04: FB.F12 -&gt; RELAYS.COM8</title><path d="M750,237 C835,237 835,237 920,237" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="P04" data-from="FB.F9" data-to="RELAYS.COM8" data-status="planned"><title>P04: FB.F9 -&gt; RELAYS.COM8</title><path d="M750,237 C835,237 835,237 920,237" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="P05" data-from="RELAYS.NO8" data-to="RAIL.BUS" data-status="planned"><title>P05: RELAYS.NO8 -&gt; RAIL.BUS - Power hold, in parallel with the key</title><path d="M1190,277 C1250,277 1250,479 1190,479" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="P06" data-from="RAIL.BUS" data-to="TVS.K" data-status="planned"><title>P06: RAIL.BUS -&gt; TVS.K</title><path d="M1190,479 C1275,479 1275,288 1360,288" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="P07" data-from="RAIL.BUS" data-to="PI_BUCK.VIN" data-status="planned"><title>P07: RAIL.BUS -&gt; PI_BUCK.VIN</title><path d="M1190,479 C1275,479 1275,379 1360,379" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
@@ -27,7 +27,7 @@
 <g data-wire="P12" data-from="PICO_BUCK.VOUT" data-to="RELAYS2.JDVCC" data-status="planned"><title>P12: PICO_BUCK.VOUT -&gt; RELAYS2.JDVCC</title><path d="M1630,510 C1715,510 1715,379 1800,379" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
 <g data-wire="P13" data-from="RAIL.BUS" data-to="SCREEN_PSU.VIN" data-status="tbc"><title>P13: RAIL.BUS -&gt; SCREEN_PSU.VIN - Fuse size depends on the screen&#x27;s draw</title><path d="M1190,479 C1275,479 1275,601 1360,601" fill="none" stroke="#bf8700" stroke-width="2.2" stroke-dasharray="7 4"/></g>
 <g data-wire="P14" data-from="SCREEN_PSU.VOUT" data-to="SCREEN.DC_IN" data-status="tbc"><title>P14: SCREEN_PSU.VOUT -&gt; SCREEN.DC_IN</title><path d="M1630,621 C1715,621 1715,470 1800,470" fill="none" stroke="#bf8700" stroke-width="2.2" stroke-dasharray="7 4"/></g>
-<g data-wire="P15" data-from="FB.F11" data-to="RELAYS.COM7" data-status="planned"><title>P15: FB.F11 -&gt; RELAYS.COM7 - Accessory 12 V, on with ignition</title><path d="M750,217 C835,217 835,217 920,217" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="P15" data-from="FB.F8" data-to="RELAYS.COM7" data-status="planned"><title>P15: FB.F8 -&gt; RELAYS.COM7 - Accessory 12 V, on with ignition</title><path d="M750,217 C835,217 835,217 920,217" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="P20" data-from="RELAYS.NO7" data-to="GLOVE_USB.VIN" data-status="planned"><title>P20: RELAYS.NO7 -&gt; GLOVE_USB.VIN - 3 A inline fuse. Charges the RC phone with the key on; the control box may hold it on for a while after key-off (TBC)</title><path d="M1190,257 C1275,257 1275,197 1360,197" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
 <g data-wire="P16" data-from="BAT12.pos" data-to="AMP.B+" data-status="planned"><title>P16: BAT12.pos -&gt; AMP.B+ - Own fuse at the battery. 4 x 50 W can pull 20-30 A</title><path d="M310,197 C395,197 395,348 480,348" fill="none" stroke="#424a53" stroke-width="3.2" stroke-opacity="0.65"/></g>
 <g data-wire="P17" data-from="RAIL.BUS" data-to="AMP.REM" data-status="planned"><title>P17: RAIL.BUS -&gt; AMP.REM - Remote turn-on, goes off with the rail</title><path d="M920,479 C835,479 835,368 750,368" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
@@ -39,17 +39,17 @@
 <line x1="40" y1="197" x2="310" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="175" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">pos</text>
 </g>
-<g data-device="FB" data-status="tbc"><title>FB: Blade fuse block - Needs 16 ways. The 12-way on the parts list is too small, so use an 18 to 20-way or two 12-ways</title><rect x="480" y="150" width="270" height="129" rx="6" fill="#f0f6ff" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
+<g data-device="FB" data-status="tbc"><title>FB: Blade fuse block - 13 fuses in use. Small loads that can go out together share a fuse (front bars in pairs, trailer tail + stop). The winch, control box power, key, power hold and each actuator keep their own. A 20-way leaves 7 spares</title><rect x="480" y="150" width="270" height="129" rx="6" fill="#f0f6ff" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
 <text x="490" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Blade fuse block</text>
 <text x="490" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#bf8700">FB · tbc</text>
 <line x1="480" y1="197" x2="750" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN</text>
 <line x1="480" y1="217" x2="750" y2="217" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F11  relay 7 accessory</text>
+<text x="615" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F8  relay 7 accessory</text>
 <line x1="480" y1="237" x2="750" y2="237" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="241" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F12  relay 8 power hold</text>
+<text x="615" y="241" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F9  relay 8 power hold</text>
 <line x1="480" y1="257" x2="750" y2="257" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="261" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F16  key switch</text>
+<text x="615" y="261" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F13  key switch</text>
 </g>
 <g data-device="AMP" data-status="planned"><title>AMP: 12 V marine amp</title><rect x="480" y="301" width="270" height="89" rx="6" fill="#f0f6ff" stroke="#424a53" stroke-width="1.5"/>
 <text x="490" y="319" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">12 V marine amp</text>
