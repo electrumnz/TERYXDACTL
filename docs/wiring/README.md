@@ -10,7 +10,7 @@ Why things are wired this way (power hold, diodes, CAN rules): [`docs/wiring.md`
 Viewer with search: [`index.html`](index.html), also online at
 <https://electrumnz.github.io/TERYXDACTL/wiring/>.
 
-**79 devices, 250 wires.** By status: 19 from_manual, 3 confirmed, 197 planned, 26 tbc, 5 placeholder.
+**79 devices, 255 wires.** By status: 19 from_manual, 3 confirmed, 201 planned, 28 tbc, 4 placeholder.
 Nothing has been checked on the real Teryx yet.
 
 Wire sizes follow the conservative table in the YAML (from
@@ -74,11 +74,11 @@ runs up to about 5 m). Go one size up for bundled or hot runs.
 - [ ] **Main contactor** (CONTACTOR): Is there a main contactor between the pack and the controller? Photo it and trace its two small coil wires
 - [ ] **DC-DC converter 72 V to 12 V** (DCDC): DC-DC label (amps out), where its 72 V feed comes from, and whether it is isolated (does its 12 V negative join the pack negative?)
 - [ ] **Shinegle kit key switch** (KIT_KEY): Is the kit key the same switch as the Teryx key? Meter what voltage reaches J1-1 with the key on (12 V or 72 V)
-- [ ] **Blade fuse block** (FB): Read the front bar labels. Each pair (1+4, 2+3) must draw under about 12 A together (about 140 W) to share a 15 A fuse. If not, give each bar its own 10 A again
+- [ ] **Blade fuse block** (FB): Check the 12-way's rating (want 30 A per way, about 100 A total, a cover). Read the front bar labels. Each pair (1+4, 2+3) must draw under about 12 A together (about 140 W) to share a 15 A fuse. If not, give each bar its own 10 A again
 - [ ] **Screen 12 V supply** (SCREEN_PSU): Read the label on the screen's power brick (volts and amps)
 - [ ] **16-ch relay board, channels 1-8** (RELAYS): Does the relay board click from 3.3 V logic? Active high or low? Relays are SRD-05VDC type, 10 A at 28-30 V DC. Keep each load under about 7 A. Only rear floods (relay 1) could get near that, so read the pod labels (two pods + trailer reverse under about 80 W). If over, relay 1 drives a 40 A automotive relay instead
 - [ ] **16-ch relay board, channels 9-16 (2 used, 6 spare)** (RELAYS2): Relay 10 is rated 30 V DC. If the Shinegle KSI turns out to be 72 V (see KIT_KEY), swap relay 10 for one rated 80 V DC or more
-- [ ] **8-ch isolated MOSFET board (low side, 5 used, 3 spare)** (MOSFET): The listing must say 3.3 V input, at least 24 V load and 10 A per channel. If it only says 5 A, use single LR7843 modules instead
+- [ ] **8-ch isolated MOSFET board (low side, 6 used, 2 spare)** (MOSFET): The listing must say 3.3 V input, at least 24 V load and 10 A per channel. If it only says 5 A, use single LR7843 modules instead
 - [ ] **Rear flood left (4 in pod)** (FLOOD_L): Light bars and pods dim with PWM? Test one on a cheap dimmer
 - [ ] **Winch isolator contactor** (WINCH_ISO): Do the remote and hand switches need to work with the dash dead? If so the isolator needs a second coil feed from a hidden key switch
 - [ ] **XBull solenoid box** (WINCH_SOL): Photo the XBull solenoid box terminals and the remote plug pins
@@ -88,8 +88,9 @@ runs up to about 5 m). Go one size up for bundled or hot runs.
 - [ ] **Toyota Aqua EPS ECU (89650-52B51)** (EPS_ECU): Photo both EPS ECU plugs (pin numbers and wire colours) when the column is picked up
 - [ ] **Aqua steering column (motor + torque sensor)** (EPS_COL): Measure the space from the steering wheel to where the Teryx shaft goes to the rack
 - [ ] **7-pin flat trailer socket (Narva 82043BL, reed switch)** (TRAILER): Which way does the Narva reed switch switch, and what triggers it?
+- [ ] **Analogue video to camera-ribbon (CSI) board, ADV7280-M (rear + trailer)** (TCAM_DONGLE): Confirm the board works on the Pi 5 (dtoverlay=adv728x-m,adv7280m=1); set each AHD camera to CVBS/PAL (OSD menu or mode wire)
 - [ ] **Glove box USB-C charger (RC phone)** (GLOVE_USB): Pick a 12 V USB-C PD panel socket (waterproof cap, about 20-30 W)
-- [ ] **Rear camera (2K)** (CAM_REAR): Rear camera USB or RCA/AHD? Photo its plug
+- [ ] **Rear camera (200 degree, Sam's)** (CAM_REAR): Rear camera: AHD with a CVBS mode? Photo its plug and label
 
 Wires marked TBC, with what's unknown:
 
@@ -104,7 +105,8 @@ Wires marked TBC, with what's unknown:
 - D33 EPS_ECU.MOTOR to EPS_COL.MOTOR: Toyota's own plug, keep it from the wrecker
 - T05 BRAKE_SW.OUT to TRAILER.P6_STOP: Trailer brake lights still work with the control box off
 - T06 RELAYS.NO1 to TRAILER.P2_REV: Reversing pin. Relay 1 also runs the floods by hand, so trailer reverse lights would come on with them
-- X03 CAM_REAR.USB to PI5.USB3_A: Or a UVC capture dongle if it's an RCA/AHD camera
+- X03 CAM_REAR.VID to TCAM_DONGLE.VID_R: Shielded video lead, soldered
+- X04 TCAM_DONGLE.CSI to PI5.CSI1: Camera ribbon, 2nd port
 
 ## Fuse block
 
@@ -442,6 +444,11 @@ Fuses not in the block (inline, at the battery or on a board):
 | T09 | CAM_TRAILER.VID | TCAM_PLUG.VID |  |  |  | planned (optional) |  |
 | T10 | CAM_TRAILER.VID_GND | TCAM_PLUG.VID_GND |  |  |  | planned (optional) |  |
 | T11 | TCAM_PLUG.VID | TCAM_DONGLE.VID |  |  |  | planned (optional) | Shielded video cable |
+| T13 | FB.IN | TCAM_PLUG.LB_POS | 1.5 mm² | 10 A |  | planned (optional) | Own 10 A inline fuse off the fuse block's feed stud (the 12-way is full) |
+| T14 | TCAM_PLUG.LB_POS | LB_TRL.pos | 1.5 mm² |  |  | planned (optional) |  |
+| T15 | LB_TRL.neg | TCAM_PLUG.LB_NEG | 1.5 mm² |  |  | planned (optional) |  |
+| T16 | TCAM_PLUG.LB_NEG | MOSFET.OUT6 | 1.5 mm² |  |  | planned (optional) |  |
+| T17 | MCP2.GPB7 | MOSFET.IN6 |  |  |  | planned (optional) | light.trailer on/off (the Pico has no free PWM pin) |
 | T12 | TCAM_PLUG.VID_GND | TCAM_DONGLE.VID_GND |  |  |  | planned (optional) |  |
 
 ### Dash computer: Pi 5, screen, cameras, USB, audio
@@ -450,11 +457,11 @@ Fuses not in the block (inline, at the battery or on a board):
 |---|---|---|---|---|---|---|---|
 | X01 | PI5.HDMI0 | SCREEN.HDMI |  |  |  | planned |  |
 | X02 | SCREEN.USB | PI5.USB2_B |  |  |  | planned | Touch. Screen only does touch over USB. Right-angle lead, cable-tied to the box |
-| X03 | CAM_REAR.USB | PI5.USB3_A |  |  |  | tbc | Or a UVC capture dongle if it's an RCA/AHD camera |
-| X04 | TCAM_DONGLE.USB | PI5.USB3_B |  |  |  | planned (optional) | Other USB controller from the rear camera |
+| X03 | CAM_REAR.VID | TCAM_DONGLE.VID_R |  |  |  | tbc | Shielded video lead, soldered |
+| X03b | CAM_REAR.VID_GND | TCAM_DONGLE.VID_R_GND |  |  |  | tbc |  |
+| X04 | TCAM_DONGLE.CSI | PI5.CSI1 |  |  |  | tbc | Camera ribbon, 2nd port |
 | X07 | CARPLAY.USB | PI5.USB2_A |  |  |  | planned (optional) | CarPlay dongle is USB only. Right-angle lead, dongle zip-tied down inside the box |
 | X11 | CAM_FRONT.CSI | PI5.CSI0 |  |  |  | planned |  |
-| X12 | CAM_CABIN.CSI | PI5.CSI1 |  |  |  | placeholder (optional) |  |
 | X13 | AIHAT.PCIE | PI5.PCIE |  |  |  | placeholder (optional) | Keep the PCIe port free for this |
 | X14 | AIHAT.HDR | PI5.HAT_HDR |  |  |  | placeholder (optional) | 16 mm stacking header over the Active Cooler |
 | X15 | PI5.P1_3V3 | PI_CAN.VCC |  |  |  | planned |  |
@@ -495,7 +502,7 @@ Fuses not in the block (inline, at the battery or on a board):
 | PROG | SG1810 handheld programmer | cab | from_manual (optional) | Only plugged in for setup. Carries 12 V, never into USB See [`docs/shinegle-sg1810-programmer.md`](../../docs/shinegle-sg1810-programmer.md). |
 | BAT12 | 12 V aux battery | engine_bay | confirmed | Kept after the conversion. Charged by the DC-DC |
 | GND_STAR | Ground point (star) | engine_bay | planned | One solid chassis ground near the fuse block. Every 12 V ground goes here |
-| FB | Blade fuse block | cab | tbc | 12 fuses in use. Small loads that can go out together share a fuse (front bars in pairs, trailer tail + stop, interior bar + accessory). All four front bars are NOT on one fuse, so one fault can't black out the front at night. The winch, control box power, key, power hold and each actuator keep their own. A 20-way leaves 8 spares |
+| FB | Blade fuse block | cab | tbc | 12 fuses in use. Small loads that can go out together share a fuse (front bars in pairs, trailer tail + stop, interior bar + accessory). All four front bars are NOT on one fuse, so one fault can't black out the front at night. The winch, control box power, key, power hold and each actuator keep their own. Sam's 12-way (in the post) is used, so it is full with no spares; add a small 6-way next to it if more circuits come |
 | KEY | Teryx key switch | cab | confirmed |  |
 | RAIL | Dash 12 V rail | dash | planned | Key OR relay 8 (power hold). Stays up after key-off until the Pico lets go See [`docs/wiring.md`](../../docs/wiring.md). |
 | TVS | 1.5KE18A TVS diode | dash | planned | Clamps spikes on the dash rail |
@@ -516,12 +523,13 @@ Fuses not in the block (inline, at the battery or on a board):
 | BTS1 | BTS7960 1 (front diff) | control_box | confirmed |  |
 | BTS2 | BTS7960 2 (2WD/4WD) | control_box | planned |  |
 | BTS3 | BTS7960 3 (tray) | control_box | planned |  |
-| MOSFET | 8-ch isolated MOSFET board (low side, 5 used, 3 spare) | control_box | planned | One 8-channel opto-isolated MOSFET board (3.3 V input version), one channel per light bar, 3 spare. About 6 A per front bar. Low side switching, so each bar's + comes from its fuse and its - goes to an OUT pin |
+| MOSFET | 8-ch isolated MOSFET board (low side, 6 used, 2 spare) | control_box | planned | One 8-channel opto-isolated MOSFET board (3.3 V input version), one channel per light bar, 3 spare. About 6 A per front bar. Low side switching, so each bar's + comes from its fuse and its - goes to an OUT pin |
 | LB1 | Front bar 1 (far left) | front | confirmed |  |
 | LB2 | Front bar 2 (inner left) | front | confirmed |  |
 | LB3 | Front bar 3 (inner right) | front | confirmed |  |
 | LB4 | Front bar 4 (far right) | front | confirmed |  |
 | LB_INT | Interior 7 in bar | cab | confirmed |  |
+| LB_TRL | Trailer light bar (Sam's spare) | trailer | planned (optional) | On the trailer, through the 8-pin plug. On/off from the dash and the phone remote; only live when the trailer plug is in |
 | FLOOD_L | Rear flood left (4 in pod) | rear | confirmed | Outside of the roll cage mounting plate. Also the reverse light |
 | FLOOD_R | Rear flood right (4 in pod) | rear | confirmed |  |
 | BRK_WINCH | 250 A breaker | engine_bay | planned |  |
@@ -543,17 +551,16 @@ Fuses not in the block (inline, at the battery or on a board):
 | EPS_ECU | Toyota Aqua EPS ECU (89650-52B51) | cab | tbc (optional) | Wrecker column, bench test with the Prius CAN frames first. ECU plug pinout TBC See [`docs/power-steering-wrecker.md`](../../docs/power-steering-wrecker.md). |
 | EPS_COL | Aqua steering column (motor + torque sensor) | cab | tbc (optional) | Motor and torque sensor plugs go to the ECU on Toyota's own loom |
 | TRAILER | 7-pin flat trailer socket (Narva 82043BL, reed switch) | rear | planned | See [`docs/cameras.md`](../../docs/cameras.md). |
-| TCAM_PLUG | Trailer camera 4-pin plug | rear | planned (optional) | Own small waterproof plug next to the 7-pin (pick from cameras.md) |
+| TCAM_PLUG | Trailer 8-pin plug (camera + light bar), Deutsch DT | rear | planned (optional) | Own waterproof Deutsch DT 8-pin next to the 7-pin (DT04-08PA on the Teryx, DT06-08SA on the trailer lead), 13 A per pin. 1 cam +12 V, 2 cam ground, 3 video, 4 video shield, 5 light bar +12 V, 6 light bar - (switched), 7-8 spare |
 | CAM_TRAILER | Trailer camera (12 V AHD) | trailer | planned (optional) |  |
-| TCAM_DONGLE | UVC capture dongle (trailer camera) | dash | planned (optional) |  |
+| TCAM_DONGLE | Analogue video to camera-ribbon (CSI) board, ADV7280-M (rear + trailer) | dash | tbc | No USB (Sam). The cameras run in CVBS (PAL) mode into this board, which sits in the Pi box on the Pi's 2nd camera ribbon port. ADV7280-M has several analogue inputs picked in software (adv728x-m overlay, adv7180 driver), so it swaps rear/trailer itself, no relay. A spare input can take a small cabin camera later. Pi 5 support for these boards is not proven yet: bench test it first |
 | PI5 | Raspberry Pi 5 8GB | dash | confirmed | The 40-pin header and the PCIe port are kept for the AI HAT+ 2. CAN module wires go to header pins that come up through the HAT See [`docs/wiring.md`](../../docs/wiring.md). |
 | AIHAT | AI HAT+ 2 (later) | dash | placeholder (optional) | Not buying yet. Room, cooling (about 4.5 W) and the PCIe port stay free for it See [`docs/ai-hat-ideas.md`](../../docs/ai-hat-ideas.md). |
 | PI_CAN | MCP2515 CAN module (Pi) | dash | planned | Seeed MCP2515 + SN65HVD230 on the Pi box wall |
 | SCREEN | 10.1 in touch screen | dash | confirmed | 1280x800, HDMI + USB touch, 3.5 mm audio in |
 | GLOVE_USB | Glove box USB-C charger (RC phone) | dash | planned (optional) | 12 V to USB-C PD socket for the phone that lives in the glove box (docs/rc-beach-launch.md 4b). Fed from the accessory relay so it's off with the key off |
-| CAM_REAR | Rear camera (2K) | rear | tbc |  |
+| CAM_REAR | Rear camera (200 degree, Sam's) | rear | tbc | Sam thinks it's AHD. Set to CVBS/PAL mode, soldered shielded video lead to the analogue-to-ribbon board. Rear or trailer is picked in software when the trailer plug is in. 12 V feed TBC |
 | CAM_FRONT | Camera Module 3 Wide (front) | dash | planned | Inside the screen housing, 200-300 mm ribbon |
-| CAM_CABIN | Cabin camera (sentry) | dash | placeholder (optional) | Being worked out in the 4G / sentry thread. Port TBC |
 | MODEM_4G | SIMCom A7670SA 4G board | dash | placeholder (optional) | 6-pin header S G V K T R G. V takes 5-10 V from the spare Mini560 5 V buck. NEVER raw 12 V (10 V max, and the car runs 14.4 V with spikes). K is tied to ground on the board, so it starts by itself. T/R are 115200 baud TTL to the Pi's GPIO 15/14; measure T before connecting (3.3 V ok, else BSS138). Micro USB also on board. Its GNSS (FASE version, u.FL GPS socket on Sam's board) is the dash GPS too, so there is no separate USB GPS. Check on arrival that it gets a fix with the SIM out / 4G off. No USB: it's on the header pins (soldered leads), so texts, GPS and slow data only, no live video over 4G |
 | CARPLAY | Carlinkit CPC200-CCPA | dash | planned (optional) |  |
 | DAC_HAT | Raspberry Pi DAC+ (on jumper leads) | dash | planned (optional) | PCM5122 DAC HAT (ex IQaudio DAC+), RCA line out to the amp. Sits on standoffs in the right-hand end of the Pi box, off the Pi, so the top of the Pi stays free for the AI HAT+ 2. Joined by 7 male-to-female jumper leads (about 20 cm), not a full 40-way ribbon: a ribbon would cover the header pins the CAN board, 4G board and IMU leads plug onto. Uses GPIO 18, 19, 21 (I2S), 2 and 3 (I2C, shared with the IMU: DAC 0x4D, IMU 0x68), 5 V and GND. Nothing else on the Pi uses 18-21 (CAN is SPI0 + GPIO 25, 4G is UART GPIO 14/15). The ID EEPROM pins 27/28 are left off, so it never fights the AI HAT's EEPROM; set the overlay by hand: scripts/audio-setup.sh --i2s iqaudio-dacplus. A dab of hot glue on the leads at both ends against vibration. Later the leads move onto the AI HAT's stacking header pins See [`docs/audio.md`](../../docs/audio.md). |

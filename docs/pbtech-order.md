@@ -21,14 +21,13 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 |---|---|---|---|---|---|
 | [Raspberry Pi 5 8GB](https://www.pbtech.co.nz/product/SEVRBP0502) (SEVRBP0502) | 1 | 371.39 | 371.39 | Checked 17 Nov | On order, ships about 30 Nov; ask in store |
 | [Raspberry Pi Camera Module 3 Wide (front)](https://www.pbtech.co.nz/product/SEVRBP0398) (SEVRBP0398) | 1 | 80.71 | 80.71 | Search result 18 Nov | Out of stock when indexed; alt element14 SC0874 ~NZ$69 |
-| [Raspberry Pi Camera Module 3 NoIR Wide (cabin / sentry face shot)](https://www.pbtech.co.nz/product/SEVRBP0399) (SEVRBP0399) | 1 | 70.00 | 70.00 | About NZ$70 (search result) | Second camera port on the Pi 5 |
-| [Pi 5 camera cable 200mm](https://www.pbtech.com/pacific/product/SEVRBP0541) (SEVRBP0541) | 2 | 2.12 | 4.24 | Search result 18 Nov | One per camera |
+| [Pi 5 camera cable 200mm](https://www.pbtech.com/pacific/product/SEVRBP0541) (SEVRBP0541) | 2 | 2.12 | 4.24 | Search result 18 Nov | Front camera + video board |
 | [Raspberry Pi Pico 2 5-pack](https://www.pbtech.co.nz/product/SEVRBP0628) (SEVRBP0628) | 1 | 47.20 | 47.20 | Checked 17 Nov | Control box, CAN sniffer, steering bench test, 2 spare |
 | [Raspberry Pi 27W USB-C power supply (bench)](https://www.pbtech.co.nz/product/SEVRBP0512) (SEVRBP0512) | 1 | 24.90 | 24.90 | Search result 18 Nov | Bench only |
 | [Raspberry Pi micro HDMI to HDMI cable 1m](https://www.pbtech.co.nz/product/SEVRBP0207) (SEVRBP0207) | 1 | 11.80 | 11.80 | Search result 18 Nov | Alt black SEVRBP0262 ~11.10 |
 | [Raspberry Pi A2 SD card 128GB (OS)](https://www.pbtech.co.nz/product/SEVRBP0538) (SEVRBP0538) | 1 | 47.32 | 47.32 | Search result 18 Nov | Official card, in the Pi's own slot. Not made for non-stop writes, so dashcam/Sentry recording stays off or minimal until extra storage is added |
 | [Raspberry Pi DAC+ HAT (ex IQaudio DAC+, SC0368)](https://www.pbtech.co.nz/product/SEVRBP0313) (SEVRBP0313) | 1 | 35.65 | 35.65 | Search result 18 Nov (out of stock when indexed) | Official board, RCA out. If PB Tech has none: Pakronics NZ ~NZ$40 |
-| **Total** | | | **693.21** | | |
+| **Total** | | | **623.21** | | |
 
 ### AliExpress (one order, 2 to 4 weeks)
 
@@ -36,11 +35,9 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 |---|---|---|---|---|---|
 | Carlinkit CPC200-CCPA (or CCPA-MIC) CarPlay dongle | 1 | 65.00 | 65.00 | US$33-39 x 1.822 | Title must say CCPA + Android head unit; lsusb 1314:1520/1521 |
 | 4-channel class D amp, 4 x 63W RMS at 4 ohm, 2 x 200W bridged, 90Hz HPF/LPF (Sam's pick) | 1 | 100.00 | 100.00 | Sam, AliExpress ~NZ$100 | Ch 1-2 Kenwoods, ch 3-4 kept for a bridged sub later; under the seat, not waterproof |
-| BTS7960 43A H-bridge | 2 | 12.00 | 24.00 | ~US$6-7 each | You have one already; 3 needed |
 | 8-channel PC817 opto board 12V in | 2 | 9.00 | 18.00 | ~US$5 estimate | Board 1 = all 8 inputs; board 2 = 8 spare on MCP2 |
 | 8-channel opto-isolated MOSFET board, 3.3V input version (PWM) | 1 | 22.00 | 22.00 | ~US$12 estimate | Light bars: 5 used, 3 spare. Listing must say 3.3V input, 24V+ load, 10A per channel; if it says 5A, buy 6 single LR7843 modules (~NZ$30) instead |
 | 16-channel 5V relay board, mechanical, opto + JD-VCC jumper, 10A | 1 | 21.00 | 21.00 | ~US$11.28 x 1.822 | 10 used, 6 spare; must have the JD-VCC jumper |
-| 20-way blade fuse block with cover + negative bus | 1 | 40.00 | 40.00 | ~US$15-25 estimate | 12 used, 8 spare; stud feed |
 | Winch isolator contactor, 12V coil, 200A continuous duty | 1 | 30.00 | 30.00 | Estimate | Continuous duty, not a starter solenoid |
 | 250A manual reset circuit breaker (winch) | 1 | 30.00 | 30.00 | Estimate | Leave it out of the cart if one came in the winch box |
 | Waterproof micro limit switch, roller lever (NC) | 3 | 2.67 | 8.01 | Estimate | Tray up/down + 1 spare |
@@ -48,8 +45,8 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | 12V USB-C PD panel socket, 30W, waterproof cap | 1 | 15.00 | 15.00 | Estimate | Glove box phone (RC remote) |
 | MPU-6050 IMU board (roll / pitch) | 1 | 5.00 | 5.00 | Estimate | I2C to the Pi |
 | 12V AHD reversing camera (trailer) | 1 | 30.00 | 30.00 | Estimate |  |
-| 4-pin waterproof aviation plug + socket (trailer camera) | 1 | 8.00 | 8.00 | Estimate | Next to the 7-pin |
-| AHD to USB (UVC) capture dongle | 1 | 25.00 | 25.00 | Estimate |  |
+| Deutsch DT 8-pin kit: DT04-08PA + DT06-08SA, wedgelocks, size 16 pins, seals | 1 | 15.00 | 15.00 | Estimate | Trailer camera + light bar, next to the 7-pin. Needs the Deutsch crimp tool or a careful plier crimp |
+| CVBS (PAL) to MIPI CSI-2 board, ADV7280-M, multi-input | 1 | 120.00 | 120.00 | Estimate. AliExpress search: ADV7282 MIPI CSI (or ADV7280 CSI Raspberry Pi). No official Pi product does this | Chip must be ADV7280-M, ADV7281-M or ADV7282-M (the -M is the ribbon output), 2+ CVBS inputs, Pi camera ribbon socket. Not TP28xx (no Pi driver) or HDMI-to-CSI. Bench test on the Pi 5 |
 | SIMCom A7670SA 4G board (B28, GPS 'FASE' option) | 1 | 28.00 | 28.00 | US$15.46 x 1.822 | Must list B28; V pin from the 2nd Mini560, never raw 12V |
 | 4-channel BSS138 level shifter | 1 | 2.00 | 2.00 | Estimate | Probably not needed; measure the T pin first |
 | Active GPS antenna, SMA male | 1 | 8.00 | 8.00 | Estimate |  |
@@ -71,7 +68,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Waterproof 3-pin plug pair (DT style) | 2 | 3.00 | 6.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
 | Waterproof 4-pin plug pair (DT style) | 2 | 3.50 | 7.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
 | Waterproof 6-pin plug pair (DT style) | 2 | 5.00 | 10.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
-| **Total** | | | **731.01** | | |
+| **Total** | | | **769.01** | | |
 
 ### Core Electronics (AU, online)
 
@@ -87,9 +84,9 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 
 | Part | Qty | Each NZ$ | Total NZ$ | Price from | Notes |
 |---|---|---|---|---|---|
-| [Mini560 5V 5A buck (Gogo:Tronics)](https://sparks.gogo.co.nz/catalog/DC-Power-260/Fixed-Output-Step-Down-Converter-Out-5v-up-to-5A-Continuous-In-7-20v-1009.html) | 2 | 2.95 | 5.90 | Checked 17 Nov | Control box + 4G board |
+| [Mini560 5V 5A buck (Gogo:Tronics)](https://sparks.gogo.co.nz/catalog/DC-Power-260/Fixed-Output-Step-Down-Converter-Out-5v-up-to-5A-Continuous-In-7-20v-1009.html) | 1 | 2.95 | 2.95 | Checked 17 Nov | 4G board only; the control box uses Sam's own 5A buck |
 | [1.5KE18A TVS diode (element14)](https://nz.element14.com/stmicroelectronics/1-5ke18a/diode-tvs-1-5kw-18v/dp/9884831) (9884831) | 2 | 2.24 | 4.48 | Checked 17 Nov |  |
-| **Total** | | | **10.38** | | |
+| **Total** | | | **7.43** | | |
 
 ### Local: Jaycar, Narva stockist, Repco, auto electrical
 
@@ -114,7 +111,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Auto cable 0.5 mm² (metres) | 90 | 0.90 | 81.00 | Estimate; counted from config/wiring.yaml | About 70 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
 | Auto cable 0.75 mm² (metres) | 10 | 1.10 | 11.00 | Estimate; counted from config/wiring.yaml | About 7 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
 | Auto cable 1 mm² (metres) | 30 | 1.40 | 42.00 | Estimate; counted from config/wiring.yaml | About 24 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
-| Auto cable 1.5 mm² (metres) | 60 | 1.90 | 114.00 | Estimate; counted from config/wiring.yaml | About 48 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
+| Auto cable 1.5 mm² (metres) | 70 | 1.90 | 133.00 | Estimate; counted from config/wiring.yaml | About 54 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
 | Auto cable 2.5 mm² (metres) | 15 | 2.90 | 43.50 | Estimate; counted from config/wiring.yaml | About 12 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
 | Auto cable 6 mm² (metres) | 5 | 6.50 | 32.50 | Estimate; counted from config/wiring.yaml | About 3 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
 | Auto cable 10 mm² (metres) | 7 | 11.00 | 77.00 | Estimate; counted from config/wiring.yaml | About 5 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
@@ -128,7 +125,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Tinned lugs for 6 mm², M8 hole | 6 | 2.00 | 12.00 | Estimate; counted from config/wiring.yaml | 2 spare |
 | Tinned lugs for 10 mm², M8 hole | 10 | 2.00 | 20.00 | Estimate; counted from config/wiring.yaml | 2 spare |
 | Tinned lugs for 35 mm², M8 hole | 6 | 2.00 | 12.00 | Estimate; counted from config/wiring.yaml | 2 spare |
-| **Total** | | | **1,241.50** | | |
+| **Total** | | | **1,260.50** | | |
 
 ### Separate pickup
 
@@ -141,17 +138,17 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 
 | Shop | NZ$ |
 |---|---|
-| PB Tech (buy Thursday) | 693.21 |
-| AliExpress (one order, 2 to 4 weeks) | 731.01 |
+| PB Tech (buy Thursday) | 623.21 |
+| AliExpress (one order, 2 to 4 weeks) | 769.01 |
 | Core Electronics (AU, online) | 246.68 |
-| Gogo:Tronics and element14 (NZ, online) | 10.38 |
-| Local: Jaycar, Narva stockist, Repco, auto electrical | 1,241.50 |
+| Gogo:Tronics and element14 (NZ, online) | 7.43 |
+| Local: Jaycar, Narva stockist, Repco, auto electrical | 1,260.50 |
 | Separate pickup | 115.00 |
-| **Everything** | **3,037.78** |
+| **Everything** | **3,021.83** |
 
 ### Already got (not in the totals)
 
-10.1 in touch screen, 12 V battery, 12 in light bar, 2K rear camera, 4 in pod, 400 mm actuator, 50 mm actuator, 50 mm actuator with pot, 7 in light bar, ADS1115, Kenwood KFC-2053MRB 8 in marine speakers (pair), XBull 5000 lb winch (and its 35 mm² cables), XBull remote, XBull solenoid box, one BTS7960. Samsung Galaxy XCover 5 (RC remote) (NZ$187).
+10.1 in touch screen, 12 V battery, 12 in light bar, 12-way fuse box (in the post; 12 fuses planned, so it is full), 200 degree rear camera (in the post), 4 in pod, 5 A step-down buck (in the post; input must take 20 V+), 7 in light bar, ADS1115 (3 in the post), BTS7960 (3 in the post), Kenwood KFC-2053MRB 8 in marine speakers (pair), XBull 5000 lb winch (and its 35 mm² cables), XBull remote, XBull solenoid box, short actuator (in the post), smart actuator with position feedback (in the post), spare light bar (trailer), tray actuator (in the post). Samsung Galaxy XCover 5 (RC remote) (NZ$187).
 
 ### Comes with the Shinegle kit or the stock Teryx
 
@@ -161,16 +158,18 @@ Traction battery pack, 150 A air-break switch, Main contactor, Shinegle SG1202 c
 
 | Part | Shop | About NZ$ | Notes |
 |---|---|---|---|
+| Small CVBS (analogue) cabin camera (Sentry face shot) | AliExpress | 25.00 | Spare input on the video board; both camera ribbon ports are used (front Pi camera + video board) |
 | Recording storage (e.g. Samsung PRO Endurance 128GB, MEMSAM11230) | PB Tech | 114.90 | For dashcam/Sentry. Sam to sort later |
 | Raspberry Pi AI HAT+ 2 | PB Tech | 423.43 | Not now |
 | Raspberry Pi Active Cooler | PB Tech | 11.21 | Only with the AI HAT |
 | Noctua NF-A4x10 5V fan | Newegg NZ | 21.85 | Only if the Pi box runs hot |
-| Second ADS1115 + brake pedal Hall sensor (+ pressure sensor) | Core / AliExpress | 40.00 | Brake regen |
+| Brake pedal Hall sensor (+ pressure sensor) | AliExpress | 30.00 | Brake regen; the second ADS1115 is already owned |
+| Small 6-way blade fuse block | AliExpress | 15.00 | Only if more fused circuits get added; the 12-way is full |
 | GameSir G8 Galileo phone gamepad | AliExpress | 78.00 | RC mode, Sam: not now |
 | EasyCAP DC60 USB capture | PB Tech | 28.75 | Only if the rear camera turns out to be RCA |
 | Carlinkit CCPA from Audio City (NZ stock) | Audio City | 180.00 | Backup if the AliExpress one is slow |
 
-Wiring parts waiting on that: AIHAT: AI HAT+ 2, ~NZ$423 (Sam: not now). Box, power and cooling stay sized for it; ADS2: Brake regen only, after the Shinegle regen check passes; BRAKE_PEDAL: Brake regen only, after the Shinegle regen check passes; BRAKE_PRESS: Brake regen cross-check only.
+Wiring parts waiting on that: AIHAT: AI HAT+ 2, ~NZ$423 (Sam: not now). Box, power and cooling stay sized for it; BRAKE_PEDAL: Brake regen only, after the Shinegle regen check passes; BRAKE_PRESS: Brake regen cross-check only.
 
 Tools aren't listed (crimpers, soldering iron, heat gun, multimeter, 3D printer).
 

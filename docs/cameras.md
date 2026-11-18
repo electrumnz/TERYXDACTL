@@ -1,5 +1,7 @@
 # Cameras: rear, front, trailer and cabin
 
+> **Changed 18 Nov (Sam):** three cameras: front (CSI ribbon), rear (Sam's 200 degree camera) and trailer (only when a trailer is on). Cabin camera moved to "later" (the 2nd ribbon port stays free for it). Sam: no USB for cameras. The front stays a Camera Module 3 on ribbon port 1. The rear and trailer cameras (AHD) are set to their CVBS/PAL mode and soldered into one ADV7280-M analogue-to-ribbon board on ribbon port 2, which picks rear or trailer in software, so only two streams ever record. Nobody makes an AHD-to-ribbon board with Pi drivers, and CVBS boards on the Pi 5 are not proven yet, so bench test it first. The cabin camera is 'later', on a spare input of that board.
+
 Researched 18 November 2026 (NZ time). Prices incl GST unless it says otherwise. Each price
 says where it came from. Some came from search results because the shop page wouldn't open,
 so check the link before you buy.

@@ -119,7 +119,7 @@
 <line x1="480" y1="1131" x2="750" y2="1131" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="1135" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">REED_B</text>
 </g>
-<g data-device="FB" data-status="tbc"><title>FB: Blade fuse block - 12 fuses in use. Small loads that can go out together share a fuse (front bars in pairs, trailer tail + stop, interior bar + accessory). All four front bars are NOT on one fuse, so one fault can&#x27;t black out the front at night. The winch, control box power, key, power hold and each actuator keep their own. A 20-way leaves 8 spares</title><rect x="920" y="150" width="270" height="69" rx="6" fill="#f0f6ff" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
+<g data-device="FB" data-status="tbc"><title>FB: Blade fuse block - 12 fuses in use. Small loads that can go out together share a fuse (front bars in pairs, trailer tail + stop, interior bar + accessory). All four front bars are NOT on one fuse, so one fault can&#x27;t black out the front at night. The winch, control box power, key, power hold and each actuator keep their own. Sam&#x27;s 12-way (in the post) is used, so it is full with no spares; add a small 6-way next to it if more circuits come</title><rect x="920" y="150" width="270" height="69" rx="6" fill="#f0f6ff" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
 <text x="930" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Blade fuse block</text>
 <text x="930" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#bf8700">FB · tbc</text>
 <line x1="920" y1="197" x2="1190" y2="197" stroke="#d0d7de" stroke-width="0.5"/>

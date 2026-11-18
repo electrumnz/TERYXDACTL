@@ -31,7 +31,7 @@
 <g data-wire="LT16" data-from="FB.F3" data-to="RELAYS.COM1" data-status="planned"><title>LT16: FB.F3 -&gt; RELAYS.COM1</title><path d="M310,237 C395,237 395,641 480,641" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="LT17" data-from="RELAYS.NO1" data-to="FLOOD_L.pos" data-status="planned"><title>LT17: RELAYS.NO1 -&gt; FLOOD_L.pos - light.rear, auto on in reverse</title><path d="M750,661 C835,661 835,483 920,483" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="LT18" data-from="RELAYS.NO1" data-to="FLOOD_R.pos" data-status="planned"><title>LT18: RELAYS.NO1 -&gt; FLOOD_R.pos</title><path d="M750,661 C835,661 835,574 920,574" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-device="FB" data-status="tbc"><title>FB: Blade fuse block - 12 fuses in use. Small loads that can go out together share a fuse (front bars in pairs, trailer tail + stop, interior bar + accessory). All four front bars are NOT on one fuse, so one fault can&#x27;t black out the front at night. The winch, control box power, key, power hold and each actuator keep their own. A 20-way leaves 8 spares</title><rect x="40" y="150" width="270" height="129" rx="6" fill="#f0f6ff" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
+<g data-device="FB" data-status="tbc"><title>FB: Blade fuse block - 12 fuses in use. Small loads that can go out together share a fuse (front bars in pairs, trailer tail + stop, interior bar + accessory). All four front bars are NOT on one fuse, so one fault can&#x27;t black out the front at night. The winch, control box power, key, power hold and each actuator keep their own. Sam&#x27;s 12-way (in the post) is used, so it is full with no spares; add a small 6-way next to it if more circuits come</title><rect x="40" y="150" width="270" height="129" rx="6" fill="#f0f6ff" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
 <text x="50" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Blade fuse block</text>
 <text x="50" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#bf8700">FB · tbc</text>
 <line x1="40" y1="197" x2="310" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
@@ -91,9 +91,9 @@
 <line x1="480" y1="772" x2="750" y2="772" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="776" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">neg</text>
 </g>
-<g data-device="MOSFET" data-status="planned"><title>MOSFET: 8-ch isolated MOSFET board (low side, 5 used, 3 spare) - One 8-channel opto-isolated MOSFET board (3.3 V input version), one channel per light bar, 3 spare. About 6 A per front bar. Low side switching, so each bar&#x27;s + comes from its fuse and its - goes to an OUT pin</title><rect x="920" y="150" width="270" height="264" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<g data-device="MOSFET" data-status="planned"><title>MOSFET: 8-ch isolated MOSFET board (low side, 6 used, 2 spare) - One 8-channel opto-isolated MOSFET board (3.3 V input version), one channel per light bar, 3 spare. About 6 A per front bar. Low side switching, so each bar&#x27;s + comes from its fuse and its - goes to an OUT pin</title><rect x="920" y="150" width="270" height="264" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
 <text x="930" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">8-ch isolated MOSFET board (low</text>
-<text x="930" y="183" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">side, 5 used, 3 spare)</text>
+<text x="930" y="183" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">side, 6 used, 2 spare)</text>
 <text x="930" y="198" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">MOSFET · planned</text>
 <line x1="920" y1="212" x2="1190" y2="212" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="1055" y="216" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN1</text>

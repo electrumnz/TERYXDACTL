@@ -1,8 +1,7 @@
 Group,Shop,Part,SKU,Qty,Price NZ$ incl GST (each),Line total NZ$,Price source,Notes,Link
 PB Tech (buy Thursday),pbtech,Raspberry Pi 5 8GB,SEVRBP0502,1,371.39,371.39,Checked 17 Nov,"On order, ships about 30 Nov; ask in store",https://www.pbtech.co.nz/product/SEVRBP0502
 PB Tech (buy Thursday),pbtech,Raspberry Pi Camera Module 3 Wide (front),SEVRBP0398,1,80.71,80.71,Search result 18 Nov,Out of stock when indexed; alt element14 SC0874 ~NZ$69,https://www.pbtech.co.nz/product/SEVRBP0398
-PB Tech (buy Thursday),pbtech,Raspberry Pi Camera Module 3 NoIR Wide (cabin / sentry face shot),SEVRBP0399,1,70.00,70.00,About NZ$70 (search result),Second camera port on the Pi 5,https://www.pbtech.co.nz/product/SEVRBP0399
-PB Tech (buy Thursday),pbtech,Pi 5 camera cable 200mm,SEVRBP0541,2,2.12,4.24,Search result 18 Nov,One per camera,https://www.pbtech.com/pacific/product/SEVRBP0541
+PB Tech (buy Thursday),pbtech,Pi 5 camera cable 200mm,SEVRBP0541,2,2.12,4.24,Search result 18 Nov,Front camera + video board,https://www.pbtech.com/pacific/product/SEVRBP0541
 PB Tech (buy Thursday),pbtech,Raspberry Pi Pico 2 5-pack,SEVRBP0628,1,47.20,47.20,Checked 17 Nov,"Control box, CAN sniffer, steering bench test, 2 spare",https://www.pbtech.co.nz/product/SEVRBP0628
 PB Tech (buy Thursday),pbtech,Raspberry Pi 27W USB-C power supply (bench),SEVRBP0512,1,24.90,24.90,Search result 18 Nov,Bench only,https://www.pbtech.co.nz/product/SEVRBP0512
 PB Tech (buy Thursday),pbtech,Raspberry Pi micro HDMI to HDMI cable 1m,SEVRBP0207,1,11.80,11.80,Search result 18 Nov,Alt black SEVRBP0262 ~11.10,https://www.pbtech.co.nz/product/SEVRBP0207
@@ -10,11 +9,9 @@ PB Tech (buy Thursday),pbtech,Raspberry Pi A2 SD card 128GB (OS),SEVRBP0538,1,47
 PB Tech (buy Thursday),pbtech,"Raspberry Pi DAC+ HAT (ex IQaudio DAC+, SC0368)",SEVRBP0313,1,35.65,35.65,Search result 18 Nov (out of stock when indexed),"Official board, RCA out. If PB Tech has none: Pakronics NZ ~NZ$40",https://www.pbtech.co.nz/product/SEVRBP0313
 "AliExpress (one order, 2 to 4 weeks)",aliexpress,Carlinkit CPC200-CCPA (or CCPA-MIC) CarPlay dongle,,1,65.00,65.00,US$33-39 x 1.822,Title must say CCPA + Android head unit; lsusb 1314:1520/1521,
 "AliExpress (one order, 2 to 4 weeks)",aliexpress,"4-channel class D amp, 4 x 63W RMS at 4 ohm, 2 x 200W bridged, 90Hz HPF/LPF (Sam's pick)",,1,100.00,100.00,"Sam, AliExpress ~NZ$100","Ch 1-2 Kenwoods, ch 3-4 kept for a bridged sub later; under the seat, not waterproof",
-"AliExpress (one order, 2 to 4 weeks)",aliexpress,BTS7960 43A H-bridge,,2,12.00,24.00,~US$6-7 each,You have one already; 3 needed,
 "AliExpress (one order, 2 to 4 weeks)",aliexpress,8-channel PC817 opto board 12V in,,2,9.00,18.00,~US$5 estimate,Board 1 = all 8 inputs; board 2 = 8 spare on MCP2,
 "AliExpress (one order, 2 to 4 weeks)",aliexpress,"8-channel opto-isolated MOSFET board, 3.3V input version (PWM)",,1,22.00,22.00,~US$12 estimate,"Light bars: 5 used, 3 spare. Listing must say 3.3V input, 24V+ load, 10A per channel; if it says 5A, buy 6 single LR7843 modules (~NZ$30) instead",
 "AliExpress (one order, 2 to 4 weeks)",aliexpress,"16-channel 5V relay board, mechanical, opto + JD-VCC jumper, 10A",,1,21.00,21.00,~US$11.28 x 1.822,"10 used, 6 spare; must have the JD-VCC jumper",
-"AliExpress (one order, 2 to 4 weeks)",aliexpress,20-way blade fuse block with cover + negative bus,,1,40.00,40.00,~US$15-25 estimate,"12 used, 8 spare; stud feed",
 "AliExpress (one order, 2 to 4 weeks)",aliexpress,"Winch isolator contactor, 12V coil, 200A continuous duty",,1,30.00,30.00,Estimate,"Continuous duty, not a starter solenoid",
 "AliExpress (one order, 2 to 4 weeks)",aliexpress,250A manual reset circuit breaker (winch),,1,30.00,30.00,Estimate,Leave it out of the cart if one came in the winch box,
 "AliExpress (one order, 2 to 4 weeks)",aliexpress,"Waterproof micro limit switch, roller lever (NC)",,3,2.67,8.01,Estimate,Tray up/down + 1 spare,
@@ -22,8 +19,8 @@ PB Tech (buy Thursday),pbtech,"Raspberry Pi DAC+ HAT (ex IQaudio DAC+, SC0368)",
 "AliExpress (one order, 2 to 4 weeks)",aliexpress,"12V USB-C PD panel socket, 30W, waterproof cap",,1,15.00,15.00,Estimate,Glove box phone (RC remote),
 "AliExpress (one order, 2 to 4 weeks)",aliexpress,MPU-6050 IMU board (roll / pitch),,1,5.00,5.00,Estimate,I2C to the Pi,
 "AliExpress (one order, 2 to 4 weeks)",aliexpress,12V AHD reversing camera (trailer),,1,30.00,30.00,Estimate,,
-"AliExpress (one order, 2 to 4 weeks)",aliexpress,4-pin waterproof aviation plug + socket (trailer camera),,1,8.00,8.00,Estimate,Next to the 7-pin,
-"AliExpress (one order, 2 to 4 weeks)",aliexpress,AHD to USB (UVC) capture dongle,,1,25.00,25.00,Estimate,,
+"AliExpress (one order, 2 to 4 weeks)",aliexpress,"Deutsch DT 8-pin kit: DT04-08PA + DT06-08SA, wedgelocks, size 16 pins, seals",,1,15.00,15.00,Estimate,"Trailer camera + light bar, next to the 7-pin. Needs the Deutsch crimp tool or a careful plier crimp",
+"AliExpress (one order, 2 to 4 weeks)",aliexpress,"CVBS (PAL) to MIPI CSI-2 board, ADV7280-M, multi-input",,1,120.00,120.00,Estimate. AliExpress search: ADV7282 MIPI CSI (or ADV7280 CSI Raspberry Pi). No official Pi product does this,"Chip must be ADV7280-M, ADV7281-M or ADV7282-M (the -M is the ribbon output), 2+ CVBS inputs, Pi camera ribbon socket. Not TP28xx (no Pi driver) or HDMI-to-CSI. Bench test on the Pi 5",
 "AliExpress (one order, 2 to 4 weeks)",aliexpress,"SIMCom A7670SA 4G board (B28, GPS 'FASE' option)",,1,28.00,28.00,US$15.46 x 1.822,"Must list B28; V pin from the 2nd Mini560, never raw 12V",
 "AliExpress (one order, 2 to 4 weeks)",aliexpress,4-channel BSS138 level shifter,,1,2.00,2.00,Estimate,Probably not needed; measure the T pin first,
 "AliExpress (one order, 2 to 4 weeks)",aliexpress,"Active GPS antenna, SMA male",,1,8.00,8.00,Estimate,,
@@ -49,7 +46,7 @@ PB Tech (buy Thursday),pbtech,"Raspberry Pi DAC+ HAT (ex IQaudio DAC+, SC0368)",
 "Core Electronics (AU, online)",core,MCP23017 board,WS-15391,2,13.45,26.90,AU$10.90 x 1.234,,https://core-electronics.com.au/catalog/product/view/sku/WS-15391
 "Core Electronics (AU, online)",core,Pololu D36V50F5 5V 5.5A regulator,POLOLU-4091,1,111.20,111.20,AU$90.11 x 1.234,,https://core-electronics.com.au/catalog/product/view/sku/POLOLU-4091
 "Core Electronics (AU, online)",core,Shipping to NZ (estimate),,1,17.50,17.50,AU$12-16,,
-"Gogo:Tronics and element14 (NZ, online)",nz_online,Mini560 5V 5A buck (Gogo:Tronics),,2,2.95,5.90,Checked 17 Nov,Control box + 4G board,https://sparks.gogo.co.nz/catalog/DC-Power-260/Fixed-Output-Step-Down-Converter-Out-5v-up-to-5A-Continuous-In-7-20v-1009.html
+"Gogo:Tronics and element14 (NZ, online)",nz_online,Mini560 5V 5A buck (Gogo:Tronics),,1,2.95,2.95,Checked 17 Nov,4G board only; the control box uses Sam's own 5A buck,https://sparks.gogo.co.nz/catalog/DC-Power-260/Fixed-Output-Step-Down-Converter-Out-5v-up-to-5A-Continuous-In-7-20v-1009.html
 "Gogo:Tronics and element14 (NZ, online)",nz_online,1.5KE18A TVS diode (element14),9884831,2,2.24,4.48,Checked 17 Nov,,https://nz.element14.com/stmicroelectronics/1-5ke18a/diode-tvs-1-5kw-18v/dp/9884831
 "Local: Jaycar, Narva stockist, Repco, auto electrical",local,Narva 7-pin flat socket with reed switch,82043BL,1,35.00,35.00,Estimate,,https://narva.com.au/products/narva-7-pin-flat-quickfit-trailer-socket-with-reed-switch-for-use-with-normally-closed-circuits-1-pack
 "Local: Jaycar, Narva stockist, Repco, auto electrical",local,"F-N-R switch, DPDT centre-off, 10A+",,1,20.00,20.00,Estimate,,
@@ -70,7 +67,7 @@ PB Tech (buy Thursday),pbtech,"Raspberry Pi DAC+ HAT (ex IQaudio DAC+, SC0368)",
 "Local: Jaycar, Narva stockist, Repco, auto electrical",local,Auto cable 0.5 mm² (metres),,90,0.90,81.00,Estimate; counted from config/wiring.yaml,About 70 m in the plan + 25%. Split red (+) / black (-) / a signal colour,
 "Local: Jaycar, Narva stockist, Repco, auto electrical",local,Auto cable 0.75 mm² (metres),,10,1.10,11.00,Estimate; counted from config/wiring.yaml,About 7 m in the plan + 25%. Split red (+) / black (-) / a signal colour,
 "Local: Jaycar, Narva stockist, Repco, auto electrical",local,Auto cable 1 mm² (metres),,30,1.40,42.00,Estimate; counted from config/wiring.yaml,About 24 m in the plan + 25%. Split red (+) / black (-) / a signal colour,
-"Local: Jaycar, Narva stockist, Repco, auto electrical",local,Auto cable 1.5 mm² (metres),,60,1.90,114.00,Estimate; counted from config/wiring.yaml,About 48 m in the plan + 25%. Split red (+) / black (-) / a signal colour,
+"Local: Jaycar, Narva stockist, Repco, auto electrical",local,Auto cable 1.5 mm² (metres),,70,1.90,133.00,Estimate; counted from config/wiring.yaml,About 54 m in the plan + 25%. Split red (+) / black (-) / a signal colour,
 "Local: Jaycar, Narva stockist, Repco, auto electrical",local,Auto cable 2.5 mm² (metres),,15,2.90,43.50,Estimate; counted from config/wiring.yaml,About 12 m in the plan + 25%. Split red (+) / black (-) / a signal colour,
 "Local: Jaycar, Narva stockist, Repco, auto electrical",local,Auto cable 6 mm² (metres),,5,6.50,32.50,Estimate; counted from config/wiring.yaml,About 3 m in the plan + 25%. Split red (+) / black (-) / a signal colour,
 "Local: Jaycar, Narva stockist, Repco, auto electrical",local,Auto cable 10 mm² (metres),,7,11.00,77.00,Estimate; counted from config/wiring.yaml,About 5 m in the plan + 25%. Split red (+) / black (-) / a signal colour,
@@ -85,18 +82,20 @@ PB Tech (buy Thursday),pbtech,"Raspberry Pi DAC+ HAT (ex IQaudio DAC+, SC0368)",
 "Local: Jaycar, Narva stockist, Repco, auto electrical",local,"Tinned lugs for 10 mm², M8 hole",,10,2.00,20.00,Estimate; counted from config/wiring.yaml,2 spare,
 "Local: Jaycar, Narva stockist, Repco, auto electrical",local,"Tinned lugs for 35 mm², M8 hole",,6,2.00,12.00,Estimate; counted from config/wiring.yaml,2 spare,
 Separate pickup,pickup,Toyota Aqua EPS column (ECU 89650-52B51),,1,115.00,115.00,About NZ$115,"Dodson's, picking up 19 Nov",
+Later,AliExpress,Small CVBS (analogue) cabin camera (Sentry face shot),,0,25.00,0.00,,Spare input on the video board; both camera ribbon ports are used (front Pi camera + video board),
 Later,PB Tech,"Recording storage (e.g. Samsung PRO Endurance 128GB, MEMSAM11230)",,0,114.90,0.00,,For dashcam/Sentry. Sam to sort later,
 Later,PB Tech,Raspberry Pi AI HAT+ 2,,0,423.43,0.00,,Not now,
 Later,PB Tech,Raspberry Pi Active Cooler,,0,11.21,0.00,,Only with the AI HAT,
 Later,Newegg NZ,Noctua NF-A4x10 5V fan,,0,21.85,0.00,,Only if the Pi box runs hot,
-Later,Core / AliExpress,Second ADS1115 + brake pedal Hall sensor (+ pressure sensor),,0,40.00,0.00,,Brake regen,
+Later,AliExpress,Brake pedal Hall sensor (+ pressure sensor),,0,30.00,0.00,,Brake regen; the second ADS1115 is already owned,
+Later,AliExpress,Small 6-way blade fuse block,,0,15.00,0.00,,Only if more fused circuits get added; the 12-way is full,
 Later,AliExpress,GameSir G8 Galileo phone gamepad,,0,78.00,0.00,,"RC mode, Sam: not now",
 Later,PB Tech,EasyCAP DC60 USB capture,,0,28.75,0.00,,Only if the rear camera turns out to be RCA,
 Later,Audio City,Carlinkit CCPA from Audio City (NZ stock),,0,180.00,0.00,,Backup if the AliExpress one is slow,
-,,TOTAL PB Tech (buy Thursday),,,,693.21,,,
-,,"TOTAL AliExpress (one order, 2 to 4 weeks)",,,,731.01,,,
+,,TOTAL PB Tech (buy Thursday),,,,623.21,,,
+,,"TOTAL AliExpress (one order, 2 to 4 weeks)",,,,769.01,,,
 ,,"TOTAL Core Electronics (AU, online)",,,,246.68,,,
-,,"TOTAL Gogo:Tronics and element14 (NZ, online)",,,,10.38,,,
-,,"TOTAL Local: Jaycar, Narva stockist, Repco, auto electrical",,,,1241.50,,,
+,,"TOTAL Gogo:Tronics and element14 (NZ, online)",,,,7.43,,,
+,,"TOTAL Local: Jaycar, Narva stockist, Repco, auto electrical",,,,1260.50,,,
 ,,TOTAL Separate pickup,,,,115.00,,,
-,,TOTAL everything,,,,3037.78,,,
+,,TOTAL everything,,,,3021.83,,,
