@@ -155,11 +155,12 @@ to open a screen straight away. Settings that need the Pi (limits, updates, Wi-F
 
 ### Online copy (for a phone)
 
-Every merge to `main` puts `dash/web` online on Vercel (project root `dash/web`, no build,
-settings in `dash/web/vercel.json`). On a `*.vercel.app` or `*.github.io` address the dash runs
-the demo vehicle on its own, so no Pi or laptop is needed. Hold the phone sideways (it asks you
+Every merge to `main` that touches `dash/web` puts it online on GitHub Pages
+(`.github/workflows/dash-site.yml`) at https://electrumnz.github.io/TERYXDACTL/. On a
+`*.github.io` or `*.vercel.app` address the dash runs the demo vehicle on its own, so no Pi or
+laptop is needed. Add `?demo=park`, `?demo=reverse` or `?demo=faults` for the other demos. Hold the phone sideways (it asks you
 to in portrait), and "Add to Home Screen" opens it full screen. Search engines are told not to
-list it.
+list it. One-off setup: repo Settings > Pages > Source: GitHub Actions.
 
 ### On the Pi
 
