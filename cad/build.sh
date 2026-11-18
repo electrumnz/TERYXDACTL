@@ -27,6 +27,7 @@ add fit_test_corner fit_test part=none
 add speaker_pod speaker_pod part=pod
 add speaker_pod_cover speaker_pod part=cover
 add speaker_pod_plug speaker_pod part=plug
+add speaker_pod_jaw speaker_pod part=jaw
 add speaker_pod_gasket speaker_pod part=gasket
 
 rm -f stl/*.stl.tmp
