@@ -327,13 +327,18 @@ def setup_routes(app: web.Application, gateway: Any) -> None:
     # ---------- camera as MJPEG ----------
     async def camera(req):
         from .camera import mjpeg_response
-        return await mjpeg_response(req, _camera_device())
+        return await mjpeg_response(req, _camera_device(req.query.get("cam", "rear")))
 
-    def _camera_device() -> str:
+    def _camera_device(cam: str) -> str:
+        """/dev/videoN for a camera (rear, front, trailer). Older settings had one top-level v4l2Device."""
         try:
-            return json.loads(SETTINGS_FILE.read_text()).get("camera", {}).get("v4l2Device") or "/dev/video0"
+            c = json.loads(SETTINGS_FILE.read_text()).get("camera", {})
         except Exception:
-            return "/dev/video0"
+            c = {}
+        dev = (c.get("cams", {}).get(cam) or {}).get("v4l2Device")
+        if not dev and cam == "rear":
+            dev = c.get("v4l2Device") or "/dev/video0"
+        return dev or ""
 
     r.add_get("/api/settings", get_settings)
     r.add_put("/api/settings", put_settings)

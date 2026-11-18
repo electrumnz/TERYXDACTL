@@ -10,7 +10,7 @@ export const FEATURES = [
   { id: "lights", name: "Lights", desc: "Needs the light bars wired to the control box." },
   { id: "winch", name: "Winch", desc: "Needs the winch contactor wired to the control box." },
   { id: "tray", name: "Tray", desc: "Needs the tray actuator and limit switches wired to the control box." },
-  { id: "camera", name: "Cameras", desc: "Needs a reversing camera plugged into the Pi." },
+  { id: "camera", name: "Cameras", desc: "Needs at least one camera (rear, front or trailer) plugged into the Pi." },
   { id: "media", name: "Media", desc: "Needs speakers and the audio setup on the Pi." },
 ];
 

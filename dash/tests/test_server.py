@@ -53,6 +53,42 @@ async def test_settings_round_trip(client):
     assert (await (await client.get("/api/settings")).json())["units"] == "mph"
 
 
+async def test_camera_picks_device_per_camera(client, monkeypatch):
+    """Each camera (rear, front, trailer) streams its own /dev/videoN; one not set up says so."""
+    from teryx_dash import camera as cam_mod
+    seen = []
+
+    async def fake_mjpeg(req, device):
+        seen.append(device)
+        return web.json_response({"device": device})
+
+    monkeypatch.setattr(cam_mod, "mjpeg_response", fake_mjpeg)
+    # Nothing saved yet: rear falls back to /dev/video0, trailer has no device.
+    await client.get("/api/camera.mjpg")
+    await client.get("/api/camera.mjpg?cam=trailer")
+    assert seen == ["/dev/video0", ""]
+    # Old single-camera settings file: its device is the rear camera.
+    await client.put("/api/settings", json={"camera": {"v4l2Device": "/dev/video4"}})
+    await client.get("/api/camera.mjpg?cam=rear")
+    await client.put("/api/settings", json={"camera": {"cams": {"trailer": {"v4l2Device": "/dev/video2"}}}})
+    await client.get("/api/camera.mjpg?cam=trailer")
+    assert seen[2:] == ["/dev/video4", "/dev/video2"]
+
+
+async def test_camera_device_checked(client):
+    """No device, or anything that isn't /dev/videoN, is refused before ffmpeg is started."""
+    from teryx_dash import camera as cam_mod
+
+    class Req:  # mjpeg_response never touches the request when it refuses
+        pass
+
+    assert (await cam_mod.mjpeg_response(Req(), "")).status == 404
+    assert (await cam_mod.mjpeg_response(Req(), "/dev/video0/../sda")).status == 400
+    assert (await cam_mod.mjpeg_response(Req(), "/etc/passwd")).status == 400
+    assert (await cam_mod.mjpeg_response(Req(), "csi2")).status == 400
+    assert (await cam_mod.mjpeg_response(Req(), "csi0; reboot")).status == 400
+
+
 async def test_settings_rejects_junk(client):
     r = await client.put("/api/settings", data="[1,2]")
     assert r.status == 400

@@ -238,7 +238,7 @@ HOST/BENCH BUILD ONLY. Lets the simulator drive the Pico's wired inputs and inje
 | 4 | `in.tray_up` |
 | 5 | `in.winch_remote` |
 | 6 | `in.park` |
-| 7 | `in.spare` |
+| 7 | `in.trailer` |
 
 **Relay bits (0x711 byte 0, relay 1 = bit 0)**
 
