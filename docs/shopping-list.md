@@ -49,7 +49,7 @@ So: 4GB leaves about 1.3-2 GB, 8GB leaves about 5.3-6 GB.
 
 ### Rough cost (dash computer, section 4 and 4a)
 
-About **NZ$1,000** for the Pi 5 8GB, AI HAT+ 2, Active Cooler, cable, 128GB card, CAN HAT
+About **NZ$1,000** for the Pi 5 8GB, AI HAT+ 2, Active Cooler, cable, 128GB card, CAN module
 and front camera, plus about **NZ$115** for proper 12V protection and a good 5V regulator.
 The control box (section 6) is extra.
 
@@ -161,13 +161,13 @@ The more RAM, the bigger the jump, which is another reason 4GB is the sweet spot
 | Raspberry Pi Active Cooler | Keeps the Pi under 85°C with the HAT on top | [PB Tech](https://www.pbtech.co.nz/product/SEVRBP0531) | NZ$11.21 | In stock (17 Nov). **Needed even though you have a passive heatsink**: with the AI HAT+ 2 on top, Raspberry Pi say fit the Active Cooler on the Pi and the HAT's heatsink on the AI chip ([Raspberry Pi docs](https://www.raspberrypi.com/documentation/accessories/ai-hat-plus.html)). Keep the passive one for the bench. Don't take the Active Cooler off once fitted, the push pins and pads don't like it |
 | Micro HDMI to HDMI cable, 2 m | Pi to screen | [PB Tech (Vention)](https://www.pbtech.co.nz/product/VNT1306/Vention-VAA-D03-B200-Micro-HDMI-Cable---2m---Black) | NZ$12.41 | No stock, ships about 28 Jan. In stock now: [Jaycar micro HDMI adaptor](https://jaycar.co.nz/micro-hdmi-plug-to-hdmi-socket-adaptor/p/PA3649) NZ$20.90 plus an HDMI cable |
 | microSD card **128GB A2** | OS, apps, logs | [PB Tech, official Raspberry Pi card](https://www.pbtech.co.nz/product/SEVRBP0538/Raspberry-Pi-Official-A2---Class-UltraSD-Card-128G) | **Not verified** | Doesn't have to be the Pi one, but the Pi 5 turns on command queueing for it, and one guide says a SanDisk Extreme runs below its A2 rating on the Pi 5 ([HackMD guide](https://hackmd.io/@ampheo/what-is-the-best-micro-sd-card-for-raspberry-pi-5)); other guides disagree. Not a "high endurance" card: those are for dashcams and aren't A2 rated. The 64GB [SanDisk Extreme](https://www.pbtech.co.nz/product/MEMSDK33210/SanDisk-Extreme-64GB-microSDXC-Memory-Card-Class-1) (NZ$56.35, 17 Nov) is the fallback |
-| Waveshare RS485 CAN HAT | CAN for the Pi | [Core Electronics (AU)](https://core-electronics.com.au/catalog/product/view/sku/WS-14882) | AU$22.75 (about NZ$28) | In stock. Ships to NZ from about AU$12. **It has a 12 MHz crystal** ([Waveshare wiki](https://www.waveshare.com/wiki/RS485_CAN_HAT)), so run `pi-setup.sh --can-osc 12000000`. Interrupt is GPIO 25, which is our default |
+| MCP2515 CAN module (same Seeed board as the control box, section 6) | CAN for the Pi | [Core Electronics (AU)](https://core-electronics.com.au/seeed-studio-can-bus-breakout-board-for-xiao-and-qt-py-mcp2515-controller-sn65hvd230-transceiver-chip.html) | AU$18.45 (about NZ$23) | **Changed 18 Nov:** the Waveshare CAN HAT can't stack over the AI HAT+ 2's heatsink, so a small module sits on the Pi box wall, wired to the GPIO pins on top of the HAT (pins in [`wiring.md`](wiring.md)). Run `pi-setup.sh --can-osc <its crystal>`. Interrupt is GPIO 25, our default |
 | 30 mm 5V fan | Pi box lid (see `cad/README.md`) | [Jaycar](https://www.jaycar.co.nz/5vdc-30mm-thin-2-wire-fan/p/YX2500) | NZ$31.90 | NZ stock. Much cheaper on AliExpress, not verified |
 | USB audio out (optional, for the amp) | Pi 5 has no audio jack | [Jaycar USB to 3.5 mm](https://jaycar.co.nz/p/XC4953) | NZ$24.90 | NZ stock. It's a headphone output, not a line out, so keep the amp gain low |
 | Carlinkit CPC200-CCPA (optional) | CarPlay / Android Auto | Carlinkit's own store or AliExpress | **Not verified** | No NZ seller found. [PriceSpy NZ](https://pricespy.co.nz/product.php?p=13023735) has no active listings. Must be the CCPA / Autokit type (see [`audio.md`](audio.md)) |
 | USB AV capture dongle (only if the camera is RCA/AHD) | Camera into the Pi | AliExpress, or [EasyCAP DC60 at PB Tech](https://www.pbtech.co.nz/product/SEVOEM9701) NZ$28.75 (composite only) | **Not verified** for AHD | Needs to be UVC so Linux sees it as a webcam. One per RCA/AHD camera. See [`cameras.md`](cameras.md) |
 
-**Subtotal (Pi 8GB, AI HAT+ 2, cooler, cable, CAN HAT): about NZ$846**, plus the SD card
+**Subtotal (Pi 8GB, AI HAT+ 2, cooler, cable, CAN module): about NZ$841**, plus the SD card
 (price not verified) and front camera (section 4a).
 
 ### 4a. Added for headroom (18 November)
@@ -186,10 +186,11 @@ draws about 2.5 to 4.5 W depending on the job ([heise](https://heise.de/-1113661
 [Jeff Geerling](https://jeffgeerling.com/blog/2026/raspberry-pi-ai-hat-2)). So the Pi box's
 lid fan has to move air through the box, and the box wants to stay out of direct sun.
 
-**Pi box height. To check:** the box is 46 mm tall inside (`cad/measurements.scad`,
-`pi_box_in`). Pi on 6 mm standoffs, Active Cooler, the 16 mm header, the AI HAT+ 2 with its
-heatsink, and the CAN HAT on top will very likely not fit. The printed box needs to grow
-before printing.
+**Pi box height. Done 18 Nov:** the box was 46 mm tall inside; it's now 56 mm
+(`cad/measurements.scad`, `pi_box_in`), sized for the Pi on 6 mm standoffs, the Active
+Cooler, the AI HAT+ 2 on its 16 mm spacers and its heatsink, with about 19 mm of air under
+the lid fan. The side vents grow with it. The CAN HAT is replaced by a small CAN module on the
+box wall. Check the stack on the real parts before printing.
 
 **Power.** The Pololu 5V 5.5A regulator in section 5 is still the pick. The Pi 5 flat out is
 11.6 W (section 3) plus up to about 4.5 W for the HAT, so about 16 W of the regulator's 27 W

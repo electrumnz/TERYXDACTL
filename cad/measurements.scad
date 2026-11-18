@@ -129,9 +129,19 @@ PG16 = 22.5;            // 10-14 mm cable, or a multi-hole insert
 
 // ---------------------------------------------------------------------------
 // Pi 5 box (bolts on the back plate, behind the screen)
-// Holds the Pi 5, the CAN HAT and the 5V 5A buck.
+// Holds the Pi 5 with the Active Cooler and the AI HAT+ 2 on top, a small
+// MCP2515 CAN module on the wall, and the 5V 5A buck.
+// Height, from the box floor (2026-11-18):
+//   6 standoff + 1.6 Pi board + 16 AI HAT spacers (Raspberry Pi supply 16 mm,
+//   made to clear the Active Cooler) + 1.6 HAT board = HAT top at about 25 mm.
+//   The HAT's heatsink is about 14 mm tall including its push pins (Raspberry
+//   Pi), so call its top about 37 mm. Jumper leads to the CAN module plug onto
+//   the stacking header's pins on top of the HAT: about 45 mm.
+//   56 leaves about 11 mm over the leads and 19 mm of air over the heatsink for
+//   the lid fan. The old CAN HAT can't stack over the heatsink, hence the module.
+//   CHECK on the real parts before printing.
 // ---------------------------------------------------------------------------
-pi_box_in   = [130, 105, 46];    // inside size: X, Y, height away from the back plate
+pi_box_in   = [130, 105, 56];    // inside size: X, Y, height away from the back plate
 pi_box_pos  = [0, -10];         // centre of the box on the back plate
 pi_holes    = [58, 49];         // Pi 5 mounting hole spacing (Raspberry Pi spec)
 pi_board    = [85, 56];

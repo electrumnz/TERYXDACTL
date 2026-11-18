@@ -33,8 +33,7 @@ I couldn't find these at PB Tech. AUD to NZD at 1.234 (Wise, 17 Nov).
 
 | Part | Where | Qty | Price | Notes |
 |---|---|---|---|---|
-| [Waveshare RS485 CAN HAT](https://core-electronics.com.au/catalog/product/view/sku/WS-14882) | Core Electronics (AU) | 1 | AU$22.75 (~NZ$28) | CAN for the Pi. 12 MHz crystal |
-| [Seeed MCP2515 + SN65HVD230 CAN board](https://core-electronics.com.au/seeed-studio-can-bus-breakout-board-for-xiao-and-qt-py-mcp2515-controller-sn65hvd230-transceiver-chip.html) | Core Electronics (AU) | 2 | AU$18.45 each (~NZ$46 for 2) | Control box and sniffer |
+| [Seeed MCP2515 + SN65HVD230 CAN board](https://core-electronics.com.au/seeed-studio-can-bus-breakout-board-for-xiao-and-qt-py-mcp2515-controller-sn65hvd230-transceiver-chip.html) | Core Electronics (AU) | 3 | AU$18.45 each (~NZ$68 for 3) | One for the Pi (instead of the CAN HAT, which can't stack over the AI HAT's heatsink), one for the control box, one for the sniffer. Check the crystal |
 | [MCP23017 board](https://core-electronics.com.au/catalog/product/view/sku/WS-15391) | Core Electronics (AU) | 1 | AU$10.90 (~NZ$13) | Control box inputs and relays |
 | [Pololu D36V50F5 5V 5.5A regulator](https://core-electronics.com.au/catalog/product/view/sku/POLOLU-4091) | Core Electronics (AU) | 1 | AU$90.11 (~NZ$111) | Powers the Pi from the 12V battery |
 | Core Electronics shipping to NZ | | | ~AU$12-16 (~NZ$15-20) | From their product page, check at checkout |
@@ -44,7 +43,7 @@ I couldn't find these at PB Tech. AUD to NZD at 1.234 (Wise, 17 Nov).
 | [1.5KE18A TVS diode](https://nz.element14.com/stmicroelectronics/1-5ke18a/diode-tvs-1-5kw-18v/dp/9884831) | element14 NZ | 2 | NZ$2.24 each | Spike clamp on the dash 12V |
 | [Narva 7-pin flat socket with reed switch 82043BL](https://narva.com.au/products/narva-7-pin-flat-quickfit-trailer-socket-with-reed-switch-for-use-with-normally-closed-circuits-1-pack) | Narva stockists | 1 | **Not priced** | Trailer detect |
 | BTS7960 x2, 8-ch opto board, MOSFET board | AliExpress | | **Not priced** | See `shopping-list.md` section 6 |
-| | **Known total outside PB Tech** | | **~NZ$310-315** | Includes Core shipping |
+| | **Known total outside PB Tech** | | **~NZ$305-310** | Includes Core shipping |
 
 **Grand total, everything priced: about NZ$1,330.** Not counted: the Narva socket, AliExpress
 parts, trailer camera bits, and the capture dongle.
@@ -67,7 +66,7 @@ GST off. I couldn't confirm which they do. Check the total at checkout before pa
 
 1. **PB Tech:** Pi 5 8GB, Active Cooler, SD card, Camera Module 3 Wide, camera cable, Pico 2
    5-pack, micro HDMI cable, 27W bench supply.
-2. **Core Electronics, one order:** AI HAT+ 2, CAN HAT, 2 CAN boards, MCP23017, Pololu regulator.
+2. **Core Electronics, one order:** AI HAT+ 2, 3 CAN boards, MCP23017, Pololu regulator.
 3. **Jaycar:** fan and fuse block (and the micro HDMI adaptor if PB Tech's cable is still out).
 4. **Gogo:Tronics and element14:** the tiny bits, or skip and grab them with something else.
 

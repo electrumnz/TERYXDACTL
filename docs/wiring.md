@@ -64,7 +64,7 @@ holds itself in.
 ```mermaid
 flowchart LR
   subgraph PI5["Raspberry Pi 5"]
-    HAT["CAN HAT (MCP2515)"]
+    HAT["MCP2515 CAN module<br/>(wired to the GPIO)"]
   end
   SCREEN["10.1in screen"] -- "HDMI + USB touch" --- PI5
   CAM["Rear camera<br/>(USB, or AHD via USB capture)"] -- USB --- PI5
@@ -194,7 +194,7 @@ here; the dash just treats them as on/off.
 | USB 3 (blue) | Screen touch USB |
 | USB 3 (blue) | Rear camera (or AHD capture stick) |
 | USB 2 | Pico 2 USB (data + reflash) |
-| 40-pin header | CAN HAT (uses SPI0 CE0 and GPIO25 for its interrupt) |
+| 40-pin header | AI HAT+ 2 on its 16 mm stacking header. The MCP2515 CAN module is wired to the header pins that come up through the HAT: 3V3 (pin 1), GND (6), MOSI GPIO10 (19), MISO GPIO9 (21), SCLK GPIO11 (23), CS CE0 GPIO8 (24), INT GPIO25 (22). Use a 2x20 female housing or glue the leads so they can't shake off |
 | I2C1 GPIO2/3 | IMU (optional) |
 | Power button pads | Optional dash power button |
 

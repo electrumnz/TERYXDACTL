@@ -7,7 +7,7 @@ OpenSCAD designs for everything that gets 3D printed:
 | Dash panel | Flat face with the 217 x 135 cut-out. The screen's bezel sits on the front and its own clips clamp it from behind, as in its install guide. A rim round the back boxes in the screen's body, with ribs to stop flex | `dash_panel_left/right` |
 | Back plate | Closes the back, bolts to the screen's wall-bracket holes (this carries the 2.8 kg), carries the Pi box and bolts to the dash. Also comes as a DXF to have it cut from 3 mm aluminium | `back_plate_left/right`, `back_plate.dxf` |
 | Sun hood | Top shade and side cheeks, tipped up 8° so rain runs off | `sun_hood_left/right` + `sun_hood_splice` |
-| Pi 5 box | Pi 5, CAN HAT and the 5V 5A buck. Bolts to the back of the back plate; the screen's cables come straight in through the floor | `pi_box_box/lid/cowl/gasket` |
+| Pi 5 box | Pi 5 with the Active Cooler and AI HAT+ 2, a small MCP2515 CAN module and the 5V 5A buck. Bolts to the back of the back plate; the screen's cables come straight in through the floor | `pi_box_box/lid/cowl/gasket` |
 | Control box | Pico 2, MCP2515, MCP23017, ADS1115, opto board, MOSFET boards, 5V 2A buck | `control_box_box/lid/gasket/plate` |
 | Relay box | 8-channel relay board and the three BTS7960 drivers | `relay_box_box/lid/gasket/plate` |
 | Fit test | One corner of the dash panel (cut-out corner, bezel recess, inserts), to check the fit before the big print | `fit_test_corner` |
@@ -127,7 +127,7 @@ well.
 7. Put foam or the TPU ring round the Pi box's floor hole and bolt the Pi box
    to the back plate with the M4s. The screen's video, USB and power leads
    come straight into the box.
-8. Fit the Pi, CAN HAT and buck, run the other cables through the glands in
+8. Fit the Pi (Active Cooler, then the AI HAT+ 2 on its 16 mm header and spacers), stick the CAN module to the box wall with foam tape and wire it to the HAT's stacking header pins, fit the buck, run the other cables through the glands in
    the bottom wall, then fit the gasket, lid, fan and cowl (cowl opening
    points down).
 9. Bolt the back plate to the dash (see MEASURING.md for the holes) or to a
