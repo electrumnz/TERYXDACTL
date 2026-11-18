@@ -89,6 +89,23 @@ Vehicle lock command, on demand (docs/vehicle-lock.md). Digits are BCD, first di
 | `d3` | byte 5 | u8 |  |  |
 | `counter` | byte 6 | u8 |  |  |
 
+### 0x706 PI_LIGHTS2
+
+From **dash**, every 1000 ms.
+
+Stock lamps, rear floods, beacon, trailer bar and the light show (docs/lights.md). On change, plus a resend every 1 s. Levels 0-255, 0 = off. The Pico keeps brake lights at full, never dims headlights or tails while moving, and only runs a show when parked.
+
+| Signal | Where | Type | Unit | Notes |
+|---|---|---|---|---|
+| `head_low` | byte 0 | u8 |  | Low beam, both sides |
+| `head_high` | byte 1 | u8 |  | High beam, both sides. Wins over low |
+| `tail` | byte 2 | u8 |  | Tail lights, 0 = automatic (on with any headlight or front bar) |
+| `rear` | byte 3 | u8 |  | Rear flood level while 0x701 rear_on is set, 0 = full |
+| `trailer_bar` | byte 4 | u8 |  |  |
+| `beacon` | byte 5 | u8 |  | Roof beacon brightness, 0 = off. The Pico flashes it at 3 Hz |
+| `show` | byte 6 | u8 |  | Light show, parked only 0=none, 1=wave, 2=breathe, 3=roar, 4=party |
+| `counter` | byte 7 | u8 |  |  |
+
 ### 0x71F PI_FW_UPDATE
 
 From **dash**, on change.
@@ -216,6 +233,32 @@ Vehicle lock state (docs/vehicle-lock.md). Also sent straight after every 0x705.
 | `result` | byte 5 | u8 |  | Result of the last 0x705 0=none, 1=ok, 2=wrong, 3=not_parked, 4=no_pin, 5=lockout, 6=bad_digits, 7=not_allowed, 8=recovered, 9=pending |
 | `result_count` | byte 6 | u8 |  | Goes up by one per 0x705 |
 | `fails` | byte 7 | u8 |  | Wrong tries in a row (kept over power cuts) |
+
+### 0x717 PICO_LIGHTS2
+
+From **controlbox**, every 100 ms.
+
+What the PCA9685 lamps are actually doing, after every safety rule (docs/lights.md). Levels are 0-15 (top 4 bits of 0-255).
+
+| Signal | Where | Type | Unit | Notes |
+|---|---|---|---|---|
+| `head_l_low` | byte 0 bit 0 (+4 bits) | u4 |  |  |
+| `head_l_high` | byte 0 bit 4 (+4 bits) | u4 |  |  |
+| `head_r_low` | byte 1 bit 0 (+4 bits) | u4 |  |  |
+| `head_r_high` | byte 1 bit 4 (+4 bits) | u4 |  |  |
+| `tail_l` | byte 2 bit 0 (+4 bits) | u4 |  |  |
+| `brake_l` | byte 2 bit 4 (+4 bits) | u4 |  |  |
+| `tail_r` | byte 3 bit 0 (+4 bits) | u4 |  |  |
+| `brake_r` | byte 3 bit 4 (+4 bits) | u4 |  |  |
+| `trailer_tail` | byte 4 bit 0 (+4 bits) | u4 |  |  |
+| `trailer_stop` | byte 4 bit 4 (+4 bits) | u4 |  |  |
+| `flood_l` | byte 5 bit 0 (+4 bits) | u4 |  |  |
+| `flood_r` | byte 5 bit 4 (+4 bits) | u4 |  |  |
+| `beacon` | byte 6 bit 0 (+4 bits) | u4 |  |  |
+| `trailer_bar` | byte 6 bit 4 (+4 bits) | u4 |  |  |
+| `show_running` | byte 7 bit 0 | u1 |  |  |
+| `show_blocked` | byte 7 bit 1 | u1 |  | A show was asked for but the Teryx isn't parked (key on, park brake, stopped) |
+| `pwm_ok` | byte 7 bit 2 | u1 |  | PCA9685 answering |
 
 ## Bench only
 

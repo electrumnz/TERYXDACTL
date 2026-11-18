@@ -57,6 +57,7 @@ void plant_inputs(const plant_t *p, cb_in_t *in, uint32_t now_ms) {
     in->din = din;
     in->io_ok = !(p->faults & BENCH_IO_BUS_DEAD);
     in->pot_ok = in->io_ok;
+    in->pwm_ok = in->io_ok;
     in->diff_pot_raw = (p->faults & BENCH_POT_DISCONNECT)
         ? 0 : (uint16_t)(p->pot_min + p->pos[ACT_DIFF] * (p->pot_max - p->pot_min));
     in->aux_mv = p->aux_mv;

@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 856" width="1760" height="856" font-family="Arial, Helvetica, sans-serif" data-sheet="lights">
-<rect width="1760" height="856" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2200 1572" width="2200" height="1572" font-family="Arial, Helvetica, sans-serif" data-sheet="lights">
+<rect width="2200" height="1572" fill="#ffffff"/>
 <text x="40" y="40" font-size="22" text-anchor="start" font-weight="bold" fill="#1f2328">Lights</text>
 <text x="40" y="62" font-size="12" text-anchor="start" font-weight="normal" fill="#57606a">Teryx OS wiring, sheet &#x27;lights&#x27;. Made from config/wiring.yaml by `python -m teryx wiring`. Don&#x27;t edit this file.</text>
 <line x1="40" y1="92" x2="74" y2="92" stroke="#1a7f37" stroke-width="2.5"/>
@@ -13,151 +13,419 @@
 <line x1="880" y1="92" x2="914" y2="92" stroke="#8250df" stroke-width="2.5" stroke-dasharray="2 4"/>
 <text x="920" y="96" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">Placeholder / later</text>
 <text x="40" y="120" font-size="11" text-anchor="start" font-weight="normal" fill="#57606a">Labels: wire id, size, fuse (if the wire has its own), and anything in between. Faded = optional. Hover for notes. Full table: docs/wiring/README.md</text>
-<g data-wire="LT01" data-from="FB.F1" data-to="LB1.pos" data-status="planned"><title>LT01: FB.F1 -&gt; LB1.pos</title><path d="M310,197 C395,197 395,197 480,197" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="LT02" data-from="FB.F2" data-to="LB2.pos" data-status="planned"><title>LT02: FB.F2 -&gt; LB2.pos</title><path d="M310,217 C395,217 395,419 480,419" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="LT03" data-from="FB.F2" data-to="LB3.pos" data-status="planned"><title>LT03: FB.F2 -&gt; LB3.pos</title><path d="M310,217 C395,217 395,530 480,530" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="LT04" data-from="FB.F1" data-to="LB4.pos" data-status="planned"><title>LT04: FB.F1 -&gt; LB4.pos</title><path d="M310,197 C395,197 395,308 480,308" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="LT05" data-from="FB.F7" data-to="LB_INT.pos" data-status="planned"><title>LT05: FB.F7 -&gt; LB_INT.pos</title><path d="M310,257 C395,257 395,752 480,752" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="LT06" data-from="LB1.neg" data-to="MOSFET.OUT1" data-status="planned"><title>LT06: LB1.neg -&gt; MOSFET.OUT1</title><path d="M750,217 C835,217 835,312 920,312" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="LT07" data-from="LB2.neg" data-to="MOSFET.OUT2" data-status="planned"><title>LT07: LB2.neg -&gt; MOSFET.OUT2</title><path d="M750,439 C835,439 835,332 920,332" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="LT08" data-from="LB3.neg" data-to="MOSFET.OUT3" data-status="planned"><title>LT08: LB3.neg -&gt; MOSFET.OUT3</title><path d="M750,550 C835,550 835,352 920,352" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="LT09" data-from="LB4.neg" data-to="MOSFET.OUT4" data-status="planned"><title>LT09: LB4.neg -&gt; MOSFET.OUT4</title><path d="M750,328 C835,328 835,372 920,372" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="LT10" data-from="LB_INT.neg" data-to="MOSFET.OUT5" data-status="planned"><title>LT10: LB_INT.neg -&gt; MOSFET.OUT5</title><path d="M750,772 C835,772 835,392 920,392" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="LT11" data-from="PICO.GP16" data-to="MOSFET.IN1" data-status="planned"><title>LT11: PICO.GP16 -&gt; MOSFET.IN1 - light.front_1 PWM</title><path d="M1360,197 C1275,197 1275,212 1190,212" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="LT12" data-from="PICO.GP17" data-to="MOSFET.IN2" data-status="planned"><title>LT12: PICO.GP17 -&gt; MOSFET.IN2 - light.front_2 PWM</title><path d="M1360,217 C1275,217 1275,232 1190,232" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="LT13" data-from="PICO.GP18" data-to="MOSFET.IN3" data-status="planned"><title>LT13: PICO.GP18 -&gt; MOSFET.IN3 - light.front_3 PWM</title><path d="M1360,237 C1275,237 1275,252 1190,252" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="LT14" data-from="PICO.GP19" data-to="MOSFET.IN4" data-status="planned"><title>LT14: PICO.GP19 -&gt; MOSFET.IN4 - light.front_4 PWM</title><path d="M1360,257 C1275,257 1275,272 1190,272" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="LT15" data-from="PICO.GP20" data-to="MOSFET.IN5" data-status="planned"><title>LT15: PICO.GP20 -&gt; MOSFET.IN5 - light.interior PWM</title><path d="M1360,277 C1275,277 1275,292 1190,292" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="LT16" data-from="FB.F3" data-to="RELAYS.COM1" data-status="planned"><title>LT16: FB.F3 -&gt; RELAYS.COM1</title><path d="M310,237 C395,237 395,641 480,641" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="LT17" data-from="RELAYS.NO1" data-to="FLOOD_L.pos" data-status="planned"><title>LT17: RELAYS.NO1 -&gt; FLOOD_L.pos - light.rear, auto on in reverse</title><path d="M750,661 C835,661 835,483 920,483" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="LT18" data-from="RELAYS.NO1" data-to="FLOOD_R.pos" data-status="planned"><title>LT18: RELAYS.NO1 -&gt; FLOOD_R.pos</title><path d="M750,661 C835,661 835,574 920,574" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-device="FB" data-status="tbc"><title>FB: Blade fuse block - 12 fuses in use. Small loads that can go out together share a fuse (front bars in pairs, trailer tail + stop, interior bar + accessory). All four front bars are NOT on one fuse, so one fault can&#x27;t black out the front at night. The winch, control box power, key, power hold and each actuator keep their own. Sam&#x27;s 12-way (in the post) is used, so it is full with no spares; add a small 6-way next to it if more circuits come</title><rect x="40" y="150" width="270" height="129" rx="6" fill="#f0f6ff" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
+<g data-wire="LT01" data-from="FB.F1" data-to="LB1.pos" data-status="planned"><title>LT01: FB.F1 -&gt; LB1.pos</title><path d="M310,217 C395,217 395,403 480,403" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT02" data-from="FB.F2" data-to="LB2.pos" data-status="planned"><title>LT02: FB.F2 -&gt; LB2.pos</title><path d="M310,237 C395,237 395,625 480,625" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT03" data-from="FB.F2" data-to="LB3.pos" data-status="planned"><title>LT03: FB.F2 -&gt; LB3.pos</title><path d="M310,237 C395,237 395,736 480,736" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT04" data-from="FB.F1" data-to="LB4.pos" data-status="planned"><title>LT04: FB.F1 -&gt; LB4.pos</title><path d="M310,217 C395,217 395,514 480,514" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT05" data-from="FB.F7" data-to="LB_INT.pos" data-status="planned"><title>LT05: FB.F7 -&gt; LB_INT.pos</title><path d="M310,277 C395,277 395,1160 480,1160" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT06" data-from="LB1.neg" data-to="MOSFET.OUT1" data-status="planned"><title>LT06: LB1.neg -&gt; MOSFET.OUT1</title><path d="M750,423 C835,423 835,1328 920,1328" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT07" data-from="LB2.neg" data-to="MOSFET.OUT2" data-status="planned"><title>LT07: LB2.neg -&gt; MOSFET.OUT2</title><path d="M750,645 C835,645 835,1348 920,1348" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT08" data-from="LB3.neg" data-to="MOSFET.OUT3" data-status="planned"><title>LT08: LB3.neg -&gt; MOSFET.OUT3</title><path d="M750,756 C835,756 835,1368 920,1368" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT09" data-from="LB4.neg" data-to="MOSFET.OUT4" data-status="planned"><title>LT09: LB4.neg -&gt; MOSFET.OUT4</title><path d="M750,534 C835,534 835,1388 920,1388" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT10" data-from="LB_INT.neg" data-to="MOSFET.OUT5" data-status="planned"><title>LT10: LB_INT.neg -&gt; MOSFET.OUT5</title><path d="M750,1180 C835,1180 835,1408 920,1408" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT11" data-from="PICO.GP16" data-to="MOSFET.IN1" data-status="planned"><title>LT11: PICO.GP16 -&gt; MOSFET.IN1 - light.front_1 PWM</title><path d="M1360,1138 C1275,1138 1275,1228 1190,1228" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="LT12" data-from="PICO.GP17" data-to="MOSFET.IN2" data-status="planned"><title>LT12: PICO.GP17 -&gt; MOSFET.IN2 - light.front_2 PWM</title><path d="M1360,1158 C1275,1158 1275,1248 1190,1248" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="LT13" data-from="PICO.GP18" data-to="MOSFET.IN3" data-status="planned"><title>LT13: PICO.GP18 -&gt; MOSFET.IN3 - light.front_3 PWM</title><path d="M1360,1178 C1275,1178 1275,1268 1190,1268" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="LT14" data-from="PICO.GP19" data-to="MOSFET.IN4" data-status="planned"><title>LT14: PICO.GP19 -&gt; MOSFET.IN4 - light.front_4 PWM</title><path d="M1360,1198 C1275,1198 1275,1288 1190,1288" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="LT15" data-from="PICO.GP20" data-to="MOSFET.IN5" data-status="planned"><title>LT15: PICO.GP20 -&gt; MOSFET.IN5 - light.interior PWM</title><path d="M1360,1218 C1275,1218 1275,1308 1190,1308" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="LT16" data-from="FB.F3" data-to="RELAYS.COM1" data-status="planned"><title>LT16: FB.F3 -&gt; RELAYS.COM1</title><path d="M310,257 C395,257 395,847 480,847" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT17" data-from="FB.F3" data-to="FLOOD_L.pos" data-status="planned"><title>LT17: FB.F3 -&gt; FLOOD_L.pos - Always live, the MOSFET switches the - side</title><path d="M310,257 C395,257 395,938 480,938" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT18" data-from="FB.F3" data-to="FLOOD_R.pos" data-status="planned"><title>LT18: FB.F3 -&gt; FLOOD_R.pos</title><path d="M310,257 C395,257 395,1049 480,1049" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT19" data-from="FLOOD_L.neg" data-to="MOSFET.OUT7" data-status="planned"><title>LT19: FLOOD_L.neg -&gt; MOSFET.OUT7</title><path d="M750,958 C835,958 835,1448 920,1448" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT20" data-from="FLOOD_R.neg" data-to="MOSFET.OUT8" data-status="planned"><title>LT20: FLOOD_R.neg -&gt; MOSFET.OUT8</title><path d="M750,1069 C835,1069 835,1488 920,1488" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT21" data-from="PCA.PWM11" data-to="MOSFET.IN7" data-status="planned"><title>LT21: PCA.PWM11 -&gt; MOSFET.IN7 - light.flood_l PWM</title><path d="M1360,483 C1275,483 1275,1428 1190,1428" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="LT22" data-from="PCA.PWM12" data-to="MOSFET.IN8" data-status="planned"><title>LT22: PCA.PWM12 -&gt; MOSFET.IN8 - light.flood_r PWM</title><path d="M1360,503 C1275,503 1275,1468 1190,1468" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="LT23" data-from="FB.IN" data-to="FB2.IN" data-status="planned"><title>LT23: FB.IN -&gt; FB2.IN - Own 30 A inline fuse off the 12-way&#x27;s feed stud</title><path d="M310,197 C395,197 395,212 480,212" fill="none" stroke="#424a53" stroke-width="3.2"/></g>
+<g data-wire="LT24" data-from="FB2.F1" data-to="BTS4.B+" data-status="planned"><title>LT24: FB2.F1 -&gt; BTS4.B+</title><path d="M750,232 C835,232 835,272 920,272" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT25" data-from="FB2.F2" data-to="BTS5.B+" data-status="planned"><title>LT25: FB2.F2 -&gt; BTS5.B+</title><path d="M750,252 C835,252 835,478 920,478" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT26" data-from="FB2.F3" data-to="BTS6.B+" data-status="planned"><title>LT26: FB2.F3 -&gt; BTS6.B+</title><path d="M750,272 C835,272 835,669 920,669" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT27" data-from="FB2.F3" data-to="BTS7.B+" data-status="planned"><title>LT27: FB2.F3 -&gt; BTS7.B+</title><path d="M750,272 C835,272 835,860 920,860" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT28" data-from="BTS4.M+" data-to="HEAD_L.LO" data-status="planned"><title>LT28: BTS4.M+ -&gt; HEAD_L.LO - light.head_l_low. The diode stops the backup toggle feeding back into the BTS7960</title><path d="M1190,292 C1275,292 1275,212 1360,212" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT29" data-from="BTS4.M-" data-to="HEAD_L.HI" data-status="planned"><title>LT29: BTS4.M- -&gt; HEAD_L.HI - light.head_l_high</title><path d="M1190,312 C1275,312 1275,232 1360,232" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT30" data-from="BTS5.M+" data-to="HEAD_R.LO" data-status="planned"><title>LT30: BTS5.M+ -&gt; HEAD_R.LO - light.head_r_low</title><path d="M1190,498 C1275,498 1275,649 1360,649" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT31" data-from="BTS5.M-" data-to="HEAD_R.HI" data-status="planned"><title>LT31: BTS5.M- -&gt; HEAD_R.HI - light.head_r_high</title><path d="M1190,518 C1275,518 1275,669 1360,669" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT32" data-from="BTS6.M+" data-to="TAIL_L.TAIL" data-status="planned"><title>LT32: BTS6.M+ -&gt; TAIL_L.TAIL - light.tail_l</title><path d="M1190,689 C1275,689 1275,775 1360,775" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT33" data-from="BTS6.M-" data-to="TAIL_L.STOP" data-status="planned"><title>LT33: BTS6.M- -&gt; TAIL_L.STOP - light.brake_l</title><path d="M1190,709 C1275,709 1275,795 1360,795" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT34" data-from="BTS7.M+" data-to="TAIL_R.TAIL" data-status="planned"><title>LT34: BTS7.M+ -&gt; TAIL_R.TAIL - light.tail_r</title><path d="M1190,880 C1275,880 1275,901 1360,901" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT35" data-from="BTS7.M-" data-to="TAIL_R.STOP" data-status="planned"><title>LT35: BTS7.M- -&gt; TAIL_R.STOP - light.brake_r</title><path d="M1190,900 C1275,900 1275,921 1360,921" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT36" data-from="PCA.PWM1" data-to="BTS4.RPWM" data-status="planned"><title>LT36: PCA.PWM1 -&gt; BTS4.RPWM - light.head_l_low PWM</title><path d="M1360,323 C1275,323 1275,212 1190,212" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="LT37" data-from="PCA.PWM2" data-to="BTS4.LPWM" data-status="planned"><title>LT37: PCA.PWM2 -&gt; BTS4.LPWM - light.head_l_high PWM</title><path d="M1360,343 C1275,343 1275,232 1190,232" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="LT38" data-from="PCA.PWM3" data-to="BTS5.RPWM" data-status="planned"><title>LT38: PCA.PWM3 -&gt; BTS5.RPWM - light.head_r_low PWM</title><path d="M1360,363 C1275,363 1275,418 1190,418" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="LT39" data-from="PCA.PWM4" data-to="BTS5.LPWM" data-status="planned"><title>LT39: PCA.PWM4 -&gt; BTS5.LPWM - light.head_r_high PWM</title><path d="M1360,383 C1275,383 1275,438 1190,438" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="LT40" data-from="PCA.PWM5" data-to="BTS6.RPWM" data-status="planned"><title>LT40: PCA.PWM5 -&gt; BTS6.RPWM - light.tail_l PWM</title><path d="M1360,403 C1275,403 1275,609 1190,609" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="LT41" data-from="PCA.PWM6" data-to="BTS6.LPWM" data-status="planned"><title>LT41: PCA.PWM6 -&gt; BTS6.LPWM - light.brake_l PWM</title><path d="M1360,423 C1275,423 1275,629 1190,629" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="LT42" data-from="PCA.PWM7" data-to="BTS7.RPWM" data-status="planned"><title>LT42: PCA.PWM7 -&gt; BTS7.RPWM - light.tail_r PWM</title><path d="M1360,443 C1275,443 1275,800 1190,800" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="LT43" data-from="PCA.PWM8" data-to="BTS7.LPWM" data-status="planned"><title>LT43: PCA.PWM8 -&gt; BTS7.LPWM - light.brake_r PWM</title><path d="M1360,463 C1275,463 1275,820 1190,820" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="LT44" data-from="PCA.PWM15" data-to="BTS4.EN" data-status="planned"><title>LT44: PCA.PWM15 -&gt; BTS4.EN - R_EN + L_EN joined, 10k to ground</title><path d="M1360,543 C1275,543 1275,252 1190,252" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="LT45" data-from="PCA.PWM15" data-to="BTS5.EN" data-status="planned"><title>LT45: PCA.PWM15 -&gt; BTS5.EN</title><path d="M1360,543 C1275,543 1275,458 1190,458" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="LT46" data-from="PCA.PWM15" data-to="BTS6.EN" data-status="planned"><title>LT46: PCA.PWM15 -&gt; BTS6.EN</title><path d="M1360,543 C1275,543 1275,649 1190,649" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="LT47" data-from="PCA.PWM15" data-to="BTS7.EN" data-status="planned"><title>LT47: PCA.PWM15 -&gt; BTS7.EN</title><path d="M1360,543 C1275,543 1275,840 1190,840" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="LT48" data-from="BRAKE_SW.OUT" data-to="TAIL_L.STOP" data-status="planned"><title>LT48: BRAKE_SW.OUT -&gt; TAIL_L.STOP - Brake lights always work, whatever the Pico does</title><path d="M1800,197 C1715,197 1715,795 1630,795" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT49" data-from="BRAKE_SW.OUT" data-to="TAIL_R.STOP" data-status="planned"><title>LT49: BRAKE_SW.OUT -&gt; TAIL_R.STOP</title><path d="M1800,197 C1715,197 1715,921 1630,921" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT50" data-from="FB2.F5" data-to="LIMP_SW.IN" data-status="planned"><title>LT50: FB2.F5 -&gt; LIMP_SW.IN</title><path d="M750,312 C835,312 835,1102 920,1102" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT51" data-from="LIMP_SW.OUT" data-to="HEAD_L.LO" data-status="planned"><title>LT51: LIMP_SW.OUT -&gt; HEAD_L.LO - Backup toggle on = low beams at full, even with the control box dead</title><path d="M1190,1122 C1275,1122 1275,212 1360,212" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT52" data-from="LIMP_SW.OUT" data-to="HEAD_R.LO" data-status="planned"><title>LT52: LIMP_SW.OUT -&gt; HEAD_R.LO</title><path d="M1190,1122 C1275,1122 1275,649 1360,649" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT54" data-from="LIMP_SW.OUT" data-to="TAIL_L.TAIL" data-status="planned"><title>LT54: LIMP_SW.OUT -&gt; TAIL_L.TAIL - Tails on with the backup toggle too</title><path d="M1190,1122 C1275,1122 1275,775 1360,775" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT55" data-from="LIMP_SW.OUT" data-to="TAIL_R.TAIL" data-status="planned"><title>LT55: LIMP_SW.OUT -&gt; TAIL_R.TAIL</title><path d="M1190,1122 C1275,1122 1275,901 1360,901" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="LT56" data-from="FB2.F4" data-to="BEACON.pos" data-status="planned"><title>LT56: FB2.F4 -&gt; BEACON.pos</title><path d="M750,292 C835,292 835,991 920,991" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="LT57" data-from="BEACON.neg" data-to="MOSFET2.OUT1" data-status="planned"><title>LT57: BEACON.neg -&gt; MOSFET2.OUT1</title><path d="M1190,1011 C1275,1011 1275,1047 1360,1047" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="LT58" data-from="PCA.PWM13" data-to="MOSFET2.IN1" data-status="planned"><title>LT58: PCA.PWM13 -&gt; MOSFET2.IN1 - light.beacon: flashed at 3 Hz by the Pico</title><path d="M1630,523 C1690,523 1690,1027 1630,1027" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-device="FB" data-status="tbc"><title>FB: Blade fuse block - 12 fuses in use. Small loads that can go out together share a fuse (front bars in pairs, trailer tail + stop, interior bar + accessory). All four front bars are NOT on one fuse, so one fault can&#x27;t black out the front at night. The winch, control box power, key, power hold and each actuator keep their own. Sam&#x27;s 12-way (in the post) is used, so it is full with no spares; add a small 6-way next to it if more circuits come</title><rect x="40" y="150" width="270" height="149" rx="6" fill="#f0f6ff" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
 <text x="50" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Blade fuse block</text>
 <text x="50" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#bf8700">FB · tbc</text>
 <line x1="40" y1="197" x2="310" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F1  front bars 1 + 4 (outer pair)</text>
+<text x="175" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN</text>
 <line x1="40" y1="217" x2="310" y2="217" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F2  front bars 2 + 3 (inner pair)</text>
+<text x="175" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F1  front bars 1 + 4 (outer pair)</text>
 <line x1="40" y1="237" x2="310" y2="237" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="241" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F3  relay 1 rear floods</text>
+<text x="175" y="241" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F2  front bars 2 + 3 (inner pair)</text>
 <line x1="40" y1="257" x2="310" y2="257" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="261" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F7  extras - interior bar + relay 7 acc…</text>
+<text x="175" y="261" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F3  rear floods (MOSFET 7-8) + relay 1 …</text>
+<line x1="40" y1="277" x2="310" y2="277" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="281" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F7  extras - interior bar + relay 7 acc…</text>
 </g>
-<g data-device="LB1" data-status="confirmed"><title>LB1: Front bar 1 (far left)</title><rect x="480" y="150" width="270" height="89" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
-<text x="490" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Front bar 1 (far left)</text>
-<text x="490" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">LB1 · confirmed</text>
-<line x1="480" y1="197" x2="750" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">pos</text>
-<line x1="480" y1="217" x2="750" y2="217" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">neg</text>
+<g data-device="FB2" data-status="planned"><title>FB2: Small 6-way blade fuse block (stock lights + beacon) - Next to the 12-way, which is full. Fed off the 12-way&#x27;s feed stud through its own 30 A fuse. 1 way spare</title><rect x="480" y="150" width="270" height="184" rx="6" fill="#f0f6ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="490" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Small 6-way blade fuse block</text>
+<text x="490" y="183" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">(stock lights + beacon)</text>
+<text x="490" y="198" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">FB2 · planned</text>
+<line x1="480" y1="212" x2="750" y2="212" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="216" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN</text>
+<line x1="480" y1="232" x2="750" y2="232" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="236" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F1  BTS7960 4 left headlight</text>
+<line x1="480" y1="252" x2="750" y2="252" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="256" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F2  BTS7960 5 right headlight</text>
+<line x1="480" y1="272" x2="750" y2="272" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="276" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F3  BTS7960 6-7 tail + brake lights</text>
+<line x1="480" y1="292" x2="750" y2="292" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="296" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F4  roof beacon</text>
+<line x1="480" y1="312" x2="750" y2="312" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="316" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F5  backup lights toggle (low beams + t…</text>
 </g>
-<g data-device="LB4" data-status="confirmed"><title>LB4: Front bar 4 (far right)</title><rect x="480" y="261" width="270" height="89" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
-<text x="490" y="279" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Front bar 4 (far right)</text>
-<text x="490" y="294" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">LB4 · confirmed</text>
-<line x1="480" y1="308" x2="750" y2="308" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="312" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">pos</text>
-<line x1="480" y1="328" x2="750" y2="328" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="332" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">neg</text>
+<g data-device="LB1" data-status="confirmed"><title>LB1: Front bar 1 (far left)</title><rect x="480" y="356" width="270" height="89" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
+<text x="490" y="374" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Front bar 1 (far left)</text>
+<text x="490" y="389" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">LB1 · confirmed</text>
+<line x1="480" y1="403" x2="750" y2="403" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="407" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">pos</text>
+<line x1="480" y1="423" x2="750" y2="423" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="427" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">neg</text>
 </g>
-<g data-device="LB2" data-status="confirmed"><title>LB2: Front bar 2 (inner left)</title><rect x="480" y="372" width="270" height="89" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
-<text x="490" y="390" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Front bar 2 (inner left)</text>
-<text x="490" y="405" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">LB2 · confirmed</text>
-<line x1="480" y1="419" x2="750" y2="419" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="423" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">pos</text>
-<line x1="480" y1="439" x2="750" y2="439" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="443" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">neg</text>
+<g data-device="LB4" data-status="confirmed"><title>LB4: Front bar 4 (far right)</title><rect x="480" y="467" width="270" height="89" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
+<text x="490" y="485" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Front bar 4 (far right)</text>
+<text x="490" y="500" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">LB4 · confirmed</text>
+<line x1="480" y1="514" x2="750" y2="514" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="518" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">pos</text>
+<line x1="480" y1="534" x2="750" y2="534" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="538" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">neg</text>
 </g>
-<g data-device="LB3" data-status="confirmed"><title>LB3: Front bar 3 (inner right)</title><rect x="480" y="483" width="270" height="89" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
-<text x="490" y="501" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Front bar 3 (inner right)</text>
-<text x="490" y="516" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">LB3 · confirmed</text>
-<line x1="480" y1="530" x2="750" y2="530" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="534" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">pos</text>
-<line x1="480" y1="550" x2="750" y2="550" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="554" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">neg</text>
+<g data-device="LB2" data-status="confirmed"><title>LB2: Front bar 2 (inner left)</title><rect x="480" y="578" width="270" height="89" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
+<text x="490" y="596" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Front bar 2 (inner left)</text>
+<text x="490" y="611" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">LB2 · confirmed</text>
+<line x1="480" y1="625" x2="750" y2="625" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="629" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">pos</text>
+<line x1="480" y1="645" x2="750" y2="645" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="649" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">neg</text>
 </g>
-<g data-device="RELAYS" data-status="planned"><title>RELAYS: 16-ch relay board, channels 1-8 - One 16-channel board of mechanical 5 V relays with opto and JD-VCC jumper (AliExpress cart), in an aux box next to the control box. RELAYS2 is channels 9-16 of the same board. The solid state G3MB-202P board Sam has is AC only and won&#x27;t turn off on 12 V DC. JD-VCC jumper off, coils on 5 V, inputs from 3.3 V</title><rect x="480" y="594" width="270" height="89" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
-<text x="490" y="612" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">16-ch relay board, channels 1-8</text>
-<text x="490" y="627" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">RELAYS · planned</text>
-<line x1="480" y1="641" x2="750" y2="641" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="645" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">COM1</text>
-<line x1="480" y1="661" x2="750" y2="661" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="665" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">NO1</text>
+<g data-device="LB3" data-status="confirmed"><title>LB3: Front bar 3 (inner right)</title><rect x="480" y="689" width="270" height="89" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
+<text x="490" y="707" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Front bar 3 (inner right)</text>
+<text x="490" y="722" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">LB3 · confirmed</text>
+<line x1="480" y1="736" x2="750" y2="736" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="740" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">pos</text>
+<line x1="480" y1="756" x2="750" y2="756" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="760" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">neg</text>
 </g>
-<g data-device="LB_INT" data-status="confirmed"><title>LB_INT: Interior 7 in bar</title><rect x="480" y="705" width="270" height="89" rx="6" fill="#f0f6ff" stroke="#0969da" stroke-width="1.5"/>
-<text x="490" y="723" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Interior 7 in bar</text>
-<text x="490" y="738" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">LB_INT · confirmed</text>
-<line x1="480" y1="752" x2="750" y2="752" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="756" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">pos</text>
-<line x1="480" y1="772" x2="750" y2="772" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="776" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">neg</text>
+<g data-device="RELAYS" data-status="planned"><title>RELAYS: 16-ch relay board, channels 1-8 - One 16-channel board of mechanical 5 V relays with opto and JD-VCC jumper (AliExpress cart), in an aux box next to the control box. RELAYS2 is channels 9-16 of the same board. The solid state G3MB-202P board Sam has is AC only and won&#x27;t turn off on 12 V DC. JD-VCC jumper off, coils on 5 V, inputs from 3.3 V</title><rect x="480" y="800" width="270" height="69" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="490" y="818" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">16-ch relay board, channels 1-8</text>
+<text x="490" y="833" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">RELAYS · planned</text>
+<line x1="480" y1="847" x2="750" y2="847" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="851" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">COM1</text>
 </g>
-<g data-device="MOSFET" data-status="planned"><title>MOSFET: 8-ch isolated MOSFET board (low side, 6 used, 2 spare) - One 8-channel opto-isolated MOSFET board (3.3 V input version), one channel per light bar, 3 spare. About 6 A per front bar. Low side switching, so each bar&#x27;s + comes from its fuse and its - goes to an OUT pin</title><rect x="920" y="150" width="270" height="264" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
-<text x="930" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">8-ch isolated MOSFET board (low</text>
-<text x="930" y="183" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">side, 6 used, 2 spare)</text>
-<text x="930" y="198" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">MOSFET · planned</text>
+<g data-device="FLOOD_L" data-status="confirmed"><title>FLOOD_L: Rear flood left (4 in pod) - Outside of the roll cage mounting plate. Also the reverse light. Dimmable on MOSFET channel 7 (left) and 8 (right)</title><rect x="480" y="891" width="270" height="89" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
+<text x="490" y="909" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Rear flood left (4 in pod)</text>
+<text x="490" y="924" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">FLOOD_L · confirmed</text>
+<line x1="480" y1="938" x2="750" y2="938" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="942" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">pos</text>
+<line x1="480" y1="958" x2="750" y2="958" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="962" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">neg</text>
+</g>
+<g data-device="FLOOD_R" data-status="confirmed"><title>FLOOD_R: Rear flood right (4 in pod)</title><rect x="480" y="1002" width="270" height="89" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
+<text x="490" y="1020" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Rear flood right (4 in pod)</text>
+<text x="490" y="1035" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">FLOOD_R · confirmed</text>
+<line x1="480" y1="1049" x2="750" y2="1049" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="1053" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">pos</text>
+<line x1="480" y1="1069" x2="750" y2="1069" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="1073" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">neg</text>
+</g>
+<g data-device="LB_INT" data-status="confirmed"><title>LB_INT: Interior 7 in bar</title><rect x="480" y="1113" width="270" height="89" rx="6" fill="#f0f6ff" stroke="#0969da" stroke-width="1.5"/>
+<text x="490" y="1131" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Interior 7 in bar</text>
+<text x="490" y="1146" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">LB_INT · confirmed</text>
+<line x1="480" y1="1160" x2="750" y2="1160" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="1164" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">pos</text>
+<line x1="480" y1="1180" x2="750" y2="1180" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="1184" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">neg</text>
+</g>
+<g data-device="BTS4" data-status="planned"><title>BTS4: BTS7960 4 (left headlight low / high) - Used as two high-side switches, not a motor bridge. VCC from the Pico 3.3 V like BTS1-3. EN (R_EN + L_EN) from PCA9685 PWM15 with a 10k to ground, so the lamps stay off until the Pico is running</title><rect x="920" y="150" width="270" height="184" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="930" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">BTS7960 4 (left headlight low /</text>
+<text x="930" y="183" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">high)</text>
+<text x="930" y="198" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">BTS4 · planned</text>
 <line x1="920" y1="212" x2="1190" y2="212" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="216" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN1</text>
+<text x="1055" y="216" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">RPWM</text>
 <line x1="920" y1="232" x2="1190" y2="232" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="236" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN2</text>
+<text x="1055" y="236" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">LPWM</text>
 <line x1="920" y1="252" x2="1190" y2="252" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="256" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN3</text>
+<text x="1055" y="256" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">EN</text>
 <line x1="920" y1="272" x2="1190" y2="272" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="276" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN4</text>
+<text x="1055" y="276" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">B+</text>
 <line x1="920" y1="292" x2="1190" y2="292" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="296" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN5</text>
+<text x="1055" y="296" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">M+</text>
 <line x1="920" y1="312" x2="1190" y2="312" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="316" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT1</text>
-<line x1="920" y1="332" x2="1190" y2="332" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="336" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT2</text>
-<line x1="920" y1="352" x2="1190" y2="352" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="356" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT3</text>
-<line x1="920" y1="372" x2="1190" y2="372" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="376" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT4</text>
-<line x1="920" y1="392" x2="1190" y2="392" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="396" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT5</text>
+<text x="1055" y="316" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">M-</text>
 </g>
-<g data-device="FLOOD_L" data-status="confirmed"><title>FLOOD_L: Rear flood left (4 in pod) - Outside of the roll cage mounting plate. Also the reverse light</title><rect x="920" y="436" width="270" height="69" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
-<text x="930" y="454" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Rear flood left (4 in pod)</text>
-<text x="930" y="469" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">FLOOD_L · confirmed</text>
-<line x1="920" y1="483" x2="1190" y2="483" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="487" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">pos</text>
+<g data-device="BTS5" data-status="planned"><title>BTS5: BTS7960 5 (right headlight low / high)</title><rect x="920" y="356" width="270" height="184" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="930" y="374" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">BTS7960 5 (right headlight low /</text>
+<text x="930" y="389" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">high)</text>
+<text x="930" y="404" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">BTS5 · planned</text>
+<line x1="920" y1="418" x2="1190" y2="418" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="422" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">RPWM</text>
+<line x1="920" y1="438" x2="1190" y2="438" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="442" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">LPWM</text>
+<line x1="920" y1="458" x2="1190" y2="458" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="462" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">EN</text>
+<line x1="920" y1="478" x2="1190" y2="478" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="482" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">B+</text>
+<line x1="920" y1="498" x2="1190" y2="498" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="502" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">M+</text>
+<line x1="920" y1="518" x2="1190" y2="518" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="522" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">M-</text>
 </g>
-<g data-device="FLOOD_R" data-status="confirmed"><title>FLOOD_R: Rear flood right (4 in pod)</title><rect x="920" y="527" width="270" height="69" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
-<text x="930" y="545" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Rear flood right (4 in pod)</text>
-<text x="930" y="560" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">FLOOD_R · confirmed</text>
-<line x1="920" y1="574" x2="1190" y2="574" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="578" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">pos</text>
+<g data-device="BTS6" data-status="planned"><title>BTS6: BTS7960 6 (left tail / brake)</title><rect x="920" y="562" width="270" height="169" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="930" y="580" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">BTS7960 6 (left tail / brake)</text>
+<text x="930" y="595" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">BTS6 · planned</text>
+<line x1="920" y1="609" x2="1190" y2="609" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="613" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">RPWM</text>
+<line x1="920" y1="629" x2="1190" y2="629" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="633" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">LPWM</text>
+<line x1="920" y1="649" x2="1190" y2="649" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="653" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">EN</text>
+<line x1="920" y1="669" x2="1190" y2="669" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="673" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">B+</text>
+<line x1="920" y1="689" x2="1190" y2="689" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="693" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">M+</text>
+<line x1="920" y1="709" x2="1190" y2="709" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="713" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">M-</text>
 </g>
-<g data-device="PICO" data-status="planned"><title>PICO: Raspberry Pi Pico 2 - Talks to the Pi over CAN only. No USB lead to the Pi; reflash with a laptop on its own USB port in the workshop</title><rect x="1360" y="150" width="270" height="149" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
-<text x="1370" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Raspberry Pi Pico 2</text>
-<text x="1370" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">PICO · planned</text>
-<line x1="1360" y1="197" x2="1630" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1495" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP16</text>
-<line x1="1360" y1="217" x2="1630" y2="217" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1495" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP17</text>
-<line x1="1360" y1="237" x2="1630" y2="237" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1495" y="241" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP18</text>
-<line x1="1360" y1="257" x2="1630" y2="257" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1495" y="261" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP19</text>
-<line x1="1360" y1="277" x2="1630" y2="277" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1495" y="281" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP20</text>
+<g data-device="BTS7" data-status="planned"><title>BTS7: BTS7960 7 (right tail / brake)</title><rect x="920" y="753" width="270" height="169" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="930" y="771" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">BTS7960 7 (right tail / brake)</text>
+<text x="930" y="786" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">BTS7 · planned</text>
+<line x1="920" y1="800" x2="1190" y2="800" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="804" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">RPWM</text>
+<line x1="920" y1="820" x2="1190" y2="820" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="824" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">LPWM</text>
+<line x1="920" y1="840" x2="1190" y2="840" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="844" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">EN</text>
+<line x1="920" y1="860" x2="1190" y2="860" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="864" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">B+</text>
+<line x1="920" y1="880" x2="1190" y2="880" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="884" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">M+</text>
+<line x1="920" y1="900" x2="1190" y2="900" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="904" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">M-</text>
 </g>
-<text x="472" y="194" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT01  1.5 mm²</text>
-<text x="472" y="416" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT02  1.5 mm²</text>
-<text x="472" y="527" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT03  1.5 mm²</text>
-<text x="472" y="305" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT04  1.5 mm²</text>
-<text x="318" y="254" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT05  1 mm²</text>
-<text x="758" y="214" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT06  1.5 mm²</text>
-<text x="758" y="436" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT07  1.5 mm²</text>
-<text x="758" y="547" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT08  1.5 mm²</text>
-<text x="758" y="325" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT09  1.5 mm²</text>
-<text x="758" y="769" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT10  1 mm²</text>
-<text x="1352" y="194" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT11</text>
-<text x="1352" y="214" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT12</text>
-<text x="1352" y="234" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT13</text>
-<text x="1352" y="254" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT14</text>
-<text x="1352" y="274" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT15</text>
-<text x="318" y="234" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT16  1.5 mm²</text>
-<text x="912" y="480" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT17  1.5 mm²  10 A</text>
-<text x="912" y="571" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT18  1.5 mm²  10 A</text>
+<g data-device="BEACON" data-status="planned"><title>BEACON: Roof beacon (amber LED, steady-on) - Plain amber LED beacon that stays on steady. The Pico flashes it at 3 Hz (NZ Vehicle Lighting Rule 11.1(2): 2 to 4 Hz) and dims it. Fits Sam&#x27;s existing hole on the roof</title><rect x="920" y="944" width="270" height="89" rx="6" fill="#f4f4f4" stroke="#424a53" stroke-width="1.5"/>
+<text x="930" y="962" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Roof beacon (amber LED, steady-on)</text>
+<text x="930" y="977" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">BEACON · planned</text>
+<line x1="920" y1="991" x2="1190" y2="991" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="995" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">pos</text>
+<line x1="920" y1="1011" x2="1190" y2="1011" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="1015" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">neg</text>
+</g>
+<g data-device="LIMP_SW" data-status="planned"><title>LIMP_SW: Backup lights toggle (hidden) - The Teryx has no headlight switch, so the dash and the Pico do everything. This hidden toggle is the backup if the control box dies: it feeds both low beams and both tails at full through diodes. Leave it off normally. The Pico also turns low beams and tails on by itself if the dash goes quiet with the key on</title><rect x="920" y="1055" width="270" height="89" rx="6" fill="#f0f6ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="930" y="1073" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Backup lights toggle (hidden)</text>
+<text x="930" y="1088" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">LIMP_SW · planned</text>
+<line x1="920" y1="1102" x2="1190" y2="1102" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="1106" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN</text>
+<line x1="920" y1="1122" x2="1190" y2="1122" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="1126" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT</text>
+</g>
+<g data-device="MOSFET" data-status="planned"><title>MOSFET: 8-ch isolated MOSFET board (low side, all 8 used) - Sam&#x27;s board: 8-channel opto-isolated MOSFET driver, DC 3.7-27 V, 10 A per channel, PWM input 3-20 V, 0-20 kHz. 1-4 front bars, 5 cabin bar, 6 trailer bar, 7-8 rear floods. Low side switching, so each light&#x27;s + comes from its fuse and its - goes to an OUT pin</title><rect x="920" y="1166" width="270" height="344" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="930" y="1184" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">8-ch isolated MOSFET board (low</text>
+<text x="930" y="1199" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">side, all 8 used)</text>
+<text x="930" y="1214" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">MOSFET · planned</text>
+<line x1="920" y1="1228" x2="1190" y2="1228" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="1232" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN1</text>
+<line x1="920" y1="1248" x2="1190" y2="1248" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="1252" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN2</text>
+<line x1="920" y1="1268" x2="1190" y2="1268" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="1272" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN3</text>
+<line x1="920" y1="1288" x2="1190" y2="1288" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="1292" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN4</text>
+<line x1="920" y1="1308" x2="1190" y2="1308" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="1312" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN5</text>
+<line x1="920" y1="1328" x2="1190" y2="1328" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="1332" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT1</text>
+<line x1="920" y1="1348" x2="1190" y2="1348" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="1352" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT2</text>
+<line x1="920" y1="1368" x2="1190" y2="1368" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="1372" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT3</text>
+<line x1="920" y1="1388" x2="1190" y2="1388" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="1392" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT4</text>
+<line x1="920" y1="1408" x2="1190" y2="1408" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="1412" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT5</text>
+<line x1="920" y1="1428" x2="1190" y2="1428" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="1432" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN7</text>
+<line x1="920" y1="1448" x2="1190" y2="1448" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="1452" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT7</text>
+<line x1="920" y1="1468" x2="1190" y2="1468" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="1472" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN8</text>
+<line x1="920" y1="1488" x2="1190" y2="1488" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="1492" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT8</text>
+</g>
+<g data-device="HEAD_L" data-status="from_manual"><title>HEAD_L: Left headlight (stock, 12 V 35/35 W) - Dual filament bulb, low and high, one shared earth (Kawasaki 2013 Teryx 750 owner&#x27;s manual: headlight 12 V 35/35 W x 2)</title><rect x="1360" y="150" width="270" height="104" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
+<text x="1370" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Left headlight (stock, 12 V 35/35</text>
+<text x="1370" y="183" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">W)</text>
+<text x="1370" y="198" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">HEAD_L · from_manual</text>
+<line x1="1360" y1="212" x2="1630" y2="212" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="216" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">LO</text>
+<line x1="1360" y1="232" x2="1630" y2="232" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="236" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">HI</text>
+</g>
+<g data-device="PCA" data-status="planned"><title>PCA: PCA9685 16-ch PWM board (0x40) - Every light that isn&#x27;t a front bar or the cabin bar dims through this (docs/lights.md). Wires soldered straight to the pads, no header pins. VCC 3.3 V so the outputs are 3.3 V, which the MOSFET boards (3-20 V input) and the BTS7960s (3.3 V logic like BTS1-3) take. Leave V+ (servo power) empty. OE tied low on the board. PWM0 trailer bar, 1-10 stock lights on BTS7960 4-8, 11-12 rear floods, 13 beacon, 14 spare, 15 BTS7960 enable. All outputs are off at power-up</title><rect x="1360" y="276" width="270" height="289" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="1370" y="294" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">PCA9685 16-ch PWM board (0x40)</text>
+<text x="1370" y="309" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">PCA · planned · optional</text>
+<line x1="1360" y1="323" x2="1630" y2="323" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="327" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">PWM1</text>
+<line x1="1360" y1="343" x2="1630" y2="343" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="347" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">PWM2</text>
+<line x1="1360" y1="363" x2="1630" y2="363" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="367" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">PWM3</text>
+<line x1="1360" y1="383" x2="1630" y2="383" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="387" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">PWM4</text>
+<line x1="1360" y1="403" x2="1630" y2="403" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="407" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">PWM5</text>
+<line x1="1360" y1="423" x2="1630" y2="423" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="427" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">PWM6</text>
+<line x1="1360" y1="443" x2="1630" y2="443" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="447" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">PWM7</text>
+<line x1="1360" y1="463" x2="1630" y2="463" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="467" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">PWM8</text>
+<line x1="1360" y1="483" x2="1630" y2="483" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="487" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">PWM11</text>
+<line x1="1360" y1="503" x2="1630" y2="503" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="507" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">PWM12</text>
+<line x1="1360" y1="523" x2="1630" y2="523" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="527" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">PWM13</text>
+<line x1="1360" y1="543" x2="1630" y2="543" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="547" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">PWM15  BTS7960 4-8 enable (off at power…</text>
+</g>
+<g data-device="HEAD_R" data-status="from_manual"><title>HEAD_R: Right headlight (stock, 12 V 35/35 W)</title><rect x="1360" y="587" width="270" height="104" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
+<text x="1370" y="605" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Right headlight (stock, 12 V 35/35</text>
+<text x="1370" y="620" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">W)</text>
+<text x="1370" y="635" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">HEAD_R · from_manual</text>
+<line x1="1360" y1="649" x2="1630" y2="649" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="653" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">LO</text>
+<line x1="1360" y1="669" x2="1630" y2="669" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="673" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">HI</text>
+</g>
+<g data-device="TAIL_L" data-status="from_manual"><title>TAIL_L: Left tail / brake light (stock, 12 V 8/27 W) - Dual filament bulb, 8 W tail and 27 W brake, one shared earth (owner&#x27;s manual: tail/brake light 12 V 8/27 W x 2)</title><rect x="1360" y="713" width="270" height="104" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
+<text x="1370" y="731" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Left tail / brake light (stock, 12</text>
+<text x="1370" y="746" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">V 8/27 W)</text>
+<text x="1370" y="761" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">TAIL_L · from_manual</text>
+<line x1="1360" y1="775" x2="1630" y2="775" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="779" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">TAIL</text>
+<line x1="1360" y1="795" x2="1630" y2="795" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="799" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">STOP</text>
+</g>
+<g data-device="TAIL_R" data-status="from_manual"><title>TAIL_R: Right tail / brake light (stock, 12 V 8/27 W)</title><rect x="1360" y="839" width="270" height="104" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
+<text x="1370" y="857" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Right tail / brake light (stock,</text>
+<text x="1370" y="872" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">12 V 8/27 W)</text>
+<text x="1370" y="887" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">TAIL_R · from_manual</text>
+<line x1="1360" y1="901" x2="1630" y2="901" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="905" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">TAIL</text>
+<line x1="1360" y1="921" x2="1630" y2="921" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="925" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">STOP</text>
+</g>
+<g data-device="MOSFET2" data-status="planned"><title>MOSFET2: 4-ch MOSFET board (beacon, 3 spare) - Sam&#x27;s 4-channel version of the same board (3-20 V PWM input, 3.7-27 V 10 A per channel, opto isolated). Channel 1 roof beacon, 3 spare for later lights</title><rect x="1360" y="965" width="270" height="104" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="1370" y="983" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">4-ch MOSFET board (beacon, 3</text>
+<text x="1370" y="998" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">spare)</text>
+<text x="1370" y="1013" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">MOSFET2 · planned</text>
+<line x1="1360" y1="1027" x2="1630" y2="1027" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="1031" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN1</text>
+<line x1="1360" y1="1047" x2="1630" y2="1047" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="1051" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT1</text>
+</g>
+<g data-device="PICO" data-status="planned"><title>PICO: Raspberry Pi Pico 2 - Talks to the Pi over CAN only. No USB lead to the Pi; reflash with a laptop on its own USB port in the workshop</title><rect x="1360" y="1091" width="270" height="149" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="1370" y="1109" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Raspberry Pi Pico 2</text>
+<text x="1370" y="1124" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">PICO · planned</text>
+<line x1="1360" y1="1138" x2="1630" y2="1138" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="1142" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP16</text>
+<line x1="1360" y1="1158" x2="1630" y2="1158" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="1162" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP17</text>
+<line x1="1360" y1="1178" x2="1630" y2="1178" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="1182" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP18</text>
+<line x1="1360" y1="1198" x2="1630" y2="1198" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="1202" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP19</text>
+<line x1="1360" y1="1218" x2="1630" y2="1218" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="1222" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP20</text>
+</g>
+<g data-device="BRAKE_SW" data-status="tbc"><title>BRAKE_SW: Brake light switch (stock) - Also feeds both brake filaments and the trailer stop pin through diodes, so the brake lights work at full even with the control box off</title><rect x="1800" y="150" width="270" height="69" rx="6" fill="#f0f6ff" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
+<text x="1810" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Brake light switch (stock)</text>
+<text x="1810" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#bf8700">BRAKE_SW · tbc</text>
+<line x1="1800" y1="197" x2="2070" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1935" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT</text>
+</g>
+<text x="472" y="400" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT01  1.5 mm²</text>
+<text x="472" y="622" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT02  1.5 mm²</text>
+<text x="472" y="733" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT03  1.5 mm²</text>
+<text x="472" y="511" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT04  1.5 mm²</text>
+<text x="318" y="274" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT05  1 mm²</text>
+<text x="758" y="420" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT06  1.5 mm²</text>
+<text x="758" y="642" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT07  1.5 mm²</text>
+<text x="758" y="753" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT08  1.5 mm²</text>
+<text x="758" y="531" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT09  1.5 mm²</text>
+<text x="758" y="1177" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT10  1 mm²</text>
+<text x="1352" y="1135" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT11</text>
+<text x="1352" y="1155" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT12</text>
+<text x="1352" y="1175" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT13</text>
+<text x="1352" y="1195" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT14</text>
+<text x="1352" y="1215" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT15</text>
+<text x="472" y="844" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT16  1.5 mm²</text>
+<text x="472" y="935" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT17  1.5 mm²</text>
+<text x="472" y="1046" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT18  1.5 mm²</text>
+<text x="758" y="955" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT19  1.5 mm²</text>
+<text x="758" y="1066" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT20  1.5 mm²</text>
+<text x="1352" y="480" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT21</text>
+<text x="1352" y="500" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT22</text>
+<text x="318" y="194" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT23  4 mm²  30 A</text>
+<text x="758" y="229" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT24  1.5 mm²</text>
+<text x="758" y="249" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT25  1.5 mm²</text>
+<text x="912" y="666" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT26  1.5 mm²</text>
+<text x="912" y="857" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT27  1.5 mm²</text>
+<text x="1198" y="289" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT28  1.5 mm²  via Schottky diode 5 A</text>
+<text x="1198" y="309" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT29  1.5 mm²  via Schottky diode 5 A</text>
+<text x="1198" y="495" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT30  1.5 mm²  via Schottky diode 5 A</text>
+<text x="1198" y="515" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT31  1.5 mm²  via Schottky diode 5 A</text>
+<text x="1198" y="686" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT32  1 mm²  via Schottky diode 5 A</text>
+<text x="1198" y="706" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT33  1 mm²  via Schottky diode 5 A</text>
+<text x="1198" y="877" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT34  1 mm²  via Schottky diode 5 A</text>
+<text x="1198" y="897" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT35  1 mm²  via Schottky diode 5 A</text>
+<text x="1352" y="320" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT36</text>
+<text x="1352" y="340" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT37</text>
+<text x="1352" y="360" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT38</text>
+<text x="1352" y="380" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT39</text>
+<text x="1352" y="400" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT40</text>
+<text x="1352" y="420" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT41</text>
+<text x="1352" y="440" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT42</text>
+<text x="1352" y="460" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT43</text>
+<text x="1198" y="249" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT44</text>
+<text x="1198" y="455" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT45</text>
+<text x="1198" y="646" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT46</text>
+<text x="1198" y="837" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT47</text>
+<text x="1792" y="194" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT48  1 mm²  via Schottky diode 5 A</text>
+<text x="1792" y="194" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT49  1 mm²  via Schottky diode 5 A</text>
+<text x="758" y="309" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT50  1.5 mm²</text>
+<text x="1352" y="209" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT51  1.5 mm²  via Schottky diode 5 A</text>
+<text x="1352" y="646" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT52  1.5 mm²  via Schottky diode 5 A</text>
+<text x="1352" y="772" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT54  1 mm²  via Schottky diode 5 A</text>
+<text x="1352" y="898" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT55  1 mm²  via Schottky diode 5 A</text>
+<text x="758" y="289" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT56  0.75 mm²</text>
+<text x="1198" y="1008" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT57  0.75 mm²</text>
+<text x="1638" y="520" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">LT58</text>
 </svg>

@@ -197,6 +197,9 @@ def check_io_map(d: dict, io_map: Path = IO_MAP) -> list[str]:
             need(f"PICO.{o['pin']}", f"MOSFET.IN{ch}", oid)
         elif o["driver"] == "relay":
             need(f"MCP1.{o['expander_pin']}", f"RELAYS.IN{o['relay']}", oid)
+        elif o["driver"] == "pca9685":
+            for target in o["to"]:
+                need(f"PCA.PWM{o['channel']}", target, oid)
         elif o["driver"] == "bts7960":
             for k, pin in o["pins"].items():
                 need(f"PICO.{pin}", f"BTS{o['unit']}.{k.upper()}", oid)

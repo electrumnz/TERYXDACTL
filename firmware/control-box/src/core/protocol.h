@@ -15,6 +15,7 @@
 #define CAN_ID_PI_HOLD        0x703u  // Pi -> Pico, 10 Hz while held / armed
 #define CAN_ID_PI_SETTING     0x704u  // Pi -> Pico, on change
 #define CAN_ID_PI_LOCK        0x705u  // Pi -> Pico, vehicle lock commands (docs/vehicle-lock.md)
+#define CAN_ID_PI_LIGHTS2     0x706u  // Pi -> Pico, stock lamps / floods / beacon / trailer / show (docs/lights.md)
 #define CAN_ID_PICO_STATUS    0x710u  // Pico -> Pi, 10 Hz
 #define CAN_ID_PICO_OUTPUTS   0x711u  // Pico -> Pi, 10 Hz
 #define CAN_ID_PICO_ACT       0x712u  // Pico -> Pi, 10 Hz
@@ -22,6 +23,7 @@
 #define CAN_ID_PICO_SET_ACK   0x714u  // Pico -> Pi, reply to every 0x704
 #define CAN_ID_PICO_REGEN     0x715u  // Pico -> Pi, 10 Hz, brake pedal regen (not sent yet)
 #define CAN_ID_PICO_LOCK      0x716u  // Pico -> Pi, 10 Hz, vehicle lock state
+#define CAN_ID_PICO_LIGHTS2   0x717u  // Pico -> Pi, 10 Hz, PCA9685 lamp levels (4 bits each)
 #define CAN_ID_PI_FW_UPDATE   0x71Fu  // Pi -> Pico, on demand (magic 0x5445)
 #define CAN_ID_BENCH          0x7E0u  // Simulator -> host build only
 
@@ -55,6 +57,15 @@ enum {
 };
 #define LIGHTS_FLAG_REAR_ON    0x01u
 #define LIGHTS_FLAG_AUTO_REAR  0x02u
+
+// ---- 0x706 more lights ---------------------------------------------------------
+// [0] low beam [1] high beam [2] tail (0 = auto) [3] rear flood level (0 = full)
+// [4] trailer bar [5] beacon [6] show (SHOW_* in lights.h) [7] counter.
+// ---- 0x717 lamp levels ------------------------------------------------------------
+// 14 x 4-bit levels in LP_* order (low nibble first), then byte 7:
+#define LIGHTS2_FLAG_SHOW_RUNNING 0x01u
+#define LIGHTS2_FLAG_SHOW_BLOCKED 0x02u
+#define LIGHTS2_FLAG_PWM_OK       0x04u
 
 // ---- 0x702 drive --------------------------------------------------------------
 #define DRIVE_NO_CHANGE 0xFFu

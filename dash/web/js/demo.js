@@ -17,10 +17,13 @@ function loadLock() {
 
 const LIGHT_IDS = ["light.front_1", "light.front_2", "light.front_3", "light.front_4", "light.interior"];
 
+const spdNow = (s) => s["mc.speed"] || 0;
+
 export class DemoVehicle {
   constructor(scenario = "drive") {
     this.scenario = scenario;
     this.t = 0;
+    this.more = { "light.head": "off", "light.head_level": 255, "light.tail": 0, "light.rear_level": 0, "light.trailer_bar": 0, "light.beacon": 0, "light.show": "none" };
     this.req = { lights: Object.fromEntries(LIGHT_IDS.map((k) => [k, 0])), effect: "none", rear: "auto", fourwd: 0, diff: 0, armed: false };
     this.holds = { "act.tray": { v: 0, at: 0 }, winch: { v: 0, at: 0 } };
     this.rejectCount = 0;
@@ -143,6 +146,7 @@ export class DemoVehicle {
       if (id.startsWith("light.front") || id === "light.interior") this.req.lights[id] = value;
       else if (id === "light.effect") this.req.effect = value;
       else if (id === "light.rear") this.req.rear = value;
+      else if (id in this.more) this.more[id] = value;
       else if (id === "act.4wd") {
         // Like the control box: too fast = wait (up to 10 s) for a stop; asking for what's there cancels
         this.wait4 = null; s["act.4wd_wait"] = false;
@@ -271,6 +275,16 @@ export class DemoVehicle {
     s["light.rear"] = r.rear === "on" || (r.rear === "auto" && s["in.reverse"]);
     s["trailer.tail"] = LIGHT_IDS.slice(0, 4).some((k) => r.lights[k] > 0);
     s["trailer.brake"] = s["in.brake"];
+    // Headlights, beacon, trailer bar and the parked-only light show (the control box rules, roughly)
+    const m = this.more;
+    if (this.lock.locked) { m["light.head"] = "off"; m["light.beacon"] = 0; m["light.show"] = "none"; }
+    for (const k of Object.keys(m)) s[`req.${k}`] = m[k];
+    const parked = !!s["in.park"] && spdNow(s) < 0.5 && !this.lock.locked;
+    s["light.show_running"] = m["light.show"] !== "none" && parked;
+    s["light.show_blocked"] = m["light.show"] !== "none" && !parked;
+    s["light.pwm_ok"] = true;
+    s["lamp.beacon"] = m["light.beacon"] && (this.t % 0.333) < 0.167 ? m["light.beacon"] : 0;
+    s["lamp.brake_l"] = s["lamp.brake_r"] = s["in.brake"] ? 255 : 0;
 
     // 4WD actuator runs to its end stop
     if (this.fourwdTimer > 0) {

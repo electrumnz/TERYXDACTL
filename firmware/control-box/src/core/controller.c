@@ -307,6 +307,17 @@ void ctl_on_frame(controller_t *c, const can_frame_t *f, uint32_t now,
         c->light_flags = f->data[6];
         break;
 
+    case CAN_ID_PI_LIGHTS2:
+        if (f->dlc < 7) { reject(c, REJ_BAD_FRAME); return; }
+        c->lreq.head_low = f->data[0];
+        c->lreq.head_high = f->data[1];
+        c->lreq.tail = f->data[2];
+        c->lreq.rear = f->data[3];
+        c->lreq.trailer_bar = f->data[4];
+        c->lreq.beacon = f->data[5];
+        c->lreq.show = f->data[6] < SHOW_COUNT ? f->data[6] : SHOW_NONE;
+        break;
+
     case CAN_ID_PI_DRIVE: {
         // Act on a CHANGE of value only (the first frame after boot counts).
         // The dash resends every second so a rebooted Pico catches up, but a
@@ -734,6 +745,39 @@ static void run_lights(controller_t *c, uint32_t now, cb_out_t *o) {
     }
 }
 
+// Stock lamps, floods, beacon, trailer bar and the parked-only show (lights.c).
+static void run_lamps(controller_t *c, uint32_t now, cb_out_t *o, bool dash_ok, bool locked) {
+    lights_state_t s = {
+        .brake = (c->in.din & BIT(IN_BRAKE)) != 0,
+        .reverse = reverse_active(c, now),
+        .trailer = (c->in.din & BIT(IN_TRAILER)) != 0,
+        .stopped = stopped(c, now),
+        .park = (c->in.din & BIT(IN_PARK)) != 0,
+        .ignition = ignition(c),
+        .locked = locked,
+        .dash_ok = dash_ok,
+        .now_ms = now,
+    };
+    for (int i = L_FRONT_1; i <= L_FRONT_4; i++) s.front_on |= c->light_req[i] != 0;
+    c->lreq.rear_on = (c->light_flags & LIGHTS_FLAG_REAR_ON) != 0;
+    c->lreq.rear_auto = (c->light_flags & LIGHTS_FLAG_AUTO_REAR) != 0;
+    lights_step(&c->lights, &c->lreq, &s, &c->lout);
+    memcpy(o->lamp, c->lout.level, LP_COUNT);
+    o->lamp_enable = true;
+    if (c->lout.front_valid) {   // the show drives the front bars and cabin bar too
+        uint16_t mask = S(c, SET_LIGHT_DIMMABLE_MASK);
+        for (int i = 0; i < L_COUNT; i++) {
+            uint8_t v = c->lout.front[i];
+            if (!(mask & (1u << i))) v = v >= 128 ? 255 : 0;
+            c->light_level[i] = v;
+            o->light[i] = v;
+        }
+    }
+    // Relays 2-3 are spare now; the bits still report the trailer tail / stop (BTS7960 8).
+    if (o->lamp[LP_TRAILER_TAIL]) o->relays |= BIT(R_TRAILER_TAIL);
+    if (o->lamp[LP_TRAILER_STOP]) o->relays |= BIT(R_TRAILER_BRAKE);
+}
+
 // ---------------------------------------------------------------------------
 // Tick: status frames
 // ---------------------------------------------------------------------------
@@ -785,6 +829,13 @@ static void send_status(controller_t *c, uint32_t now, cb_send_fn send, void *u)
     memcpy(&o.data[1], c->out.light, L_COUNT);
     o.data[6] = c->effect;
     send(&o, u);
+
+    can_frame_t l2 = {.id = CAN_ID_PICO_LIGHTS2, .dlc = 8};
+    for (int i = 0; i < LP_COUNT; i++) l2.data[i / 2] |= (uint8_t)((c->out.lamp[i] >> 4) << ((i % 2) * 4));
+    if (c->lout.show_running) l2.data[7] |= LIGHTS2_FLAG_SHOW_RUNNING;
+    if (c->lout.show_blocked) l2.data[7] |= LIGHTS2_FLAG_SHOW_BLOCKED;
+    if (c->in.pwm_ok) l2.data[7] |= LIGHTS2_FLAG_PWM_OK;
+    send(&l2, u);
 
     can_frame_t a = {.id = CAN_ID_PICO_ACT, .dlc = 8};
     a.data[0] = c->diff.pct;
@@ -908,10 +959,7 @@ void ctl_tick(controller_t *c, const cb_in_t *in, cb_out_t *out, cb_send_fn send
     bool rev = reverse_active(c, now);
     if (!locked && ((c->light_flags & LIGHTS_FLAG_REAR_ON) || ((c->light_flags & LIGHTS_FLAG_AUTO_REAR) && rev)))
         out->relays |= BIT(R_REAR);
-    bool any_front = false;
-    for (int i = L_FRONT_1; i <= L_FRONT_4; i++) any_front |= c->light_req[i] != 0;
-    if (any_front) out->relays |= BIT(R_TRAILER_TAIL);
-    if (in->din & BIT(IN_BRAKE)) out->relays |= BIT(R_TRAILER_BRAKE);
+    run_lamps(c, now, out, dash_ok, locked);
     if (ign) out->relays |= BIT(R_ACCESSORY);
     if (c->power_hold) out->relays |= BIT(R_POWER_HOLD);
     out->drive_inhibit = locked;

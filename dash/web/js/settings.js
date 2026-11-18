@@ -4,6 +4,7 @@
 
 import { FEATURE_DEFAULTS } from "./features.js";
 import { CAMP_DEFAULTS } from "./fun/campcalc.js";
+import { NIGHT_CABIN_DEFAULTS } from "./nightcabin.js";
 
 export const LIGHTS = [
   { id: "light.front_1", name: "Bar 1", where: "Front far left", dimmable: true },
@@ -26,6 +27,7 @@ export const DEFAULTS = {
   regenMaxKw: 4,
   cells: 24,               // for a voltage-based battery % if the Shinegle doesn't send one (72V pack, TBC)
   lights: Object.fromEntries(LIGHTS.map((l) => [l.id, { name: l.name, dimmable: l.dimmable }])),
+  nightCabin: { ...NIGHT_CABIN_DEFAULTS },   // Night mode fades the cabin light to this % (nightcabin.js)
   lightPresets: {
     trail: { "light.front_1": 0, "light.front_2": 255, "light.front_3": 255, "light.front_4": 0 },
     work:  { "light.front_1": 255, "light.front_2": 255, "light.front_3": 255, "light.front_4": 255 },

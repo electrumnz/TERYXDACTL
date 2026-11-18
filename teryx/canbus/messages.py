@@ -11,6 +11,7 @@ from __future__ import annotations
 
 from .codec import Message, Signal as S
 from ..regen import REGEN_LIMIT, REGEN_STATE
+from ..lights import LAMPS, LIGHT_SHOW
 
 
 # ---------------------------------------------------------------- enums
@@ -74,9 +75,9 @@ FAULT_BITS = {   # 0x710 bytes 1-2
     15: "brake_pedal",     # brake pedal sensor out of range or disagrees with the brake switch
 }
 RELAY_BITS = {   # 0x711 byte 0, relay 1 = bit 0
-    0: "light.rear",
-    1: "trailer.tail",
-    2: "trailer.brake",
+    0: "light.rear",       # relay 1: trailer reverse pin; the bit says the rear floods are on
+    1: "trailer.tail",     # relays 2-3 are spare now (trailer lamps moved to BTS7960 8);
+    2: "trailer.brake",    # the bits still say whether the trailer tail / stop are lit
     3: "winch.in",
     4: "winch.out",
     5: "winch.isolator",
@@ -180,6 +181,22 @@ PI_LOCK = Message(
         S("n_digits", 8, 8),
         S("d0", 16, 8), S("d1", 24, 8), S("d2", 32, 8), S("d3", 40, 8),
         S("counter", 48, 8),
+    ),
+)
+PI_LIGHTS2 = Message(
+    "PI_LIGHTS2", 0x706, "dash", 1000,
+    comment="Stock lamps, rear floods, beacon, trailer bar and the light show (docs/lights.md). "
+            "On change, plus a resend every 1 s. Levels 0-255, 0 = off. The Pico keeps brake lights "
+            "at full, never dims headlights or tails while moving, and only runs a show when parked.",
+    signals=(
+        S("head_low", 0, 8, comment="Low beam, both sides"),
+        S("head_high", 8, 8, comment="High beam, both sides. Wins over low"),
+        S("tail", 16, 8, comment="Tail lights, 0 = automatic (on with any headlight or front bar)"),
+        S("rear", 24, 8, comment="Rear flood level while 0x701 rear_on is set, 0 = full"),
+        S("trailer_bar", 32, 8),
+        S("beacon", 40, 8, comment="Roof beacon brightness, 0 = off. The Pico flashes it at 3 Hz"),
+        S("show", 48, 8, choices=LIGHT_SHOW, comment="Light show, parked only"),
+        S("counter", 56, 8),
     ),
 )
 PI_FW_UPDATE = Message(
@@ -288,6 +305,17 @@ PICO_LOCK = Message(
     ),
 )
 
+PICO_LIGHTS2 = Message(
+    "PICO_LIGHTS2", 0x717, "controlbox", 100,
+    comment="What the PCA9685 lamps are actually doing, after every safety rule (docs/lights.md). "
+            "Levels are 0-15 (top 4 bits of 0-255).",
+    signals=tuple(S(name, i * 4, 4) for i, name in enumerate(LAMPS)) + (
+        S("show_running", 56, 1),
+        S("show_blocked", 57, 1, comment="A show was asked for but the Teryx isn't parked (key on, park brake, stopped)"),
+        S("pwm_ok", 58, 1, comment="PCA9685 answering"),
+    ),
+)
+
 # ---------------------------------------------------------------- bench only
 BENCH_INPUTS = Message(
     "BENCH_INPUTS", 0x7E0, "sim", 100,
@@ -303,8 +331,9 @@ BENCH_INPUTS = Message(
 BENCH_FAULTS = {0: "jam_diff", 1: "jam_tray", 2: "fourwd_overcurrent", 3: "pot_disconnected", 4: "io_bus_dead"}
 
 TERYX_MESSAGES: tuple[Message, ...] = (
-    PI_HEARTBEAT, PI_LIGHTS, PI_DRIVE, PI_HOLD, PI_SETTINGS, PI_LOCK, PI_FW_UPDATE,
+    PI_HEARTBEAT, PI_LIGHTS, PI_DRIVE, PI_HOLD, PI_SETTINGS, PI_LOCK, PI_LIGHTS2, PI_FW_UPDATE,
     PICO_STATUS, PICO_OUTPUTS, PICO_ACTUATORS, PICO_POWER, PICO_SETTINGS_ACK, PICO_REGEN, PICO_LOCK,
+    PICO_LIGHTS2,
     BENCH_INPUTS,
 )
 

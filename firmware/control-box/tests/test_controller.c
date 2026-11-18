@@ -467,6 +467,72 @@ static void test_winch_timed_pull(void) {
     CHECK(R.max_relays_both_winch == 0);
 }
 
+static void lights2(uint8_t lo, uint8_t hi, uint8_t tail, uint8_t beacon, uint8_t show) {
+    uint8_t d[8] = {lo, hi, tail, 0, 0, beacon, show, 0};
+    frame(CAN_ID_PI_LIGHTS2, 8, d);
+}
+
+static void test_lamps_and_show(void) {
+    rig_init();
+    run(300);
+    // Moving: low beam asked at 40 % comes out full, tails follow
+    R.speed_x10 = 200;
+    lights2(100, 0, 0, 0, SHOW_NONE);
+    run(100);
+    CHECK(R.out.lamp[LP_HEAD_L_LOW] == 255 && R.out.lamp[LP_HEAD_R_LOW] == 255);
+    CHECK(R.out.lamp[LP_TAIL_L] == 255 && R.out.lamp[LP_BRAKE_L] == 0);
+    CHECK(R.out.lamp_enable);
+    // A show asked for on the move is refused
+    lights2(100, 0, 0, 0, SHOW_PARTY);
+    run(500);
+    CHECK(!R.c.lout.show_running && R.c.lout.show_blocked);
+    // Stopped but no park brake: still refused
+    R.speed_x10 = 0;
+    run(200);
+    CHECK(!R.c.lout.show_running);
+    // Stopped, park brake on: dims, and the show runs
+    R.p.force_mask = BIT(IN_PARK);
+    R.p.force_bits = BIT(IN_PARK);
+    lights2(100, 0, 0, 0, SHOW_NONE);
+    run(100);
+    CHECK(R.out.lamp[LP_HEAD_L_LOW] == 100);
+    lights2(100, 100, 0, 0, SHOW_PARTY);
+    run(100);
+    CHECK(R.c.lout.show_running);
+    // Low and high never together, brake always full, through a whole show
+    bool both = false, brake_low = false;
+    R.p.force_mask = BIT(IN_PARK) | BIT(IN_BRAKE);
+    R.p.force_bits = BIT(IN_PARK) | BIT(IN_BRAKE);
+    for (int i = 0; i < 400; i++) {
+        run(TICK_MS);
+        both |= R.out.lamp[LP_HEAD_L_LOW] && R.out.lamp[LP_HEAD_L_HIGH];
+        brake_low |= R.out.lamp[LP_BRAKE_L] != 255 || R.out.lamp[LP_BRAKE_R] != 255 || R.out.lamp[LP_TRAILER_STOP] != 255;
+    }
+    CHECK(!both && !brake_low);
+    // 0x717 reports it
+    const can_frame_t *f = last_sent(CAN_ID_PICO_LIGHTS2);
+    CHECK(f && (f->data[7] & LIGHTS2_FLAG_SHOW_RUNNING) && (f->data[2] >> 4) == 15);   // brake_l nibble
+    // It rolls: the show stops on the next speed frame
+    R.speed_x10 = 30;
+    run(100);
+    CHECK(!R.c.lout.show_running);
+    // Beacon flashes at 3 Hz while driving
+    R.p.force_mask = 0;
+    lights2(0, 0, 0, 200, SHOW_NONE);
+    int rises = 0; uint8_t prev = 0;
+    for (int i = 0; i < (int)(3000 / TICK_MS); i++) {
+        run(TICK_MS);
+        if (!prev && R.out.lamp[LP_BEACON]) rises++;
+        prev = R.out.lamp[LP_BEACON];
+    }
+    CHECK(rises >= 8 && rises <= 10);
+    // Dash gone with the key on: low beams and tails on by themselves
+    lights2(0, 0, 0, 0, SHOW_NONE);
+    R.dash = false;
+    run(1000);
+    CHECK(R.out.lamp[LP_HEAD_L_LOW] == 255 && R.out.lamp[LP_TAIL_R] == 255);
+}
+
 static void test_lights_and_relays(void) {
     rig_init();
     run(300);
@@ -1225,6 +1291,7 @@ int main(void) {
         {"winch: handheld remote has priority", test_winch_remote_has_priority},
         {"winch: timed pull stops by itself", test_winch_timed_pull},
         {"lights, reverse, trailer", test_lights_and_relays},
+        {"lamps: brake full, show parked only, beacon", test_lamps_and_show},
         {"settings and flash blob", test_settings},
         {"key-off shutdown", test_key_off_shutdown},
         {"sentry: power kept on while the 12V is OK", test_sentry_hold},

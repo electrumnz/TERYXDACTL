@@ -181,6 +181,8 @@ button { font: inherit; color: inherit; }
 
 /* ---------- lights screen ---------- */
 .lights { display: grid; grid-template-columns: 1fr 340px; gap: 16px; height: 100%; }
+.lights .col { display: flex; flex-direction: column; gap: 12px; min-height: 0; overflow-y: auto; }
+.lights-side { overflow-y: auto; }
 .light-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
 .light-tile { background: var(--panel); border: 2px solid var(--line); border-radius: var(--radius); padding: 12px; display: flex; flex-direction: column; gap: 10px; min-height: 0; }
 .light-tile.on { border-color: var(--accent); }

@@ -12,6 +12,7 @@
 #include "protocol.h"
 #include "settings.h"
 #include "lock.h"
+#include "lights.h"
 
 // Digital inputs (MCP23017 port B), as logical bits: 1 = active.
 // The two tray limits are normally closed, so 1 = "at limit or wire broken".
@@ -39,11 +40,14 @@ typedef struct {
     uint16_t aux_mv;        // 12V aux battery, mV
     uint16_t i_da[ACT_COUNT]; // actuator currents, 0.1 A
     int8_t temp_c;          // Pico die temperature
+    bool pwm_ok;            // PCA9685 answering (stock lamps, floods, beacon, trailer)
 } cb_in_t;
 
 typedef struct {
     uint8_t relays;            // R_* bits, logical (1 = relay on)
     uint8_t light[L_COUNT];    // PWM duty 0-255
+    uint8_t lamp[LP_COUNT];    // PCA9685 lamps, 0-255 (lights.h)
+    bool lamp_enable;          // BTS7960 4-8 enable (PCA9685 PWM15)
     int8_t act_dir[ACT_COUNT]; // +1 extend (RPWM), -1 retract (LPWM), 0 off
     uint8_t act_duty[ACT_COUNT];
     bool enter_bootloader;     // hardware layer: make outputs safe, reboot to USB boot
@@ -123,6 +127,9 @@ typedef struct {
     uint8_t light_flags;
     uint8_t light_level[L_COUNT];
     uint32_t effect_start_ms;
+    lights_req_t lreq;      // 0x706
+    lights_t lights;
+    lights_out_t lout;
 
     // Drive requests act on change only
     bool drive_seen;
