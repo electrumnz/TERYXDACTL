@@ -6,6 +6,7 @@
 // part = "pod"    print face down, ASA
 //        "cover"  print split face down, ASA
 //        "plug"   print 4 per pod, push into the bolt holes in the cover
+//        "jaw"    the teeth, print flat (teeth up), bolts under the front
 //        "gasket" TPU, under the speaker's flange
 //        "cavity" the air inside (only for the volume check in build.sh)
 //        "assembly" preview with the tube
@@ -37,7 +38,9 @@ echo(str("POD length=", pod_len, " face=", pod_face_w, " overall=", zt + Rk,
 module rsq(w, r, h) {      // rounded square slab, centred in X/Y, from z=0 up
   linear_extrude(h) offset(r) square(w - 2 * r, center = true);
 }
-module disc(d, z) { translate([0, 0, z]) cylinder(d = d, h = e); }
+// Armour look (concept 3, docs/speaker-pods.md): the body is faceted, an
+// octagon with flats on top, bottom and sides. d = across the flats.
+module disc(d, z) { translate([0, 0, z]) rotate([0, 0, 22.5]) cylinder(r = d / 2 / cos(22.5), h = e, $fn = 8); }
 
 // in = how far in from the outside (0 = outside skin, pod_wall = inside skin)
 module shape(in) {
@@ -54,9 +57,10 @@ module shape(in) {
 // the knuckle: a round bar along the tube, in pod coordinates
 module knuckle_rot() { translate([0, 0, zt]) rotate([0, 0, tube_along_x ? 0 : 90]) children(); }
 module bar(r, l) { rotate([0, 90, 0]) cylinder(r = r, h = l, center = true); }
+module bar8(r, l) { rotate([0, 90, 0]) rotate([0, 0, 22.5]) cylinder(r = r / cos(22.5), h = l, center = true, $fn = 8); }
 module knuckle_half(front) {   // front = the pod side (z < zt)
   knuckle_rot() intersection() {
-    bar(Rk, knuckle_w);
+    bar8(Rk, knuckle_w);
     translate([-knuckle_w, -2 * Rk, front ? -2 * Rk : knuckle_gap / 2]) cube([2 * knuckle_w, 4 * Rk, 2 * Rk - knuckle_gap / 2]);
   }
 }
@@ -87,17 +91,89 @@ module fins() {   // longitudinal fins on the inside wall, clear of the speaker'
       difference() { shape(pod_wall - e); shape(pod_wall + pod_fin_h); }
     }
 }
-module ridge() {   // T. rex dorsal ridge: plates at 45 deg so they print without support
-  span = z_cone - z_neck - 20;
-  for (i = [0 : pod_spines - 1]) {
-    z0 = z_neck + 10 + span * i / pod_spines;
-    l  = 46 - i * 5;
-    h  = 30 - i * 4;
-    y0 = r_top(z0 + l / 2) - 4;
-    translate([0, y0, z0]) rotate([0, 90, 0])
-      linear_extrude(5, center = true) polygon([[0, 0], [-l, 0], [-l * 0.62, h + 4]]);
+// ---------------------------------------------------------------- T. rex bits
+// Spikes: chunky, raked back at 45 deg so they print without support (the
+// pod prints face down, so "back" is "up" on the printer).
+// spike(base, normal angle a in the Y-Z plane (0 = straight up +Y, 45 = up and
+// back), height h, base length l, thickness t)
+module spike(p, a, h, l, t) {
+  n  = [0, cos(a), sin(a)];
+  bk = [0, -sin(a), cos(a)];                      // along the surface, towards the back
+  tip = p + h * n + h * 1.05 * bk;               // raked back 45 deg or more
+  hull() {
+    for (s = [0, 1]) translate(p + (s * l - 2) * bk - 3 * n) cube([t, 0.1, 0.1], center = true);
+    translate(p + (l + 2) * bk - 3 * n) cube([t * 0.6, 0.1, 0.1], center = true);
+    translate(tip) cube([2, 0.1, 0.1], center = true);
   }
 }
+module spikes() {   // the ridge along the top flat, front to back
+  for (i = [0 : pod_spines - 1]) {
+    z0 = pod_face_t + 52 + (z_cone - pod_face_t - 70) * i / max(pod_spines - 1, 1);
+    on_cone = z0 > z_waist;
+    h  = 44 - i * 3;
+    spike([0, r_top(z0), z0], on_cone ? 45 : atan2(r_top(z_neck) - r_top(z_waist), pod_taper_l), h, h * 0.8, 15);
+  }
+}
+module cover_spikes() {   // two more over the cage collar, so the ridge runs onto the bar
+  knuckle_rot() rotate([0, 0, tube_along_x ? 0 : -90]) {
+    spike([0, Rk, knuckle_gap / 2 + 4], 0, 30, 18, 13);
+    spike([0, Rk * 0.86, Rk * 0.75], 45, 22, 15, 11);
+  }
+}
+// Brow ridges: two armour plates over the top of the speaker, front face on the
+// bed, sloping back so they print clean.
+module brows() {   // angry brow: high at the outside, low in the middle
+  top = pod_face_w / 2 - 3;
+  for (s = [-1, 1]) hull() {
+    translate([s * 92 - 8, top, 0]) cube([16, 26, 1]);      // outer end, tall
+    translate([s * 14 - 4, top, 0]) cube([8, 9, 1]);        // inner end, low
+    translate([s * 92 - 8, top, 0]) cube([16, 14, 40]);
+    translate([s * 50 - 10, top, 0]) cube([20, 3, 80]);     // tails off back into the shell
+  }
+}
+// Claw marks: three slashes on each side, 2 mm deep in the 5 mm wall.
+module claws() {
+  intersection() {
+    difference() { shape(0); shape(2.6); }
+    for (i = [0 : 2]) hull() {
+      translate([0, 55 - i * 22, z_neck + 18 + i * 8]) rotate([0, 90, 0]) cylinder(d = 10, h = 400, center = true);
+      translate([0, -15 - i * 22, z_neck + 78 + i * 6]) rotate([0, 90, 0]) cylinder(d = 3.5, h = 400, center = true);
+    }
+  }
+}
+// Jaw: a separate printed strip of teeth that bolts under the front of the pod,
+// teeth standing up in front of the bottom edge of the speaker grille.
+jaw_z  = [6, pod_neck_l + pod_face_t - 4];   // pads span this along Z
+jaw_x  = [-60, 0, 60];
+jaw_pad = 6;
+module jaw_pads() {
+  for (x = jaw_x) hull() {
+    translate([x - 10, -pod_face_w / 2 - jaw_pad, jaw_z[0] + jaw_pad]) cube([20, jaw_pad + 2, 22 - jaw_pad]);
+    translate([x - 10, -pod_face_w / 2, jaw_z[0]]) cube([20, 2, 22]);
+  }
+}
+module jaw_holes() {
+  for (x = jaw_x) translate([x, -pod_face_w / 2 - jaw_pad - e, jaw_z[0] + 11]) rotate([-90, 0, 0]) cylinder(d = m4_insert_d, h = 9);
+}
+jaw_t = 6;
+module jaw() {   // in pod coordinates
+  y0 = -pod_face_w / 2 - jaw_pad - jaw_t;
+  difference() {
+    union() {
+      translate([-88, y0, -22]) cube([176, jaw_t, 22 + jaw_z[0] + 22]);
+      for (i = [0 : 6]) {
+        x = -78 + i * 26;
+        hgt = (i % 2 == 0) ? 42 : 32;                      // fangs and teeth
+        translate([x, y0 + jaw_t - e, -11]) rotate([-90, 0, 0]) cylinder(d1 = 20, d2 = 2, h = hgt, $fn = 6);
+      }
+    }
+    for (x = jaw_x) translate([x, y0 - e, jaw_z[0] + 11]) {
+      rotate([-90, 0, 0]) cylinder(d = 4.5, h = jaw_t + 2);
+      rotate([-90, 0, 0]) cylinder(d1 = 9, d2 = 4.5, h = 2.3);
+    }
+  }
+}
+
 // boss underneath (on the taper) for a gland or breather, square to the axis
 module under_boss(z, x, d) {
   r = r_top(z);
@@ -116,11 +192,15 @@ module pod() {
   difference() {
     union() {
       outside();
-      ridge();
+      spikes();
+      brows();
+      jaw_pads();
       under_boss(z_gland, x_gland, pod_gland);
       under_boss(z_vent, x_vent, pod_vent);
     }
     cavity();
+    claws();
+    jaw_holes();
     translate([0, 0, -e]) cylinder(d = spk_cutout, h = pod_face_t + 2 * e);
     under_hole(z_gland, x_gland, pod_gland);
     under_hole(z_vent, x_vent, pod_vent);
@@ -138,7 +218,7 @@ module pod() {
 }
 module cover() {   // in pod coordinates
   difference() {
-    knuckle_half(false);
+    union() { knuckle_half(false); cover_spikes(); }
     knuckle_rot() bar(Rb, knuckle_w + 2);
     bolt_spots() {
       cylinder(d = 6.5, h = 3 * Rk, center = true);
@@ -160,10 +240,12 @@ module gasket() {   // sits under the speaker's square flange
 if (part == "pod") pod();
 else if (part == "cover") translate([0, 0, -zt - knuckle_gap / 2]) cover();
 else if (part == "plug") plug();
+else if (part == "jaw") translate([0, 0, pod_face_w / 2 + jaw_pad + jaw_t]) rotate([90, 0, 0]) jaw();
 else if (part == "gasket") gasket();
 else if (part == "cavity") cavity();
 else if (part == "assembly") {
   color("#56603f") pod();
-  color("#4b5537") cover();
+  color("#2b2b2b") cover();
+  color("#2b2b2b") jaw();
   color("silver", 0.5) knuckle_rot() bar(cage_tube_d / 2, knuckle_w + 200);
 }

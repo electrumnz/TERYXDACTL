@@ -3,7 +3,10 @@
 Two printed pods for Sam's **Kenwood KFC-2053MRB** 8" marine coaxials, built for sound
 first and then for mud, water and bumps.
 
-![Back of the pod: it wraps round the cage tube, cover on top](../cad/img/speaker-pod-back.png)
+![Concept (AI render, Higgsfield) the CAD is built from](../cad/img/concepts/speaker-pod-concept.jpg)
+![The CAD: armour body, spike ridge running onto the cage cover, brows, teeth](../cad/img/speaker-pod-front.png)
+![Back: spikes carry on over the cover that wraps the tube](../cad/img/speaker-pod-back.png)
+![Side](../cad/img/speaker-pod-side.png)
 ![Front: the speaker drops into the 180 mm hole](../cad/img/speaker-pod-front.png)
 ![Cut through the middle: 5 mm wall, 10 mm face, the tube in the knuckle at the back](../cad/img/speaker-pod-section.png)
 
@@ -13,6 +16,7 @@ first and then for mud, water and bumps.
 | `cad/stl/speaker_pod.stl` | Print 2 (same part both sides), face down |
 | `cad/stl/speaker_pod_cover.stl` | Print 2, flat face down: closes over the tube |
 | `cad/stl/speaker_pod_plug.stl` | Print 8: caps that hide the cover bolts |
+| `cad/stl/speaker_pod_jaw.stl` | Print 2, flat with the teeth up: the teeth, bolts under the front with 3 M4 bolts into inserts |
 | `cad/stl/speaker_pod_gasket.stl` | Print 2 in TPU, goes under each speaker's flange |
 | [`config/speaker_pods.yaml`](../config/speaker_pods.yaml) | Speaker numbers, pod volume, stuffing, amp filter, EQ target |
 | [`teryx/speaker_box.py`](../teryx/speaker_box.py) | The maths: `python -m teryx speakerbox` |
@@ -126,8 +130,15 @@ fluffed, filling about half of it, not packed tight and not touching the back of
 calms the inside and makes the pod act about 15% bigger. Not foam: foam soaks up water and stays
 wet.
 
-**The ridge.** Four plates along the top like a T. rex back, our own take on it, not copied from
-anything. They're at 45° so they print clean. Leave them off with `pod_spines = 0`.
+**The T. rex look** (from concept 3 of four Higgsfield renders, all in the project files under
+`speaker-pods/concepts/`). Faceted armour-plate body (octagon flats instead of round), a ridge of
+six chunky spikes down the back that carries on with two more over the cage cover, angry brow
+plates over the speaker, three claw slashes in each side (2.6 mm deep, so 2.4 mm of wall is left
+and it stays sealed), and a bolt-on jaw of teeth and fangs standing up in front of the bottom of
+the grille. Everything leans back at 45° or more so it all prints face down with no supports.
+Our own design, nothing copied from any film. Print the pod in olive or grey ASA, the cover in
+black and the jaw in bone/white for the full look. `pod_spines = 0` takes the spikes off.
+Concepts 1 and 4 (scaly skin, eyes) would need hand sculpting in Blender or ZBrush, not CAD.
 
 ## Water, mud and hosing
 

@@ -27,8 +27,8 @@ driver:
   displacement_l: 0.35   # GUESS: basket, magnet and terminals inside the pod
 
 pod:
-  gross_l: 6.85     # air inside the printed pod, from the CAD (cad/build.sh checks it)
-  net_l: 6.50       # gross minus the speaker
+  gross_l: 6.96     # air inside the printed pod, from the CAD (cad/build.sh checks it)
+  net_l: 6.61       # gross minus the speaker
 
 fill:
   # Loose polyester fibre (pillow or speaker wadding, not foam, it dries out),
