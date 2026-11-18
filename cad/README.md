@@ -7,7 +7,7 @@ OpenSCAD designs for everything that gets 3D printed:
 | Dash panel | Flat face with the 217 x 135 cut-out. The screen's bezel sits on the front and its own clips clamp it from behind, as in its install guide. A rim round the back boxes in the screen's body, with ribs to stop flex | `dash_panel_left/right` |
 | Back plate | Closes the back, bolts to the screen's wall-bracket holes (this carries the 2.8 kg), carries the Pi box and bolts to the dash. Also comes as a DXF to have it cut from 3 mm aluminium | `back_plate_left/right`, `back_plate.dxf` |
 | Sun hood | Top shade and side cheeks, tipped up 8° so rain runs off | `sun_hood_left/right` + `sun_hood_splice` |
-| Pi 5 box | Pi 5 with the Active Cooler and AI HAT+ 2, a small MCP2515 CAN module, the 5V 5A buck and a 4G board with its buck and capacitor under the lid (SMA bulkheads for the 4G and GPS aerials in the wall). The lid also has a cradle for the video SSD (Kingston XS1000, [`docs/sentry.md`](../docs/sentry.md)). A cradle in the floor holds the micro HDMI plug still. Bolts to the back of the back plate; the screen's cables come straight in through the floor | `pi_box_box/lid/cowl/gasket` |
+| Pi 5 box | **Sealed for wash-downs, no fan** ([`docs/pi-box-cooling.md`](../docs/pi-box-cooling.md)): a 3 mm aluminium lid plate (DXF) with a finned heatsink outside, and an aluminium pillar from the Pi's chip to the lid. Room for the AI HAT+ 2 later. Holds the Pi 5, a small MCP2515 CAN module, the 5V 5A buck and a 4G board with its buck and capacitor on a printed liner under the lid plate (SMA bulkheads for the 4G and GPS aerials in the wall). The liner also has a cradle for the video SSD (Kingston XS1000, [`docs/sentry.md`](../docs/sentry.md)). A cradle in the floor holds the micro HDMI plug still. Bolts to the back of the back plate; the screen's cables come straight in through the floor | `pi_box_box/lid/gasket` (lid = the printed liner), `pi_lid_plate.dxf` |
 | Control box | Pico 2, MCP2515, MCP23017, ADS1115, opto board, MOSFET boards, 5V 2A buck | `control_box_box/lid/gasket/plate` |
 | Relay box | 8-channel relay board and the three BTS7960 drivers | `relay_box_box/lid/gasket/plate` |
 | Fit test | One corner of the dash panel (cut-out corner, bezel recess, inserts), to check the fit before the big print | `fit_test_corner` |
@@ -15,7 +15,8 @@ OpenSCAD designs for everything that gets 3D printed:
 ![Front](img/assembly-front.png)
 ![Exploded](img/assembly-exploded.png)
 ![Back, with the Pi box](img/assembly-back.png)
-![Pi box with the lid off: Pi and AI HAT+ 2 (purple), 4G board under the lid (blue), SSD (red)](img/pi-box-4g.png)
+![Pi box pulled apart: heatsink, aluminium lid plate, printed liner, pillar on the Pi's chip](img/pi-box-heatsink.png)
+![Pi box with the lid off (before the heatsink lid; the vents and fan are gone now): Pi and AI HAT+ 2 (purple), 4G board under the lid (blue), SSD (red)](img/pi-box-4g.png)
 ![Video SSD in the Pi box lid](img/pi-box-ssd.png)
 ![Micro HDMI cradle, plug in grey](img/pi-box-hdmi-cradle.png)
 ![Aerial holes: plain = 4G, ringed = GPS](img/pi-box-sma.png)
@@ -81,7 +82,7 @@ well.
 | Part | Material | Why |
 |---|---|---|
 | Dash panel, sun hood, back plate | **ASA** (first choice) or PETG | In full sun all day. ASA handles UV and heat best (softens about 100°C). PETG (about 80°C) is OK but goes brittle and fades in UV over a year or two; paint it or wrap it if you use it |
-| Pi box, control box, relay box, plate, cowl | **PETG** (or ASA) | Out of the sun, so PETG is fine and easier to print |
+| Pi box, Pi box liner, control box, relay box, plate | **PETG** (or ASA) | Out of the sun, so PETG is fine and easier to print |
 | Gaskets | **TPU 95A** | Or skip them and use 2 mm closed-cell foam cord in the groove |
 
 **Don't use PLA.** A dash in the sun gets well over 60°C and PLA sags.
@@ -111,13 +112,15 @@ well.
 | Cable ties, 3.6 mm wide or narrower, about 150 mm | 4 | Micro HDMI plug and cable (Pi box floor), 4G buck and capacitor (Pi box lid) |
 | 1 mm foam tape | a scrap | On top of the micro HDMI cradle, under the plug |
 | SMA female bulkheads with O-ring (6.35 mm thread), on u.FL leads | 2 | 4G aerial (plain hole) and active GPS aerial (higher hole with the ring round it), right-hand wall of the Pi box |
-| M3 x 20 bolts + nyloc nuts | 4 | 30 mm fan through the cowl and lid |
+| M3 x 10 cap screws | 4 | Heatsink to the Pi box lid plate, from inside through the liner (tap the heatsink base M3) |
+| M3 x 8 countersunk screw | 1 | Pillar to the lid plate |
 | M3 x 10 bolts + nuts | 4 | Hood splice |
 | M4 x 12 bolts + M4 nuts + threadlocker | 4 | Pi box to back plate (nuts sit in hex pockets on the front of the plate) |
 | M5 nuts | 4 | AMPS mount, in hex pockets on the front of the plate |
 | M4 bolts to suit | 8 | Control and relay box ears to the chassis |
+| M12 breather vent plug | 1 | Last hole in the Pi box's bottom wall |
 | Cable glands | 4 Pi box, 5 control box, 5 relay box | Sizes are in `measurements.scad` (PG7, PG9, PG16, M20) |
-| 30 mm 5V fan | 1 | Pi box lid (or set `pi_fan = 0` for no fan) |
+| Heatsink, pillar, pad, paste | 1 set | Pi box lid, see [`docs/pi-box-cooling.md`](../docs/pi-box-cooling.md) |
 | 2 mm closed-cell foam tape | about 1 m | Between the bezel and the panel face |
 | 1.75 mm filament | a few cm | Alignment pins at the cuts |
 
@@ -140,9 +143,10 @@ well.
 7. Put foam or the TPU ring round the Pi box's floor hole and bolt the Pi box
    to the back plate with the M4s. The screen's video, USB and power leads
    come straight into the box.
-8. Fit the Pi (Active Cooler, then the AI HAT+ 2 on its 16 mm header and spacers), stick the CAN module to the box wall with foam tape and wire it to the HAT's stacking header pins, fit the buck, run the other cables through the glands in
-   the bottom wall, then fit the gasket, lid, fan and cowl (cowl opening
-   points down).
+8. Fit the Pi (later: Active Cooler, then the AI HAT+ 2 on its 16 mm header and spacers), stick the CAN module to the box wall with foam tape and wire it to the HAT's stacking header pins, fit the buck, run the other cables through the glands in
+   the bottom wall, then the breather in the last hole. Build the lid (aluminium plate, pillar,
+   heatsink, printed liner) and fit it on the gasket as in
+   [`docs/pi-box-cooling.md`](../docs/pi-box-cooling.md), with the thermal pad on the Pi's chip.
    - **Micro HDMI.** The Pi sits with its HDMI edge towards the glands. Plug
      the screen lead into HDMI0 (the one next to USB-C). Stick 1 mm foam on
      the cradle, then one cable tie through the tunnel under the cradle and

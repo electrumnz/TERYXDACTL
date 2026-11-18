@@ -21,7 +21,7 @@ if split plate; then add back_plate_left back_plate part=left; add back_plate_ri
 else add back_plate back_plate part=whole; fi
 if split hood; then add sun_hood_left sun_hood part=left; add sun_hood_right sun_hood part=right; add sun_hood_splice sun_hood part=splice
 else add sun_hood sun_hood part=whole; fi
-for p in box lid cowl gasket; do add "pi_box_$p" pi_box "part=$p"; done
+for p in box lid gasket; do add "pi_box_$p" pi_box "part=$p"; done
 for b in control_box relay_box; do for p in box lid gasket plate; do add "${b}_$p" "$b" "part=$p"; done; done
 add fit_test_corner fit_test part=none
 
@@ -39,5 +39,9 @@ done
 if [[ -z "$only" || "back_plate_dxf" == "$only"* ]]; then
   echo "-> stl/back_plate.dxf"
   "$OPENSCAD" --quiet --hardwarnings -o stl/back_plate.dxf parts/back_plate_2d.scad
+fi
+if [[ -z "$only" || "pi_lid_dxf" == "$only"* || "pi_box" == "$only"* ]]; then
+  echo "-> stl/pi_lid_plate.dxf"
+  "$OPENSCAD" --quiet --hardwarnings -o stl/pi_lid_plate.dxf parts/pi_lid_2d.scad
 fi
 echo "Done."

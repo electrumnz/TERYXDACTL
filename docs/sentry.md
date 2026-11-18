@@ -95,9 +95,9 @@ It needs a short right-angle USB-C to USB-A lead into one of the Pi's blue USB 3
 
 ### The SSD in the Pi box
 
-The lid of the Pi box has a cradle for it (`ssd_cradle()` in `cad/models.scad`): two rails, an
-end stop, and slots for a cable tie. It sits off to the side, clear of the AI HAT+ 2's space,
-the active cooler's air path and the vents. The 4G stick isn't in the box: it hangs outside on
+The printed liner under the Pi box's aluminium lid has a cradle for it (`ssd_cradle()` in
+`cad/models.scad`): two rails, an end stop, and slots for a cable tie. It sits off to the side,
+clear of the AI HAT+ 2's space and the pillar that cools the Pi ([`pi-box-cooling.md`](pi-box-cooling.md)). The 4G stick isn't in the box: it hangs outside on
 its 20 cm USB lead so the antenna works.
 
 ![SSD in the Pi box lid](../cad/img/pi-box-ssd.png)
