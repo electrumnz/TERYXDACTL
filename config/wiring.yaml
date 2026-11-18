@@ -699,15 +699,22 @@ devices:
     name: 4-ch class D amp (AliExpress, 4 x 63 W RMS at 4 ohm)
     zone: cab
     status: confirmed
-    note: "Sam's pick. 4 x 63 W RMS at 4 ohm, or 2 x 200 W RMS bridged at 4 ohm; built-in 90 Hz high and low pass; 8-16 V; up to 33 A flat out (16.5 A on music); 145 x 100 x 45 mm. Channels 1 and 2 drive the Kenwoods (set the HPF on). Channels 3 and 4 are kept for a sub later, bridged (e.g. a 4 ohm 150 W RMS one, LPF on)"
+    note: "Sam's pick. 4 x 63 W RMS at 4 ohm, or 2 x 200 W RMS bridged at 4 ohm; built-in 90 Hz high and low pass; 8-16 V; up to 33 A flat out (16.5 A on music); 145 x 100 x 45 mm. Channels 1 and 2 drive the Kenwoods (set the HPF on). Channels 3 and 4 bridged (200 W at 4 ohm) drive the Kicker KM104 sub (LPF on, gain set so it stays under the sub's 150 W RMS)"
     optional: true
     doc: docs/audio.md
-    pins: {B+: 12v, GND: gnd, REM: 12v, IN: audio, SPK: spk}
+    pins: {B+: 12v, GND: gnd, REM: 12v, IN: audio, SPK: spk, SUB: spk}
   SPEAKERS:
     name: Kenwood KFC-2053MRB 8 in marine speakers (pair)
     zone: cab
     status: confirmed
     note: Sam has these. 8 in 2-way, 4 ohm, about 50 W RMS each (100 W the pair), 180 mm cut-out, about 86 mm mounting depth (Kenwood spec page). One amp channel each; speaker cable 1.5 mm² is plenty. In sealed printed pods on the roll cage (cad/parts/speaker_pod.scad, docs/speaker-pods.md); the cable goes in through a PG7 gland underneath each pod
+    optional: true
+    pins: {IN: spk}
+  SUB:
+    name: Kicker KM104 10 in marine subwoofer
+    zone: cab
+    status: confirmed
+    note: "Sam has bought it (18 Nov). 10 in, 4 ohm, 150 W RMS, 30-500 Hz. On amp ch 3 + 4 bridged, low pass on (90 Hz, matches the pods' EQ handover). Sealed printed box under the seat, on hold until Sam scans the space. 1.5 mm² speaker cable"
     optional: true
     pins: {IN: spk}
   IMU:
@@ -1050,5 +1057,6 @@ wires:
   - {id: X30, from: PI5.P2_5V, to: DAC_HAT.V5, sys: dash, status: planned, optional: true, note: jumper lead}
   - {id: X31, from: DAC_HAT.GND, to: PI5.GND, sys: dash, status: planned, optional: true, note: jumper lead}
   - {id: X22, from: AMP.SPK, to: SPEAKERS.IN, sys: dash, status: planned, optional: true}
+  - {id: X34, from: AMP.SUB, to: SUB.IN, sys: dash, status: planned, optional: true, note: "Amp ch 3 + 4 bridged (ch 3 + and ch 4 -, check the amp's label)"}
   - {id: X23, from: PI5.P3_SDA, to: IMU.SDA, sys: dash, status: planned, optional: true}
   - {id: X24, from: PI5.P5_SCL, to: IMU.SCL, sys: dash, status: planned, optional: true}

@@ -34,7 +34,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Part | Qty | Each NZ$ | Total NZ$ | Price from | Notes |
 |---|---|---|---|---|---|
 | Carlinkit CPC200-CCPA (or CCPA-MIC) CarPlay dongle | 1 | 65.00 | 65.00 | US$33-39 x 1.822 | Title must say CCPA + Android head unit; lsusb 1314:1520/1521 |
-| 4-channel class D amp, 4 x 63W RMS at 4 ohm, 2 x 200W bridged, 90Hz HPF/LPF (Sam's pick) | 1 | 100.00 | 100.00 | Sam, AliExpress ~NZ$100 | Ch 1-2 Kenwoods, ch 3-4 kept for a bridged sub later; under the seat, not waterproof |
+| 4-channel class D amp, 4 x 63W RMS at 4 ohm, 2 x 200W bridged, 90Hz HPF/LPF (Sam's pick) | 1 | 100.00 | 100.00 | Sam, AliExpress ~NZ$100 | Ch 1-2 Kenwoods, ch 3-4 bridged to the Kicker KM104 sub; under the seat, not waterproof |
 | 8-channel PC817 opto board 12V in | 2 | 9.00 | 18.00 | ~US$5 estimate | Board 1 = all 8 inputs; board 2 = 8 spare on MCP2 |
 | 8-Channel Opto-Isolated MOSFET Driver Module, DC 3.7-27V, 10A per channel, PWM 3-20V input, 0-20kHz (Sam's pick) | 1 | 22.00 | 22.00 | ~US$12 estimate | Front bars, cabin bar, trailer bar, rear floods (all 8 used) |
 | BTS7960 43A motor driver board (IBT-2), same as the 3 already owned | 6 | 10.00 | 60.00 | ~US$5-6 estimate | Used as two + side (high side) switches each: headlights L and R (low + high), tail/brake L and R, trailer tail/stop, beacon amber/white. The stock bulbs share one earth per bulb, so the MOSFET boards can't do them |
@@ -156,7 +156,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 
 ### Already got (not in the totals)
 
-10.1 in touch screen, 12 V battery, 12 in light bar, 12-way fuse box (in the post; 12 fuses planned, so it is full), 200 degree rear camera (in the post), 250 A manual reset breaker (winch kill switch), 4 in pod, 5 A step-down buck (in the post; input must take 20 V+), 7 in light bar, ADS1115 (3 in the post), Amber + white LED roof beacon, BTS7960 (3 in the post), EU 7-pin round trailer plug (check the socket half and cap came too), Kenwood KFC-2053MRB 8 in marine speakers (pair), XBull 5000 lb winch (and its 35 mm² cables), XBull remote, XBull solenoid box, short actuator (in the post), smart actuator with position feedback (in the post), spare light bar (trailer), tray actuator (in the post). Samsung Galaxy XCover 5 (RC remote) (NZ$187).
+10.1 in touch screen, 12 V battery, 12 in light bar, 12-way fuse box (in the post; 12 fuses planned, so it is full), 200 degree rear camera (in the post), 250 A manual reset breaker (winch kill switch), 4 in pod, 5 A step-down buck (in the post; input must take 20 V+), 7 in light bar, ADS1115 (3 in the post), Amber + white LED roof beacon, BTS7960 (3 in the post), EU 7-pin round trailer plug (check the socket half and cap came too), Kenwood KFC-2053MRB 8 in marine speakers (pair), Kicker KM104 10 in marine sub (bought 18 Nov), XBull 5000 lb winch (and its 35 mm² cables), XBull remote, XBull solenoid box, short actuator (in the post), smart actuator with position feedback (in the post), spare light bar (trailer), tray actuator (in the post). Samsung Galaxy XCover 5 (RC remote) (NZ$187).
 
 ### Comes with the Shinegle kit or the stock Teryx
 

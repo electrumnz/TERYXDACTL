@@ -91,7 +91,7 @@ lines:
 
   # ------------------------------------------------------------- AliExpress
   - {id: ccpa, shop: aliexpress, part: Carlinkit CPC200-CCPA (or CCPA-MIC) CarPlay dongle, qty: 1, each: 65.00, source: "US$33-39 x 1.822", covers: [CARPLAY], notes: "Title must say CCPA + Android head unit; lsusb 1314:1520/1521"}
-  - {id: amp, shop: aliexpress, part: "4-channel class D amp, 4 x 63W RMS at 4 ohm, 2 x 200W bridged, 90Hz HPF/LPF (Sam's pick)", qty: 1, each: 100.00, source: "Sam, AliExpress ~NZ$100", covers: [AMP], notes: "Ch 1-2 Kenwoods, ch 3-4 kept for a bridged sub later; under the seat, not waterproof"}
+  - {id: amp, shop: aliexpress, part: "4-channel class D amp, 4 x 63W RMS at 4 ohm, 2 x 200W bridged, 90Hz HPF/LPF (Sam's pick)", qty: 1, each: 100.00, source: "Sam, AliExpress ~NZ$100", covers: [AMP], notes: "Ch 1-2 Kenwoods, ch 3-4 bridged to the Kicker KM104 sub; under the seat, not waterproof"}
   - {id: opto, shop: aliexpress, part: 8-channel PC817 opto board 12V in, qty: 2, each: 9.00, source: "~US$5 estimate", covers: [OPTO], notes: "Board 1 = all 8 inputs; board 2 = 8 spare on MCP2"}
   - {id: mosfet, shop: aliexpress, part: "8-Channel Opto-Isolated MOSFET Driver Module, DC 3.7-27V, 10A per channel, PWM 3-20V input, 0-20kHz (Sam's pick)", qty: 1, each: 22.00, source: "~US$12 estimate", covers: [MOSFET], notes: "Front bars, cabin bar, trailer bar, rear floods (all 8 used)"}
   - {id: bts_lights, shop: aliexpress, part: "BTS7960 43A motor driver board (IBT-2), same as the 3 already owned", qty: 6, each: 10.00, source: "~US$5-6 estimate", covers: [BTS4, BTS5, BTS6, BTS7, BTS8, BTS9], notes: "Used as two + side (high side) switches each: headlights L and R (low + high), tail/brake L and R, trailer tail/stop, beacon amber/white. The stock bulbs share one earth per bulb, so the MOSFET boards can't do them"}
@@ -189,6 +189,7 @@ owned:
   ACT_TRAY: tray actuator (in the post)
   BAT12: 12 V battery
   SPEAKERS: Kenwood KFC-2053MRB 8 in marine speakers (pair)
+  SUB: Kicker KM104 10 in marine sub (bought 18 Nov)
 
 # Comes with the Shinegle kit, or is stock Teryx.
 kit:

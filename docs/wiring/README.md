@@ -10,7 +10,7 @@ Why things are wired this way (power hold, diodes, CAN rules): [`docs/wiring.md`
 Viewer with search: [`index.html`](index.html), also online at
 <https://electrumnz.github.io/TERYXDACTL/wiring/>.
 
-**92 devices, 304 wires.** By status: 19 from_manual, 3 confirmed, 245 planned, 33 tbc, 4 placeholder.
+**93 devices, 305 wires.** By status: 19 from_manual, 3 confirmed, 246 planned, 33 tbc, 4 placeholder.
 Nothing has been checked on the real Teryx yet.
 
 Wire sizes follow the conservative table in the YAML (from
@@ -528,6 +528,7 @@ Fuses not in the block (inline, at the battery or on a board):
 | X30 | PI5.P2_5V | DAC_HAT.V5 |  |  |  | planned (optional) | jumper lead |
 | X31 | DAC_HAT.GND | PI5.GND |  |  |  | planned (optional) | jumper lead |
 | X22 | AMP.SPK | SPEAKERS.IN |  |  |  | planned (optional) |  |
+| X34 | AMP.SUB | SUB.IN |  |  |  | planned (optional) | Amp ch 3 + 4 bridged (ch 3 + and ch 4 -, check the amp's label) |
 | X23 | PI5.P3_SDA | IMU.SDA |  |  |  | planned (optional) |  |
 | X24 | PI5.P5_SCL | IMU.SCL |  |  |  | planned (optional) |  |
 
@@ -624,6 +625,7 @@ Fuses not in the block (inline, at the battery or on a board):
 | MODEM_4G | SIMCom A7670SA 4G board | dash | placeholder (optional) | 6-pin header S G V K T R G. V takes 5-10 V from the spare Mini560 5 V buck. NEVER raw 12 V (10 V max, and the car runs 14.4 V with spikes). K is tied to ground on the board, so it starts by itself. T/R are 115200 baud TTL to the Pi's GPIO 15/14; measure T before connecting (3.3 V ok, else BSS138). Micro USB also on board. Its GNSS (FASE version, u.FL GPS socket on Sam's board) is the dash GPS too, so there is no separate USB GPS. Check on arrival that it gets a fix with the SIM out / 4G off. No USB: it's on the header pins (soldered leads), so texts, GPS and slow data only, no live video over 4G |
 | CARPLAY | Carlinkit CPC200-CCPA | dash | planned (optional) |  |
 | DAC_HAT | Raspberry Pi DAC+ (on jumper leads) | dash | planned (optional) | PCM5122 DAC HAT (ex IQaudio DAC+), RCA line out to the amp. Sits on standoffs in the right-hand end of the Pi box, off the Pi, so the top of the Pi stays free for the AI HAT+ 2. Joined by 7 male-to-female jumper leads (about 20 cm), not a full 40-way ribbon: a ribbon would cover the header pins the CAN board, 4G board and IMU leads plug onto. Uses GPIO 18, 19, 21 (I2S), 2 and 3 (I2C, shared with the IMU: DAC 0x4D, IMU 0x68), 5 V and GND. Nothing else on the Pi uses 18-21 (CAN is SPI0 + GPIO 25, 4G is UART GPIO 14/15). The ID EEPROM pins 27/28 are left off, so it never fights the AI HAT's EEPROM; set the overlay by hand: scripts/audio-setup.sh --i2s iqaudio-dacplus. A dab of hot glue on the leads at both ends against vibration. Later the leads move onto the AI HAT's stacking header pins See [`docs/audio.md`](../../docs/audio.md). |
-| AMP | 4-ch class D amp (AliExpress, 4 x 63 W RMS at 4 ohm) | cab | confirmed (optional) | Sam's pick. 4 x 63 W RMS at 4 ohm, or 2 x 200 W RMS bridged at 4 ohm; built-in 90 Hz high and low pass; 8-16 V; up to 33 A flat out (16.5 A on music); 145 x 100 x 45 mm. Channels 1 and 2 drive the Kenwoods (set the HPF on). Channels 3 and 4 are kept for a sub later, bridged (e.g. a 4 ohm 150 W RMS one, LPF on) See [`docs/audio.md`](../../docs/audio.md). |
+| AMP | 4-ch class D amp (AliExpress, 4 x 63 W RMS at 4 ohm) | cab | confirmed (optional) | Sam's pick. 4 x 63 W RMS at 4 ohm, or 2 x 200 W RMS bridged at 4 ohm; built-in 90 Hz high and low pass; 8-16 V; up to 33 A flat out (16.5 A on music); 145 x 100 x 45 mm. Channels 1 and 2 drive the Kenwoods (set the HPF on). Channels 3 and 4 bridged (200 W at 4 ohm) drive the Kicker KM104 sub (LPF on, gain set so it stays under the sub's 150 W RMS) See [`docs/audio.md`](../../docs/audio.md). |
 | SPEAKERS | Kenwood KFC-2053MRB 8 in marine speakers (pair) | cab | confirmed (optional) | Sam has these. 8 in 2-way, 4 ohm, about 50 W RMS each (100 W the pair), 180 mm cut-out, about 86 mm mounting depth (Kenwood spec page). One amp channel each; speaker cable 1.5 mm² is plenty. In sealed printed pods on the roll cage (cad/parts/speaker_pod.scad, docs/speaker-pods.md); the cable goes in through a PG7 gland underneath each pod |
+| SUB | Kicker KM104 10 in marine subwoofer | cab | confirmed (optional) | Sam has bought it (18 Nov). 10 in, 4 ohm, 150 W RMS, 30-500 Hz. On amp ch 3 + 4 bridged, low pass on (90 Hz, matches the pods' EQ handover). Sealed printed box under the seat, on hold until Sam scans the space. 1.5 mm² speaker cable |
 | IMU | IMU (roll / pitch) | dash | planned (optional) |  |

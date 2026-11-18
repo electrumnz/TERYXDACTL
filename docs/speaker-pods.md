@@ -165,7 +165,7 @@ polyester fill, ASA (about 3 kg for the pair), TPU for the gaskets.
 
 ## Not done yet
 
-- The sub box (Kicker KM104 idea): parked for now.
+- The sub box for the Kicker KM104 (Sam has bought it, it is on amp ch 3 + 4 bridged in the wiring): on hold until the space under the seat is scanned.
 - Real Thiele-Small numbers (see "Measure the speaker" above).
 - Real clamp tab size: the pad's insert spacing (`pod_mount_dx`, 40 mm) may need changing to suit
   the clamps that turn up.

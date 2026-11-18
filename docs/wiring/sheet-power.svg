@@ -51,7 +51,7 @@
 <line x1="480" y1="257" x2="750" y2="257" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="261" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F12  key switch</text>
 </g>
-<g data-device="AMP" data-status="confirmed"><title>AMP: 4-ch class D amp (AliExpress, 4 x 63 W RMS at 4 ohm) - Sam&#x27;s pick. 4 x 63 W RMS at 4 ohm, or 2 x 200 W RMS bridged at 4 ohm; built-in 90 Hz high and low pass; 8-16 V; up to 33 A flat out (16.5 A on music); 145 x 100 x 45 mm. Channels 1 and 2 drive the Kenwoods (set the HPF on). Channels 3 and 4 are kept for a sub later, bridged (e.g. a 4 ohm 150 W RMS one, LPF on)</title><rect x="480" y="301" width="270" height="104" rx="6" fill="#f0f6ff" stroke="#0969da" stroke-width="1.5"/>
+<g data-device="AMP" data-status="confirmed"><title>AMP: 4-ch class D amp (AliExpress, 4 x 63 W RMS at 4 ohm) - Sam&#x27;s pick. 4 x 63 W RMS at 4 ohm, or 2 x 200 W RMS bridged at 4 ohm; built-in 90 Hz high and low pass; 8-16 V; up to 33 A flat out (16.5 A on music); 145 x 100 x 45 mm. Channels 1 and 2 drive the Kenwoods (set the HPF on). Channels 3 and 4 bridged (200 W at 4 ohm) drive the Kicker KM104 sub (LPF on, gain set so it stays under the sub&#x27;s 150 W RMS)</title><rect x="480" y="301" width="270" height="104" rx="6" fill="#f0f6ff" stroke="#0969da" stroke-width="1.5"/>
 <text x="490" y="319" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">4-ch class D amp (AliExpress, 4 x</text>
 <text x="490" y="334" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">63 W RMS at 4 ohm)</text>
 <text x="490" y="349" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">AMP · confirmed · optional</text>
