@@ -13,9 +13,9 @@
 <line x1="880" y1="92" x2="914" y2="92" stroke="#8250df" stroke-width="2.5" stroke-dasharray="2 4"/>
 <text x="920" y="96" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">Placeholder / later</text>
 <text x="40" y="120" font-size="11" text-anchor="start" font-weight="normal" fill="#57606a">Labels: wire id, size, fuse (if the wire has its own), and anything in between. Faded = optional. Hover for notes. Full table: docs/wiring/README.md</text>
-<g data-wire="T01" data-from="FB.F7" data-to="RELAYS.COM2" data-status="planned"><title>T01: FB.F7 -&gt; RELAYS.COM2</title><path d="M920,197 C835,197 835,197 750,197" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="T01" data-from="FB.F4" data-to="RELAYS.COM2" data-status="planned"><title>T01: FB.F4 -&gt; RELAYS.COM2</title><path d="M920,197 C835,197 835,197 750,197" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="T02" data-from="RELAYS.NO2" data-to="TRAILER.P7_TAIL" data-status="planned"><title>T02: RELAYS.NO2 -&gt; TRAILER.P7_TAIL - trailer.tail</title><path d="M480,257 C395,257 395,252 310,252" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="T03" data-from="FB.F8" data-to="RELAYS.COM3" data-status="planned"><title>T03: FB.F8 -&gt; RELAYS.COM3</title><path d="M920,217 C835,217 835,217 750,217" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="T03" data-from="FB.F4" data-to="RELAYS.COM3" data-status="planned"><title>T03: FB.F4 -&gt; RELAYS.COM3</title><path d="M920,197 C835,197 835,217 750,217" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="T04" data-from="RELAYS.NO3" data-to="TRAILER.P6_STOP" data-status="planned"><title>T04: RELAYS.NO3 -&gt; TRAILER.P6_STOP - trailer.brake</title><path d="M480,277 C395,277 395,232 310,232" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="T05" data-from="BRAKE_SW.OUT" data-to="TRAILER.P6_STOP" data-status="tbc"><title>T05: BRAKE_SW.OUT -&gt; TRAILER.P6_STOP - Trailer brake lights still work with the control box off</title><path d="M480,388 C395,388 395,232 310,232" fill="none" stroke="#bf8700" stroke-width="2.2" stroke-dasharray="7 4"/></g>
 <g data-wire="T06" data-from="RELAYS.NO1" data-to="TRAILER.P2_REV" data-status="tbc"><title>T06: RELAYS.NO1 -&gt; TRAILER.P2_REV - Reversing pin. Relay 1 also runs the floods by hand, so trailer reverse lights would come on with them</title><path d="M480,237 C395,237 395,212 310,212" fill="none" stroke="#bf8700" stroke-width="2.2" stroke-dasharray="7 4" stroke-opacity="0.65"/></g>
@@ -87,18 +87,16 @@
 <line x1="480" y1="645" x2="750" y2="645" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="649" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VID_GND</text>
 </g>
-<g data-device="FB" data-status="tbc"><title>FB: Blade fuse block - Needs 16 ways. The 12-way on the parts list is too small, so use an 18 to 20-way or two 12-ways</title><rect x="920" y="150" width="270" height="89" rx="6" fill="#f0f6ff" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
+<g data-device="FB" data-status="tbc"><title>FB: Blade fuse block - 12 fuses in use. Small loads that can go out together share a fuse (front bars in pairs, trailer tail + stop, interior bar + accessory). All four front bars are NOT on one fuse, so one fault can&#x27;t black out the front at night. The winch, control box power, key, power hold and each actuator keep their own. A 20-way leaves 8 spares</title><rect x="920" y="150" width="270" height="69" rx="6" fill="#f0f6ff" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
 <text x="930" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Blade fuse block</text>
 <text x="930" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#bf8700">FB · tbc</text>
 <line x1="920" y1="197" x2="1190" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F7  relay 2 trailer tail</text>
-<line x1="920" y1="217" x2="1190" y2="217" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F8  relay 3 trailer stop</text>
+<text x="1055" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F4  relays 2-3 trailer tail + stop</text>
 </g>
-<text x="912" y="194" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T01  1 mm²</text>
-<text x="472" y="254" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T02  1 mm²  5 A</text>
-<text x="912" y="214" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T03  1 mm²</text>
-<text x="472" y="274" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T04  1 mm²  5 A</text>
+<text x="758" y="194" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T01  1 mm²</text>
+<text x="472" y="254" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T02  1 mm²  7.5 A</text>
+<text x="758" y="214" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T03  1 mm²</text>
+<text x="472" y="274" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T04  1 mm²  7.5 A</text>
 <text x="472" y="385" font-size="9.5" text-anchor="end" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">T05  1 mm²  via diode (backup)</text>
 <text x="472" y="234" font-size="9.5" text-anchor="end" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">T06  1 mm²  10 A</text>
 <text x="472" y="294" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">T07  0.5 mm²  2 A</text>

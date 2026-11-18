@@ -74,7 +74,7 @@ runs up to about 5 m). Go one size up for bundled or hot runs.
 - [ ] **Main contactor** (CONTACTOR): Is there a main contactor between the pack and the controller? Photo it and trace its two small coil wires
 - [ ] **DC-DC converter 72 V to 12 V** (DCDC): DC-DC label (amps out), where its 72 V feed comes from, and whether it is isolated (does its 12 V negative join the pack negative?)
 - [ ] **Shinegle kit key switch** (KIT_KEY): Is the kit key the same switch as the Teryx key? Meter what voltage reaches J1-1 with the key on (12 V or 72 V)
-- [ ] **Blade fuse block** (FB): Pick the fuse block (18-20 way, or two 12-way side by side)
+- [ ] **Blade fuse block** (FB): Read the front bar labels. Each pair (1+4, 2+3) must draw under about 12 A together (about 140 W) to share a 15 A fuse. If not, give each bar its own 10 A again
 - [ ] **Screen 12 V supply** (SCREEN_PSU): Read the label on the screen's power brick (volts and amps)
 - [ ] **8-ch relay board** (RELAYS): Does the relay board click from 3.3 V logic? Active high or low?
 - [ ] **Rear flood left (4 in pod)** (FLOOD_L): Light bars and pods dim with PWM? Test one on a cheap dimmer
@@ -109,22 +109,18 @@ Wires marked TBC, with what's unknown:
 
 | Slot | Fuse | Feeds | Wires |
 |---|---|---|---|
-| F1 | 10 A | front bar 1 | LT01 |
-| F2 | 10 A | front bar 2 | LT02 |
-| F3 | 10 A | front bar 3 | LT03 |
-| F4 | 10 A | front bar 4 | LT04 |
-| F5 | 5 A | interior bar | LT05 |
-| F6 | 10 A | relay 1 rear floods | LT16 |
-| F7 | 5 A | relay 2 trailer tail | T01 |
-| F8 | 5 A | relay 3 trailer stop | T03 |
-| F9 | 3 A | relays 4-6 winch coils | WN07, WN08, WN09 |
-| F10 | 3 A | winch hand switches | I13, WN13, WN14 |
-| F11 | 10 A | relay 7 accessory | P15 |
-| F12 | 7.5 A | relay 8 power hold | P04 |
-| F13 | 10 A | BTS7960 1 diff | D05 |
-| F14 | 10 A | BTS7960 2 4WD | D15 |
-| F15 | 15 A | BTS7960 3 tray | D22 |
-| F16 | 7.5 A | key switch | P02 |
+| F1 | 15 A | front bars 1 + 4 (outer pair) | LT01, LT04 |
+| F2 | 15 A | front bars 2 + 3 (inner pair) | LT02, LT03 |
+| F3 | 10 A | relay 1 rear floods | LT16 |
+| F4 | 7.5 A | relays 2-3 trailer tail + stop | T01, T03 |
+| F5 | 3 A | relays 4-6 winch coils | WN07, WN08, WN09 |
+| F6 | 3 A | winch hand switches | I13, WN13, WN14 |
+| F7 | 10 A | extras - interior bar + relay 7 accessory (phone charger | P15, LT05 |
+| F8 | 7.5 A | relay 8 power hold | P04 |
+| F9 | 10 A | BTS7960 1 diff | D05 |
+| F10 | 10 A | BTS7960 2 4WD | D15 |
+| F11 | 15 A | BTS7960 3 tray | D22 |
+| F12 | 7.5 A | key switch | P02 |
 
 Fuses not in the block (inline, at the battery or on a board):
 
@@ -162,8 +158,8 @@ Fuses not in the block (inline, at the battery or on a board):
 | D28 | 1 A | BAT12.pos | ADS1.A1 |
 | D31 | 3 A | RAIL.BUS | RELAYS2.COM1 |
 | D32 | 3 A | RELAYS2.NO1 | EPS_ECU.IG |
-| T02 | 5 A | RELAYS.NO2 | TRAILER.P7_TAIL |
-| T04 | 5 A | RELAYS.NO3 | TRAILER.P6_STOP |
+| T02 | 7.5 A | RELAYS.NO2 | TRAILER.P7_TAIL |
+| T04 | 7.5 A | RELAYS.NO3 | TRAILER.P6_STOP |
 | T06 | 10 A | RELAYS.NO1 | TRAILER.P2_REV |
 | T07 | 2 A | RELAYS.NO7 | TCAM_PLUG.V12 |
 | T08 | 2 A | TCAM_PLUG.V12 | CAM_TRAILER.V12 |
@@ -212,9 +208,9 @@ Fuses not in the block (inline, at the battery or on a board):
 | Wire | From | To | Size | Fuse | Via | Status | Note |
 |---|---|---|---|---|---|---|---|
 | P01 | BAT12.pos | FB.IN | 10 mm² | 60 A |  | planned | 60 A main fuse at the battery. Was 6 mm² in wiring.md, which the table only rates to 40 A |
-| P02 | FB.F16 | KEY.BAT | 1 mm² | 7.5 A |  | planned |  |
+| P02 | FB.F12 | KEY.BAT | 1 mm² | 7.5 A |  | planned |  |
 | P03 | KEY.IGN | RAIL.BUS | 1 mm² | 7.5 A |  | planned |  |
-| P04 | FB.F12 | RELAYS.COM8 | 1 mm² | 7.5 A |  | planned |  |
+| P04 | FB.F8 | RELAYS.COM8 | 1 mm² | 7.5 A |  | planned |  |
 | P05 | RELAYS.NO8 | RAIL.BUS | 1 mm² | 7.5 A |  | planned | Power hold, in parallel with the key |
 | P06 | RAIL.BUS | TVS.K | 1 mm² | 7.5 A |  | planned |  |
 | P07 | RAIL.BUS | PI_BUCK.VIN | 1.5 mm² | 7.5 A |  | planned |  |
@@ -225,7 +221,7 @@ Fuses not in the block (inline, at the battery or on a board):
 | P12 | PICO_BUCK.VOUT | RELAYS2.JDVCC | 0.5 mm² |  |  | planned (optional) |  |
 | P13 | RAIL.BUS | SCREEN_PSU.VIN | 1 mm² | 3 A |  | tbc | Fuse size depends on the screen's draw |
 | P14 | SCREEN_PSU.VOUT | SCREEN.DC_IN | 1 mm² |  |  | tbc |  |
-| P15 | FB.F11 | RELAYS.COM7 | 1.5 mm² | 10 A |  | planned | Accessory 12 V, on with ignition |
+| P15 | FB.F7 | RELAYS.COM7 | 1.5 mm² | 10 A |  | planned | Accessory 12 V, on with ignition |
 | P20 | RELAYS.NO7 | GLOVE_USB.VIN | 0.75 mm² | 3 A |  | planned (optional) | 3 A inline fuse. Charges the RC phone with the key on; the control box may hold it on for a while after key-off (TBC) |
 | P16 | BAT12.pos | AMP.B+ | 4 mm² | 30 A |  | planned (optional) | Own fuse at the battery. 4 x 50 W can pull 20-30 A |
 | P17 | RAIL.BUS | AMP.REM | 0.5 mm² | 2 A |  | planned (optional) | Remote turn-on, goes off with the rail |
@@ -341,7 +337,7 @@ Fuses not in the block (inline, at the battery or on a board):
 | I10 | WINCH_SOL.COIL_IN | OPTO.IN6 | 0.5 mm² |  | 1N4148 | tbc | Remote taps: only if the remote's own lines can be reached. TBC |
 | I11 | PARK_SW.OUT | OPTO.IN7 | 0.5 mm² |  |  | tbc | If the switch grounds, wire the opto input the other way round |
 | I12 | TRAILER.REED_A | OPTO.IN8 | 0.5 mm² |  |  | tbc |  |
-| I13 | FB.F10 | LIM_DN.C | 0.5 mm² | 3 A |  | planned | Limit switch and reed feed from a small fused 12 V |
+| I13 | FB.F6 | LIM_DN.C | 0.5 mm² | 3 A |  | planned | Limit switch and reed feed from a small fused 12 V |
 | I14 | LIM_DN.C | LIM_UP.C | 0.5 mm² |  |  | planned |  |
 | I15 | LIM_UP.C | TRAILER.REED_B | 0.5 mm² |  |  | tbc |  |
 
@@ -349,11 +345,11 @@ Fuses not in the block (inline, at the battery or on a board):
 
 | Wire | From | To | Size | Fuse | Via | Status | Note |
 |---|---|---|---|---|---|---|---|
-| LT01 | FB.F1 | LB1.pos | 1.5 mm² | 10 A |  | planned |  |
-| LT02 | FB.F2 | LB2.pos | 1.5 mm² | 10 A |  | planned |  |
-| LT03 | FB.F3 | LB3.pos | 1.5 mm² | 10 A |  | planned |  |
-| LT04 | FB.F4 | LB4.pos | 1.5 mm² | 10 A |  | planned |  |
-| LT05 | FB.F5 | LB_INT.pos | 1 mm² | 5 A |  | planned |  |
+| LT01 | FB.F1 | LB1.pos | 1.5 mm² | 15 A |  | planned |  |
+| LT02 | FB.F2 | LB2.pos | 1.5 mm² | 15 A |  | planned |  |
+| LT03 | FB.F2 | LB3.pos | 1.5 mm² | 15 A |  | planned |  |
+| LT04 | FB.F1 | LB4.pos | 1.5 mm² | 15 A |  | planned |  |
+| LT05 | FB.F7 | LB_INT.pos | 1 mm² | 10 A |  | planned |  |
 | LT06 | LB1.neg | MOSFET.OUT1 | 1.5 mm² |  |  | planned |  |
 | LT07 | LB2.neg | MOSFET.OUT2 | 1.5 mm² |  |  | planned |  |
 | LT08 | LB3.neg | MOSFET.OUT3 | 1.5 mm² |  |  | planned |  |
@@ -364,7 +360,7 @@ Fuses not in the block (inline, at the battery or on a board):
 | LT13 | PICO.GP18 | MOSFET.IN3 |  |  |  | planned | light.front_3 PWM |
 | LT14 | PICO.GP19 | MOSFET.IN4 |  |  |  | planned | light.front_4 PWM |
 | LT15 | PICO.GP20 | MOSFET.IN5 |  |  |  | planned | light.interior PWM |
-| LT16 | FB.F6 | RELAYS.COM1 | 1.5 mm² | 10 A |  | planned |  |
+| LT16 | FB.F3 | RELAYS.COM1 | 1.5 mm² | 10 A |  | planned |  |
 | LT17 | RELAYS.NO1 | FLOOD_L.pos | 1.5 mm² | 10 A |  | planned | light.rear, auto on in reverse |
 | LT18 | RELAYS.NO1 | FLOOD_R.pos | 1.5 mm² | 10 A |  | planned |  |
 
@@ -378,14 +374,14 @@ Fuses not in the block (inline, at the battery or on a board):
 | WN04 | WINCH_SOL.M1 | WINCH_MOTOR.M1 | 35 mm² |  |  | confirmed |  |
 | WN05 | WINCH_SOL.M2 | WINCH_MOTOR.M2 | 35 mm² |  |  | confirmed |  |
 | WN06 | WINCH_SOL.REMOTE | WINCH_REMOTE.PLUG |  |  |  | confirmed | XBull remote stays as a backup |
-| WN07 | FB.F9 | RELAYS.COM4 | 0.5 mm² | 3 A |  | planned |  |
-| WN08 | FB.F9 | RELAYS.COM5 | 0.5 mm² | 3 A |  | planned |  |
-| WN09 | FB.F9 | RELAYS.COM6 | 0.5 mm² | 3 A |  | planned |  |
+| WN07 | FB.F5 | RELAYS.COM4 | 0.5 mm² | 3 A |  | planned |  |
+| WN08 | FB.F5 | RELAYS.COM5 | 0.5 mm² | 3 A |  | planned |  |
+| WN09 | FB.F5 | RELAYS.COM6 | 0.5 mm² | 3 A |  | planned |  |
 | WN10 | RELAYS.NO4 | WINCH_SOL.COIL_IN | 0.5 mm² | 3 A | 3 A diode (1N5408) | planned | winch.in. Never the motor current through the relay board |
 | WN11 | RELAYS.NO5 | WINCH_SOL.COIL_OUT | 0.5 mm² | 3 A | 3 A diode (1N5408) | planned | winch.out, interlocked with in |
 | WN12 | RELAYS.NO6 | WINCH_ISO.coil_pos | 0.5 mm² | 3 A |  | planned | winch.isolator, only while armed |
-| WN13 | FB.F10 | HSW_WINCH.FEED | 0.5 mm² | 3 A |  | planned |  |
-| WN14 | FB.F10 | HSW_CAB.FEED | 0.5 mm² | 3 A |  | planned |  |
+| WN13 | FB.F6 | HSW_WINCH.FEED | 0.5 mm² | 3 A |  | planned |  |
+| WN14 | FB.F6 | HSW_CAB.FEED | 0.5 mm² | 3 A |  | planned |  |
 | WN15 | HSW_WINCH.IN | WINCH_SOL.COIL_IN | 0.5 mm² | 3 A | 3 A diode (1N5408) | planned |  |
 | WN16 | HSW_WINCH.OUT | WINCH_SOL.COIL_OUT | 0.5 mm² | 3 A | 3 A diode (1N5408) | planned |  |
 | WN17 | HSW_CAB.IN | WINCH_SOL.COIL_IN | 0.5 mm² | 3 A | 3 A diode (1N5408) | planned |  |
@@ -399,7 +395,7 @@ Fuses not in the block (inline, at the battery or on a board):
 | D02 | PICO.GP8 | BTS1.LPWM |  |  |  | planned |  |
 | D03 | PICO.GP9 | BTS1.EN |  |  |  | planned | R_EN and L_EN joined |
 | D04 | BTS1.IS | PICO.GP28 |  |  | 2 diodes + 1k to ground | planned | an.diff_current |
-| D05 | FB.F13 | BTS1.B+ | 1.5 mm² | 10 A |  | planned |  |
+| D05 | FB.F9 | BTS1.B+ | 1.5 mm² | 10 A |  | planned |  |
 | D06 | BTS1.M+ | ACT_DIFF.M+ | 1.5 mm² | 10 A |  | planned | Wrong way? Change DIFF_LOCK_DIR in firmware, not the wires |
 | D07 | BTS1.M- | ACT_DIFF.M- | 1.5 mm² | 10 A |  | planned |  |
 | D08 | ADS1.VDD | ACT_DIFF.POT_HI |  |  |  | planned | Pot on 3.3 V, never 12 V |
@@ -409,14 +405,14 @@ Fuses not in the block (inline, at the battery or on a board):
 | D12 | PICO.GP11 | BTS2.LPWM |  |  |  | planned |  |
 | D13 | PICO.GP12 | BTS2.EN |  |  |  | planned |  |
 | D14 | BTS2.IS | ADS1.A2 |  |  | 2 diodes + 1k to ground | planned | an.4wd_current |
-| D15 | FB.F14 | BTS2.B+ | 1.5 mm² | 10 A |  | planned |  |
+| D15 | FB.F10 | BTS2.B+ | 1.5 mm² | 10 A |  | planned |  |
 | D16 | BTS2.M+ | ACT_4WD.M+ | 1.5 mm² | 10 A |  | tbc |  |
 | D17 | BTS2.M- | ACT_4WD.M- | 1.5 mm² | 10 A |  | tbc |  |
 | D18 | PICO.GP13 | BTS3.RPWM |  |  |  | planned | act.tray |
 | D19 | PICO.GP14 | BTS3.LPWM |  |  |  | planned |  |
 | D20 | PICO.GP15 | BTS3.EN |  |  |  | planned |  |
 | D21 | BTS3.IS | ADS1.A3 |  |  | 2 diodes + 1k to ground | planned | an.tray_current |
-| D22 | FB.F15 | BTS3.B+ | 2.5 mm² | 15 A |  | planned |  |
+| D22 | FB.F11 | BTS3.B+ | 2.5 mm² | 15 A |  | planned |  |
 | D23 | BTS3.M+ | ACT_TRAY.M+ | 2.5 mm² | 15 A |  | planned |  |
 | D24 | BTS3.M- | ACT_TRAY.M- | 2.5 mm² | 15 A |  | planned |  |
 | D25 | PICO.3V3 | BTS1.VCC |  |  |  | planned |  |
@@ -435,10 +431,10 @@ Fuses not in the block (inline, at the battery or on a board):
 
 | Wire | From | To | Size | Fuse | Via | Status | Note |
 |---|---|---|---|---|---|---|---|
-| T01 | FB.F7 | RELAYS.COM2 | 1 mm² | 5 A |  | planned |  |
-| T02 | RELAYS.NO2 | TRAILER.P7_TAIL | 1 mm² | 5 A |  | planned | trailer.tail |
-| T03 | FB.F8 | RELAYS.COM3 | 1 mm² | 5 A |  | planned |  |
-| T04 | RELAYS.NO3 | TRAILER.P6_STOP | 1 mm² | 5 A |  | planned | trailer.brake |
+| T01 | FB.F4 | RELAYS.COM2 | 1 mm² | 7.5 A |  | planned |  |
+| T02 | RELAYS.NO2 | TRAILER.P7_TAIL | 1 mm² | 7.5 A |  | planned | trailer.tail |
+| T03 | FB.F4 | RELAYS.COM3 | 1 mm² | 7.5 A |  | planned |  |
+| T04 | RELAYS.NO3 | TRAILER.P6_STOP | 1 mm² | 7.5 A |  | planned | trailer.brake |
 | T05 | BRAKE_SW.OUT | TRAILER.P6_STOP | 1 mm² |  | diode (backup) | tbc | Trailer brake lights still work with the control box off |
 | T06 | RELAYS.NO1 | TRAILER.P2_REV | 1 mm² | 10 A |  | tbc (optional) | Reversing pin. Relay 1 also runs the floods by hand, so trailer reverse lights would come on with them |
 | T07 | RELAYS.NO7 | TCAM_PLUG.V12 | 0.5 mm² | 2 A |  | planned (optional) | 2 A inline fuse. Runs while driving, not just reversing |
@@ -495,7 +491,7 @@ Fuses not in the block (inline, at the battery or on a board):
 | PROG | SG1810 handheld programmer | cab | from_manual (optional) | Only plugged in for setup. Carries 12 V, never into USB See [`docs/shinegle-sg1810-programmer.md`](../../docs/shinegle-sg1810-programmer.md). |
 | BAT12 | 12 V aux battery | engine_bay | confirmed | Kept after the conversion. Charged by the DC-DC |
 | GND_STAR | Ground point (star) | engine_bay | planned | One solid chassis ground near the fuse block. Every 12 V ground goes here |
-| FB | Blade fuse block | cab | tbc | Needs 16 ways. The 12-way on the parts list is too small, so use an 18 to 20-way or two 12-ways |
+| FB | Blade fuse block | cab | tbc | 12 fuses in use. Small loads that can go out together share a fuse (front bars in pairs, trailer tail + stop, interior bar + accessory). All four front bars are NOT on one fuse, so one fault can't black out the front at night. The winch, control box power, key, power hold and each actuator keep their own. A 20-way leaves 8 spares |
 | KEY | Teryx key switch | cab | confirmed |  |
 | RAIL | Dash 12 V rail | dash | planned | Key OR relay 8 (power hold). Stays up after key-off until the Pico lets go See [`docs/wiring.md`](../../docs/wiring.md). |
 | TVS | 1.5KE18A TVS diode | dash | planned | Clamps spikes on the dash rail |

@@ -189,26 +189,22 @@ devices:
     name: Blade fuse block
     zone: cab
     status: tbc
-    note: Needs 16 ways. The 12-way on the parts list is too small, so use an 18 to 20-way or two 12-ways
-    check: Pick the fuse block (18-20 way, or two 12-way side by side)
+    note: 12 fuses in use. Small loads that can go out together share a fuse (front bars in pairs, trailer tail + stop, interior bar + accessory). All four front bars are NOT on one fuse, so one fault can't black out the front at night. The winch, control box power, key, power hold and each actuator keep their own. A 20-way leaves 8 spares
+    check: Read the front bar labels. Each pair (1+4, 2+3) must draw under about 12 A together (about 140 W) to share a 15 A fuse. If not, give each bar its own 10 A again
     pins:
       IN: 12v
-      F1:  {v: 12v, supply: true, fuse_a: 10,  desc: front bar 1}
-      F2:  {v: 12v, supply: true, fuse_a: 10,  desc: front bar 2}
-      F3:  {v: 12v, supply: true, fuse_a: 10,  desc: front bar 3}
-      F4:  {v: 12v, supply: true, fuse_a: 10,  desc: front bar 4}
-      F5:  {v: 12v, supply: true, fuse_a: 5,   desc: interior bar}
-      F6:  {v: 12v, supply: true, fuse_a: 10,  desc: relay 1 rear floods}
-      F7:  {v: 12v, supply: true, fuse_a: 5,   desc: relay 2 trailer tail}
-      F8:  {v: 12v, supply: true, fuse_a: 5,   desc: relay 3 trailer stop}
-      F9:  {v: 12v, supply: true, fuse_a: 3,   multi: true, desc: relays 4-6 winch coils}
-      F10: {v: 12v, supply: true, fuse_a: 3,   multi: true, desc: winch hand switches, tray limits, trailer reed}
-      F11: {v: 12v, supply: true, fuse_a: 10,  desc: relay 7 accessory}
-      F12: {v: 12v, supply: true, fuse_a: 7.5, desc: relay 8 power hold}
-      F13: {v: 12v, supply: true, fuse_a: 10,  desc: BTS7960 1 diff}
-      F14: {v: 12v, supply: true, fuse_a: 10,  desc: BTS7960 2 4WD}
-      F15: {v: 12v, supply: true, fuse_a: 15,  desc: BTS7960 3 tray}
-      F16: {v: 12v, supply: true, fuse_a: 7.5, desc: key switch}
+      F1:  {v: 12v, supply: true, fuse_a: 15,  multi: true, desc: front bars 1 + 4 (outer pair)}
+      F2:  {v: 12v, supply: true, fuse_a: 15,  multi: true, desc: front bars 2 + 3 (inner pair)}
+      F3:  {v: 12v, supply: true, fuse_a: 10,  desc: relay 1 rear floods}
+      F4:  {v: 12v, supply: true, fuse_a: 7.5, multi: true, desc: relays 2-3 trailer tail + stop}
+      F5:  {v: 12v, supply: true, fuse_a: 3,   multi: true, desc: relays 4-6 winch coils}
+      F6:  {v: 12v, supply: true, fuse_a: 3,   multi: true, desc: winch hand switches, tray limits, trailer reed}
+      F7:  {v: 12v, supply: true, fuse_a: 10,  multi: true, desc: extras - interior bar + relay 7 accessory (phone charger, trailer cam)}
+      F8:  {v: 12v, supply: true, fuse_a: 7.5, desc: relay 8 power hold}
+      F9:  {v: 12v, supply: true, fuse_a: 10,  desc: BTS7960 1 diff}
+      F10: {v: 12v, supply: true, fuse_a: 10,  desc: BTS7960 2 4WD}
+      F11: {v: 12v, supply: true, fuse_a: 15,  desc: BTS7960 3 tray}
+      F12: {v: 12v, supply: true, fuse_a: 7.5, desc: key switch}
   KEY:
     name: Teryx key switch
     zone: cab
@@ -703,9 +699,9 @@ wires:
 
   # --- 12 V power
   - {id: P01, from: BAT12.pos, to: FB.IN, sys: power, mm2: 10, fuse: 60, status: planned, note: "60 A main fuse at the battery. Was 6 mm² in wiring.md, which the table only rates to 40 A"}
-  - {id: P02, from: FB.F16, to: KEY.BAT, sys: power, mm2: 1.0, status: planned}
+  - {id: P02, from: FB.F12, to: KEY.BAT, sys: power, mm2: 1.0, status: planned}
   - {id: P03, from: KEY.IGN, to: RAIL.BUS, sys: power, mm2: 1.0, fuse: 7.5, status: planned}
-  - {id: P04, from: FB.F12, to: RELAYS.COM8, sys: power, mm2: 1.0, status: planned}
+  - {id: P04, from: FB.F8, to: RELAYS.COM8, sys: power, mm2: 1.0, status: planned}
   - {id: P05, from: RELAYS.NO8, to: RAIL.BUS, sys: power, mm2: 1.0, fuse: 7.5, status: planned, note: "Power hold, in parallel with the key"}
   - {id: P06, from: RAIL.BUS, to: TVS.K, sys: power, mm2: 1.0, status: planned}
   - {id: P07, from: RAIL.BUS, to: PI_BUCK.VIN, sys: power, mm2: 1.5, status: planned}
@@ -716,7 +712,7 @@ wires:
   - {id: P12, from: PICO_BUCK.VOUT, to: RELAYS2.JDVCC, sys: power, mm2: 0.5, status: planned, optional: true}
   - {id: P13, from: RAIL.BUS, to: SCREEN_PSU.VIN, sys: power, mm2: 1.0, fuse: 3, status: tbc, note: "Fuse size depends on the screen's draw"}
   - {id: P14, from: SCREEN_PSU.VOUT, to: SCREEN.DC_IN, sys: power, mm2: 1.0, status: tbc}
-  - {id: P15, from: FB.F11, to: RELAYS.COM7, sys: power, mm2: 1.5, status: planned, note: "Accessory 12 V, on with ignition"}
+  - {id: P15, from: FB.F7, to: RELAYS.COM7, sys: power, mm2: 1.5, status: planned, note: "Accessory 12 V, on with ignition"}
   - {id: P20, from: RELAYS.NO7, to: GLOVE_USB.VIN, sys: power, mm2: 0.75, fuse: 3, status: planned, optional: true, note: "3 A inline fuse. Charges the RC phone with the key on; the control box may hold it on for a while after key-off (TBC)"}
   - {id: P16, from: BAT12.pos, to: AMP.B+, sys: power, mm2: 4.0, fuse: 30, status: planned, optional: true, note: "Own fuse at the battery. 4 x 50 W can pull 20-30 A"}
   - {id: P17, from: RAIL.BUS, to: AMP.REM, sys: power, mm2: 0.5, fuse: 2, status: planned, optional: true, note: "Remote turn-on, goes off with the rail"}
@@ -820,16 +816,16 @@ wires:
   - {id: I10, from: WINCH_SOL.COIL_IN, to: OPTO.IN6, sys: inputs, mm2: 0.5, via: "1N4148", status: tbc, note: "Remote taps: only if the remote's own lines can be reached. TBC"}
   - {id: I11, from: PARK_SW.OUT, to: OPTO.IN7, sys: inputs, mm2: 0.5, status: tbc, note: "If the switch grounds, wire the opto input the other way round"}
   - {id: I12, from: TRAILER.REED_A, to: OPTO.IN8, sys: inputs, mm2: 0.5, status: tbc}
-  - {id: I13, from: FB.F10, to: LIM_DN.C, sys: inputs, mm2: 0.5, fuse: 3, status: planned, note: "Limit switch and reed feed from a small fused 12 V"}
+  - {id: I13, from: FB.F6, to: LIM_DN.C, sys: inputs, mm2: 0.5, fuse: 3, status: planned, note: "Limit switch and reed feed from a small fused 12 V"}
   - {id: I14, from: LIM_DN.C, to: LIM_UP.C, sys: inputs, mm2: 0.5, status: planned}
   - {id: I15, from: LIM_UP.C, to: TRAILER.REED_B, sys: inputs, mm2: 0.5, status: tbc}
 
   # --- lights (low side MOSFETs)
   - {id: LT01, from: FB.F1, to: LB1.pos, sys: lights, mm2: 1.5, status: planned}
   - {id: LT02, from: FB.F2, to: LB2.pos, sys: lights, mm2: 1.5, status: planned}
-  - {id: LT03, from: FB.F3, to: LB3.pos, sys: lights, mm2: 1.5, status: planned}
-  - {id: LT04, from: FB.F4, to: LB4.pos, sys: lights, mm2: 1.5, status: planned}
-  - {id: LT05, from: FB.F5, to: LB_INT.pos, sys: lights, mm2: 1.0, status: planned}
+  - {id: LT03, from: FB.F2, to: LB3.pos, sys: lights, mm2: 1.5, status: planned}
+  - {id: LT04, from: FB.F1, to: LB4.pos, sys: lights, mm2: 1.5, status: planned}
+  - {id: LT05, from: FB.F7, to: LB_INT.pos, sys: lights, mm2: 1.0, status: planned}
   - {id: LT06, from: LB1.neg, to: MOSFET.OUT1, sys: lights, mm2: 1.5, status: planned}
   - {id: LT07, from: LB2.neg, to: MOSFET.OUT2, sys: lights, mm2: 1.5, status: planned}
   - {id: LT08, from: LB3.neg, to: MOSFET.OUT3, sys: lights, mm2: 1.5, status: planned}
@@ -840,7 +836,7 @@ wires:
   - {id: LT13, from: PICO.GP18, to: MOSFET.IN3, sys: lights, status: planned, note: "light.front_3 PWM"}
   - {id: LT14, from: PICO.GP19, to: MOSFET.IN4, sys: lights, status: planned, note: "light.front_4 PWM"}
   - {id: LT15, from: PICO.GP20, to: MOSFET.IN5, sys: lights, status: planned, note: "light.interior PWM"}
-  - {id: LT16, from: FB.F6, to: RELAYS.COM1, sys: lights, mm2: 1.5, status: planned}
+  - {id: LT16, from: FB.F3, to: RELAYS.COM1, sys: lights, mm2: 1.5, status: planned}
   - {id: LT17, from: RELAYS.NO1, to: FLOOD_L.pos, sys: lights, mm2: 1.5, fuse: 10, status: planned, note: "light.rear, auto on in reverse"}
   - {id: LT18, from: RELAYS.NO1, to: FLOOD_R.pos, sys: lights, mm2: 1.5, fuse: 10, status: planned}
 
@@ -851,14 +847,14 @@ wires:
   - {id: WN04, from: WINCH_SOL.M1, to: WINCH_MOTOR.M1, sys: winch, mm2: 35, rating_from: maker, status: confirmed}
   - {id: WN05, from: WINCH_SOL.M2, to: WINCH_MOTOR.M2, sys: winch, mm2: 35, rating_from: maker, status: confirmed}
   - {id: WN06, from: WINCH_SOL.REMOTE, to: WINCH_REMOTE.PLUG, sys: winch, status: confirmed, note: "XBull remote stays as a backup"}
-  - {id: WN07, from: FB.F9, to: RELAYS.COM4, sys: winch, mm2: 0.5, status: planned}
-  - {id: WN08, from: FB.F9, to: RELAYS.COM5, sys: winch, mm2: 0.5, status: planned}
-  - {id: WN09, from: FB.F9, to: RELAYS.COM6, sys: winch, mm2: 0.5, status: planned}
+  - {id: WN07, from: FB.F5, to: RELAYS.COM4, sys: winch, mm2: 0.5, status: planned}
+  - {id: WN08, from: FB.F5, to: RELAYS.COM5, sys: winch, mm2: 0.5, status: planned}
+  - {id: WN09, from: FB.F5, to: RELAYS.COM6, sys: winch, mm2: 0.5, status: planned}
   - {id: WN10, from: RELAYS.NO4, to: WINCH_SOL.COIL_IN, sys: winch, mm2: 0.5, fuse: 3, via: "3 A diode (1N5408)", status: planned, note: "winch.in. Never the motor current through the relay board"}
   - {id: WN11, from: RELAYS.NO5, to: WINCH_SOL.COIL_OUT, sys: winch, mm2: 0.5, fuse: 3, via: "3 A diode (1N5408)", status: planned, note: "winch.out, interlocked with in"}
   - {id: WN12, from: RELAYS.NO6, to: WINCH_ISO.coil_pos, sys: winch, mm2: 0.5, fuse: 3, status: planned, note: "winch.isolator, only while armed"}
-  - {id: WN13, from: FB.F10, to: HSW_WINCH.FEED, sys: winch, mm2: 0.5, status: planned}
-  - {id: WN14, from: FB.F10, to: HSW_CAB.FEED, sys: winch, mm2: 0.5, status: planned}
+  - {id: WN13, from: FB.F6, to: HSW_WINCH.FEED, sys: winch, mm2: 0.5, status: planned}
+  - {id: WN14, from: FB.F6, to: HSW_CAB.FEED, sys: winch, mm2: 0.5, status: planned}
   - {id: WN15, from: HSW_WINCH.IN, to: WINCH_SOL.COIL_IN, sys: winch, mm2: 0.5, fuse: 3, via: "3 A diode (1N5408)", status: planned}
   - {id: WN16, from: HSW_WINCH.OUT, to: WINCH_SOL.COIL_OUT, sys: winch, mm2: 0.5, fuse: 3, via: "3 A diode (1N5408)", status: planned}
   - {id: WN17, from: HSW_CAB.IN, to: WINCH_SOL.COIL_IN, sys: winch, mm2: 0.5, fuse: 3, via: "3 A diode (1N5408)", status: planned}
@@ -869,7 +865,7 @@ wires:
   - {id: D02, from: PICO.GP8, to: BTS1.LPWM, sys: drive, status: planned}
   - {id: D03, from: PICO.GP9, to: BTS1.EN, sys: drive, status: planned, note: "R_EN and L_EN joined"}
   - {id: D04, from: BTS1.IS, to: PICO.GP28, sys: drive, via: "2 diodes + 1k to ground", status: planned, note: "an.diff_current"}
-  - {id: D05, from: FB.F13, to: BTS1.B+, sys: drive, mm2: 1.5, status: planned}
+  - {id: D05, from: FB.F9, to: BTS1.B+, sys: drive, mm2: 1.5, status: planned}
   - {id: D06, from: BTS1.M+, to: ACT_DIFF.M+, sys: drive, mm2: 1.5, fuse: 10, status: planned, note: "Wrong way? Change DIFF_LOCK_DIR in firmware, not the wires"}
   - {id: D07, from: BTS1.M-, to: ACT_DIFF.M-, sys: drive, mm2: 1.5, fuse: 10, status: planned}
   - {id: D08, from: ADS1.VDD, to: ACT_DIFF.POT_HI, sys: drive, status: planned, note: "Pot on 3.3 V, never 12 V"}
@@ -879,14 +875,14 @@ wires:
   - {id: D12, from: PICO.GP11, to: BTS2.LPWM, sys: drive, status: planned}
   - {id: D13, from: PICO.GP12, to: BTS2.EN, sys: drive, status: planned}
   - {id: D14, from: BTS2.IS, to: ADS1.A2, sys: drive, via: "2 diodes + 1k to ground", status: planned, note: "an.4wd_current"}
-  - {id: D15, from: FB.F14, to: BTS2.B+, sys: drive, mm2: 1.5, status: planned}
+  - {id: D15, from: FB.F10, to: BTS2.B+, sys: drive, mm2: 1.5, status: planned}
   - {id: D16, from: BTS2.M+, to: ACT_4WD.M+, sys: drive, mm2: 1.5, fuse: 10, status: tbc}
   - {id: D17, from: BTS2.M-, to: ACT_4WD.M-, sys: drive, mm2: 1.5, fuse: 10, status: tbc}
   - {id: D18, from: PICO.GP13, to: BTS3.RPWM, sys: drive, status: planned, note: "act.tray"}
   - {id: D19, from: PICO.GP14, to: BTS3.LPWM, sys: drive, status: planned}
   - {id: D20, from: PICO.GP15, to: BTS3.EN, sys: drive, status: planned}
   - {id: D21, from: BTS3.IS, to: ADS1.A3, sys: drive, via: "2 diodes + 1k to ground", status: planned, note: "an.tray_current"}
-  - {id: D22, from: FB.F15, to: BTS3.B+, sys: drive, mm2: 2.5, status: planned}
+  - {id: D22, from: FB.F11, to: BTS3.B+, sys: drive, mm2: 2.5, status: planned}
   - {id: D23, from: BTS3.M+, to: ACT_TRAY.M+, sys: drive, mm2: 2.5, fuse: 15, status: planned}
   - {id: D24, from: BTS3.M-, to: ACT_TRAY.M-, sys: drive, mm2: 2.5, fuse: 15, status: planned}
   - {id: D25, from: PICO.3V3, to: BTS1.VCC, sys: drive, status: planned}
@@ -902,10 +898,10 @@ wires:
   - {id: D33, from: EPS_ECU.MOTOR, to: EPS_COL.MOTOR, sys: drive, status: tbc, optional: true, note: "Toyota's own plug, keep it from the wrecker"}
 
   # --- trailer
-  - {id: T01, from: FB.F7, to: RELAYS.COM2, sys: trailer, mm2: 1.0, status: planned}
-  - {id: T02, from: RELAYS.NO2, to: TRAILER.P7_TAIL, sys: trailer, mm2: 1.0, fuse: 5, status: planned, note: "trailer.tail"}
-  - {id: T03, from: FB.F8, to: RELAYS.COM3, sys: trailer, mm2: 1.0, status: planned}
-  - {id: T04, from: RELAYS.NO3, to: TRAILER.P6_STOP, sys: trailer, mm2: 1.0, fuse: 5, status: planned, note: "trailer.brake"}
+  - {id: T01, from: FB.F4, to: RELAYS.COM2, sys: trailer, mm2: 1.0, status: planned}
+  - {id: T02, from: RELAYS.NO2, to: TRAILER.P7_TAIL, sys: trailer, mm2: 1.0, fuse: 7.5, status: planned, note: "trailer.tail"}
+  - {id: T03, from: FB.F4, to: RELAYS.COM3, sys: trailer, mm2: 1.0, status: planned}
+  - {id: T04, from: RELAYS.NO3, to: TRAILER.P6_STOP, sys: trailer, mm2: 1.0, fuse: 7.5, status: planned, note: "trailer.brake"}
   - {id: T05, from: BRAKE_SW.OUT, to: TRAILER.P6_STOP, sys: trailer, mm2: 1.0, via: "diode (backup)", status: tbc, note: "Trailer brake lights still work with the control box off"}
   - {id: T06, from: RELAYS.NO1, to: TRAILER.P2_REV, sys: trailer, mm2: 1.0, fuse: 10, status: tbc, optional: true, note: "Reversing pin. Relay 1 also runs the floods by hand, so trailer reverse lights would come on with them"}
   - {id: T07, from: RELAYS.NO7, to: TCAM_PLUG.V12, sys: trailer, mm2: 0.5, fuse: 2, status: planned, optional: true, note: "2 A inline fuse. Runs while driving, not just reversing"}
