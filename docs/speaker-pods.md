@@ -3,11 +3,10 @@
 Two printed pods for Sam's **Kenwood KFC-2053MRB** 8" marine coaxials, built for sound
 first and then for mud, water and bumps.
 
-![Concept (AI render, Higgsfield) the CAD is built from](../cad/img/concepts/speaker-pod-concept.jpg)
-![The CAD: armour body, spike ridge running onto the cage cover, brows, teeth](../cad/img/speaker-pod-front.png)
+![Concept 4 (AI render, Higgsfield) that Sam picked and the CAD is built from](../cad/img/concepts/speaker-pod-concept.jpg)
+![The CAD: T. rex head with the speaker in its open mouth](../cad/img/speaker-pod-front.png)
+![Side: snout, eye, upper and lower teeth, spikes down the back onto the cage](../cad/img/speaker-pod-side.png)
 ![Back: spikes carry on over the cover that wraps the tube](../cad/img/speaker-pod-back.png)
-![Side](../cad/img/speaker-pod-side.png)
-![Front: the speaker drops into the 180 mm hole](../cad/img/speaker-pod-front.png)
 ![Cut through the middle: 5 mm wall, 10 mm face, the tube in the knuckle at the back](../cad/img/speaker-pod-section.png)
 
 | File | What |
@@ -15,8 +14,9 @@ first and then for mud, water and bumps.
 | [`cad/parts/speaker_pod.scad`](../cad/parts/speaker_pod.scad) | The pod. Every size is in [`cad/measurements.scad`](../cad/measurements.scad) under "Speaker pods" |
 | `cad/stl/speaker_pod.stl` | Print 2 (same part both sides), face down |
 | `cad/stl/speaker_pod_cover.stl` | Print 2, flat face down: closes over the tube |
-| `cad/stl/speaker_pod_plug.stl` | Print 8: caps that hide the cover bolts |
-| `cad/stl/speaker_pod_jaw.stl` | Print 2, flat with the teeth up: the teeth, bolts under the front with 3 M4 bolts into inserts |
+| `cad/stl/speaker_pod_plug.stl` | Print 14: caps that hide the cover and jaw bolts |
+| `cad/stl/speaker_pod_head.stl` + `_head_teeth` + `_head_eyes` + `_head_pupils` | Print 2: the T. rex head, one STL per colour (see "Printing in colour"). Snout face down |
+| `cad/stl/speaker_pod_jaw.stl` + `_jaw_teeth` | Print 2: lower jaw, two colours, flat bottom down |
 | `cad/stl/speaker_pod_gasket.stl` | Print 2 in TPU, goes under each speaker's flange |
 | [`config/speaker_pods.yaml`](../config/speaker_pods.yaml) | Speaker numbers, pod volume, stuffing, amp filter, EQ target |
 | [`teryx/speaker_box.py`](../teryx/speaker_box.py) | The maths: `python -m teryx speakerbox` |
@@ -130,15 +130,43 @@ fluffed, filling about half of it, not packed tight and not touching the back of
 calms the inside and makes the pod act about 15% bigger. Not foam: foam soaks up water and stays
 wet.
 
-**The T. rex look** (from concept 3 of four Higgsfield renders, all in the project files under
-`speaker-pods/concepts/`). Faceted armour-plate body (octagon flats instead of round), a ridge of
-six chunky spikes down the back that carries on with two more over the cage cover, angry brow
-plates over the speaker, three claw slashes in each side (2.6 mm deep, so 2.4 mm of wall is left
-and it stays sealed), and a bolt-on jaw of teeth and fangs standing up in front of the bottom of
-the grille. Everything leans back at 45° or more so it all prints face down with no supports.
-Our own design, nothing copied from any film. Print the pod in olive or grey ASA, the cover in
-black and the jaw in bone/white for the full look. `pod_spines = 0` takes the spikes off.
-Concepts 1 and 4 (scaly skin, eyes) would need hand sculpting in Blender or ZBrush, not CAD.
+**The T. rex look** (Sam picked concept 4 of four Higgsfield renders, all in the project files
+under `speaker-pods/concepts/`). Each pod is a T. rex head and the speaker sits in its open
+mouth: a faceted snout and skull on top with angry brows, amber eyes with slit pupils and
+nostrils, teeth hanging from the roof of the mouth, a lower jaw with its own teeth underneath,
+gill slots down each cheek and a ridge of spikes running back onto the cage cover. Our own
+design, nothing copied from any film.
+
+The pod is still the same plain sealed box, so the air volume and the bass EQ don't change.
+The head and the jaw are separate prints that bolt on:
+
+- **Head**: 3 M4 bolts come up from *inside* the pod through its top wall into heat-set inserts
+  in the head, so nothing shows. Reach in through the speaker hole before the speaker goes in.
+  Put a rubber or nylon washer (or a dab of silicone) under each bolt head so the box stays
+  sealed. M4x12.
+- **Jaw**: 3 M4 bolts up through the jaw into inserts in the pads under the pod. Heads hide
+  under plugs. M4x16.
+- **Teeth clearance**: the teeth stand in front of the speaker grille. `spk_proud` (25 mm, a
+  GUESS) is how far the grille sticks out of the face; the CAD refuses to build if a tooth
+  would hit it. Measure the real speaker and set it in `cad/measurements.scad`.
+
+Everything leans back at 45° or more, so the pod and head print face down and the jaw prints
+flat side down with no supports. The eye sockets have small overhangs the eyeballs fill in;
+if your slicer flags them, tree supports "on build plate only" is plenty.
+
+**Printing in colour (AMS).** The head comes as 4 STLs and the jaw as 2, all in the same
+place. In Bambu Studio (or Orca), select the head files together and load them; when it asks
+"load as a single object with multiple parts?", say yes, then give each part its filament:
+
+| Part | Colour |
+|---|---|
+| `head`, `jaw`, pod, cover | stone grey or olive ASA |
+| `head_teeth`, `jaw_teeth` | bone / off-white ASA |
+| `head_eyes` | amber / orange ASA |
+| `head_pupils` | black ASA |
+
+That's 4 colours, so there's room on a 7-slot AMS for extras later. The pod and cover are one
+colour each.
 
 ## Water, mud and hosing
 
