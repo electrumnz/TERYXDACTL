@@ -238,7 +238,7 @@ devices:
     name: Screen 12 V supply
     zone: dash
     status: tbc
-    note: Depends on the screen's power brick. If it is 12 V, a 12 V stabiliser
+    note: "LTC3780 buck-boost board (5-32 V in, set to 12.0 V, 80 W) in the Pi box. Keeps the screen on a steady 12 V while the battery swings 11-14.4 V. No reverse-polarity protection, so it sits after the fuse. Skip it if the screen's own board says 9-36 V in"
     check: Read the label on the screen's power brick (volts and amps)
     pins: {VIN: 12v, GND: gnd, VOUT: 12v}
 
@@ -247,12 +247,12 @@ devices:
     name: Raspberry Pi Pico 2
     zone: control_box
     status: planned
+    note: "Talks to the Pi over CAN only. No USB lead to the Pi; reflash with a laptop on its own USB port in the workshop"
     doc: docs/io-list.md
     pins:
       VSYS: 5v
       GND: gnd
       3V3: {v: 3v3, multi: true}
-      USB: usb
       GP0: 3v3
       GP1: 3v3
       GP2: {v: 3v3, multi: true, desc: SPI0 SCK}
@@ -553,8 +553,14 @@ devices:
       PCIE: pcie
       HAT_HDR: {v: 3v3, desc: 40-pin header to the 16 mm stacking header}
       P1_3V3: 3v3
-      P3_SDA: 3v3
-      P5_SCL: 3v3
+      P2_5V: 5v
+      P3_SDA: {v: 3v3, multi: true}
+      P5_SCL: {v: 3v3, multi: true}
+      P8_TXD: 3v3
+      P10_RXD: 3v3
+      P12_GPIO18: 3v3
+      P35_GPIO19: 3v3
+      P40_GPIO21: 3v3
       P19_MOSI: 3v3
       P21_MISO: 3v3
       P22_GPIO25: 3v3
@@ -580,13 +586,6 @@ devices:
     status: confirmed
     note: 1280x800, HDMI + USB touch, 3.5 mm audio in
     pins: {HDMI: hdmi, USB: usb, DC_IN: 12v, GND: gnd, AUDIO_IN: audio}
-  USB_HUB:
-    name: Powered USB hub
-    zone: dash
-    status: planned
-    note: For the slow USB things. Not picked yet, power feed TBC
-    check: Pick the powered USB hub (7 ports, 12 V or 5 V in)
-    pins: {UP: usb, P1: usb, P2: usb, P3: usb, P4: usb, P5: usb, P6: usb, P7: usb}
   GLOVE_USB:
     name: Glove box USB-C charger (RC phone)
     zone: dash
@@ -614,38 +613,27 @@ devices:
     optional: true
     note: Being worked out in the 4G / sentry thread. Port TBC
     pins: {CSI: csi}
-  GPS:
-    name: DFRobot TEL0138 USB GPS
-    zone: dash
-    status: planned
-    optional: true
-    pins: {USB: usb}
   MODEM_4G:
     name: SIMCom A7670SA 4G board
     zone: dash
     status: placeholder
     optional: true
-    note: "6-pin header S G V K T R G. V takes 5-10 V from the spare Mini560 5 V buck. NEVER raw 12 V (10 V max, and the car runs 14.4 V with spikes). K is tied to ground on the board, so it starts by itself. T/R are 115200 baud TTL to the Pi's GPIO 15/14; measure T before connecting (3.3 V ok, else BSS138). Micro USB also on board"
-    pins: {USB: usb}
-  SSD:
-    name: USB SSD (recordings)
-    zone: dash
-    status: placeholder
-    optional: true
-    note: Only if we record footage. Shares the hub's bandwidth; never NVMe on the PCIe port
-    pins: {USB: usb}
+    note: "6-pin header S G V K T R G. V takes 5-10 V from the spare Mini560 5 V buck. NEVER raw 12 V (10 V max, and the car runs 14.4 V with spikes). K is tied to ground on the board, so it starts by itself. T/R are 115200 baud TTL to the Pi's GPIO 15/14; measure T before connecting (3.3 V ok, else BSS138). Micro USB also on board. Its GNSS (FASE version, u.FL GPS socket on Sam's board) is the dash GPS too, so there is no separate USB GPS. Check on arrival that it gets a fix with the SIM out / 4G off. No USB: it's on the header pins (soldered leads), so texts, GPS and slow data only, no live video over 4G"
+    pins: {T: 3v3, R: 3v3}
   CARPLAY:
     name: Carlinkit CPC200-CCPA
     zone: dash
     status: planned
     optional: true
     pins: {USB: usb}
-  USB_DAC:
-    name: USB audio out
+  DAC_HAT:
+    name: Raspberry Pi DAC+ (on jumper leads)
     zone: dash
     status: planned
     optional: true
-    pins: {USB: usb, OUT: audio}
+    doc: docs/audio.md
+    note: "PCM5122 DAC HAT (ex IQaudio DAC+), RCA line out to the amp. Sits on standoffs in the right-hand end of the Pi box, off the Pi, so the top of the Pi stays free for the AI HAT+ 2. Joined by 7 male-to-female jumper leads (about 20 cm), not a full 40-way ribbon: a ribbon would cover the header pins the CAN board, 4G board and IMU leads plug onto. Uses GPIO 18, 19, 21 (I2S), 2 and 3 (I2C, shared with the IMU: DAC 0x4D, IMU 0x68), 5 V and GND. Nothing else on the Pi uses 18-21 (CAN is SPI0 + GPIO 25, 4G is UART GPIO 14/15). The ID EEPROM pins 27/28 are left off, so it never fights the AI HAT's EEPROM; set the overlay by hand: scripts/audio-setup.sh --i2s iqaudio-dacplus. A dab of hot glue on the leads at both ends against vibration. Later the leads move onto the AI HAT's stacking header pins"
+    pins: {BCK: 3v3, LRCK: 3v3, DIN: 3v3, SDA: 3v3, SCL: 3v3, V5: 5v, GND: gnd, OUT: audio}
   AMP:
     name: 4-ch class D amp (AliExpress, 4 x 63 W RMS at 4 ohm)
     zone: cab
@@ -808,7 +796,6 @@ wires:
   - {id: L45, from: PICO.3V3, to: RELAYS2.VCC, sys: logic, status: planned, optional: true}
   - {id: L46, from: PICO.GP0, to: DEBUG.RX, sys: logic, status: planned, note: "UART0 TX"}
   - {id: L47, from: DEBUG.TX, to: PICO.GP1, sys: logic, status: planned}
-  - {id: L48, from: PICO.USB, to: PI5.USB2_A, sys: logic, status: planned, note: "Data and reflash only, never power"}
 
   # --- 12 V signals in
   - {id: I01, from: KEY.IGN, to: OPTO.IN1, sys: inputs, mm2: 0.75, fuse: 7.5, via: "1 A diode", status: planned, note: "So the Pico sees key-off while relay 8 holds the rail. 0.75 mm² because the 7.5 A key fuse is upstream"}
@@ -920,15 +907,10 @@ wires:
 
   # --- dash computer
   - {id: X01, from: PI5.HDMI0, to: SCREEN.HDMI, sys: dash, status: planned}
-  - {id: X02, from: SCREEN.USB, to: USB_HUB.P1, sys: dash, status: planned, note: "Touch"}
+  - {id: X02, from: SCREEN.USB, to: PI5.USB2_B, sys: dash, status: planned, note: "Touch. Screen only does touch over USB. Right-angle lead, cable-tied to the box"}
   - {id: X03, from: CAM_REAR.USB, to: PI5.USB3_A, sys: dash, status: tbc, note: "Or a UVC capture dongle if it's an RCA/AHD camera"}
   - {id: X04, from: TCAM_DONGLE.USB, to: PI5.USB3_B, sys: dash, status: planned, optional: true, note: "Other USB controller from the rear camera"}
-  - {id: X05, from: USB_HUB.UP, to: PI5.USB2_B, sys: dash, status: planned}
-  - {id: X06, from: GPS.USB, to: USB_HUB.P2, sys: dash, status: planned, optional: true}
-  - {id: X07, from: CARPLAY.USB, to: USB_HUB.P3, sys: dash, status: planned, optional: true}
-  - {id: X08, from: USB_DAC.USB, to: USB_HUB.P4, sys: dash, status: planned, optional: true}
-  - {id: X09, from: MODEM_4G.USB, to: USB_HUB.P5, sys: dash, status: placeholder, optional: true}
-  - {id: X10, from: SSD.USB, to: USB_HUB.P6, sys: dash, status: placeholder, optional: true}
+  - {id: X07, from: CARPLAY.USB, to: PI5.USB2_A, sys: dash, status: planned, optional: true, note: "CarPlay dongle is USB only. Right-angle lead, dongle zip-tied down inside the box"}
   - {id: X11, from: CAM_FRONT.CSI, to: PI5.CSI0, sys: dash, status: planned}
   - {id: X12, from: CAM_CABIN.CSI, to: PI5.CSI1, sys: dash, status: placeholder, optional: true}
   - {id: X13, from: AIHAT.PCIE, to: PI5.PCIE, sys: dash, status: placeholder, optional: true, note: "Keep the PCIe port free for this"}
@@ -939,7 +921,16 @@ wires:
   - {id: X18, from: PI_CAN.SO, to: PI5.P21_MISO, sys: dash, status: planned}
   - {id: X19, from: PI5.P24_CE0, to: PI_CAN.CS, sys: dash, status: planned}
   - {id: X20, from: PI_CAN.INT, to: PI5.P22_GPIO25, sys: dash, status: planned}
-  - {id: X21, from: USB_DAC.OUT, to: AMP.IN, sys: dash, status: planned, optional: true}
+  - {id: X21, from: DAC_HAT.OUT, to: AMP.IN, sys: dash, status: planned, optional: true, note: RCA to RCA lead out through the Pi box's spare PG7 gland}
+  - {id: X32, from: PI5.P8_TXD, to: MODEM_4G.R, sys: dash, status: placeholder, optional: true, note: "Soldered lead, 115200 baud"}
+  - {id: X33, from: MODEM_4G.T, to: PI5.P10_RXD, sys: dash, status: placeholder, optional: true, note: "Soldered lead. Measure T first: 3.3 V ok, else BSS138"}
+  - {id: X25, from: PI5.P12_GPIO18, to: DAC_HAT.BCK, sys: dash, status: planned, optional: true, note: jumper lead}
+  - {id: X26, from: PI5.P35_GPIO19, to: DAC_HAT.LRCK, sys: dash, status: planned, optional: true, note: jumper lead}
+  - {id: X27, from: PI5.P40_GPIO21, to: DAC_HAT.DIN, sys: dash, status: planned, optional: true, note: jumper lead}
+  - {id: X28, from: PI5.P3_SDA, to: DAC_HAT.SDA, sys: dash, status: planned, optional: true, note: jumper lead}
+  - {id: X29, from: PI5.P5_SCL, to: DAC_HAT.SCL, sys: dash, status: planned, optional: true, note: jumper lead}
+  - {id: X30, from: PI5.P2_5V, to: DAC_HAT.V5, sys: dash, status: planned, optional: true, note: jumper lead}
+  - {id: X31, from: DAC_HAT.GND, to: PI5.GND, sys: dash, status: planned, optional: true, note: jumper lead}
   - {id: X22, from: AMP.SPK, to: SPEAKERS.IN, sys: dash, status: planned, optional: true}
   - {id: X23, from: PI5.P3_SDA, to: IMU.SDA, sys: dash, status: planned, optional: true}
   - {id: X24, from: PI5.P5_SCL, to: IMU.SCL, sys: dash, status: planned, optional: true}

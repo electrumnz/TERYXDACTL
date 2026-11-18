@@ -2,7 +2,7 @@
 
 Like Tesla's Sentry: when the Teryx is locked and parked, the cameras keep watching and save
 a clip when something moves or someone tries to start it. With the key on they record as a
-dashcam. Everything goes on a small USB SSD inside the Pi box.
+dashcam. Everything goes on the Pi's own microSD card (a high-endurance one), no USB.
 
 **Nothing is sent anywhere on its own.** No texts, no alerts. Clips wait on the SSD until you
 look: on the dash (Settings > Sentry and clips), or from your phone over Tailscale after an
@@ -87,11 +87,31 @@ Sizing, at the defaults (1280 x 720, 15 fps, 2 Mb/s):
 | 1 TB drive, 75% for the loop | about **200 hours** of all four cameras, about 25 days of 8 h driving |
 | 500 GB drive | about 100 hours |
 
-**Pick: Kingston XS1000 1 TB** USB-C SSD. 69.5 x 32.6 x 13.5 mm and 29 g [3], so it fits in a
+**Pick (18 Nov): Samsung PRO Endurance 256 GB microSD** in the Pi's own slot, for the OS and the
+recordings. PB Tech MEMSAM11240, about NZ$206 (it was NZ$89 on sale earlier). Samsung rate it for
+140,160 hours of 1080p recording. No USB at all, because USB plugs shake loose (Sam's rule).
+
+| 256 GB card | |
+|---|---|
+| OS and apps | about 16 GB |
+| Loop space (75% of the rest) | about 180 GB |
+| Four cameras | about **50 hours**, about 6 days of 8 h driving |
+| One camera | about 200 hours |
+
+The loop deletes the oldest clips first. Sentry clips are marked and kept.
+
+Why not NVMe on the PCIe port: the Pi 5 has one PCIe lane and the AI HAT+ 2 needs it. A switch
+board that takes both is not well proven (the connector only gives about 5 W, and forum users
+report boot trouble with two cards on a switch), so the slot stays free for the AI HAT.
+
+The old USB SSD plan (Kingston XS1000 1 TB, below) is kept only for reference. The cradle is off
+in the CAD (`ssd_on = false`).
+
+**Old pick: Kingston XS1000 1 TB** USB-C SSD. 69.5 x 32.6 x 13.5 mm and 29 g [3], so it fits in a
 cradle in the Pi box lid. About NZ$189 to 253 at PB Tech (HDDKCP225100), the price moves
 around [4]. The ADATA SE880 500 GB is NZ$249 at PB Tech [5], dearer for half the space.
 
-It needs a short right-angle USB-C to USB-A lead into one of the Pi's blue USB 3 ports.
+It needed a short right-angle USB-C to USB-A lead into one of the Pi's blue USB 3 ports.
 
 ### The SSD in the Pi box
 

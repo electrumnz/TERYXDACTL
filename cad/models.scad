@@ -131,6 +131,7 @@ module hood_splice_model() {
 // Pi 5 box. Floor (z = 0) bolts flat to the back of the back plate.
 // ---------------------------------------------------------------------------
 pi_hole_pts = [for (sx = [-1, 1], sy = [-1, 1]) [pi_pos[0] + sx * pi_holes[0] / 2, pi_pos[1] + sy * pi_holes[1] / 2]];
+dac_hole_pts = dac_on ? [for (sx = [-1, 1], sy = [-1, 1]) [dac_pos[0] + sx * dac_holes[0] / 2, dac_pos[1] + sy * dac_holes[1] / 2]] : [];
 pi_cable    = [scr_cable_x - pi_box_pos[0], scr_cable_y - pi_box_pos[1]];  // screen cable hole, box coords
 // heads of the screen's wall-bracket bolts that end up under the Pi box
 pi_vesa = scr_has_vesa ? [for (sx = [-1, 1], sy = [-1, 1]) let (p = [sx * scr_vesa / 2 - pi_box_pos[0], sy * scr_vesa / 2 - pi_box_pos[1]])
@@ -174,11 +175,13 @@ module pi_box_model() {
             sealed_box(in, pi_glands);
             if (hdmi_clamp) hdmi_cradle();
             for (p = pi_hole_pts) translate([p[0], p[1], 0]) cylinder(d = 6.5, h = box_floor + pi_standoff);
+            for (p = dac_hole_pts) translate([p[0], p[1], 0]) cylinder(d = 6.5, h = box_floor + dac_standoff);
             for (p = pi_vesa) translate([p[0], p[1], 0]) cylinder(d = 13, h = box_floor + 3);
         }
         // pockets underneath for the bolt heads (M4 socket head, 7 x 4 mm)
         for (p = pi_vesa) translate([p[0], p[1], -e]) cylinder(d = 8.5, h = 4.5);
         for (p = pi_hole_pts) translate([p[0], p[1], box_floor + pi_standoff - 5]) cylinder(d = m25_insert_d, h = 10);
+        for (p = dac_hole_pts) translate([p[0], p[1], box_floor + dac_standoff - 5]) cylinder(d = m25_insert_d, h = 10);
         // screen cables come straight in through the floor, sealed with a
         // gasket against the back plate
         translate([pi_cable[0], pi_cable[1], -1]) cylinder(d = scr_cable_d, h = box_floor + 2);

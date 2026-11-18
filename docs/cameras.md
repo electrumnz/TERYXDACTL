@@ -149,7 +149,7 @@ ribbon port.
 - A fourth camera, **Cabin**, looks at the seats from near the screen: Camera Module 3 NoIR Wide
   on the second ribbon port (`csi1`). It takes the face shot if someone tries the key while
   it's locked. Ribbon, not USB or PCIe, so the AI HAT+ 2 can still go on later.
-- Every fitted camera records to a USB SSD in the Pi box: a dashcam loop with the key on, and
+- Every fitted camera records to the Pi's high-endurance microSD card: a dashcam loop with the key on, and
   Sentry when locked. See [`sentry.md`](sentry.md) for sizes, battery use and CPU load.
 - A USB camera that sends **H.264** itself costs the Pi almost nothing to record (it's just
   copied). MJPEG cameras are encoded on the CPU, since the Pi 5 has no H.264 encoder. Worth

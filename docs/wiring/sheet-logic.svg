@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1320 1658" width="1320" height="1658" font-family="Arial, Helvetica, sans-serif" data-sheet="logic">
-<rect width="1320" height="1658" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1320 1567" width="1320" height="1567" font-family="Arial, Helvetica, sans-serif" data-sheet="logic">
+<rect width="1320" height="1567" fill="#ffffff"/>
 <text x="40" y="40" font-size="22" text-anchor="start" font-weight="bold" fill="#1f2328">Control box inside: Pico 2 and its boards</text>
 <text x="40" y="62" font-size="12" text-anchor="start" font-weight="normal" fill="#57606a">Teryx OS wiring, sheet &#x27;logic&#x27;. Made from config/wiring.yaml by `python -m teryx wiring`. Don&#x27;t edit this file.</text>
 <line x1="40" y1="92" x2="74" y2="92" stroke="#1a7f37" stroke-width="2.5"/>
@@ -13,205 +13,196 @@
 <line x1="880" y1="92" x2="914" y2="92" stroke="#8250df" stroke-width="2.5" stroke-dasharray="2 4"/>
 <text x="920" y="96" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">Placeholder / later</text>
 <text x="40" y="120" font-size="11" text-anchor="start" font-weight="normal" fill="#57606a">Labels: wire id, size, fuse (if the wire has its own), and anything in between. Faded = optional. Hover for notes. Full table: docs/wiring/README.md</text>
-<g data-wire="L01" data-from="PICO.GP2" data-to="PICO_CAN.SCK" data-status="planned"><title>L01: PICO.GP2 -&gt; PICO_CAN.SCK - SPI under 10 cm</title><path d="M310,277 C395,277 395,419 480,419" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L02" data-from="PICO.GP3" data-to="PICO_CAN.SI" data-status="planned"><title>L02: PICO.GP3 -&gt; PICO_CAN.SI</title><path d="M310,297 C395,297 395,439 480,439" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L03" data-from="PICO.GP4" data-to="PICO_CAN.SO" data-status="planned"><title>L03: PICO.GP4 -&gt; PICO_CAN.SO</title><path d="M310,317 C395,317 395,459 480,459" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L04" data-from="PICO.GP5" data-to="PICO_CAN.CS" data-status="planned"><title>L04: PICO.GP5 -&gt; PICO_CAN.CS</title><path d="M310,337 C395,337 395,479 480,479" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L05" data-from="PICO_CAN.INT" data-to="PICO.GP6" data-status="planned"><title>L05: PICO_CAN.INT -&gt; PICO.GP6</title><path d="M480,499 C395,499 395,357 310,357" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L06" data-from="PICO.GP2" data-to="EPS_CAN.SCK" data-status="planned"><title>L06: PICO.GP2 -&gt; EPS_CAN.SCK</title><path d="M310,277 C395,277 395,610 480,610" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="L07" data-from="PICO.GP3" data-to="EPS_CAN.SI" data-status="planned"><title>L07: PICO.GP3 -&gt; EPS_CAN.SI</title><path d="M310,297 C395,297 395,630 480,630" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="L08" data-from="PICO.GP4" data-to="EPS_CAN.SO" data-status="planned"><title>L08: PICO.GP4 -&gt; EPS_CAN.SO</title><path d="M310,317 C395,317 395,650 480,650" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="L09" data-from="PICO.GP22" data-to="EPS_CAN.CS" data-status="planned"><title>L09: PICO.GP22 -&gt; EPS_CAN.CS - GP22 freed from ADS1115 ALERT</title><path d="M310,397 C395,397 395,670 480,670" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="L10" data-from="PICO.GP26" data-to="MCP1.SDA" data-status="planned"><title>L10: PICO.GP26 -&gt; MCP1.SDA - 4.7k pull-ups to 3.3 V, once for the whole bus</title><path d="M310,417 C395,417 395,781 480,781" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L11" data-from="PICO.GP27" data-to="MCP1.SCL" data-status="planned"><title>L11: PICO.GP27 -&gt; MCP1.SCL</title><path d="M310,437 C395,437 395,801 480,801" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L12" data-from="PICO.GP26" data-to="ADS1.SDA" data-status="planned"><title>L12: PICO.GP26 -&gt; ADS1.SDA</title><path d="M310,417 C395,417 395,1252 480,1252" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L13" data-from="PICO.GP27" data-to="ADS1.SCL" data-status="planned"><title>L13: PICO.GP27 -&gt; ADS1.SCL</title><path d="M310,437 C395,437 395,1272 480,1272" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L14" data-from="PICO.GP26" data-to="MCP2.SDA" data-status="planned"><title>L14: PICO.GP26 -&gt; MCP2.SDA</title><path d="M310,417 C395,417 395,1383 480,1383" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="L15" data-from="PICO.GP27" data-to="MCP2.SCL" data-status="planned"><title>L15: PICO.GP27 -&gt; MCP2.SCL</title><path d="M310,437 C395,437 395,1403 480,1403" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="L16" data-from="PICO.GP26" data-to="ADS2.SDA" data-status="planned"><title>L16: PICO.GP26 -&gt; ADS2.SDA</title><path d="M310,417 C395,417 395,1554 480,1554" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="L17" data-from="PICO.GP27" data-to="ADS2.SCL" data-status="planned"><title>L17: PICO.GP27 -&gt; ADS2.SCL</title><path d="M310,437 C395,437 395,1574 480,1574" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="L18" data-from="MCP1.INTB" data-to="PICO.GP21" data-status="planned"><title>L18: MCP1.INTB -&gt; PICO.GP21</title><path d="M480,821 C395,821 395,377 310,377" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L19" data-from="MCP1.A0" data-to="RELAYS.IN1" data-status="planned"><title>L19: MCP1.A0 -&gt; RELAYS.IN1 - light.rear</title><path d="M750,841 C835,841 835,217 920,217" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L20" data-from="MCP1.A1" data-to="RELAYS.IN2" data-status="planned"><title>L20: MCP1.A1 -&gt; RELAYS.IN2 - trailer.tail</title><path d="M750,861 C835,861 835,237 920,237" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L21" data-from="MCP1.A2" data-to="RELAYS.IN3" data-status="planned"><title>L21: MCP1.A2 -&gt; RELAYS.IN3 - trailer.brake</title><path d="M750,881 C835,881 835,257 920,257" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L22" data-from="MCP1.A3" data-to="RELAYS.IN4" data-status="planned"><title>L22: MCP1.A3 -&gt; RELAYS.IN4 - winch.in</title><path d="M750,901 C835,901 835,277 920,277" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L23" data-from="MCP1.A4" data-to="RELAYS.IN5" data-status="planned"><title>L23: MCP1.A4 -&gt; RELAYS.IN5 - winch.out</title><path d="M750,921 C835,921 835,297 920,297" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L24" data-from="MCP1.A5" data-to="RELAYS.IN6" data-status="planned"><title>L24: MCP1.A5 -&gt; RELAYS.IN6 - winch.isolator</title><path d="M750,941 C835,941 835,317 920,317" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L25" data-from="MCP1.A6" data-to="RELAYS.IN7" data-status="planned"><title>L25: MCP1.A6 -&gt; RELAYS.IN7 - aux.accessory</title><path d="M750,961 C835,961 835,337 920,337" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L26" data-from="MCP1.A7" data-to="RELAYS.IN8" data-status="planned"><title>L26: MCP1.A7 -&gt; RELAYS.IN8 - power.hold</title><path d="M750,981 C835,981 835,357 920,357" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L27" data-from="MCP2.A0" data-to="RELAYS2.IN1" data-status="planned"><title>L27: MCP2.A0 -&gt; RELAYS2.IN1 - steering enable</title><path d="M750,1423 C835,1423 835,734 920,734" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="L28" data-from="MCP2.A1" data-to="RELAYS2.IN2" data-status="planned"><title>L28: MCP2.A1 -&gt; RELAYS2.IN2 - drive lock (opens the KSI line while locked and parked)</title><path d="M750,1443 C835,1443 835,754 920,754" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="L29" data-from="OPTO.OUT1" data-to="MCP1.B0" data-status="planned"><title>L29: OPTO.OUT1 -&gt; MCP1.B0 - in.ignition</title><path d="M920,468 C835,468 835,1001 750,1001" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L30" data-from="OPTO.OUT2" data-to="MCP1.B1" data-status="planned"><title>L30: OPTO.OUT2 -&gt; MCP1.B1 - in.brake</title><path d="M920,488 C835,488 835,1021 750,1021" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L31" data-from="OPTO.OUT3" data-to="MCP1.B2" data-status="planned"><title>L31: OPTO.OUT3 -&gt; MCP1.B2 - in.reverse</title><path d="M920,508 C835,508 835,1041 750,1041" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L32" data-from="OPTO.OUT4" data-to="MCP1.B3" data-status="planned"><title>L32: OPTO.OUT4 -&gt; MCP1.B3 - in.tray_down</title><path d="M920,528 C835,528 835,1061 750,1061" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L33" data-from="OPTO.OUT5" data-to="MCP1.B4" data-status="planned"><title>L33: OPTO.OUT5 -&gt; MCP1.B4 - in.tray_up</title><path d="M920,548 C835,548 835,1081 750,1081" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L34" data-from="OPTO.OUT6" data-to="MCP1.B5" data-status="planned"><title>L34: OPTO.OUT6 -&gt; MCP1.B5 - in.winch_remote</title><path d="M920,568 C835,568 835,1101 750,1101" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L35" data-from="OPTO.OUT7" data-to="MCP1.B6" data-status="planned"><title>L35: OPTO.OUT7 -&gt; MCP1.B6 - in.park</title><path d="M920,588 C835,588 835,1121 750,1121" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L36" data-from="OPTO.OUT8" data-to="MCP1.B7" data-status="planned"><title>L36: OPTO.OUT8 -&gt; MCP1.B7 - in.trailer</title><path d="M920,608 C835,608 835,1141 750,1141" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L37" data-from="PICO.3V3" data-to="MCP1.VDD" data-status="planned"><title>L37: PICO.3V3 -&gt; MCP1.VDD</title><path d="M310,197 C395,197 395,761 480,761" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L38" data-from="PICO.3V3" data-to="ADS1.VDD" data-status="planned"><title>L38: PICO.3V3 -&gt; ADS1.VDD</title><path d="M310,197 C395,197 395,1232 480,1232" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L39" data-from="PICO.3V3" data-to="PICO_CAN.VCC" data-status="planned"><title>L39: PICO.3V3 -&gt; PICO_CAN.VCC</title><path d="M310,197 C395,197 395,399 480,399" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="L01" data-from="PICO.GP2" data-to="PICO_CAN.SCK" data-status="planned"><title>L01: PICO.GP2 -&gt; PICO_CAN.SCK - SPI under 10 cm</title><path d="M310,257 C395,257 395,328 480,328" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="L02" data-from="PICO.GP3" data-to="PICO_CAN.SI" data-status="planned"><title>L02: PICO.GP3 -&gt; PICO_CAN.SI</title><path d="M310,277 C395,277 395,348 480,348" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="L03" data-from="PICO.GP4" data-to="PICO_CAN.SO" data-status="planned"><title>L03: PICO.GP4 -&gt; PICO_CAN.SO</title><path d="M310,297 C395,297 395,368 480,368" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="L04" data-from="PICO.GP5" data-to="PICO_CAN.CS" data-status="planned"><title>L04: PICO.GP5 -&gt; PICO_CAN.CS</title><path d="M310,317 C395,317 395,388 480,388" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="L05" data-from="PICO_CAN.INT" data-to="PICO.GP6" data-status="planned"><title>L05: PICO_CAN.INT -&gt; PICO.GP6</title><path d="M480,408 C395,408 395,337 310,337" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="L06" data-from="PICO.GP2" data-to="EPS_CAN.SCK" data-status="planned"><title>L06: PICO.GP2 -&gt; EPS_CAN.SCK</title><path d="M310,257 C395,257 395,519 480,519" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="L07" data-from="PICO.GP3" data-to="EPS_CAN.SI" data-status="planned"><title>L07: PICO.GP3 -&gt; EPS_CAN.SI</title><path d="M310,277 C395,277 395,539 480,539" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="L08" data-from="PICO.GP4" data-to="EPS_CAN.SO" data-status="planned"><title>L08: PICO.GP4 -&gt; EPS_CAN.SO</title><path d="M310,297 C395,297 395,559 480,559" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="L09" data-from="PICO.GP22" data-to="EPS_CAN.CS" data-status="planned"><title>L09: PICO.GP22 -&gt; EPS_CAN.CS - GP22 freed from ADS1115 ALERT</title><path d="M310,377 C395,377 395,579 480,579" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="L10" data-from="PICO.GP26" data-to="MCP1.SDA" data-status="planned"><title>L10: PICO.GP26 -&gt; MCP1.SDA - 4.7k pull-ups to 3.3 V, once for the whole bus</title><path d="M310,397 C395,397 395,690 480,690" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="L11" data-from="PICO.GP27" data-to="MCP1.SCL" data-status="planned"><title>L11: PICO.GP27 -&gt; MCP1.SCL</title><path d="M310,417 C395,417 395,710 480,710" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="L12" data-from="PICO.GP26" data-to="ADS1.SDA" data-status="planned"><title>L12: PICO.GP26 -&gt; ADS1.SDA</title><path d="M310,397 C395,397 395,1161 480,1161" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="L13" data-from="PICO.GP27" data-to="ADS1.SCL" data-status="planned"><title>L13: PICO.GP27 -&gt; ADS1.SCL</title><path d="M310,417 C395,417 395,1181 480,1181" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="L14" data-from="PICO.GP26" data-to="MCP2.SDA" data-status="planned"><title>L14: PICO.GP26 -&gt; MCP2.SDA</title><path d="M310,397 C395,397 395,1292 480,1292" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="L15" data-from="PICO.GP27" data-to="MCP2.SCL" data-status="planned"><title>L15: PICO.GP27 -&gt; MCP2.SCL</title><path d="M310,417 C395,417 395,1312 480,1312" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="L16" data-from="PICO.GP26" data-to="ADS2.SDA" data-status="planned"><title>L16: PICO.GP26 -&gt; ADS2.SDA</title><path d="M310,397 C395,397 395,1463 480,1463" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="L17" data-from="PICO.GP27" data-to="ADS2.SCL" data-status="planned"><title>L17: PICO.GP27 -&gt; ADS2.SCL</title><path d="M310,417 C395,417 395,1483 480,1483" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="L18" data-from="MCP1.INTB" data-to="PICO.GP21" data-status="planned"><title>L18: MCP1.INTB -&gt; PICO.GP21</title><path d="M480,730 C395,730 395,357 310,357" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="L19" data-from="MCP1.A0" data-to="RELAYS.IN1" data-status="planned"><title>L19: MCP1.A0 -&gt; RELAYS.IN1 - light.rear</title><path d="M750,750 C835,750 835,217 920,217" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="L20" data-from="MCP1.A1" data-to="RELAYS.IN2" data-status="planned"><title>L20: MCP1.A1 -&gt; RELAYS.IN2 - trailer.tail</title><path d="M750,770 C835,770 835,237 920,237" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="L21" data-from="MCP1.A2" data-to="RELAYS.IN3" data-status="planned"><title>L21: MCP1.A2 -&gt; RELAYS.IN3 - trailer.brake</title><path d="M750,790 C835,790 835,257 920,257" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="L22" data-from="MCP1.A3" data-to="RELAYS.IN4" data-status="planned"><title>L22: MCP1.A3 -&gt; RELAYS.IN4 - winch.in</title><path d="M750,810 C835,810 835,277 920,277" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="L23" data-from="MCP1.A4" data-to="RELAYS.IN5" data-status="planned"><title>L23: MCP1.A4 -&gt; RELAYS.IN5 - winch.out</title><path d="M750,830 C835,830 835,297 920,297" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="L24" data-from="MCP1.A5" data-to="RELAYS.IN6" data-status="planned"><title>L24: MCP1.A5 -&gt; RELAYS.IN6 - winch.isolator</title><path d="M750,850 C835,850 835,317 920,317" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="L25" data-from="MCP1.A6" data-to="RELAYS.IN7" data-status="planned"><title>L25: MCP1.A6 -&gt; RELAYS.IN7 - aux.accessory</title><path d="M750,870 C835,870 835,337 920,337" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="L26" data-from="MCP1.A7" data-to="RELAYS.IN8" data-status="planned"><title>L26: MCP1.A7 -&gt; RELAYS.IN8 - power.hold</title><path d="M750,890 C835,890 835,357 920,357" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="L27" data-from="MCP2.A0" data-to="RELAYS2.IN1" data-status="planned"><title>L27: MCP2.A0 -&gt; RELAYS2.IN1 - steering enable</title><path d="M750,1332 C835,1332 835,734 920,734" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="L28" data-from="MCP2.A1" data-to="RELAYS2.IN2" data-status="planned"><title>L28: MCP2.A1 -&gt; RELAYS2.IN2 - drive lock (opens the KSI line while locked and parked)</title><path d="M750,1352 C835,1352 835,754 920,754" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="L29" data-from="OPTO.OUT1" data-to="MCP1.B0" data-status="planned"><title>L29: OPTO.OUT1 -&gt; MCP1.B0 - in.ignition</title><path d="M920,468 C835,468 835,910 750,910" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="L30" data-from="OPTO.OUT2" data-to="MCP1.B1" data-status="planned"><title>L30: OPTO.OUT2 -&gt; MCP1.B1 - in.brake</title><path d="M920,488 C835,488 835,930 750,930" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="L31" data-from="OPTO.OUT3" data-to="MCP1.B2" data-status="planned"><title>L31: OPTO.OUT3 -&gt; MCP1.B2 - in.reverse</title><path d="M920,508 C835,508 835,950 750,950" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="L32" data-from="OPTO.OUT4" data-to="MCP1.B3" data-status="planned"><title>L32: OPTO.OUT4 -&gt; MCP1.B3 - in.tray_down</title><path d="M920,528 C835,528 835,970 750,970" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="L33" data-from="OPTO.OUT5" data-to="MCP1.B4" data-status="planned"><title>L33: OPTO.OUT5 -&gt; MCP1.B4 - in.tray_up</title><path d="M920,548 C835,548 835,990 750,990" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="L34" data-from="OPTO.OUT6" data-to="MCP1.B5" data-status="planned"><title>L34: OPTO.OUT6 -&gt; MCP1.B5 - in.winch_remote</title><path d="M920,568 C835,568 835,1010 750,1010" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="L35" data-from="OPTO.OUT7" data-to="MCP1.B6" data-status="planned"><title>L35: OPTO.OUT7 -&gt; MCP1.B6 - in.park</title><path d="M920,588 C835,588 835,1030 750,1030" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="L36" data-from="OPTO.OUT8" data-to="MCP1.B7" data-status="planned"><title>L36: OPTO.OUT8 -&gt; MCP1.B7 - in.trailer</title><path d="M920,608 C835,608 835,1050 750,1050" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="L37" data-from="PICO.3V3" data-to="MCP1.VDD" data-status="planned"><title>L37: PICO.3V3 -&gt; MCP1.VDD</title><path d="M310,197 C395,197 395,670 480,670" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="L38" data-from="PICO.3V3" data-to="ADS1.VDD" data-status="planned"><title>L38: PICO.3V3 -&gt; ADS1.VDD</title><path d="M310,197 C395,197 395,1141 480,1141" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="L39" data-from="PICO.3V3" data-to="PICO_CAN.VCC" data-status="planned"><title>L39: PICO.3V3 -&gt; PICO_CAN.VCC</title><path d="M310,197 C395,197 395,308 480,308" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
 <g data-wire="L40" data-from="PICO.3V3" data-to="RELAYS.VCC" data-status="planned"><title>L40: PICO.3V3 -&gt; RELAYS.VCC</title><path d="M310,197 C615,197 615,197 920,197" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
 <g data-wire="L41" data-from="PICO.3V3" data-to="OPTO.VCC" data-status="planned"><title>L41: PICO.3V3 -&gt; OPTO.VCC</title><path d="M310,197 C615,197 615,448 920,448" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L42" data-from="PICO.3V3" data-to="MCP2.VDD" data-status="planned"><title>L42: PICO.3V3 -&gt; MCP2.VDD</title><path d="M310,197 C395,197 395,1363 480,1363" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="L43" data-from="PICO.3V3" data-to="ADS2.VDD" data-status="planned"><title>L43: PICO.3V3 -&gt; ADS2.VDD</title><path d="M310,197 C395,197 395,1534 480,1534" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="L44" data-from="PICO.3V3" data-to="EPS_CAN.VCC" data-status="planned"><title>L44: PICO.3V3 -&gt; EPS_CAN.VCC</title><path d="M310,197 C395,197 395,590 480,590" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="L42" data-from="PICO.3V3" data-to="MCP2.VDD" data-status="planned"><title>L42: PICO.3V3 -&gt; MCP2.VDD</title><path d="M310,197 C395,197 395,1272 480,1272" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="L43" data-from="PICO.3V3" data-to="ADS2.VDD" data-status="planned"><title>L43: PICO.3V3 -&gt; ADS2.VDD</title><path d="M310,197 C395,197 395,1443 480,1443" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="L44" data-from="PICO.3V3" data-to="EPS_CAN.VCC" data-status="planned"><title>L44: PICO.3V3 -&gt; EPS_CAN.VCC</title><path d="M310,197 C395,197 395,499 480,499" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
 <g data-wire="L45" data-from="PICO.3V3" data-to="RELAYS2.VCC" data-status="planned"><title>L45: PICO.3V3 -&gt; RELAYS2.VCC</title><path d="M310,197 C615,197 615,714 920,714" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="L46" data-from="PICO.GP0" data-to="DEBUG.RX" data-status="planned"><title>L46: PICO.GP0 -&gt; DEBUG.RX - UART0 TX</title><path d="M310,237 C395,237 395,288 480,288" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L47" data-from="DEBUG.TX" data-to="PICO.GP1" data-status="planned"><title>L47: DEBUG.TX -&gt; PICO.GP1</title><path d="M480,308 C395,308 395,257 310,257" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L48" data-from="PICO.USB" data-to="PI5.USB2_A" data-status="planned"><title>L48: PICO.USB -&gt; PI5.USB2_A - Data and reflash only, never power</title><path d="M310,217 C395,217 395,197 480,197" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-device="PICO" data-status="planned"><title>PICO: Raspberry Pi Pico 2</title><rect x="40" y="150" width="270" height="309" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<g data-wire="L46" data-from="PICO.GP0" data-to="DEBUG.RX" data-status="planned"><title>L46: PICO.GP0 -&gt; DEBUG.RX - UART0 TX</title><path d="M310,217 C395,217 395,197 480,197" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="L47" data-from="DEBUG.TX" data-to="PICO.GP1" data-status="planned"><title>L47: DEBUG.TX -&gt; PICO.GP1</title><path d="M480,217 C395,217 395,237 310,237" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-device="PICO" data-status="planned"><title>PICO: Raspberry Pi Pico 2 - Talks to the Pi over CAN only. No USB lead to the Pi; reflash with a laptop on its own USB port in the workshop</title><rect x="40" y="150" width="270" height="289" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
 <text x="50" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Raspberry Pi Pico 2</text>
 <text x="50" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">PICO · planned</text>
 <line x1="40" y1="197" x2="310" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="175" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">3V3</text>
 <line x1="40" y1="217" x2="310" y2="217" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">USB</text>
+<text x="175" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP0</text>
 <line x1="40" y1="237" x2="310" y2="237" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="241" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP0</text>
+<text x="175" y="241" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP1</text>
 <line x1="40" y1="257" x2="310" y2="257" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="261" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP1</text>
+<text x="175" y="261" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP2  SPI0 SCK</text>
 <line x1="40" y1="277" x2="310" y2="277" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="281" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP2  SPI0 SCK</text>
+<text x="175" y="281" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP3  SPI0 MOSI</text>
 <line x1="40" y1="297" x2="310" y2="297" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="301" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP3  SPI0 MOSI</text>
+<text x="175" y="301" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP4  SPI0 MISO</text>
 <line x1="40" y1="317" x2="310" y2="317" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="321" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP4  SPI0 MISO</text>
+<text x="175" y="321" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP5  CAN CS</text>
 <line x1="40" y1="337" x2="310" y2="337" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="341" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP5  CAN CS</text>
+<text x="175" y="341" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP6  CAN INT</text>
 <line x1="40" y1="357" x2="310" y2="357" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="361" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP6  CAN INT</text>
+<text x="175" y="361" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP21</text>
 <line x1="40" y1="377" x2="310" y2="377" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="381" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP21</text>
+<text x="175" y="381" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP22  steering CAN CS</text>
 <line x1="40" y1="397" x2="310" y2="397" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="401" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP22  steering CAN CS</text>
+<text x="175" y="401" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP26  I2C1 SDA</text>
 <line x1="40" y1="417" x2="310" y2="417" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="421" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP26  I2C1 SDA</text>
-<line x1="40" y1="437" x2="310" y2="437" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="175" y="441" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP27  I2C1 SCL</text>
+<text x="175" y="421" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP27  I2C1 SCL</text>
 </g>
-<g data-device="PI5" data-status="confirmed"><title>PI5: Raspberry Pi 5 8GB - The 40-pin header and the PCIe port are kept for the AI HAT+ 2. CAN module wires go to header pins that come up through the HAT</title><rect x="480" y="150" width="270" height="69" rx="6" fill="#eef9f1" stroke="#0969da" stroke-width="1.5"/>
-<text x="490" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Raspberry Pi 5 8GB</text>
-<text x="490" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">PI5 · confirmed</text>
+<g data-device="DEBUG" data-status="planned"><title>DEBUG: Debug UART header - Inside the box. Vehicle lock workshop reset</title><rect x="480" y="150" width="270" height="89" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="490" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Debug UART header</text>
+<text x="490" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">DEBUG · planned</text>
 <line x1="480" y1="197" x2="750" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">USB2_A</text>
+<text x="615" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">RX</text>
+<line x1="480" y1="217" x2="750" y2="217" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">TX</text>
 </g>
-<g data-device="DEBUG" data-status="planned"><title>DEBUG: Debug UART header - Inside the box. Vehicle lock workshop reset</title><rect x="480" y="241" width="270" height="89" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
-<text x="490" y="259" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Debug UART header</text>
-<text x="490" y="274" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">DEBUG · planned</text>
-<line x1="480" y1="288" x2="750" y2="288" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="292" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">RX</text>
+<g data-device="PICO_CAN" data-status="planned"><title>PICO_CAN: MCP2515 CAN module (control box) - Seeed MCP2515 + SN65HVD230 (3.3 V). Crystal TBC on the bench</title><rect x="480" y="261" width="270" height="169" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="490" y="279" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">MCP2515 CAN module (control box)</text>
+<text x="490" y="294" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">PICO_CAN · planned</text>
 <line x1="480" y1="308" x2="750" y2="308" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="312" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">TX</text>
+<text x="615" y="312" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VCC</text>
+<line x1="480" y1="328" x2="750" y2="328" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="332" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SCK</text>
+<line x1="480" y1="348" x2="750" y2="348" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="352" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SI</text>
+<line x1="480" y1="368" x2="750" y2="368" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="372" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SO</text>
+<line x1="480" y1="388" x2="750" y2="388" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="392" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">CS</text>
+<line x1="480" y1="408" x2="750" y2="408" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="412" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">INT</text>
 </g>
-<g data-device="PICO_CAN" data-status="planned"><title>PICO_CAN: MCP2515 CAN module (control box) - Seeed MCP2515 + SN65HVD230 (3.3 V). Crystal TBC on the bench</title><rect x="480" y="352" width="270" height="169" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
-<text x="490" y="370" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">MCP2515 CAN module (control box)</text>
-<text x="490" y="385" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">PICO_CAN · planned</text>
-<line x1="480" y1="399" x2="750" y2="399" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="403" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VCC</text>
-<line x1="480" y1="419" x2="750" y2="419" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="423" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SCK</text>
-<line x1="480" y1="439" x2="750" y2="439" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="443" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SI</text>
-<line x1="480" y1="459" x2="750" y2="459" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="463" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SO</text>
-<line x1="480" y1="479" x2="750" y2="479" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="483" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">CS</text>
+<g data-device="EPS_CAN" data-status="planned"><title>EPS_CAN: MCP2515 CAN module (steering bus) - Own 500 kbit/s bus to the steering ECU. Transmit only, INT not wired</title><rect x="480" y="452" width="270" height="149" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="490" y="470" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">MCP2515 CAN module (steering bus)</text>
+<text x="490" y="485" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">EPS_CAN · planned · optional</text>
 <line x1="480" y1="499" x2="750" y2="499" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="503" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">INT</text>
+<text x="615" y="503" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VCC</text>
+<line x1="480" y1="519" x2="750" y2="519" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="523" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SCK</text>
+<line x1="480" y1="539" x2="750" y2="539" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="543" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SI</text>
+<line x1="480" y1="559" x2="750" y2="559" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="563" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SO</text>
+<line x1="480" y1="579" x2="750" y2="579" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="583" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">CS</text>
 </g>
-<g data-device="EPS_CAN" data-status="planned"><title>EPS_CAN: MCP2515 CAN module (steering bus) - Own 500 kbit/s bus to the steering ECU. Transmit only, INT not wired</title><rect x="480" y="543" width="270" height="149" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
-<text x="490" y="561" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">MCP2515 CAN module (steering bus)</text>
-<text x="490" y="576" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">EPS_CAN · planned · optional</text>
-<line x1="480" y1="590" x2="750" y2="590" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="594" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VCC</text>
-<line x1="480" y1="610" x2="750" y2="610" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="614" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SCK</text>
-<line x1="480" y1="630" x2="750" y2="630" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="634" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SI</text>
-<line x1="480" y1="650" x2="750" y2="650" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="654" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SO</text>
+<g data-device="MCP1" data-status="planned"><title>MCP1: MCP23017 I/O expander (0x20)</title><rect x="480" y="623" width="270" height="449" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="490" y="641" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">MCP23017 I/O expander (0x20)</text>
+<text x="490" y="656" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">MCP1 · planned</text>
 <line x1="480" y1="670" x2="750" y2="670" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="674" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">CS</text>
+<text x="615" y="674" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VDD</text>
+<line x1="480" y1="690" x2="750" y2="690" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="694" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SDA</text>
+<line x1="480" y1="710" x2="750" y2="710" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="714" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SCL</text>
+<line x1="480" y1="730" x2="750" y2="730" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="734" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">INTB</text>
+<line x1="480" y1="750" x2="750" y2="750" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="754" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">A0</text>
+<line x1="480" y1="770" x2="750" y2="770" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="774" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">A1</text>
+<line x1="480" y1="790" x2="750" y2="790" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="794" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">A2</text>
+<line x1="480" y1="810" x2="750" y2="810" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="814" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">A3</text>
+<line x1="480" y1="830" x2="750" y2="830" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="834" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">A4</text>
+<line x1="480" y1="850" x2="750" y2="850" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="854" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">A5</text>
+<line x1="480" y1="870" x2="750" y2="870" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="874" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">A6</text>
+<line x1="480" y1="890" x2="750" y2="890" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="894" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">A7</text>
+<line x1="480" y1="910" x2="750" y2="910" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="914" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">B0</text>
+<line x1="480" y1="930" x2="750" y2="930" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="934" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">B1</text>
+<line x1="480" y1="950" x2="750" y2="950" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="954" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">B2</text>
+<line x1="480" y1="970" x2="750" y2="970" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="974" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">B3</text>
+<line x1="480" y1="990" x2="750" y2="990" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="994" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">B4</text>
+<line x1="480" y1="1010" x2="750" y2="1010" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="1014" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">B5</text>
+<line x1="480" y1="1030" x2="750" y2="1030" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="1034" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">B6</text>
+<line x1="480" y1="1050" x2="750" y2="1050" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="1054" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">B7</text>
 </g>
-<g data-device="MCP1" data-status="planned"><title>MCP1: MCP23017 I/O expander (0x20)</title><rect x="480" y="714" width="270" height="449" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
-<text x="490" y="732" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">MCP23017 I/O expander (0x20)</text>
-<text x="490" y="747" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">MCP1 · planned</text>
-<line x1="480" y1="761" x2="750" y2="761" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="765" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VDD</text>
-<line x1="480" y1="781" x2="750" y2="781" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="785" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SDA</text>
-<line x1="480" y1="801" x2="750" y2="801" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="805" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SCL</text>
-<line x1="480" y1="821" x2="750" y2="821" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="825" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">INTB</text>
-<line x1="480" y1="841" x2="750" y2="841" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="845" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">A0</text>
-<line x1="480" y1="861" x2="750" y2="861" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="865" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">A1</text>
-<line x1="480" y1="881" x2="750" y2="881" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="885" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">A2</text>
-<line x1="480" y1="901" x2="750" y2="901" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="905" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">A3</text>
-<line x1="480" y1="921" x2="750" y2="921" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="925" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">A4</text>
-<line x1="480" y1="941" x2="750" y2="941" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="945" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">A5</text>
-<line x1="480" y1="961" x2="750" y2="961" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="965" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">A6</text>
-<line x1="480" y1="981" x2="750" y2="981" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="985" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">A7</text>
-<line x1="480" y1="1001" x2="750" y2="1001" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1005" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">B0</text>
-<line x1="480" y1="1021" x2="750" y2="1021" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1025" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">B1</text>
-<line x1="480" y1="1041" x2="750" y2="1041" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1045" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">B2</text>
-<line x1="480" y1="1061" x2="750" y2="1061" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1065" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">B3</text>
-<line x1="480" y1="1081" x2="750" y2="1081" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1085" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">B4</text>
-<line x1="480" y1="1101" x2="750" y2="1101" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1105" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">B5</text>
-<line x1="480" y1="1121" x2="750" y2="1121" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1125" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">B6</text>
+<g data-device="ADS1" data-status="planned"><title>ADS1: ADS1115 ADC (0x48) - ALERT pin left free so GP22 can be the steering CAN chip select (read &quot;ready&quot; over I2C)</title><rect x="480" y="1094" width="270" height="109" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="490" y="1112" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">ADS1115 ADC (0x48)</text>
+<text x="490" y="1127" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">ADS1 · planned</text>
 <line x1="480" y1="1141" x2="750" y2="1141" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1145" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">B7</text>
+<text x="615" y="1145" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VDD</text>
+<line x1="480" y1="1161" x2="750" y2="1161" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="1165" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SDA</text>
+<line x1="480" y1="1181" x2="750" y2="1181" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="1185" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SCL</text>
 </g>
-<g data-device="ADS1" data-status="planned"><title>ADS1: ADS1115 ADC (0x48) - ALERT pin left free so GP22 can be the steering CAN chip select (read &quot;ready&quot; over I2C)</title><rect x="480" y="1185" width="270" height="109" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
-<text x="490" y="1203" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">ADS1115 ADC (0x48)</text>
-<text x="490" y="1218" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">ADS1 · planned</text>
-<line x1="480" y1="1232" x2="750" y2="1232" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1236" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VDD</text>
-<line x1="480" y1="1252" x2="750" y2="1252" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1256" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SDA</text>
+<g data-device="MCP2" data-status="planned"><title>MCP2: Second MCP23017 (0x21) - More outputs for the steering enable and the drive lock relay. The first one is full</title><rect x="480" y="1225" width="270" height="149" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="490" y="1243" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Second MCP23017 (0x21)</text>
+<text x="490" y="1258" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">MCP2 · planned · optional</text>
 <line x1="480" y1="1272" x2="750" y2="1272" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1276" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SCL</text>
+<text x="615" y="1276" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VDD</text>
+<line x1="480" y1="1292" x2="750" y2="1292" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="1296" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SDA</text>
+<line x1="480" y1="1312" x2="750" y2="1312" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="1316" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SCL</text>
+<line x1="480" y1="1332" x2="750" y2="1332" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="1336" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">A0</text>
+<line x1="480" y1="1352" x2="750" y2="1352" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="1356" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">A1</text>
 </g>
-<g data-device="MCP2" data-status="planned"><title>MCP2: Second MCP23017 (0x21) - More outputs for the steering enable and the drive lock relay. The first one is full</title><rect x="480" y="1316" width="270" height="149" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
-<text x="490" y="1334" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Second MCP23017 (0x21)</text>
-<text x="490" y="1349" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">MCP2 · planned · optional</text>
-<line x1="480" y1="1363" x2="750" y2="1363" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1367" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VDD</text>
-<line x1="480" y1="1383" x2="750" y2="1383" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1387" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SDA</text>
-<line x1="480" y1="1403" x2="750" y2="1403" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1407" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SCL</text>
-<line x1="480" y1="1423" x2="750" y2="1423" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1427" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">A0</text>
+<g data-device="ADS2" data-status="planned"><title>ADS2: Second ADS1115 (0x49) - Brake pedal regen only</title><rect x="480" y="1396" width="270" height="109" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="490" y="1414" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Second ADS1115 (0x49)</text>
+<text x="490" y="1429" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">ADS2 · planned · optional</text>
 <line x1="480" y1="1443" x2="750" y2="1443" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1447" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">A1</text>
-</g>
-<g data-device="ADS2" data-status="planned"><title>ADS2: Second ADS1115 (0x49) - Brake pedal regen only</title><rect x="480" y="1487" width="270" height="109" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
-<text x="490" y="1505" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Second ADS1115 (0x49)</text>
-<text x="490" y="1520" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">ADS2 · planned · optional</text>
-<line x1="480" y1="1534" x2="750" y2="1534" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1538" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VDD</text>
-<line x1="480" y1="1554" x2="750" y2="1554" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1558" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SDA</text>
-<line x1="480" y1="1574" x2="750" y2="1574" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1578" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SCL</text>
+<text x="615" y="1447" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VDD</text>
+<line x1="480" y1="1463" x2="750" y2="1463" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="1467" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SDA</text>
+<line x1="480" y1="1483" x2="750" y2="1483" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="1487" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SCL</text>
 </g>
 <g data-device="RELAYS" data-status="planned"><title>RELAYS: 16-ch relay board, channels 1-8 - One 16-channel board of mechanical 5 V relays with opto and JD-VCC jumper (AliExpress cart), in an aux box next to the control box. RELAYS2 is channels 9-16 of the same board. The solid state G3MB-202P board Sam has is AC only and won&#x27;t turn off on 12 V DC. JD-VCC jumper off, coils on 5 V, inputs from 3.3 V</title><rect x="920" y="150" width="270" height="229" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
 <text x="930" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">16-ch relay board, channels 1-8</text>
@@ -268,34 +259,34 @@
 <line x1="920" y1="754" x2="1190" y2="754" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="1055" y="758" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN2</text>
 </g>
-<text x="472" y="416" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L01</text>
-<text x="472" y="436" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L02</text>
-<text x="472" y="456" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L03</text>
-<text x="318" y="334" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L04</text>
-<text x="472" y="496" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L05</text>
-<text x="472" y="607" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L06</text>
-<text x="472" y="627" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L07</text>
-<text x="472" y="647" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L08</text>
-<text x="318" y="394" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L09</text>
-<text x="472" y="778" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L10</text>
-<text x="472" y="798" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L11</text>
-<text x="472" y="1249" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L12</text>
-<text x="472" y="1269" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L13</text>
-<text x="472" y="1380" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L14</text>
-<text x="472" y="1400" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L15</text>
-<text x="472" y="1551" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L16</text>
-<text x="472" y="1571" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L17</text>
-<text x="472" y="818" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L18</text>
-<text x="758" y="838" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L19</text>
-<text x="758" y="858" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L20</text>
-<text x="758" y="878" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L21</text>
-<text x="758" y="898" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L22</text>
-<text x="758" y="918" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L23</text>
-<text x="758" y="938" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L24</text>
-<text x="758" y="958" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L25</text>
-<text x="758" y="978" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L26</text>
-<text x="758" y="1420" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L27</text>
-<text x="758" y="1440" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L28</text>
+<text x="472" y="325" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L01</text>
+<text x="472" y="345" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L02</text>
+<text x="472" y="365" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L03</text>
+<text x="318" y="314" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L04</text>
+<text x="472" y="405" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L05</text>
+<text x="472" y="516" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L06</text>
+<text x="472" y="536" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L07</text>
+<text x="472" y="556" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L08</text>
+<text x="318" y="374" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L09</text>
+<text x="472" y="687" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L10</text>
+<text x="472" y="707" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L11</text>
+<text x="472" y="1158" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L12</text>
+<text x="472" y="1178" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L13</text>
+<text x="472" y="1289" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L14</text>
+<text x="472" y="1309" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L15</text>
+<text x="472" y="1460" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L16</text>
+<text x="472" y="1480" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L17</text>
+<text x="472" y="727" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L18</text>
+<text x="758" y="747" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L19</text>
+<text x="758" y="767" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L20</text>
+<text x="758" y="787" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L21</text>
+<text x="758" y="807" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L22</text>
+<text x="758" y="827" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L23</text>
+<text x="758" y="847" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L24</text>
+<text x="758" y="867" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L25</text>
+<text x="758" y="887" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L26</text>
+<text x="758" y="1329" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L27</text>
+<text x="758" y="1349" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L28</text>
 <text x="912" y="465" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L29</text>
 <text x="912" y="485" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L30</text>
 <text x="912" y="505" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L31</text>
@@ -304,16 +295,15 @@
 <text x="912" y="565" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L34</text>
 <text x="912" y="585" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L35</text>
 <text x="912" y="605" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L36</text>
-<text x="472" y="758" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L37</text>
-<text x="472" y="1229" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L38</text>
-<text x="472" y="396" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L39</text>
+<text x="472" y="667" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L37</text>
+<text x="472" y="1138" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L38</text>
+<text x="472" y="305" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L39</text>
 <text x="912" y="194" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L40</text>
 <text x="912" y="445" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L41</text>
-<text x="472" y="1360" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L42</text>
-<text x="472" y="1531" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L43</text>
-<text x="472" y="587" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L44</text>
+<text x="472" y="1269" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L42</text>
+<text x="472" y="1440" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L43</text>
+<text x="472" y="496" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L44</text>
 <text x="912" y="711" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L45</text>
-<text x="318" y="234" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L46</text>
-<text x="472" y="305" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L47</text>
-<text x="318" y="214" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L48</text>
+<text x="318" y="214" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L46</text>
+<text x="472" y="214" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L47</text>
 </svg>

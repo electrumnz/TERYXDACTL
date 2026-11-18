@@ -20,15 +20,15 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Part | Qty | Each NZ$ | Total NZ$ | Price from | Notes |
 |---|---|---|---|---|---|
 | [Raspberry Pi 5 8GB](https://www.pbtech.co.nz/product/SEVRBP0502) (SEVRBP0502) | 1 | 371.39 | 371.39 | Checked 17 Nov | On order, ships about 30 Nov; ask in store |
-| [Raspberry Pi A2 SD card 128GB](https://www.pbtech.co.nz/product/SEVRBP0538) (SEVRBP0538) | 1 | 47.32 | 47.32 | Search result 18 Nov |  |
 | [Raspberry Pi Camera Module 3 Wide (front)](https://www.pbtech.co.nz/product/SEVRBP0398) (SEVRBP0398) | 1 | 80.71 | 80.71 | Search result 18 Nov | Out of stock when indexed; alt element14 SC0874 ~NZ$69 |
 | [Raspberry Pi Camera Module 3 NoIR Wide (cabin / sentry face shot)](https://www.pbtech.co.nz/product/SEVRBP0399) (SEVRBP0399) | 1 | 70.00 | 70.00 | About NZ$70 (search result) | Second camera port on the Pi 5 |
 | [Pi 5 camera cable 200mm](https://www.pbtech.com/pacific/product/SEVRBP0541) (SEVRBP0541) | 2 | 2.12 | 4.24 | Search result 18 Nov | One per camera |
 | [Raspberry Pi Pico 2 5-pack](https://www.pbtech.co.nz/product/SEVRBP0628) (SEVRBP0628) | 1 | 47.20 | 47.20 | Checked 17 Nov | Control box, CAN sniffer, steering bench test, 2 spare |
 | [Raspberry Pi 27W USB-C power supply (bench)](https://www.pbtech.co.nz/product/SEVRBP0512) (SEVRBP0512) | 1 | 24.90 | 24.90 | Search result 18 Nov | Bench only |
 | [Raspberry Pi micro HDMI to HDMI cable 1m](https://www.pbtech.co.nz/product/SEVRBP0207) (SEVRBP0207) | 1 | 11.80 | 11.80 | Search result 18 Nov | Alt black SEVRBP0262 ~11.10 |
-| [Kingston XS1000 1TB USB-C SSD (dashcam / sentry video)](https://www.pbtech.co.nz/product/HDDKCP225100) (HDDKCP225100) | 1 | 189.00 | 189.00 | NZ$189-253, price moved between checks | USB, so the PCIe slot stays free for the AI HAT; cradle in the Pi box |
-| **Total** | | | **846.56** | | |
+| [Samsung PRO Endurance 256GB microSD (OS + loop recordings)](https://www.pbtech.co.nz/product/MEMSAM11240) (MEMSAM11240) | 1 | 205.85 | 205.85 | PB Tech page 18 Nov (was NZ$89 on sale earlier) | In the Pi's own slot, no USB. Rated 140,160 hours of 1080p. Dashcam/sentry overwrite oldest first |
+| [Raspberry Pi DAC+ HAT (ex IQaudio DAC+, SC0368)](https://www.pbtech.co.nz/product/SEVRBP0313) (SEVRBP0313) | 1 | 35.65 | 35.65 | Search result 18 Nov (out of stock when indexed) | Official board, RCA out. If PB Tech has none: Pakronics NZ ~NZ$40 |
+| **Total** | | | **851.74** | | |
 
 ### AliExpress (one order, 2 to 4 weeks)
 
@@ -36,7 +36,6 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 |---|---|---|---|---|---|
 | Carlinkit CPC200-CCPA (or CCPA-MIC) CarPlay dongle | 1 | 65.00 | 65.00 | US$33-39 x 1.822 | Title must say CCPA + Android head unit; lsusb 1314:1520/1521 |
 | 4-channel class D amp, 4 x 63W RMS at 4 ohm, 2 x 200W bridged, 90Hz HPF/LPF (Sam's pick) | 1 | 100.00 | 100.00 | Sam, AliExpress ~NZ$100 | Ch 1-2 Kenwoods, ch 3-4 kept for a bridged sub later; under the seat, not waterproof |
-| USB sound card / DAC 3.5mm out | 1 | 8.00 | 8.00 | Estimate | Pi 5 has no audio jack |
 | BTS7960 43A H-bridge | 2 | 12.00 | 24.00 | ~US$6-7 each | You have one already; 3 needed |
 | 8-channel PC817 opto board 12V in | 2 | 9.00 | 18.00 | ~US$5 estimate | Board 1 = all 8 inputs; board 2 = 8 spare on MCP2 |
 | 8-channel opto-isolated MOSFET board, 3.3V input version (PWM) | 1 | 22.00 | 22.00 | ~US$12 estimate | Light bars: 5 used, 3 spare. Listing must say 3.3V input, 24V+ load, 10A per channel; if it says 5A, buy 6 single LR7843 modules (~NZ$30) instead |
@@ -45,8 +44,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Winch isolator contactor, 12V coil, 200A continuous duty | 1 | 30.00 | 30.00 | Estimate | Continuous duty, not a starter solenoid |
 | 250A manual reset circuit breaker (winch) | 1 | 30.00 | 30.00 | Estimate | Leave it out of the cart if one came in the winch box |
 | Waterproof micro limit switch, roller lever (NC) | 3 | 2.67 | 8.01 | Estimate | Tray up/down + 1 spare |
-| Powered USB 3.0 hub, 7-port, 12V DC input | 1 | 35.00 | 35.00 | Estimate | Screen touch, GPS, CarPlay, DAC, 4G, SSD: more than the Pi's 4 ports. Fed from the dash rail |
-| 12V to 12V 5A stabiliser (buck-boost), sealed | 1 | 15.00 | 15.00 | Estimate | Screen gets a steady 12V when the battery swings 11-14.4V. Check the screen brick label first |
+| LTC3780 auto buck-boost board, 5-32V in, 80W (set to 12.0V) | 1 | 18.00 | 18.00 | Spec from sellers (5-32V in, 1-30V out, 80W cont); price estimate | Search AliExpress: LTC3780 buck boost module. Bare board, lives in the Pi box. Screen draws well under 80W. Skip if the screen board says 9-36V in |
 | 12V USB-C PD panel socket, 30W, waterproof cap | 1 | 15.00 | 15.00 | Estimate | Glove box phone (RC remote) |
 | MPU-6050 IMU board (roll / pitch) | 1 | 5.00 | 5.00 | Estimate | I2C to the Pi |
 | 12V AHD reversing camera (trailer) | 1 | 30.00 | 30.00 | Estimate |  |
@@ -68,12 +66,12 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Stainless bolt kit: M2, M2.5, M3 (6-16mm), M4 (12-20mm), nuts, nylocs, washers | 1 | 25.00 | 25.00 | Estimate | cad/README.md hardware table: ~50 small bolts, 16 M4, 4 M5 nuts |
 | Bootlace ferrule kit 0.5-6mm² with ratchet crimper | 1 | 30.00 | 30.00 | Estimate | Every wire end into a screw terminal in the boxes |
 | Heatshrink ring / spade / butt terminal kit 0.5-6mm² | 1 | 25.00 | 25.00 | Estimate |  |
-| Dupont jumper wires (F-F, M-F) + 2.54mm pin headers | 1 | 10.00 | 10.00 | Estimate | Pico, Pi and board-to-board links inside the boxes; debug header |
+| Dupont jumper wires (F-F, M-F, 20cm) + 2.54mm pin headers | 1 | 10.00 | 10.00 | Estimate | Pico, Pi and board-to-board links inside the boxes; debug header |
 | Waterproof 2-pin plug pair (DT style) | 14 | 2.50 | 35.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
 | Waterproof 3-pin plug pair (DT style) | 2 | 3.00 | 6.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
 | Waterproof 4-pin plug pair (DT style) | 2 | 3.50 | 7.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
 | Waterproof 6-pin plug pair (DT style) | 2 | 5.00 | 10.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
-| **Total** | | | **771.01** | | |
+| **Total** | | | **731.01** | | |
 
 ### Core Electronics (AU, online)
 
@@ -81,10 +79,9 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 |---|---|---|---|---|---|
 | [Seeed MCP2515 + SN65HVD230 CAN board](https://core-electronics.com.au) | 4 | 22.77 | 91.08 | AU$18.45 x 1.234 | Pi, control box, steering bus, sniffer |
 | [MCP23017 board](https://core-electronics.com.au/catalog/product/view/sku/WS-15391) (WS-15391) | 2 | 13.45 | 26.90 | AU$10.90 x 1.234 |  |
-| [DFRobot USB GPS receiver](https://core-electronics.com.au/catalog/product/view/sku/TEL0138) (TEL0138) | 1 | 25.98 | 25.98 | AU$21.05 x 1.234 |  |
 | [Pololu D36V50F5 5V 5.5A regulator](https://core-electronics.com.au/catalog/product/view/sku/POLOLU-4091) (POLOLU-4091) | 1 | 111.20 | 111.20 | AU$90.11 x 1.234 |  |
 | Shipping to NZ (estimate) | 1 | 17.50 | 17.50 | AU$12-16 |  |
-| **Total** | | | **272.66** | | |
+| **Total** | | | **246.68** | | |
 
 ### Gogo:Tronics and element14 (NZ, online)
 
@@ -102,8 +99,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | F-N-R switch, DPDT centre-off, 10A+ | 1 | 20.00 | 20.00 | Estimate |  |
 | E-stop mushroom button, twist release, NC, IP65 | 1 | 25.00 | 25.00 | Estimate | RC mode: cuts KSI with no software |
 | Momentary (ON)-OFF-(ON) toggle, 10A, with waterproof boot | 2 | 15.00 | 30.00 | Estimate | Hidden winch switches |
-| 3.5mm to 2 x RCA lead 1.5m | 1 | 10.00 | 10.00 | Estimate | DAC to amp |
-| Short right-angle USB-C to USB-A leads | 2 | 10.00 | 20.00 | Estimate | SSD, 4G board |
+| RCA to RCA stereo lead 3m | 1 | 15.00 | 15.00 | Estimate | DAC HAT to the amp under the seat |
 | Prepaid SIM | 1 | 10.00 | 10.00 | Estimate |  |
 | Ground bus bar, M8 studs, 6+ ways, with cover | 1 | 25.00 | 25.00 | Estimate |  |
 | Wago 221 lever connectors, 5-way pack | 1 | 20.00 | 20.00 | Estimate | Dash 12V rail splits |
@@ -132,7 +128,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Tinned lugs for 6 mm², M8 hole | 6 | 2.00 | 12.00 | Estimate; counted from config/wiring.yaml | 2 spare |
 | Tinned lugs for 10 mm², M8 hole | 10 | 2.00 | 20.00 | Estimate; counted from config/wiring.yaml | 2 spare |
 | Tinned lugs for 35 mm², M8 hole | 6 | 2.00 | 12.00 | Estimate; counted from config/wiring.yaml | 2 spare |
-| **Total** | | | **1,256.50** | | |
+| **Total** | | | **1,241.50** | | |
 
 ### Separate pickup
 
@@ -145,13 +141,13 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 
 | Shop | NZ$ |
 |---|---|
-| PB Tech (buy Thursday) | 846.56 |
-| AliExpress (one order, 2 to 4 weeks) | 771.01 |
-| Core Electronics (AU, online) | 272.66 |
+| PB Tech (buy Thursday) | 851.74 |
+| AliExpress (one order, 2 to 4 weeks) | 731.01 |
+| Core Electronics (AU, online) | 246.68 |
 | Gogo:Tronics and element14 (NZ, online) | 10.38 |
-| Local: Jaycar, Narva stockist, Repco, auto electrical | 1,256.50 |
+| Local: Jaycar, Narva stockist, Repco, auto electrical | 1,241.50 |
 | Separate pickup | 115.00 |
-| **Everything** | **3,272.11** |
+| **Everything** | **3,196.31** |
 
 ### Already got (not in the totals)
 
