@@ -148,12 +148,26 @@ M12V = 12.2;            // M12 breather vent plug (membrane vent)
 //   hence the module.
 //   CHECK on the real parts before printing.
 // ---------------------------------------------------------------------------
-pi_box_in   = [130, 105, 56];    // inside size: X, Y, height away from the back plate
+// Audio DAC HAT off the Pi (2026-11-18, Sam): Raspberry Pi DAC+ (ex IQaudio DAC+,
+// PB Tech SEVRBP0313), 65 x 56.5 mm HAT, on 7 jumper leads from the Pi's header
+// (later from the AI HAT+ 2's stacking header), so the top of the Pi stays free. The box is dac_room wider on the right for it and everything that was in the
+// box moved left by half that (pib_dx), so the box stays centred behind the screen.
+dac_on       = true;              // false = old 130 mm box, no DAC
+dac_room     = 72;                // extra inside width for the DAC
+dac_board    = [65, 56.5];        // HAT size (Raspberry Pi HAT spec)
+dac_holes    = [58, 49];          // HAT mounting holes, same as the Pi
+dac_standoff = 6;
+pib_dx       = dac_on ? -dac_room / 2 : 0;
+pi_box_in   = [130 + (dac_on ? dac_room : 0), 105, 56];    // inside size: X, Y, height away from the back plate
+// DAC centre, box coords: against the right wall, clear of the screen's VESA bolt
+// heads. Its RCA sockets face the bottom wall; the RCA lead to the amp leaves
+// through the spare PG7 gland.
+dac_pos      = [pi_box_in[0] / 2 - 3 - dac_board[0] / 2, 10];
 pi_box_pos  = [0, -10];         // centre of the box on the back plate
 pi_holes    = [58, 49];         // Pi 5 mounting hole spacing (Raspberry Pi spec)
 pi_board    = [85, 56];
 pi_standoff = 6;                // height of the Pi off the floor
-pi_pos      = [-18, 20];         // Pi centre inside the box (leaves room for the buck)
+pi_pos      = [-18 + pib_dx, 20];         // Pi centre inside the box (leaves room for the buck)
 // Glands go in the bottom wall so water runs off them. The last hole is for an
 // M12 breather (a vent plug with a membrane): lets the air in the box breathe as
 // it heats and cools, so it doesn't suck water past the seals.
@@ -168,10 +182,10 @@ liner_t      = 2;               // printed liner under the lid plate (holds the 
 hs_size      = [100, 100, 40];  // X, Y, fin height. Fins run along Y: mount the box
                                 // so the fin channels run up and down (hot air rises out)
 hs_base      = 5;               // GUESS base thickness. CHECK: needs 5 mm for blind M3 threads
-hs_pos       = [0, 0];          // heatsink centre on the lid, box coordinates
+hs_pos       = [pib_dx, 0];          // heatsink centre on the lid, box coordinates
 // M3 screws from inside the box, through the liner and the lid plate, into
 // tapped blind holes in the heatsink base. Placed clear of the SSD and 4G board.
-hs_screws    = [[-44, 44], [44, 44], [-44, -3], [8, -3]];
+hs_screws    = [for (p = [[-44, 44], [44, 44], [-44, -3], [8, -3]]) [p[0] + pib_dx, p[1]]];
 // Pi chip (BCM2712) centre, box coordinates. GUESS from photos: about 29 mm in
 // from the USB-C end and 31 mm up from the HDMI edge. CHECK on the real Pi and
 // mark it on the lid plate before drilling the pillar hole.
@@ -188,8 +202,8 @@ pad_squash   = 0.3;             // how much the pad gets squashed when the lid g
 // The 4G board (A7670SA) is on the liner too, right of the Pi, with its aerials outside
 // on SMA bulkheads: see "Pi box extras" at the end of this file.
 ssd_size    = [70.2, 33.2, 13.5];   // XS1000 plus 0.6 mm play in X and Y
-ssd_pos     = [-18, -30];           // centre, box coordinates (same X and Y as the box)
-ssd_on      = true;                 // false = plain lid
+ssd_pos     = [-18 + pib_dx, -30];           // centre, box coordinates (same X and Y as the box)
+ssd_on      = false;                // No USB SSD now (Sam 18 Nov: recordings go on the SD card). true puts the cradle back
 
 // ---------------------------------------------------------------------------
 // Pico 2 control box (Pico, MCP2515, MCP23017, ADS1115, opto board,
@@ -253,12 +267,12 @@ modem_on       = true;              // false = no 4G board
 modem_board    = [31.75, 44.45];    // X, Y as it sits in the box (long side along Y)
 modem_holes    = [25.75, 38.45];    // GUESS holes 3 mm in from each edge. CHECK on the board
 modem_hole_d   = 3.2;               // hole for an M2 heat-set insert (or 2.2 for an M2 self-tapper)
-modem_pos      = [39, 10];          // board centre, box coordinates
+modem_pos      = [39 + pib_dx, 10];          // board centre, box coordinates
 modem_gap      = 12;                // lid to the back of the board (room for the header pins)
 modem_buck     = [17, 22];          // MP1584 module, X and Y
-modem_buck_pos = [39, -37.5];
+modem_buck_pos = [39 + pib_dx, -37.5];
 modem_cap      = [10.5, 21];        // 1000 uF capacitor, diameter and length (16 V is usually 10 x 20)
-modem_cap_pos  = [39, -20];         // lies along X
+modem_cap_pos  = [39 + pib_dx, -20];         // lies along X
 // SMA bulkheads in the right-hand wall: [y, z, ring] each. y along the wall,
 // z up from the box floor's underside. ring = 1 engraves a ring round the hole on
 // the outside, so you can tell them apart: plain hole = 4G, ringed and higher = GPS

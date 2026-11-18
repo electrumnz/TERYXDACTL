@@ -128,7 +128,7 @@
 <line x1="920" y1="574" x2="1190" y2="574" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="1055" y="578" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">pos</text>
 </g>
-<g data-device="PICO" data-status="planned"><title>PICO: Raspberry Pi Pico 2</title><rect x="1360" y="150" width="270" height="149" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<g data-device="PICO" data-status="planned"><title>PICO: Raspberry Pi Pico 2 - Talks to the Pi over CAN only. No USB lead to the Pi; reflash with a laptop on its own USB port in the workshop</title><rect x="1360" y="150" width="270" height="149" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
 <text x="1370" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Raspberry Pi Pico 2</text>
 <text x="1370" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">PICO · planned</text>
 <line x1="1360" y1="197" x2="1630" y2="197" stroke="#d0d7de" stroke-width="0.5"/>

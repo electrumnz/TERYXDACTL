@@ -85,7 +85,8 @@ The Pi 5 has **no headphone jack**, and the screen has no speaker.
 
 | Option | Good for | Approx |
 |---|---|---|
-| **USB DAC with a line out** (e.g. a small USB audio adapter with RCA or 3.5 mm out) | Easiest. Plug in and pick it under Settings > Audio and media. Get a decent one, cheap ones hiss. | $20–80 |
+| **Pick (18 Nov): Raspberry Pi DAC+** (official, ex IQaudio, PB Tech SEVRBP0313) | No USB. On 7 jumper leads from the Pi's header (GPIO 18, 19, 21, SDA, SCL, 5 V, GND), not a 40-way ribbon, so the CAN, 4G and IMU leads still reach their pins. RCA out to the amp. `audio-setup.sh --i2s iqaudio-dacplus`. | ~NZ$36 |
+| USB DAC with a line out (dropped: USB plugs shake loose) (e.g. a small USB audio adapter with RCA or 3.5 mm out) | Easiest. Plug in and pick it under Settings > Audio and media. Get a decent one, cheap ones hiss. | $20–80 |
 | **I2S DAC HAT** (PCM5122 based, e.g. HiFiBerry DAC+ or a clone, RCA out) | Cleanest sound, no USB. Sits on the GPIO header, but the CAN HAT is there too: check they don't both want the same pins, or use a stacking header. Run `audio-setup.sh --i2s hifiberry-dacplus`. | $40–90 |
 | **HDMI** | Only if the HDMI to VGA adapter for the screen has a 3.5 mm audio out. Free if it does. | $0 |
 

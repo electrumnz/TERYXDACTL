@@ -80,19 +80,18 @@ plugs: [LB1, LB2, LB3, LB4, LB_INT, FLOOD_L, FLOOD_R, ACT_DIFF, ACT_4WD, ACT_TRA
 lines:
   # ------------------------------------------------------------- PB Tech
   - {id: pi5, shop: pbtech, part: Raspberry Pi 5 8GB, sku: SEVRBP0502, qty: 1, each: 371.39, source: Checked 17 Nov, covers: [PI5], notes: "On order, ships about 30 Nov; ask in store", link: "https://www.pbtech.co.nz/product/SEVRBP0502"}
-  - {id: sd, shop: pbtech, part: Raspberry Pi A2 SD card 128GB, sku: SEVRBP0538, qty: 1, each: 47.32, source: Search result 18 Nov, link: "https://www.pbtech.co.nz/product/SEVRBP0538"}
   - {id: cam_front, shop: pbtech, part: Raspberry Pi Camera Module 3 Wide (front), sku: SEVRBP0398, qty: 1, each: 80.71, source: Search result 18 Nov, covers: [CAM_FRONT], notes: "Out of stock when indexed; alt element14 SC0874 ~NZ$69", link: "https://www.pbtech.co.nz/product/SEVRBP0398"}
   - {id: cam_cabin, shop: pbtech, part: Raspberry Pi Camera Module 3 NoIR Wide (cabin / sentry face shot), sku: SEVRBP0399, qty: 1, each: 70.00, source: About NZ$70 (search result), covers: [CAM_CABIN], notes: Second camera port on the Pi 5, link: "https://www.pbtech.co.nz/product/SEVRBP0399"}
   - {id: cam_cable, shop: pbtech, part: Pi 5 camera cable 200mm, sku: SEVRBP0541, qty: 2, each: 2.12, source: Search result 18 Nov, notes: One per camera, link: "https://www.pbtech.com/pacific/product/SEVRBP0541"}
   - {id: pico, shop: pbtech, part: Raspberry Pi Pico 2 5-pack, sku: SEVRBP0628, qty: 1, each: 47.20, source: Checked 17 Nov, covers: [PICO], notes: "Control box, CAN sniffer, steering bench test, 2 spare", link: "https://www.pbtech.co.nz/product/SEVRBP0628"}
   - {id: psu27, shop: pbtech, part: Raspberry Pi 27W USB-C power supply (bench), sku: SEVRBP0512, qty: 1, each: 24.90, source: Search result 18 Nov, notes: Bench only, link: "https://www.pbtech.co.nz/product/SEVRBP0512"}
   - {id: hdmi, shop: pbtech, part: Raspberry Pi micro HDMI to HDMI cable 1m, sku: SEVRBP0207, qty: 1, each: 11.80, source: Search result 18 Nov, notes: "Alt black SEVRBP0262 ~11.10", link: "https://www.pbtech.co.nz/product/SEVRBP0207"}
-  - {id: ssd, shop: pbtech, part: Kingston XS1000 1TB USB-C SSD (dashcam / sentry video), sku: HDDKCP225100, qty: 1, each: 189.00, source: "NZ$189-253, price moved between checks", covers: [SSD], notes: "USB, so the PCIe slot stays free for the AI HAT; cradle in the Pi box", link: "https://www.pbtech.co.nz/product/HDDKCP225100"}
+  - {id: sd_endurance, shop: pbtech, part: "Samsung PRO Endurance 256GB microSD (OS + loop recordings)", sku: MEMSAM11240, qty: 1, each: 205.85, source: "PB Tech page 18 Nov (was NZ$89 on sale earlier)", notes: "In the Pi's own slot, no USB. Rated 140,160 hours of 1080p. Dashcam/sentry overwrite oldest first", link: "https://www.pbtech.co.nz/product/MEMSAM11240"}
+  - {id: dac_hat, shop: pbtech, part: "Raspberry Pi DAC+ HAT (ex IQaudio DAC+, SC0368)", sku: SEVRBP0313, qty: 1, each: 35.65, source: "Search result 18 Nov (out of stock when indexed)", covers: [DAC_HAT], notes: "Official board, RCA out. If PB Tech has none: Pakronics NZ ~NZ$40", link: "https://www.pbtech.co.nz/product/SEVRBP0313"}
 
   # ------------------------------------------------------------- AliExpress
   - {id: ccpa, shop: aliexpress, part: Carlinkit CPC200-CCPA (or CCPA-MIC) CarPlay dongle, qty: 1, each: 65.00, source: "US$33-39 x 1.822", covers: [CARPLAY], notes: "Title must say CCPA + Android head unit; lsusb 1314:1520/1521"}
   - {id: amp, shop: aliexpress, part: "4-channel class D amp, 4 x 63W RMS at 4 ohm, 2 x 200W bridged, 90Hz HPF/LPF (Sam's pick)", qty: 1, each: 100.00, source: "Sam, AliExpress ~NZ$100", covers: [AMP], notes: "Ch 1-2 Kenwoods, ch 3-4 kept for a bridged sub later; under the seat, not waterproof"}
-  - {id: dac, shop: aliexpress, part: USB sound card / DAC 3.5mm out, qty: 1, each: 8.00, source: Estimate, covers: [USB_DAC], notes: Pi 5 has no audio jack}
   - {id: bts, shop: aliexpress, part: BTS7960 43A H-bridge, qty: 2, each: 12.00, source: "~US$6-7 each", covers: [BTS2, BTS3], notes: You have one already; 3 needed}
   - {id: opto, shop: aliexpress, part: 8-channel PC817 opto board 12V in, qty: 2, each: 9.00, source: "~US$5 estimate", covers: [OPTO], notes: "Board 1 = all 8 inputs; board 2 = 8 spare on MCP2"}
   - {id: mosfet, shop: aliexpress, part: "8-channel opto-isolated MOSFET board, 3.3V input version (PWM)", qty: 1, each: 22.00, source: "~US$12 estimate", covers: [MOSFET], notes: "Light bars: 5 used, 3 spare. Listing must say 3.3V input, 24V+ load, 10A per channel; if it says 5A, buy 6 single LR7843 modules (~NZ$30) instead"}
@@ -101,8 +100,7 @@ lines:
   - {id: winch_iso, shop: aliexpress, part: "Winch isolator contactor, 12V coil, 200A continuous duty", qty: 1, each: 30.00, source: Estimate, covers: [WINCH_ISO], notes: "Continuous duty, not a starter solenoid"}
   - {id: winch_brk, shop: aliexpress, part: 250A manual reset circuit breaker (winch), qty: 1, each: 30.00, source: Estimate, covers: [BRK_WINCH], notes: "Leave it out of the cart if one came in the winch box"}
   - {id: limits, shop: aliexpress, part: "Waterproof micro limit switch, roller lever (NC)", qty: 3, each: 2.67, source: Estimate, covers: [LIM_DN, LIM_UP], notes: Tray up/down + 1 spare}
-  - {id: usbhub, shop: aliexpress, part: "Powered USB 3.0 hub, 7-port, 12V DC input", qty: 1, each: 35.00, source: Estimate, covers: [USB_HUB], notes: "Screen touch, GPS, CarPlay, DAC, 4G, SSD: more than the Pi's 4 ports. Fed from the dash rail"}
-  - {id: screen_psu, shop: aliexpress, part: "12V to 12V 5A stabiliser (buck-boost), sealed", qty: 1, each: 15.00, source: Estimate, covers: [SCREEN_PSU], notes: "Screen gets a steady 12V when the battery swings 11-14.4V. Check the screen brick label first"}
+  - {id: screen_psu, shop: aliexpress, part: "LTC3780 auto buck-boost board, 5-32V in, 80W (set to 12.0V)", qty: 1, each: 18.00, source: "Spec from sellers (5-32V in, 1-30V out, 80W cont); price estimate", covers: [SCREEN_PSU], notes: "Search AliExpress: LTC3780 buck boost module. Bare board, lives in the Pi box. Screen draws well under 80W. Skip if the screen board says 9-36V in"}
   - {id: glove_usb, shop: aliexpress, part: "12V USB-C PD panel socket, 30W, waterproof cap", qty: 1, each: 15.00, source: Estimate, covers: [GLOVE_USB], notes: Glove box phone (RC remote)}
   - {id: imu, shop: aliexpress, part: MPU-6050 IMU board (roll / pitch), qty: 1, each: 5.00, source: Estimate, covers: [IMU], notes: "I2C to the Pi"}
   - {id: tcam, shop: aliexpress, part: "12V AHD reversing camera (trailer)", qty: 1, each: 30.00, source: Estimate, covers: [CAM_TRAILER]}
@@ -124,12 +122,11 @@ lines:
   - {id: bolts, shop: aliexpress, part: "Stainless bolt kit: M2, M2.5, M3 (6-16mm), M4 (12-20mm), nuts, nylocs, washers", qty: 1, each: 25.00, source: Estimate, notes: "cad/README.md hardware table: ~50 small bolts, 16 M4, 4 M5 nuts"}
   - {id: ferrules, shop: aliexpress, part: "Bootlace ferrule kit 0.5-6mm² with ratchet crimper", qty: 1, each: 30.00, source: Estimate, notes: "Every wire end into a screw terminal in the boxes"}
   - {id: rings, shop: aliexpress, part: "Heatshrink ring / spade / butt terminal kit 0.5-6mm²", qty: 1, each: 25.00, source: Estimate}
-  - {id: dupont, shop: aliexpress, part: "Dupont jumper wires (F-F, M-F) + 2.54mm pin headers", qty: 1, each: 10.00, source: Estimate, covers: [DEBUG], notes: "Pico, Pi and board-to-board links inside the boxes; debug header"}
+  - {id: dupont, shop: aliexpress, part: "Dupont jumper wires (F-F, M-F, 20cm) + 2.54mm pin headers", qty: 1, each: 10.00, source: Estimate, covers: [DEBUG], notes: "Pico, Pi and board-to-board links inside the boxes; debug header"}
 
   # ------------------------------------------------------------- Core Electronics
   - {id: can, shop: core, part: Seeed MCP2515 + SN65HVD230 CAN board, qty: 4, each: 22.77, source: "AU$18.45 x 1.234", covers: [PI_CAN, PICO_CAN, EPS_CAN], notes: "Pi, control box, steering bus, sniffer", link: "https://core-electronics.com.au"}
   - {id: mcp23017, shop: core, part: MCP23017 board, sku: WS-15391, qty: 2, each: 13.45, source: "AU$10.90 x 1.234", covers: [MCP1, MCP2], link: "https://core-electronics.com.au/catalog/product/view/sku/WS-15391"}
-  - {id: gps, shop: core, part: DFRobot USB GPS receiver, sku: TEL0138, qty: 1, each: 25.98, source: "AU$21.05 x 1.234", covers: [GPS], link: "https://core-electronics.com.au/catalog/product/view/sku/TEL0138"}
   - {id: pololu, shop: core, part: Pololu D36V50F5 5V 5.5A regulator, sku: POLOLU-4091, qty: 1, each: 111.20, source: "AU$90.11 x 1.234", covers: [PI_BUCK], link: "https://core-electronics.com.au/catalog/product/view/sku/POLOLU-4091"}
   - {id: core_ship, shop: core, part: Shipping to NZ (estimate), qty: 1, each: 17.50, source: "AU$12-16"}
 
@@ -142,8 +139,7 @@ lines:
   - {id: fnr, shop: local, part: "F-N-R switch, DPDT centre-off, 10A+", qty: 1, each: 20.00, source: Estimate, covers: [FNR]}
   - {id: estop, shop: local, part: "E-stop mushroom button, twist release, NC, IP65", qty: 1, each: 25.00, source: Estimate, covers: [ESTOP], notes: "RC mode: cuts KSI with no software"}
   - {id: hsw, shop: local, part: "Momentary (ON)-OFF-(ON) toggle, 10A, with waterproof boot", qty: 2, each: 15.00, source: Estimate, covers: [HSW_WINCH, HSW_CAB], notes: Hidden winch switches}
-  - {id: rca, shop: local, part: 3.5mm to 2 x RCA lead 1.5m, qty: 1, each: 10.00, source: Estimate, notes: DAC to amp}
-  - {id: usbc_leads, shop: local, part: "Short right-angle USB-C to USB-A leads", qty: 2, each: 10.00, source: Estimate, notes: "SSD, 4G board"}
+  - {id: rca, shop: local, part: RCA to RCA stereo lead 3m, qty: 1, each: 15.00, source: Estimate, notes: DAC HAT to the amp under the seat}
   - {id: sim, shop: local, part: Prepaid SIM, qty: 1, each: 10.00, source: Estimate}
   - {id: busbar, shop: local, part: "Ground bus bar, M8 studs, 6+ ways, with cover", qty: 1, each: 25.00, source: Estimate, covers: [GND_STAR]}
   - {id: wago, shop: local, part: "Wago 221 lever connectors, 5-way pack", qty: 1, each: 20.00, source: Estimate, covers: [RAIL], notes: Dash 12V rail splits}

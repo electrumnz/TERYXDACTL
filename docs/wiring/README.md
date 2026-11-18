@@ -10,7 +10,7 @@ Why things are wired this way (power hold, diodes, CAN rules): [`docs/wiring.md`
 Viewer with search: [`index.html`](index.html), also online at
 <https://electrumnz.github.io/TERYXDACTL/wiring/>.
 
-**82 devices, 247 wires.** By status: 19 from_manual, 3 confirmed, 194 planned, 26 tbc, 5 placeholder.
+**79 devices, 250 wires.** By status: 19 from_manual, 3 confirmed, 197 planned, 26 tbc, 5 placeholder.
 Nothing has been checked on the real Teryx yet.
 
 Wire sizes follow the conservative table in the YAML (from
@@ -88,7 +88,6 @@ runs up to about 5 m). Go one size up for bundled or hot runs.
 - [ ] **Toyota Aqua EPS ECU (89650-52B51)** (EPS_ECU): Photo both EPS ECU plugs (pin numbers and wire colours) when the column is picked up
 - [ ] **Aqua steering column (motor + torque sensor)** (EPS_COL): Measure the space from the steering wheel to where the Teryx shaft goes to the rack
 - [ ] **7-pin flat trailer socket (Narva 82043BL, reed switch)** (TRAILER): Which way does the Narva reed switch switch, and what triggers it?
-- [ ] **Powered USB hub** (USB_HUB): Pick the powered USB hub (7 ports, 12 V or 5 V in)
 - [ ] **Glove box USB-C charger (RC phone)** (GLOVE_USB): Pick a 12 V USB-C PD panel socket (waterproof cap, about 20-30 W)
 - [ ] **Rear camera (2K)** (CAM_REAR): Rear camera USB or RCA/AHD? Photo its plug
 
@@ -321,7 +320,6 @@ Fuses not in the block (inline, at the battery or on a board):
 | L45 | PICO.3V3 | RELAYS2.VCC |  |  |  | planned (optional) |  |
 | L46 | PICO.GP0 | DEBUG.RX |  |  |  | planned | UART0 TX |
 | L47 | DEBUG.TX | PICO.GP1 |  |  |  | planned |  |
-| L48 | PICO.USB | PI5.USB2_A |  |  |  | planned | Data and reflash only, never power |
 
 ### 12 V signals into the control box (opto board)
 
@@ -451,15 +449,10 @@ Fuses not in the block (inline, at the battery or on a board):
 | Wire | From | To | Size | Fuse | Via | Status | Note |
 |---|---|---|---|---|---|---|---|
 | X01 | PI5.HDMI0 | SCREEN.HDMI |  |  |  | planned |  |
-| X02 | SCREEN.USB | USB_HUB.P1 |  |  |  | planned | Touch |
+| X02 | SCREEN.USB | PI5.USB2_B |  |  |  | planned | Touch. Screen only does touch over USB. Right-angle lead, cable-tied to the box |
 | X03 | CAM_REAR.USB | PI5.USB3_A |  |  |  | tbc | Or a UVC capture dongle if it's an RCA/AHD camera |
 | X04 | TCAM_DONGLE.USB | PI5.USB3_B |  |  |  | planned (optional) | Other USB controller from the rear camera |
-| X05 | USB_HUB.UP | PI5.USB2_B |  |  |  | planned |  |
-| X06 | GPS.USB | USB_HUB.P2 |  |  |  | planned (optional) |  |
-| X07 | CARPLAY.USB | USB_HUB.P3 |  |  |  | planned (optional) |  |
-| X08 | USB_DAC.USB | USB_HUB.P4 |  |  |  | planned (optional) |  |
-| X09 | MODEM_4G.USB | USB_HUB.P5 |  |  |  | placeholder (optional) |  |
-| X10 | SSD.USB | USB_HUB.P6 |  |  |  | placeholder (optional) |  |
+| X07 | CARPLAY.USB | PI5.USB2_A |  |  |  | planned (optional) | CarPlay dongle is USB only. Right-angle lead, dongle zip-tied down inside the box |
 | X11 | CAM_FRONT.CSI | PI5.CSI0 |  |  |  | planned |  |
 | X12 | CAM_CABIN.CSI | PI5.CSI1 |  |  |  | placeholder (optional) |  |
 | X13 | AIHAT.PCIE | PI5.PCIE |  |  |  | placeholder (optional) | Keep the PCIe port free for this |
@@ -470,7 +463,16 @@ Fuses not in the block (inline, at the battery or on a board):
 | X18 | PI_CAN.SO | PI5.P21_MISO |  |  |  | planned |  |
 | X19 | PI5.P24_CE0 | PI_CAN.CS |  |  |  | planned |  |
 | X20 | PI_CAN.INT | PI5.P22_GPIO25 |  |  |  | planned |  |
-| X21 | USB_DAC.OUT | AMP.IN |  |  |  | planned (optional) |  |
+| X21 | DAC_HAT.OUT | AMP.IN |  |  |  | planned (optional) | RCA to RCA lead out through the Pi box's spare PG7 gland |
+| X32 | PI5.P8_TXD | MODEM_4G.R |  |  |  | placeholder (optional) | Soldered lead, 115200 baud |
+| X33 | MODEM_4G.T | PI5.P10_RXD |  |  |  | placeholder (optional) | Soldered lead. Measure T first: 3.3 V ok, else BSS138 |
+| X25 | PI5.P12_GPIO18 | DAC_HAT.BCK |  |  |  | planned (optional) | jumper lead |
+| X26 | PI5.P35_GPIO19 | DAC_HAT.LRCK |  |  |  | planned (optional) | jumper lead |
+| X27 | PI5.P40_GPIO21 | DAC_HAT.DIN |  |  |  | planned (optional) | jumper lead |
+| X28 | PI5.P3_SDA | DAC_HAT.SDA |  |  |  | planned (optional) | jumper lead |
+| X29 | PI5.P5_SCL | DAC_HAT.SCL |  |  |  | planned (optional) | jumper lead |
+| X30 | PI5.P2_5V | DAC_HAT.V5 |  |  |  | planned (optional) | jumper lead |
+| X31 | DAC_HAT.GND | PI5.GND |  |  |  | planned (optional) | jumper lead |
 | X22 | AMP.SPK | SPEAKERS.IN |  |  |  | planned (optional) |  |
 | X23 | PI5.P3_SDA | IMU.SDA |  |  |  | planned (optional) |  |
 | X24 | PI5.P5_SCL | IMU.SCL |  |  |  | planned (optional) |  |
@@ -499,8 +501,8 @@ Fuses not in the block (inline, at the battery or on a board):
 | TVS | 1.5KE18A TVS diode | dash | planned | Clamps spikes on the dash rail |
 | PI_BUCK | Pololu D36V50F5 5 V 5.5 A | dash | planned | Pi 5 power. About 16 W of its 27 W with the AI HAT+ 2 fitted |
 | PICO_BUCK | Mini560 5 V buck (control box) | control_box | planned |  |
-| SCREEN_PSU | Screen 12 V supply | dash | tbc | Depends on the screen's power brick. If it is 12 V, a 12 V stabiliser |
-| PICO | Raspberry Pi Pico 2 | control_box | planned | See [`docs/io-list.md`](../../docs/io-list.md). |
+| SCREEN_PSU | Screen 12 V supply | dash | tbc | LTC3780 buck-boost board (5-32 V in, set to 12.0 V, 80 W) in the Pi box. Keeps the screen on a steady 12 V while the battery swings 11-14.4 V. No reverse-polarity protection, so it sits after the fuse. Skip it if the screen's own board says 9-36 V in |
+| PICO | Raspberry Pi Pico 2 | control_box | planned | Talks to the Pi over CAN only. No USB lead to the Pi; reflash with a laptop on its own USB port in the workshop See [`docs/io-list.md`](../../docs/io-list.md). |
 | DEBUG | Debug UART header | control_box | planned | Inside the box. Vehicle lock workshop reset |
 | PICO_CAN | MCP2515 CAN module (control box) | control_box | planned | Seeed MCP2515 + SN65HVD230 (3.3 V). Crystal TBC on the bench |
 | EPS_CAN | MCP2515 CAN module (steering bus) | control_box | planned (optional) | Own 500 kbit/s bus to the steering ECU. Transmit only, INT not wired See [`docs/power-steering-wrecker.md`](../../docs/power-steering-wrecker.md). |
@@ -548,16 +550,13 @@ Fuses not in the block (inline, at the battery or on a board):
 | AIHAT | AI HAT+ 2 (later) | dash | placeholder (optional) | Not buying yet. Room, cooling (about 4.5 W) and the PCIe port stay free for it See [`docs/ai-hat-ideas.md`](../../docs/ai-hat-ideas.md). |
 | PI_CAN | MCP2515 CAN module (Pi) | dash | planned | Seeed MCP2515 + SN65HVD230 on the Pi box wall |
 | SCREEN | 10.1 in touch screen | dash | confirmed | 1280x800, HDMI + USB touch, 3.5 mm audio in |
-| USB_HUB | Powered USB hub | dash | planned | For the slow USB things. Not picked yet, power feed TBC |
 | GLOVE_USB | Glove box USB-C charger (RC phone) | dash | planned (optional) | 12 V to USB-C PD socket for the phone that lives in the glove box (docs/rc-beach-launch.md 4b). Fed from the accessory relay so it's off with the key off |
 | CAM_REAR | Rear camera (2K) | rear | tbc |  |
 | CAM_FRONT | Camera Module 3 Wide (front) | dash | planned | Inside the screen housing, 200-300 mm ribbon |
 | CAM_CABIN | Cabin camera (sentry) | dash | placeholder (optional) | Being worked out in the 4G / sentry thread. Port TBC |
-| GPS | DFRobot TEL0138 USB GPS | dash | planned (optional) |  |
-| MODEM_4G | SIMCom A7670SA 4G board | dash | placeholder (optional) | 6-pin header S G V K T R G. V takes 5-10 V from the spare Mini560 5 V buck. NEVER raw 12 V (10 V max, and the car runs 14.4 V with spikes). K is tied to ground on the board, so it starts by itself. T/R are 115200 baud TTL to the Pi's GPIO 15/14; measure T before connecting (3.3 V ok, else BSS138). Micro USB also on board |
-| SSD | USB SSD (recordings) | dash | placeholder (optional) | Only if we record footage. Shares the hub's bandwidth; never NVMe on the PCIe port |
+| MODEM_4G | SIMCom A7670SA 4G board | dash | placeholder (optional) | 6-pin header S G V K T R G. V takes 5-10 V from the spare Mini560 5 V buck. NEVER raw 12 V (10 V max, and the car runs 14.4 V with spikes). K is tied to ground on the board, so it starts by itself. T/R are 115200 baud TTL to the Pi's GPIO 15/14; measure T before connecting (3.3 V ok, else BSS138). Micro USB also on board. Its GNSS (FASE version, u.FL GPS socket on Sam's board) is the dash GPS too, so there is no separate USB GPS. Check on arrival that it gets a fix with the SIM out / 4G off. No USB: it's on the header pins (soldered leads), so texts, GPS and slow data only, no live video over 4G |
 | CARPLAY | Carlinkit CPC200-CCPA | dash | planned (optional) |  |
-| USB_DAC | USB audio out | dash | planned (optional) |  |
+| DAC_HAT | Raspberry Pi DAC+ (on jumper leads) | dash | planned (optional) | PCM5122 DAC HAT (ex IQaudio DAC+), RCA line out to the amp. Sits on standoffs in the right-hand end of the Pi box, off the Pi, so the top of the Pi stays free for the AI HAT+ 2. Joined by 7 male-to-female jumper leads (about 20 cm), not a full 40-way ribbon: a ribbon would cover the header pins the CAN board, 4G board and IMU leads plug onto. Uses GPIO 18, 19, 21 (I2S), 2 and 3 (I2C, shared with the IMU: DAC 0x4D, IMU 0x68), 5 V and GND. Nothing else on the Pi uses 18-21 (CAN is SPI0 + GPIO 25, 4G is UART GPIO 14/15). The ID EEPROM pins 27/28 are left off, so it never fights the AI HAT's EEPROM; set the overlay by hand: scripts/audio-setup.sh --i2s iqaudio-dacplus. A dab of hot glue on the leads at both ends against vibration. Later the leads move onto the AI HAT's stacking header pins See [`docs/audio.md`](../../docs/audio.md). |
 | AMP | 4-ch class D amp (AliExpress, 4 x 63 W RMS at 4 ohm) | cab | confirmed (optional) | Sam's pick. 4 x 63 W RMS at 4 ohm, or 2 x 200 W RMS bridged at 4 ohm; built-in 90 Hz high and low pass; 8-16 V; up to 33 A flat out (16.5 A on music); 145 x 100 x 45 mm. Channels 1 and 2 drive the Kenwoods (set the HPF on). Channels 3 and 4 are kept for a sub later, bridged (e.g. a 4 ohm 150 W RMS one, LPF on) See [`docs/audio.md`](../../docs/audio.md). |
 | SPEAKERS | Kenwood KFC-2053MRB 8 in marine speakers (pair) | cab | confirmed (optional) | Sam has these. 8 in 2-way, 4 ohm, about 50 W RMS each (100 W the pair), 180 mm cut-out, about 86 mm mounting depth (retailer specs). One amp channel each; speaker cable 1.5 mm² is plenty |
 | IMU | IMU (roll / pitch) | dash | planned (optional) |  |

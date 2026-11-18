@@ -73,7 +73,7 @@
 <line x1="480" y1="561" x2="750" y2="561" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="565" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GND</text>
 </g>
-<g data-device="SCREEN_PSU" data-status="tbc"><title>SCREEN_PSU: Screen 12 V supply - Depends on the screen&#x27;s power brick. If it is 12 V, a 12 V stabiliser</title><rect x="480" y="605" width="270" height="69" rx="6" fill="#eef9f1" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
+<g data-device="SCREEN_PSU" data-status="tbc"><title>SCREEN_PSU: Screen 12 V supply - LTC3780 buck-boost board (5-32 V in, set to 12.0 V, 80 W) in the Pi box. Keeps the screen on a steady 12 V while the battery swings 11-14.4 V. No reverse-polarity protection, so it sits after the fuse. Skip it if the screen&#x27;s own board says 9-36 V in</title><rect x="480" y="605" width="270" height="69" rx="6" fill="#eef9f1" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
 <text x="490" y="623" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Screen 12 V supply</text>
 <text x="490" y="638" font-size="10" text-anchor="start" font-weight="normal" fill="#bf8700">SCREEN_PSU · tbc</text>
 <line x1="480" y1="652" x2="750" y2="652" stroke="#d0d7de" stroke-width="0.5"/>
@@ -172,7 +172,7 @@
 <line x1="920" y1="379" x2="1190" y2="379" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="1055" y="383" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GND</text>
 </g>
-<g data-device="PICO" data-status="planned"><title>PICO: Raspberry Pi Pico 2</title><rect x="920" y="423" width="270" height="69" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<g data-device="PICO" data-status="planned"><title>PICO: Raspberry Pi Pico 2 - Talks to the Pi over CAN only. No USB lead to the Pi; reflash with a laptop on its own USB port in the workshop</title><rect x="920" y="423" width="270" height="69" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
 <text x="930" y="441" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Raspberry Pi Pico 2</text>
 <text x="930" y="456" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">PICO · planned</text>
 <line x1="920" y1="470" x2="1190" y2="470" stroke="#d0d7de" stroke-width="0.5"/>
