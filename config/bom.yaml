@@ -51,7 +51,7 @@ zone_m:
   same: 0.5
 
 # NZ$ per metre, auto cable (Jaycar / auto electrical, estimate).
-wire_price_m: {0.5: 0.9, 0.75: 1.1, 1.0: 1.4, 1.5: 1.9, 2.5: 2.9, 4.0: 4.5, 10: 11.0, 35: 30.0}
+wire_price_m: {0.5: 0.9, 0.75: 1.1, 1.0: 1.4, 1.5: 1.9, 2.5: 2.9, 4.0: 4.5, 6.0: 6.5, 10: 11.0, 35: 30.0}
 can_cable_price_m: 2.5       # 2-core twisted, screened
 speaker_cable_price_m: 1.5
 blade_fuse_each: 1.5         # Narva standard blade
@@ -91,7 +91,7 @@ lines:
 
   # ------------------------------------------------------------- AliExpress
   - {id: ccpa, shop: aliexpress, part: Carlinkit CPC200-CCPA (or CCPA-MIC) CarPlay dongle, qty: 1, each: 65.00, source: "US$33-39 x 1.822", covers: [CARPLAY], notes: "Title must say CCPA + Android head unit; lsusb 1314:1520/1521"}
-  - {id: amp, shop: aliexpress, part: "4-channel class D amp 12V (RCA in + remote turn-on)", qty: 1, each: 82.00, source: "~US$45 x 1.822", covers: [AMP], notes: Not waterproof; under the seat}
+  - {id: amp, shop: aliexpress, part: "4-channel class D amp, 4 x 63W RMS at 4 ohm, 2 x 200W bridged, 90Hz HPF/LPF (Sam's pick)", qty: 1, each: 100.00, source: "Sam, AliExpress ~NZ$100", covers: [AMP], notes: "Ch 1-2 Kenwoods, ch 3-4 kept for a bridged sub later; under the seat, not waterproof"}
   - {id: dac, shop: aliexpress, part: USB sound card / DAC 3.5mm out, qty: 1, each: 8.00, source: Estimate, covers: [USB_DAC], notes: Pi 5 has no audio jack}
   - {id: bts, shop: aliexpress, part: BTS7960 43A H-bridge, qty: 2, each: 12.00, source: "~US$6-7 each", covers: [BTS2, BTS3], notes: You have one already; 3 needed}
   - {id: opto, shop: aliexpress, part: 8-channel PC817 opto board 12V in, qty: 2, each: 9.00, source: "~US$5 estimate", covers: [OPTO], notes: "Board 1 = all 8 inputs; board 2 = 8 spare on MCP2"}

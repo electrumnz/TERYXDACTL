@@ -123,8 +123,12 @@ model): 4 ohm, about 50 W RMS each (100 W RMS the pair, 300 W peak), 55 Hz to 20
 ([Quality Mobile Video](https://www.qualitymobilevideo.com/kfc-2053mrb.html),
 [Online Car Stereo](https://www.onlinecarstereo.com/CarAudio/p_43004_Kenwood_KFC-2053MRB.aspx),
 [Autopro](https://autopro.com.au/ab/Autopro-Category/Brands/Kenwood/Kenwood-2-Way-2-Speaker---KFC-2053MRB/p/ME30640)).
-The 4-channel amp on the list (about 25-50 W real per channel) suits them: one channel each, and
-two channels spare.
+**Amp (Sam's pick, 18 Nov):** an AliExpress 4-channel class D, about NZ$100. 4 x 63 W RMS at 4 ohm,
+or 2 x 200 W RMS bridged at 4 ohm, with a fixed 90 Hz high pass and low pass, 8-16 V, up to 33 A
+flat out. Channels 1 and 2 drive the Kenwoods: turn the high pass on so they don't get the deep bass,
+and set the gain so 63 W doesn't push them past their 50 W. Channels 3 and 4 stay free for a sub
+later, bridged into a 4 ohm one (low pass on). It gets its own **40 A** fuse at the battery on
+**6 mm²** cable, feed and earth.
 
 **For the printed pods** (not drawn yet): a 180 mm hole in the front face, at least **95 mm** clear
 depth behind the mounting face (86 mm plus room for the terminals and the cable), and room for the

@@ -120,7 +120,8 @@ def counts(bom: dict, wiring: dict) -> dict:
     wire_m: Counter = Counter()
     can_m = spk_m = 0.0
     blade: Counter = Counter()
-    inline_blade = midi = 0
+    inline_blade = 0
+    midi: Counter = Counter()
     lugs: Counter = Counter()
     vias: Counter = Counter()
     plug_pins: dict[str, set] = {d: set() for d in bom.get("plugs") or []}
@@ -159,7 +160,7 @@ def counts(bom: dict, wiring: dict) -> dict:
                 inline_blade += 1
                 blade[fuse] += 1
             elif fuse <= 100:
-                midi += 1
+                midi[fuse] += 1
     for pin, pv in (wiring["devices"]["FB"].get("pins") or {}).items():
         if isinstance(pv, dict) and pv.get("fuse_a"):
             blade[pv["fuse_a"]] += 1
@@ -211,10 +212,10 @@ def all_lines(bom: dict, wiring: dict) -> list[dict]:
         lines.append({"id": "inline_holders", "shop": "local", "part": "Waterproof inline blade fuse holder",
                       "qty": c["inline_blade"], "each": bom["inline_holder_each"], "source": src,
                       "notes": "Feeds that don't come off the fuse block (bucks, screen, amp, 12V sense, accessories)"})
-    if c["midi"]:
-        lines.append({"id": "midi", "shop": "local", "part": "60 A MIDI fuse + bolt-down holder", "qty": c["midi"],
-                      "each": bom["midi_fuse_each"] + bom["midi_holder_each"], "source": src,
-                      "notes": "At the battery: main feed to the fuse block, and the power steering"})
+    for amps, n in sorted(c["midi"].items()):
+        lines.append({"id": f"midi_{_num(amps)}", "shop": "local", "part": f"{_num(amps)} A MIDI fuse + bolt-down holder",
+                      "qty": n, "each": bom["midi_fuse_each"] + bom["midi_holder_each"], "source": src,
+                      "notes": "At the battery, one per big feed (fuse block, power steering, amp)"})
     for mm2, n in sorted(c["lugs"].items()):
         lines.append({"id": f"lugs_{mm2}", "shop": "local", "part": f"Tinned lugs for {_num(mm2)} mm², M8 hole",
                       "qty": n + 2, "each": bom["lug_each"], "source": src, "notes": "2 spare"})

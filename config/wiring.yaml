@@ -647,9 +647,10 @@ devices:
     optional: true
     pins: {USB: usb, OUT: audio}
   AMP:
-    name: 12 V marine amp
+    name: 4-ch class D amp (AliExpress, 4 x 63 W RMS at 4 ohm)
     zone: cab
-    status: planned
+    status: confirmed
+    note: "Sam's pick. 4 x 63 W RMS at 4 ohm, or 2 x 200 W RMS bridged at 4 ohm; built-in 90 Hz high and low pass; 8-16 V; up to 33 A flat out (16.5 A on music); 145 x 100 x 45 mm. Channels 1 and 2 drive the Kenwoods (set the HPF on). Channels 3 and 4 are kept for a sub later, bridged (e.g. a 4 ohm 150 W RMS one, LPF on)"
     optional: true
     doc: docs/audio.md
     pins: {B+: 12v, GND: gnd, REM: 12v, IN: audio, SPK: spk}
@@ -720,7 +721,7 @@ wires:
   - {id: P14, from: SCREEN_PSU.VOUT, to: SCREEN.DC_IN, sys: power, mm2: 1.0, status: tbc}
   - {id: P15, from: FB.F7, to: RELAYS.COM7, sys: power, mm2: 1.5, status: planned, note: "Accessory 12 V, on with ignition"}
   - {id: P20, from: RELAYS.NO7, to: GLOVE_USB.VIN, sys: power, mm2: 0.75, fuse: 3, status: planned, optional: true, note: "3 A inline fuse. Charges the RC phone with the key on; the control box may hold it on for a while after key-off (TBC)"}
-  - {id: P16, from: BAT12.pos, to: AMP.B+, sys: power, mm2: 4.0, fuse: 30, status: planned, optional: true, note: "Own fuse at the battery. 4 x 50 W can pull 20-30 A"}
+  - {id: P16, from: BAT12.pos, to: AMP.B+, sys: power, mm2: 6.0, fuse: 40, status: planned, optional: true, note: "Own 40 A fuse at the battery. The amp pulls up to 33 A flat out, so 6 mm² (good to 40 A on the table)"}
   - {id: P17, from: RAIL.BUS, to: AMP.REM, sys: power, mm2: 0.5, fuse: 2, status: planned, optional: true, note: "Remote turn-on, goes off with the rail"}
   - {id: P18, from: DCDC.out_pos, to: BAT12.pos, sys: power, status: tbc, note: "DC-DC charge lead. Size and fuse depend on its rating"}
   - {id: P19, from: BAT12.pos, to: EPS_ECU.B+, sys: power, mm2: 10, fuse: 60, status: planned, optional: true, note: "Own 60 A fuse and cable straight to the battery (Toyota fuses the Prius EPS at 60 A)"}
@@ -735,7 +736,7 @@ wires:
   - {id: G07, from: PICO.GND, to: PICO_BUCK.GND, sys: ground, mm2: 0.5, status: planned, note: "All control box boards share the Pico ground"}
   - {id: G08, from: SCREEN_PSU.GND, to: GND_STAR.G, sys: ground, mm2: 1.0, status: tbc}
   - {id: G09, from: SCREEN.GND, to: SCREEN_PSU.GND, sys: ground, mm2: 1.0, status: tbc}
-  - {id: G10, from: AMP.GND, to: GND_STAR.G, sys: ground, mm2: 4.0, status: planned, optional: true}
+  - {id: G10, from: AMP.GND, to: GND_STAR.G, sys: ground, mm2: 6.0, status: planned, optional: true, note: Same size as the feed}
   - {id: G24, from: GLOVE_USB.GND, to: GND_STAR.G, sys: ground, mm2: 0.75, status: planned, optional: true}
   - {id: G11, from: MOSFET.GND, to: GND_STAR.G, sys: ground, mm2: 2.5, status: planned, note: "Carries all five lights' current"}
   - {id: G12, from: BTS1.B-, to: GND_STAR.G, sys: ground, mm2: 1.5, status: planned}

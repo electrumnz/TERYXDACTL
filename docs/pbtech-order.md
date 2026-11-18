@@ -35,7 +35,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Part | Qty | Each NZ$ | Total NZ$ | Price from | Notes |
 |---|---|---|---|---|---|
 | Carlinkit CPC200-CCPA (or CCPA-MIC) CarPlay dongle | 1 | 65.00 | 65.00 | US$33-39 x 1.822 | Title must say CCPA + Android head unit; lsusb 1314:1520/1521 |
-| 4-channel class D amp 12V (RCA in + remote turn-on) | 1 | 82.00 | 82.00 | ~US$45 x 1.822 | Not waterproof; under the seat |
+| 4-channel class D amp, 4 x 63W RMS at 4 ohm, 2 x 200W bridged, 90Hz HPF/LPF (Sam's pick) | 1 | 100.00 | 100.00 | Sam, AliExpress ~NZ$100 | Ch 1-2 Kenwoods, ch 3-4 kept for a bridged sub later; under the seat, not waterproof |
 | USB sound card / DAC 3.5mm out | 1 | 8.00 | 8.00 | Estimate | Pi 5 has no audio jack |
 | BTS7960 43A H-bridge | 2 | 12.00 | 24.00 | ~US$6-7 each | You have one already; 3 needed |
 | 8-channel PC817 opto board 12V in | 2 | 9.00 | 18.00 | ~US$5 estimate | Board 1 = all 8 inputs; board 2 = 8 spare on MCP2 |
@@ -73,7 +73,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Waterproof 3-pin plug pair (DT style) | 2 | 3.00 | 6.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
 | Waterproof 4-pin plug pair (DT style) | 2 | 3.50 | 7.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
 | Waterproof 6-pin plug pair (DT style) | 2 | 5.00 | 10.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
-| **Total** | | | **753.01** | | |
+| **Total** | | | **771.01** | | |
 
 ### Core Electronics (AU, online)
 
@@ -120,18 +120,19 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Auto cable 1 mm² (metres) | 30 | 1.40 | 42.00 | Estimate; counted from config/wiring.yaml | About 24 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
 | Auto cable 1.5 mm² (metres) | 60 | 1.90 | 114.00 | Estimate; counted from config/wiring.yaml | About 48 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
 | Auto cable 2.5 mm² (metres) | 15 | 2.90 | 43.50 | Estimate; counted from config/wiring.yaml | About 12 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
-| Auto cable 4 mm² (metres) | 5 | 4.50 | 22.50 | Estimate; counted from config/wiring.yaml | About 3 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
+| Auto cable 6 mm² (metres) | 5 | 6.50 | 32.50 | Estimate; counted from config/wiring.yaml | About 3 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
 | Auto cable 10 mm² (metres) | 7 | 11.00 | 77.00 | Estimate; counted from config/wiring.yaml | About 5 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
 | Auto cable 35 mm² (metres) | 3 | 30.00 | 90.00 | Estimate; counted from config/wiring.yaml | About 2 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
 | CAN cable, 2-core twisted + screen (metres) | 10 | 2.50 | 25.00 | Estimate; counted from config/wiring.yaml |  |
 | Speaker cable (metres) | 10 | 1.50 | 15.00 | Estimate; counted from config/wiring.yaml |  |
-| Standard blade fuses, Narva or Jaycar (not AliExpress) | 34 | 1.50 | 51.00 | Estimate; counted from config/wiring.yaml | 1 A x3, 2 A x5, 3 A x7, 7.5 A x5, 10 A x6, 15 A x5, 30 A x3 (2 spare of each) |
-| Waterproof inline blade fuse holder | 8 | 6.00 | 48.00 | Estimate; counted from config/wiring.yaml | Feeds that don't come off the fuse block (bucks, screen, amp, 12V sense, accessories) |
-| 60 A MIDI fuse + bolt-down holder | 2 | 31.00 | 62.00 | Estimate; counted from config/wiring.yaml | At the battery: main feed to the fuse block, and the power steering |
-| Tinned lugs for 4 mm², M8 hole | 6 | 2.00 | 12.00 | Estimate; counted from config/wiring.yaml | 2 spare |
+| Standard blade fuses, Narva or Jaycar (not AliExpress) | 31 | 1.50 | 46.50 | Estimate; counted from config/wiring.yaml | 1 A x3, 2 A x5, 3 A x7, 7.5 A x5, 10 A x6, 15 A x5 (2 spare of each) |
+| Waterproof inline blade fuse holder | 7 | 6.00 | 42.00 | Estimate; counted from config/wiring.yaml | Feeds that don't come off the fuse block (bucks, screen, amp, 12V sense, accessories) |
+| 40 A MIDI fuse + bolt-down holder | 1 | 31.00 | 31.00 | Estimate; counted from config/wiring.yaml | At the battery, one per big feed (fuse block, power steering, amp) |
+| 60 A MIDI fuse + bolt-down holder | 2 | 31.00 | 62.00 | Estimate; counted from config/wiring.yaml | At the battery, one per big feed (fuse block, power steering, amp) |
+| Tinned lugs for 6 mm², M8 hole | 6 | 2.00 | 12.00 | Estimate; counted from config/wiring.yaml | 2 spare |
 | Tinned lugs for 10 mm², M8 hole | 10 | 2.00 | 20.00 | Estimate; counted from config/wiring.yaml | 2 spare |
 | Tinned lugs for 35 mm², M8 hole | 6 | 2.00 | 12.00 | Estimate; counted from config/wiring.yaml | 2 spare |
-| **Total** | | | **1,226.00** | | |
+| **Total** | | | **1,256.50** | | |
 
 ### Separate pickup
 
@@ -145,12 +146,12 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Shop | NZ$ |
 |---|---|
 | PB Tech (buy Thursday) | 846.56 |
-| AliExpress (one order, 2 to 4 weeks) | 753.01 |
+| AliExpress (one order, 2 to 4 weeks) | 771.01 |
 | Core Electronics (AU, online) | 272.66 |
 | Gogo:Tronics and element14 (NZ, online) | 10.38 |
-| Local: Jaycar, Narva stockist, Repco, auto electrical | 1,226.00 |
+| Local: Jaycar, Narva stockist, Repco, auto electrical | 1,256.50 |
 | Separate pickup | 115.00 |
-| **Everything** | **3,223.61** |
+| **Everything** | **3,272.11** |
 
 ### Already got (not in the totals)
 
