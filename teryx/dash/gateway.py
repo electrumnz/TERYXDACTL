@@ -73,12 +73,16 @@ class Gateway:
         self._last_settings_push = -1e9
         self.last_ack: dict | None = None
         self.listeners: list = []   # callables(frame_name, values) for plugins / logging
+        # Readings from the Pi's own sensors (GPS from the 4G board, tilt from the IMU), set by
+        # the teryx_dash plugins. Merged into the snapshot; the sim's fake sensors only fill gaps.
+        self.local: dict = {}
 
     # ------------------------------------------------------------ public API
     def snapshot(self) -> dict:
         now = time.monotonic()
         with self._lock:
             s = dict(self.state)
+            s.update(self.local)
             s["mc.online"] = now - self.last_shinegle < ONLINE_TIMEOUT_S
             s["pico.online"] = now - self.seen.get("PICO_STATUS", -1e9) < ONLINE_TIMEOUT_S
             for k, v in self.req.items():
@@ -89,6 +93,11 @@ class Gateway:
             s["dash.uptime_s"] = round(now - self.started, 1)
             s["dash.settings"] = dict(self.settings)
             return s
+
+    def set_local(self, values: dict) -> None:
+        """Pi-side sensor readings (pi.gps.*, pi.imu.*). Thread safe."""
+        with self._lock:
+            self.local.update(values)
 
     def request(self, id: str, value) -> None:
         """A tap on the dash. See docs/DASH_API.md for ids and values."""

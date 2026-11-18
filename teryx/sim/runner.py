@@ -43,7 +43,7 @@ class Simulator:
         self.scenario_t = 0.0
         self.speed_factor = 1.0
         self.paused = False                        # freezes the scenario and the physics
-        self.sensors = FakeSensors()               # tilt + GPS, not fitted yet
+        self.sensors = FakeSensors()               # tilt + GPS for the sim (real ones on the Pi win)
         self._lock = threading.RLock()
         self._stop = threading.Event()
         self._thread: threading.Thread | None = None

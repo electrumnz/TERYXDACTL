@@ -220,6 +220,81 @@ class RemoteRules:
         return Outcome(command=cmd)
 
 
+# ---------------------------------------------------------------- GPS from the 4G board
+# The A7670SA's own GNSS gives the Pi its position (no separate GPS). Field layouts are from
+# SIMCom's "A76XX Series GNSS Application Note V1.03", 5.2: AT+CGNSSPWR=1 powers the GNSS up,
+# then AT+CGPSINFO answers
+#     +CGPSINFO: 3113.343286,N,12121.234064,E,250311,072809.3,44.1,0.0,0
+#     lat ddmm.mmmmmm, N/S, lon dddmm.mmmmmm, E/W, date ddmmyy, UTC hhmmss.s, alt m, speed knots, course deg
+# and only commas while there's no fix. Through ModemManager the same position comes from
+# `mmcli --location-get -K` (keys modem.location.gps.latitude etc, "--" when empty).
+KNOTS_TO_KMH = 1.852
+
+
+def _dm_to_deg(dm: str, hemi: str) -> float:
+    """ddmm.mmmm or dddmm.mmmm plus N/S/E/W -> signed degrees."""
+    v = float(dm)
+    deg = int(v // 100)
+    out = deg + (v - deg * 100) / 60
+    return -out if hemi.upper() in ("S", "W") else out
+
+
+def _num(v: str | None) -> float | None:
+    try:
+        return float(v) if v not in (None, "", "--") else None
+    except ValueError:
+        return None
+
+
+def parse_cgpsinfo(text: str, now: float | None = None) -> dict | None:
+    """AT+CGPSINFO answer -> pi.gps.* values, or None while there's no fix."""
+    m = re.search(r"\+CGPSINFO:\s*([^\r\n]*)", text or "")
+    if not m:
+        return None
+    f = [x.strip() for x in m.group(1).split(",")]
+    if len(f) < 4 or not f[0] or not f[2]:
+        return None
+    try:
+        out = {"pi.gps.fix": True, "pi.gps.lat": round(_dm_to_deg(f[0], f[1]), 6),
+               "pi.gps.lon": round(_dm_to_deg(f[2], f[3]), 6), "pi.gps.time": now if now is not None else time.time()}
+    except ValueError:
+        return None
+    alt, kn, course = (_num(f[i]) if len(f) > i else None for i in (6, 7, 8))
+    if alt is not None:
+        out["pi.gps.alt_m"] = round(alt, 1)
+    if kn is not None:
+        out["pi.gps.speed_kmh"] = round(kn * KNOTS_TO_KMH, 1)
+    if course is not None:
+        out["pi.gps.heading"] = round(course, 1)
+    return out
+
+
+def parse_mm_location(text: str, now: float | None = None) -> dict | None:
+    """`mmcli -m any --location-get -K` -> pi.gps.* values, or None while there's no fix.
+    Speed, heading and satellites come from the NMEA RMC/GGA lines when those are switched on."""
+    kv = parse_keyvalues(text)
+    lat, lon = _num(kv.get("modem.location.gps.latitude")), _num(kv.get("modem.location.gps.longitude"))
+    if lat is None or lon is None:
+        return None
+    out = {"pi.gps.fix": True, "pi.gps.lat": round(lat, 6), "pi.gps.lon": round(lon, 6),
+           "pi.gps.time": now if now is not None else time.time()}
+    alt = _num(kv.get("modem.location.gps.altitude"))
+    if alt is not None:
+        out["pi.gps.alt_m"] = round(alt, 1)
+    for k, line in kv.items():
+        if not k.startswith("modem.location.gps.nmea"):
+            continue
+        f = line.split("*")[0].split(",")
+        if f[0][3:6] == "RMC" and len(f) > 8 and f[2] == "A":
+            if _num(f[7]) is not None:
+                out["pi.gps.speed_kmh"] = round(_num(f[7]) * KNOTS_TO_KMH, 1)
+            if _num(f[8]) is not None:
+                out["pi.gps.heading"] = round(_num(f[8]), 1)
+        elif f[0][3:6] == "GGA" and len(f) > 7 and _num(f[7]) is not None:
+            out["pi.gps.sats"] = int(_num(f[7]))
+    return out
+
+
 # ---------------------------------------------------------------- the modem
 class FakeModem:
     """Stands in for the 4G stick in the simulator and the tests."""
@@ -243,6 +318,9 @@ class FakeModem:
     async def status(self) -> dict:
         return {"present": self.present, "data_on": self.data_on, "signal_pct": 70 if self.present else None,
                 "operator": "Sim network" if self.present else None}
+
+    async def location(self) -> dict | None:
+        return None   # the sim's fake GPS (teryx/sim/sensors.py) fills pi.gps.* instead
 
 
 Runner = Callable[..., Awaitable[str]]
@@ -335,6 +413,15 @@ class MmcliModem:
         sig = kv.get("modem.generic.signal-quality.value")
         return {"present": True, "data_on": data_on, "signal_pct": int(sig) if (sig or "").isdigit() else None,
                 "operator": kv.get("modem.3gpp.operator-name") or None}
+
+    async def location(self) -> dict | None:
+        """GPS through ModemManager. Raw + NMEA have to be switched on before the GNSS engine runs.
+        If this ModemManager can't drive the A7670's GNSS, it just never gets a fix (see
+        docs/remote-access.md, "GPS"): run the module with TERYX_MODEM=at:... instead."""
+        if not getattr(self, "_gps_on", False):
+            await self.run("mmcli", "-m", "any", "--location-enable-gps-raw", "--location-enable-gps-nmea")
+            self._gps_on = True
+        return parse_mm_location(await self.run("mmcli", "-m", "any", "--location-get", "-K"))
 
 
 # ---------------------------------------------------------------- the service
@@ -555,9 +642,16 @@ class AtModem:
                 "signal_pct": None if rssi == 99 else round(min(rssi, 31) * 100 / 31),
                 "operator": op.group(1) if op else None}
 
+    async def location(self) -> dict | None:
+        if not getattr(self, "_gps_on", False):
+            await self.at("AT+CGNSSPWR=1", timeout=10)   # GNSS power on (A76XX GNSS app note, 5.2)
+            self._gps_on = True
+        return parse_cgpsinfo(await self.at("AT+CGPSINFO"))
+
 
 REMOTE_KEY = web.AppKey("teryx_dash_remote", RemoteService)
 REMOTE_TASK_KEY = web.AppKey("teryx_dash_remote_task", asyncio.Future)
+GPS_TASK_KEY = web.AppKey("teryx_dash_gps_task", asyncio.Future)
 
 
 def make_modem() -> Any:
@@ -572,7 +666,8 @@ def make_modem() -> Any:
 
 
 def setup_remote_routes(app: web.Application, gateway: Any, config_dir: Callable[[], Path],
-                        snapshot: Callable[[], dict], modem: Any = None, poll_s: float = 5.0) -> RemoteService:
+                        snapshot: Callable[[], dict], modem: Any = None, poll_s: float = 5.0,
+                        gps_s: float = 2.0) -> RemoteService:
     svc = RemoteService(modem or make_modem(), config_dir() / "remote.json", gateway, snapshot)
     app[REMOTE_KEY] = svc
 
@@ -662,11 +757,35 @@ def setup_remote_routes(app: web.Application, gateway: Any, config_dir: Callable
                 pass   # modem unplugged or busy: try again next time
             await asyncio.sleep(poll_s)
 
+    async def gps_loop():
+        """Read the 4G board's GPS every few seconds into pi.gps.* (Gateway.set_local)."""
+        publish = getattr(gateway, "set_local", None)
+        if publish is None or not hasattr(svc.modem, "location"):
+            return
+        had_fix = False
+        while True:
+            wait = gps_s
+            try:
+                fix = await svc.modem.location()
+            except asyncio.CancelledError:
+                raise
+            except Exception:
+                fix, wait = None, max(gps_s, 30.0)   # modem busy, unplugged, or no GNSS: back off
+            if fix:
+                publish(fix)
+                had_fix = True
+            elif had_fix:
+                publish({"pi.gps.fix": False})   # keep the last position, just say it's old
+                had_fix = False
+            await asyncio.sleep(wait)
+
     async def on_start(_app):
         _app[REMOTE_TASK_KEY] = asyncio.ensure_future(poll_loop())
+        _app[GPS_TASK_KEY] = asyncio.ensure_future(gps_loop())
 
     async def on_stop(_app):
         _app[REMOTE_TASK_KEY].cancel()
+        _app[GPS_TASK_KEY].cancel()
 
     app.router.add_get("/api/remote", get_remote)
     app.router.add_put("/api/remote", put_remote)

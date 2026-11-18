@@ -1,7 +1,8 @@
 """Fake tilt sensor (IMU) and GPS for the simulator.
 
-Neither is fitted yet. These give the dash's tilt and GPS widget something to show on the
-bench, using the same state keys a real sensor service on the Pi will publish later:
+These give the dash's tilt and GPS widget something to show in the sim. On the Pi the real
+ones publish the same keys (dash/server/teryx_dash/imu.py for the MPU-6050, and the 4G board's
+GPS in dash/server/teryx_dash/remote.py) and win over these:
 
     pi.imu.roll, pi.imu.pitch          degrees (+ roll = right side down, + pitch = nose up)
     pi.gps.fix                         bool

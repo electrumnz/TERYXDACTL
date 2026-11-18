@@ -1,5 +1,18 @@
 # Shopping list and which dash computer to buy
 
+> **Don't buy from this page.** It's the research and the reasons. The one list to buy from is
+> [`pbtech-order.md`](pbtech-order.md) (and `.csv`), made by `python -m teryx bom` from the wiring
+> plan, with a test that fails if any wired part isn't on it. Where this page and that list
+> disagree, the list wins.
+>
+> **Dropped since this page was written (no USB plug-ins, Sam 18 Nov):** the DFRobot USB GPS
+> puck (the A7670SA 4G board's own GPS does it, read by the dash, see 4b), the USB audio
+> adapter (official DAC+ HAT on a ribbon instead), USB/EasyCAP camera dongles (Camera Module 3
+> on ribbon port 1, rear and trailer cameras through an ADV7280-M board on ribbon port 2, see
+> [`cameras.md`](cameras.md)), the USB SSD (official 128GB A2 SD card for now) and the powered
+> USB hub (not needed). Only the screen's touch and the CarPlay dongle are still USB, with
+> right-angle plugs.
+
 > **Changed 18 November 2026 (evening): buy the Pi 5 8GB, and leave the AI HAT+ 2 for later.**
 > Sam isn't sold on the HAT yet, so it's moved to section 4c ("Later"). Every design still
 > leaves room for it: the Pi box stays 56 mm tall, the PCIe slot and the HAT's header stay
@@ -202,47 +215,35 @@ box wall. Check the stack on the real parts before printing.
 11.6 W (section 3), plus up to about 4.5 W for the HAT if it goes in later, so about 16 W of the
 regulator's 27 W before USB devices. Power 12 V cameras from 12 V, not from the Pi's USB.
 
-### 4b. GPS (added 18 November)
+### 4b. GPS (changed 18 November: no separate receiver)
 
-**The Pi 5 has no GPS built in, so it isn't free, but it's cheap.** The dash already knows
-what to do with one: it reads `pi.gps.*` (see [`DASH_API.md`](DASH_API.md)) and shows "not
-fitted" until those turn up. What's still to write is the small Pi-side bit that reads the
-receiver (through `gpsd`, BSD licence, fine for us) and sends those keys.
+**Nothing extra to buy.** The SIMCom A7670SA 4G board has GPS built in (get the "FASE" GNSS
+option and fit the active GPS aerial on its SMA plug, both on the parts list). The dash reads it
+straight from the board every 2 seconds: `AT+CGNSSPWR=1` then `AT+CGPSINFO` when the board is
+on the UART, or ModemManager's location (`mmcli --location-get`) when ModemManager runs it. Code
+in `dash/server/teryx_dash/remote.py`, command layout from SIMCom's
+[A76XX GNSS application note](https://www.waveshare.net/w/upload/7/75/A76XX_Series_GNSS_Application_Note_V1.03.pdf)
+section 5.2. It fills the same `pi.gps.*` keys the sim's fake GPS does
+([`DASH_API.md`](DASH_API.md)).
 
-| Part | Why | Where | Price | Notes |
-|---|---|---|---|---|
-| **DFRobot USB GPS receiver, TEL0138** | Position, speed, heading, height | [Core Electronics (AU)](https://core-electronics.com.au/catalog/product/view/sku/TEL0138), goes in the same parcel as the CAN boards | AU$21.05 (~NZ$26) (search result) | Local option: [RS NZ 247-3251](https://nz.rs-online.com/web/p/gnss-gps-modules/2473251) NZ$30.85 (search result). u-blox UBX-G7020 chip, 56 channels, under 2.5 m accuracy, 1 update a second, -40 to 85°C, magnetic base, 2 m USB lead ([DFRobot wiki](https://wiki.dfrobot.com/tel0138/), [Mouser](https://www.mouser.co.uk/new/dfrobot/dfrobot-tel0138-gps-receiver/)). The aerial is inside the puck. **No waterproof rating found**, so it goes under plastic, not out in the weather |
-
-**Where it goes.** GPS goes through plastic but not metal. Stick the puck under the plastic
-dash top or the roof panel with a clear view of the sky, and run the 2 m lead to the Pi. If
-the Pi ends up under the bonnet and 2 m won't reach, a USB extension is fine (USB 2 is good
-to 5 m).
-
-**Why this one and not a fancier one.** On this dash GPS is a backup and a nice extra: speed
-comes from the motor controller, and night mode already works from the clock. The TEL0138
-is an older chip and I couldn't confirm it uses more than the American GPS satellites at
-once, which can mean a slower or patchier fix under thick bush. If that bites, the upgrade is
-a plug-in swap with no code change:
-
-| Upgrade (only if needed) | Where | Price | Notes |
-|---|---|---|---|
-| u-blox NEO-M9N USB dongle with SMA aerial plug, ELT0103 | [gnss.store](https://gnss.store/products/elt0103) (Europe) | €66.99 ex VAT (search result), shipping to NZ **not checked** | Uses GPS, Galileo, GLONASS and BeiDou together, so more satellites under trees ([gnss.store](https://gnss.store/collections/standard-precision-dongles)) |
-| Active magnetic GPS aerial, SMA, 3 m lead | [PB Tech CCTMLS1025 (Milesight)](https://www.pbtech.com/pacific/product/CCTMLS1025/Milesight-ACC-AM3M-G-GPS-Magnetic-Antenna-28dBi-wi) or [Core Electronics GPS-14986](https://core-electronics.com.au/catalog/product/view/sku/GPS-14986) | NZ$29.57 / AU$29.25 (search results) | Goes on the roof or roll cage, outside. Needed with the dongle above |
+**Where the aerial goes.** GPS goes through plastic but not metal. Put the active aerial under
+the plastic dash top or on the roof panel with a view of the sky, not under the bonnet.
 
 **What the dash uses it for:**
 
 | Use | Status |
 |---|---|
-| Night mode from sunrise and sunset at where you actually are | **Works now** with a fix (a light sensor wins if one is fitted). Without GPS it uses the region picked in Settings. Position stays on the Pi, never saved or sent |
-| Compass heading, height and satellite count on the Sensors panel | **Works now** with a fix |
-| Speed backup if the motor controller speed is missing or wrong (wheelspin, locked wheels) | Key is there (`pi.gps.speed_kmh`), not wired into the speedo yet |
+| Night mode from sunrise and sunset where you actually are | **Works** with a fix. Without one it uses the region picked in Settings. Position stays on the Pi |
+| Compass heading, height and satellite count on the Sensors panel | **Works** with a fix (satellites only through ModemManager's NMEA) |
+| WHERE text for anti-theft (map link, speed) | **Works** with a fix, and gives the last known spot when the fix drops |
+| Speed backup if the motor controller speed is missing or wrong | Key is there (`pi.gps.speed_kmh`), not wired into the speedo yet |
 | Trail logging (record a ride, show where you've been) | **Not built yet.** Would need Sam's OK, since it saves where he goes |
 | Offline maps | **Not built yet.** Would need map tiles stored on the SD card |
-| Clock | The Pi has no clock battery fitted by default, so GPS can set the time with no wifi |
 
-**USB ports are getting full.** The Pi 5 has 4 USB ports. Touch, rear camera, trailer camera
-dongle, CarPlay dongle, USB audio, GPS and a mic later makes 6 or 7. Plan on a **powered USB
-hub** in the Pi box for the low-speed ones (GPS, audio, mic, touch). Not priced yet.
+**Check on day one:** some A7670 firmware has no GNSS at all (it answers `ERROR` to
+`AT+CGNSSPWR`), and ModemManager may not know how to start this board's GNSS. If the
+Sensors panel never gets a fix outside, run the board with `TERYX_MODEM=at:/dev/ttyAMA0` so the
+dash talks to it directly ([`remote-access.md`](remote-access.md), "GPS").
 
 ### 4c. Later and optional (don't buy now)
 
@@ -252,7 +253,6 @@ hub** in the Pi box for the low-speed ones (GPS, audio, mic, touch). Not priced 
 | 4G board, prepaid SIM, AirTag | Anti-theft tracking, SMS and remote access | **Sam's pick: SIMCom A7670SA board** to solder in, ~NZ$28 on AliExpress, must list **B28**, Sam's board takes 5-10 V on its V pin (own regulator and 470 µF cap), so it runs off the spare Mini560 5 V buck, never raw 12 V; a level shifter is probably not needed (measure the T pin first); UART is too slow for cameras, so a board with the module's own USB on USB-C is better and a wideband LTE antenna. Plug-in alternatives: Huawei E3372h-607 stick ~NZ$66-77, Waveshare SIM7600G-H US$101.99. AirTag ~NZ$47-68 | From the 4G anti-theft work. Dongle goes inside the Pi box. SIM needs a top-up once a year |
 | Kingston XS1000 1TB USB-C SSD (optional), PB Tech HDDKCP225100 | Dashcam and Sentry video | NZ$189-253 | USB, not NVMe. Cradle in the Pi box lid, short right-angle USB-C to USB-A lead |
 | Camera Module 3 NoIR Wide (optional), PB Tech SEVRBP0399 | Cabin camera | ~NZ$70 | Plus a second 200 mm cable |
-| Powered USB hub | More USB ports | Not priced | See "USB ports are getting full" below. The Pi 5's USB ports share 1.6 A, so the modem and SSD may need the hub's power |
 
 AUD to NZD: 1 AUD = 1.234 NZD on [Wise](https://wise.com/us/currency-converter/aud-to-nzd-rate)
 when checked (no timestamp on the page). Core Electronics prices are AUD incl Australian GST;
