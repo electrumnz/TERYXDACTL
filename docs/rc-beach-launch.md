@@ -16,7 +16,8 @@ Try the remote screen on a phone: <https://electrumnz.github.io/TERYXDACTL/remot
 
 - **It's doable, and the safety brain stays the Pico.** A new small "RC box"
   (a second Pico 2) does the driving. It only drives while it hears the remote
-  every 200 ms, the main Pico says RC is allowed, and the dead-man button is held.
+  every 200 ms, the main Pico says RC is allowed, and your thumb is on the drive stick
+  (that's the dead-man).
   Anything else and it stops on the brake.
 - **Steering:** fake the torque sensor signal into the wrecker Aqua column's own
   ECU, so the column's motor does the turning. Hard-wired relays hand steering
@@ -24,8 +25,10 @@ Try the remote screen on a phone: <https://electrumnz.github.io/TERYXDACTL/remot
   steering wheel itself.
 - **Remote: your own phone.** The "Teryx Remote" app is a web page the Pi
   serves on its own Wi-Fi hotspot, so there's nothing to install and no
-  internet needed at the beach. Clip the phone into a gamepad grip (Razer Kishi
-  V3, NZ$167.58 at PB Tech) for real sticks and triggers. If the Wi-Fi range or
+  internet needed at the beach. It drives with **on-screen sticks**, so there's
+  nothing to buy: left thumb forward/back (pull back to brake), right thumb steer.
+  Lift your left thumb off and it stops and holds. A gamepad grip is an optional
+  extra if you ever want real sticks. If the Wi-Fi range or
   splashes turn out to be a problem, the same app runs on a SIYI MK15 handheld
   (splash proof, its own long-range radio). See section 4.
 - **4G driving is in Settings, off by default** and needs your PIN to change.
@@ -44,7 +47,7 @@ Try the remote screen on a phone: <https://electrumnz.github.io/TERYXDACTL/remot
 ## 2. How it fits together
 
 ```
- Phone + gamepad grip ◄──── Teryx Wi-Fi hotspot (or 4G, off by default) ────► Pi 5
+ Phone (on-screen sticks) ◄ Teryx Wi-Fi hotspot (or 4G, off by default) ────► Pi 5
    (or a SIYI handheld: sticks ──own radio──► air unit ──SBUS──► RC box directly)   │ CAN
  RC box ◄──── CAN: "RC allowed" permit, 20 Hz ──── main control box (Pico 2) ◄─┘
    │
@@ -104,23 +107,24 @@ Sam's wishlist: a screen with the front, rear and trailer cameras, sticks that
 give a percentage (forward/back on one, steer on the other), winch in/out, lights,
 F-N-R, diff lock, 2WD/4WD. Splash proof is enough.
 
-| | Your phone + gamepad grip (pick) | SIYI MK15 | Android gaming handheld (eg Retroid Pocket 5) |
+| | Your phone, on-screen sticks (pick) | SIYI MK15 | Android gaming handheld (eg Retroid Pocket 5) |
 |---|---|---|---|
 | Screen | Your phone's | 5.5" 1080p touch, about 1000 nits (good in sun) | 5.5" 1080p OLED touch |
 | Runs our app | Yes, in the browser, add to home screen | Yes, Android 9 | Yes, Android |
-| Go/brake and steer | Grip's sticks and triggers (Razer Kishi V3) | Two sticks | Two Hall sticks, analogue L2/R2 |
+| Go/brake and steer | On-screen sticks (thumb on = drive). Optional gamepad grip | Two sticks | Two Hall sticks, analogue L2/R2 |
 | Link | Teryx's own Wi-Fi hotspot. 4G optional, off by default | Own radio, 16 ch SBUS out, up to 15 km clear line | Wi-Fi |
 | Video | Wi-Fi from the Pi. About 0.5 s in one Pi 5 test, needs tuning | Own link, about 180 ms | Wi-Fi from the Pi |
-| Splash proof | Depends on the phone. The grip has no rating | IP53 (retailer listings) | No rating found |
-| Cost | Razer Kishi V3 NZ$167.58 at PB Tech (Backbone One NZ$197-199, out of stock) | About £485 at a UK shop (sold out on the day), US$447-1,104 elsewhere. No NZ stockist found | About US$199-219 |
+| Splash proof | Depends on the phone | IP53 (retailer listings) | No rating found |
+| Cost | Free. Optional grip: Razer Kishi V3 NZ$167.58 at PB Tech | About £485 at a UK shop (sold out on the day), US$447-1,104 elsewhere. No NZ stockist found | About US$199-219 |
 
-**Why the phone:** you already carry it, there's nothing to buy but the grip,
+**Why the phone:** you already carry it, there's nothing to buy,
 and the app updates with the rest of Teryx OS. The RC box doesn't care what the
 remote is, only that fresh packets keep coming.
 
 **Phone things to sort (TBC):**
 
-- **HTTPS.** Chrome only gives web pages the gamepad on a secure (HTTPS) page,
+- **HTTPS (only for the optional grip).** The on-screen sticks work on plain
+  HTTP. Chrome only gives web pages the gamepad on a secure (HTTPS) page,
   per MDN. So the Pi serves the remote page over HTTPS with its own certificate,
   which the phone has to trust once. iPhone Safari support for the grip isn't
   checked yet: which phone does Sam use?
@@ -197,14 +201,32 @@ github.io it drives a pretend Teryx.
 - Middle: live camera, Rear / Trailer / Front tabs, guide lines that bend with
   the steering, speed with the RC cap under it.
 - Left: Arm RC, F-N-R, 2WD/4WD, diff lock %, lights.
-- Right: big STOP, winch in, winch out (hold-to-run), the green "hold to drive"
-  dead-man.
+- Right: big STOP, winch in, winch out (hold-to-run).
+- Over the camera: two big on-screen sticks. Left is forward/back (pull back to
+  brake), right is steer. Your thumb on the left stick is the dead-man: lift it
+  and the Teryx stops and holds on the brake. To arm, your thumb has to be off
+  the stick first.
+- Wet fingers and palms: the sticks are big (about 120 x 190 px and 220 x 120 px)
+  and the whole stick area grabs your thumb, so you don't have to hit the knob.
+  A touch bigger than about 70 px (a palm or the side of your hand) is ignored,
+  and each stick only follows the first thumb that lands on it.
 - Bottom: brake %, steering, go %.
 - Warnings in the middle: signal lost, let go of the stick, water at the limit,
   digging in, stuck.
-- Gamepad controls (phone grip or handheld): left stick Y forward/back, right
-  stick X steer, R2 go, L2 brake, L1 dead-man, A winch in, B winch out.
-  Keyboard: W/S, A/D, Space, I/O. With no gamepad it shows on-screen sticks.
+- Optional gamepad (phone grip or handheld). Two clean layouts, swapped on
+  their own:
+  - **Touch (no gamepad):** sticks over the camera, winch in/out on the right.
+  - **Gamepad plugged in:** anything the pad does leaves the screen (both sticks
+    and the winch buttons), the right column slims down and the camera gets the
+    room. A small panel shows the pad layout and lights up green while L1 (the
+    dead-man) is held. Left stick Y forward/back, right stick X steer, R2 go,
+    L2 brake, L1 dead-man, A winch in, B winch out. STOP, F-N-R, 2WD/4WD, diff
+    and lights stay on screen.
+  - **Gamepad unplugged or flat:** the Teryx stops and holds straight away, the
+    on-screen sticks come back, and driving again needs your thumb on the stick
+    and the stick centred. Plugging a pad in while armed also stops and holds
+    until L1 is held with the stick centred.
+  - Keyboard (for testing): W/S, A/D, Space, I/O.
 
 On the real remote the app shows what the RC box reports; it doesn't make the
 safety calls itself.
@@ -331,7 +353,7 @@ spot, and ask the council if in doubt.
 | BTS7960 | Brake actuator driver |
 | AS5600 | Steering shaft angle |
 | 2 stainless probes | Water |
-| Remote | Your phone + Razer Kishi V3 grip (NZ$167.58), or a SIYI MK15 |
+| Remote | Your phone (on-screen sticks, free). Optional: a gamepad grip (Razer Kishi V3 NZ$167.58) or a SIYI MK15 |
 | Wi-Fi | USB Wi-Fi adaptor with an outside antenna, or a small outdoor access point (TBC) |
 | Brake actuator | Not chosen, needs pedal measurements |
 
@@ -347,7 +369,7 @@ reason, throttle, brake, direction, link age).
 3. Measure brake pedal force and travel, choose the brake actuator.
 4. Meter the Shinegle throttle wiper (J1-16) range and what F/R (J1-22, J1-33)
    expect.
-5. Try the app on your phone now. Get a gamepad grip and test it (and HTTPS) on the bench.
+5. Try the app on your phone now, with wet hands too. A gamepad grip is optional, only if the on-screen sticks don't feel right.
 6. Build the RC box on the bench with the sim, then on the Teryx up on stands.
 7. Ask Shinegle for the motor and battery IP ratings.
 

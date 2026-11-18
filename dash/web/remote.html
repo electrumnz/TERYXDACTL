@@ -12,9 +12,11 @@
   <title>Teryx Remote</title>
   <!-- The handheld "mini OS" for RC launching (docs/rc-beach-launch.md).
        On github.io it runs a pretend Teryx so it can be tried on a phone.
-       Left stick forward/back = go and brake, right stick = steer, like an RC car.
-       Triggers work too (R2 go, L2 brake). Hold the dead-man (L1, Space, or the green
-       button on screen) or nothing moves. -->
+       On-screen sticks by default: left thumb forward/back = go and brake, right thumb = steer,
+       like an RC car. Lift the left thumb off and it stops (that's the dead-man).
+       A gamepad is an optional extra (R2 go, L2 brake, hold L1 as the dead-man). When one is
+       plugged in, the on-screen controls it covers (sticks, winch in/out) hide and the camera
+       gets the room. Unplug it and they come straight back, and the Teryx stops and holds. -->
   <link rel="stylesheet" href="css/theme.css">
   <link rel="stylesheet" href="css/remote.css">
 </head>
@@ -81,6 +83,12 @@
         <div class="speed"><b id="spd">0.0</b><span>km/h</span><small id="cap">cap 3</small></div>
         <div id="banner" class="banner"></div>
       </div>
+      <!-- On-screen sticks: the default way to drive. The thumb on the left stick is the
+           dead-man: lift it off and the Teryx stops and holds on the brake. -->
+      <div class="pads" aria-hidden="true">
+        <div class="stick v" id="driveStick"><span>FWD</span><i></i><span>BACK</span></div>
+        <div class="stick h" id="steerStick"><span>L</span><i></i><span>R</span></div>
+      </div>
       <div class="bars">
         <div class="bar"><span>BRAKE</span><i id="brk"></i><b id="brkv">100%</b></div>
         <div class="steer"><i id="str"></i></div>
@@ -90,9 +98,14 @@
 
     <section class="side right">
       <button class="key estop" id="estop">STOP</button>
-      <button class="key hold" id="winchIn">WINCH IN</button>
-      <button class="key hold" id="winchOut">WINCH OUT</button>
-      <button class="key hold dead" id="dead">HOLD TO DRIVE</button>
+      <button class="key hold touch-only" id="winchIn">WINCH IN</button>
+      <button class="key hold touch-only" id="winchOut">WINCH OUT</button>
+      <!-- Only shown with a gamepad: what's on the pad now, and whether L1 (the dead-man) is held. -->
+      <div class="padinfo" id="padInfo">
+        <b>GAMEPAD</b>
+        <span id="padDead" class="dead">HOLD L1 TO DRIVE</span>
+        <small>Left stick go/brake<br>Right stick steer<br>R2 go, L2 brake<br>A winch in<br>B winch out</small>
+      </div>
       <div class="demo">
         <span>DEMO</span>
         <button class="key sm" id="drop">DROP SIGNAL</button>
@@ -100,13 +113,6 @@
       </div>
     </section>
   </main>
-
-  <div class="pads" aria-hidden="true">
-    <div class="stick v" id="driveStick"><span>FWD</span><i></i><span>BACK</span></div>
-    <div class="hint">Left stick: forward / back (pull against the way you're going to brake).<br>
-      Right stick: steer. Hold the green button the whole time.</div>
-    <div class="stick h" id="steerStick"><span>L</span><i></i><span>R</span></div>
-  </div>
 
   <script src="js/remote.js"></script>
 </body>
