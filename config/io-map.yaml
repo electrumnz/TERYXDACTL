@@ -27,7 +27,7 @@ outputs:
   light.front_3:   {driver: mosfet, pin: GP18, pwm: true, fuse_a: 10, label: "Front bar 3 (inner right)"}
   light.front_4:   {driver: mosfet, pin: GP19, pwm: true, fuse_a: 10, label: "Front bar 4 (far right)"}
   light.interior:  {driver: mosfet, pin: GP20, pwm: true, fuse_a: 5,  label: "Interior bar"}
-  light.rear:      {driver: relay, relay: 1, expander_pin: A0, fuse_a: 10, label: "Trailer reverse pin (follows the rear floods)"}
+  light.rear:      {driver: relay, relay: 1, expander_pin: A0, fuse_a: 15, label: "Trailer reverse pin (follows the rear floods)"}
   # Everything below dims through the PCA9685 (0x40) on the Pico's I2C. docs/lights.md
   # The stock lamps are high side on BTS7960 4-8 and the beacon on 9 (RPWM = M+, LPWM = M-); the rest are MOSFET channels.
   light.trailer_bar:  {driver: pca9685, channel: 0,  to: [MOSFET.IN6], label: "Trailer light bar"}
@@ -41,13 +41,13 @@ outputs:
   light.brake_r:      {driver: pca9685, channel: 8,  to: [BTS7.LPWM], fuse_a: 10, label: "Right brake (always full when braking)"}
   light.trailer_tail: {driver: pca9685, channel: 9,  to: [BTS8.RPWM], fuse_a: 7.5, label: "Trailer tail"}
   light.trailer_stop: {driver: pca9685, channel: 10, to: [BTS8.LPWM], fuse_a: 7.5, label: "Trailer stop (always full when braking)"}
-  light.flood_l:      {driver: pca9685, channel: 11, to: [MOSFET.IN7], fuse_a: 10, label: "Rear flood left"}
-  light.flood_r:      {driver: pca9685, channel: 12, to: [MOSFET.IN8], fuse_a: 10, label: "Rear flood right"}
+  light.flood_l:      {driver: pca9685, channel: 11, to: [MOSFET.IN7], fuse_a: 15, label: "Rear flood left"}
+  light.flood_r:      {driver: pca9685, channel: 12, to: [MOSFET.IN8], fuse_a: 15, label: "Rear flood right"}
   light.beacon:       {driver: pca9685, channel: 13, to: [BTS9.RPWM], fuse_a: 5, label: "Roof beacon amber (Pico flashes it at 3 Hz)"}
   light.beacon_white: {driver: pca9685, channel: 14, to: [BTS9.LPWM], fuse_a: 5, label: "Roof beacon white (3 Hz, opposite amber, only when stopped)"}
   light.enable:       {driver: pca9685, channel: 15, to: [BTS4.EN, BTS5.EN, BTS6.EN, BTS7.EN, BTS8.EN, BTS9.EN], label: "BTS7960 4-9 enable"}
-  winch.in:        {driver: relay, relay: 4, expander_pin: A3, fuse_a: 3,  label: "Winch in (solenoid coil)"}
-  winch.out:       {driver: relay, relay: 5, expander_pin: A4, fuse_a: 3,  label: "Winch out (solenoid coil)"}
+  winch.in:        {driver: relay, relay: 4, expander_pin: A3, fuse_a: 5,  label: "Winch in (solenoid coil)"}
+  winch.out:       {driver: relay, relay: 5, expander_pin: A4, fuse_a: 5,  label: "Winch out (solenoid coil)"}
   aux.accessory:   {driver: relay, relay: 7, expander_pin: A6, fuse_a: 10, label: "Accessory 12V"}
   power.hold:      {driver: relay, relay: 8, expander_pin: A7, fuse_a: 7.5, label: "Power hold"}
   act.diff:        {driver: bts7960, unit: 1, pins: {rpwm: GP7,  lpwm: GP8,  en: GP9},  feedback: an.diff_pos, current: an.diff_current, fuse_a: 10, label: "Front diff lock"}

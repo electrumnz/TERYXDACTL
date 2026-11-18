@@ -38,7 +38,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | 8-channel PC817 opto board 12V in | 2 | 9.00 | 18.00 | ~US$5 estimate | Board 1 = all 8 inputs; board 2 = 8 spare on MCP2 |
 | 8-Channel Opto-Isolated MOSFET Driver Module, DC 3.7-27V, 10A per channel, PWM 3-20V input, 0-20kHz (Sam's pick) | 1 | 22.00 | 22.00 | ~US$12 estimate | Front bars, cabin bar, trailer bar, rear floods (all 8 used) |
 | BTS7960 43A motor driver board (IBT-2), same as the 3 already owned | 6 | 10.00 | 60.00 | ~US$5-6 estimate | Used as two + side (high side) switches each: headlights L and R (low + high), tail/brake L and R, trailer tail/stop, beacon amber/white. The stock bulbs share one earth per bulb, so the MOSFET boards can't do them |
-| 6-way blade fuse block with cover | 1 | 15.00 | 15.00 | Estimate | Stock lights + beacon; the 12-way is full. 2 ways spare |
+| 6-way blade fuse block with cover | 1 | 15.00 | 15.00 | Estimate | Stock lights, beacon, backup toggle and brake switch feed; the 12-way is full. All 6 ways used |
 | 16-channel 5V relay board, mechanical, opto + JD-VCC jumper, 10A | 1 | 21.00 | 21.00 | ~US$11.28 x 1.822 | 7 used, 9 spare after the lights moved to MOSFET/BTS7960 boards and the winch isolator was dropped; an 8-ch board would leave 1 spare. Must have the JD-VCC jumper |
 | Waterproof micro limit switch, roller lever (NC) | 3 | 2.67 | 8.01 | Estimate | Tray up/down + 1 spare |
 | LTC3780 auto buck-boost board, 5-32V in, 80W (set to 12.0V) | 1 | 18.00 | 18.00 | Spec from sellers (5-32V in, 1-30V out, 80W cont); price estimate | Search AliExpress: LTC3780 buck boost module. Bare board, lives in the Pi box. Screen draws well under 80W. Skip if the screen board says 9-36V in |
@@ -59,11 +59,11 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Bootlace ferrule kit 0.5-6mm² with ratchet crimper | 1 | 30.00 | 30.00 | Estimate | Every wire end into a screw terminal in the boxes |
 | Heatshrink ring / spade / butt terminal kit 0.5-6mm² | 1 | 25.00 | 25.00 | Estimate |  |
 | Dupont jumper wires (F-F, M-F, 20cm) + 2.54mm pin headers | 1 | 10.00 | 10.00 | Estimate | Pico, Pi and board-to-board links inside the boxes; debug header |
-| Waterproof 2-pin plug pair (DT style) | 14 | 2.50 | 35.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
+| Waterproof 2-pin plug pair (DT style) | 12 | 2.50 | 30.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
 | Waterproof 3-pin plug pair (DT style) | 3 | 3.00 | 9.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
-| Waterproof 4-pin plug pair (DT style) | 2 | 3.50 | 7.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
+| Waterproof 4-pin plug pair (DT style) | 4 | 3.50 | 14.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
 | Waterproof 6-pin plug pair (DT style) | 2 | 5.00 | 10.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
-| **Total** | | | **720.01** | | |
+| **Total** | | | **722.01** | | |
 
 ### Core Electronics (AU, online)
 
@@ -96,7 +96,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Ground bus bar, M8 studs, 6+ ways, with cover | 1 | 25.00 | 25.00 | Estimate |  |
 | Wago 221 lever connectors, 5-way pack | 1 | 20.00 | 20.00 | Estimate | Dash 12V rail splits |
 | Waterproof toggle switch, on-off, 15 A+ at 12 V, with rubber boot | 1 | 12.00 | 12.00 | Estimate | Hidden backup lights switch (low beams + tails at full if the control box dies). Narva or Jaycar |
-| Diodes and resistors (see contents) | 1 | 30.00 | 30.00 | Estimate | Contents, counted from the wiring: 10k resistor x1, 1N4007 x1, 1N4148 x11, 1N5408 x7, 1k resistor x3, 2.2k resistor x1, 3.3 V zener x1, SB560 5 A Schottky diode x15. Buy a few spare of each |
+| Diodes and resistors (see contents) | 1 | 30.00 | 30.00 | Estimate | Contents, counted from the wiring: 10SQ045 10 A Schottky diode x1, 10k resistor x1, 1N4007 x1, 1N4148 x11, 1N5408 x8, 1k resistor x3, 2.2k resistor x1, 3.3 V zener x1, SB560 5 A Schottky diode x18. Buy a few spare of each |
 | Heatshrink assortment (glue-lined) | 1 | 20.00 | 20.00 | Estimate |  |
 | Split corrugated loom 10mm + 16mm, 10m each | 1 | 30.00 | 30.00 | Estimate |  |
 | UV-black cable ties + adhesive P-clips | 1 | 20.00 | 20.00 | Estimate |  |
@@ -106,10 +106,10 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Polyester fibre fill (speaker wadding or pillow stuffing), 200 g | 1 | 12.00 | 12.00 | Estimate | About 70 g per speaker pod, loose. Not foam (it holds water) |
 | PETG filament 1.75mm 1kg (boxes, liner) | 1 | 35.00 | 35.00 | Estimate |  |
 | 3mm aluminium cut from DXF: back plate + Pi lid plate | 1 | 80.00 | 80.00 | Estimate | Laser or waterjet shop; cad/stl/*.dxf |
-| Auto cable 0.5 mm² (metres) | 85 | 0.90 | 76.50 | Estimate; counted from config/wiring.yaml | About 68 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
+| Auto cable 0.5 mm² (metres) | 95 | 0.90 | 85.50 | Estimate; counted from config/wiring.yaml | About 76 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
 | Auto cable 0.75 mm² (metres) | 15 | 1.10 | 16.50 | Estimate; counted from config/wiring.yaml | About 12 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
 | Auto cable 1 mm² (metres) | 65 | 1.40 | 91.00 | Estimate; counted from config/wiring.yaml | About 52 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
-| Auto cable 1.5 mm² (metres) | 100 | 1.90 | 190.00 | Estimate; counted from config/wiring.yaml | About 80 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
+| Auto cable 1.5 mm² (metres) | 105 | 1.90 | 199.50 | Estimate; counted from config/wiring.yaml | About 82 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
 | Auto cable 2.5 mm² (metres) | 15 | 2.90 | 43.50 | Estimate; counted from config/wiring.yaml | About 10 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
 | Auto cable 4 mm² (metres) | 5 | 4.50 | 22.50 | Estimate; counted from config/wiring.yaml | About 2 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
 | Auto cable 6 mm² (metres) | 5 | 6.50 | 32.50 | Estimate; counted from config/wiring.yaml | About 3 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
@@ -117,15 +117,15 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Auto cable 35 mm² (metres) | 2 | 30.00 | 60.00 | Estimate; counted from config/wiring.yaml | About 2 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
 | CAN cable, 2-core twisted + screen (metres) | 10 | 2.50 | 25.00 | Estimate; counted from config/wiring.yaml |  |
 | Speaker cable (metres) | 10 | 1.50 | 15.00 | Estimate; counted from config/wiring.yaml |  |
-| Standard blade fuses, Narva or Jaycar (not AliExpress) | 31 | 1.50 | 46.50 | Estimate; counted from config/wiring.yaml | 1 A x3, 2 A x5, 3 A x7, 7.5 A x5, 10 A x6, 15 A x5 (2 spare of each) |
-| Waterproof inline blade fuse holder | 7 | 6.00 | 42.00 | Estimate; counted from config/wiring.yaml | Feeds that don't come off the fuse block (bucks, screen, amp, 12V sense, accessories) |
+| Standard blade fuses, Narva or Jaycar (not AliExpress) | 35 | 1.50 | 52.50 | Estimate; counted from config/wiring.yaml | 1 A x3, 2 A x7, 3 A x5, 5 A x4, 7.5 A x5, 10 A x5, 15 A x6 (2 spare of each) |
+| Waterproof inline blade fuse holder | 9 | 6.00 | 54.00 | Estimate; counted from config/wiring.yaml | Feeds that don't come off the fuse block (bucks, screen, amp, 12V sense, accessories) |
 | 40 A MIDI fuse + bolt-down holder | 1 | 31.00 | 31.00 | Estimate; counted from config/wiring.yaml | At the battery, one per big feed (fuse block, power steering, amp) |
 | 60 A MIDI fuse + bolt-down holder | 2 | 31.00 | 62.00 | Estimate; counted from config/wiring.yaml | At the battery, one per big feed (fuse block, power steering, amp) |
 | Tinned lugs for 4 mm², M8 hole | 6 | 2.00 | 12.00 | Estimate; counted from config/wiring.yaml | 2 spare |
 | Tinned lugs for 6 mm², M8 hole | 6 | 2.00 | 12.00 | Estimate; counted from config/wiring.yaml | 2 spare |
 | Tinned lugs for 10 mm², M8 hole | 10 | 2.00 | 20.00 | Estimate; counted from config/wiring.yaml | 2 spare |
 | Tinned lugs for 35 mm², M8 hole | 4 | 2.00 | 8.00 | Estimate; counted from config/wiring.yaml | 2 spare |
-| **Total** | | | **1,549.00** | | |
+| **Total** | | | **1,585.50** | | |
 
 ### Separate pickup
 
@@ -139,12 +139,12 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Shop | NZ$ |
 |---|---|
 | PB Tech (buy Thursday) | 623.21 |
-| AliExpress (one order, 2 to 4 weeks) | 720.01 |
+| AliExpress (one order, 2 to 4 weeks) | 722.01 |
 | Core Electronics (AU, online) | 246.68 |
 | Gogo:Tronics and element14 (NZ, online) | 7.43 |
-| Local: Jaycar, Narva stockist, Repco, auto electrical | 1,549.00 |
+| Local: Jaycar, Narva stockist, Repco, auto electrical | 1,585.50 |
 | Separate pickup | 115.00 |
-| **Everything** | **3,261.33** |
+| **Everything** | **3,299.83** |
 
 ### Already got (not in the totals)
 

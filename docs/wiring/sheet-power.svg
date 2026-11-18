@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2200 705" width="2200" height="705" font-family="Arial, Helvetica, sans-serif" data-sheet="power">
-<rect width="2200" height="705" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2200 816" width="2200" height="816" font-family="Arial, Helvetica, sans-serif" data-sheet="power">
+<rect width="2200" height="816" fill="#ffffff"/>
 <text x="40" y="40" font-size="22" text-anchor="start" font-weight="bold" fill="#1f2328">12 V power: battery, fuses, key, dash rail, bucks</text>
 <text x="40" y="62" font-size="12" text-anchor="start" font-weight="normal" fill="#57606a">Teryx OS wiring, sheet &#x27;power&#x27;. Made from config/wiring.yaml by `python -m teryx wiring`. Don&#x27;t edit this file.</text>
 <line x1="40" y1="92" x2="74" y2="92" stroke="#1a7f37" stroke-width="2.5"/>
@@ -15,7 +15,7 @@
 <text x="40" y="120" font-size="11" text-anchor="start" font-weight="normal" fill="#57606a">Labels: wire id, size, fuse (if the wire has its own), and anything in between. Faded = optional. Hover for notes. Full table: docs/wiring/README.md</text>
 <g data-wire="P01" data-from="BAT12.pos" data-to="FB.IN" data-status="planned"><title>P01: BAT12.pos -&gt; FB.IN - 60 A main fuse at the battery. Was 6 mm² in wiring.md, which the table only rates to 40 A</title><path d="M310,197 C395,197 395,197 480,197" fill="none" stroke="#424a53" stroke-width="3.2"/></g>
 <g data-wire="P02" data-from="FB.F12" data-to="KEY.BAT" data-status="planned"><title>P02: FB.F12 -&gt; KEY.BAT</title><path d="M750,257 C835,257 835,368 920,368" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="P03" data-from="KEY.IGN" data-to="RAIL.BUS" data-status="planned"><title>P03: KEY.IGN -&gt; RAIL.BUS</title><path d="M1190,388 C1250,388 1250,479 1190,479" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
+<g data-wire="P03" data-from="KEY.IGN" data-to="RAIL.BUS" data-status="planned"><title>P03: KEY.IGN -&gt; RAIL.BUS - Diode so relay 8 can&#x27;t feed back into the key wire after key-off. Without it the Pico would see the key still on and never shut down</title><path d="M1190,388 C1250,388 1250,479 1190,479" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="P04" data-from="FB.F8" data-to="RELAYS.COM8" data-status="planned"><title>P04: FB.F8 -&gt; RELAYS.COM8</title><path d="M750,237 C835,237 835,237 920,237" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="P05" data-from="RELAYS.NO8" data-to="RAIL.BUS" data-status="planned"><title>P05: RELAYS.NO8 -&gt; RAIL.BUS - Power hold, in parallel with the key</title><path d="M1190,277 C1250,277 1250,479 1190,479" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="P06" data-from="RAIL.BUS" data-to="TVS.K" data-status="planned"><title>P06: RAIL.BUS -&gt; TVS.K</title><path d="M1190,479 C1275,479 1275,288 1360,288" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
@@ -33,6 +33,8 @@
 <g data-wire="P17" data-from="RAIL.BUS" data-to="AMP.REM" data-status="planned"><title>P17: RAIL.BUS -&gt; AMP.REM - Remote turn-on, goes off with the rail</title><path d="M920,479 C835,479 835,383 750,383" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
 <g data-wire="P18" data-from="DCDC.out_pos" data-to="BAT12.pos" data-status="tbc"><title>P18: DCDC.out_pos -&gt; BAT12.pos - DC-DC charge lead. Size and fuse depend on its rating</title><path d="M480,474 C395,474 395,197 310,197" fill="none" stroke="#bf8700" stroke-width="1.4" stroke-dasharray="7 4"/></g>
 <g data-wire="P19" data-from="BAT12.pos" data-to="EPS_ECU.B+" data-status="planned"><title>P19: BAT12.pos -&gt; EPS_ECU.B+ - Own 60 A fuse and cable straight to the battery (Toyota fuses the Prius EPS at 60 A)</title><path d="M310,197 C395,197 395,565 480,565" fill="none" stroke="#424a53" stroke-width="3.2" stroke-opacity="0.65"/></g>
+<g data-wire="P21" data-from="RAIL.BUS" data-to="MODEM_BUCK.VIN" data-status="planned"><title>P21: RAIL.BUS -&gt; MODEM_BUCK.VIN - 2 A inline fuse</title><path d="M1190,479 C1275,479 1275,712 1360,712" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="P22" data-from="MODEM_BUCK.VOUT" data-to="MODEM_4G.V" data-status="planned"><title>P22: MODEM_BUCK.VOUT -&gt; MODEM_4G.V - Soldered lead to the V pin</title><path d="M1630,732 C1715,732 1715,576 1800,576" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
 <g data-device="BAT12" data-status="confirmed"><title>BAT12: 12 V aux battery - Kept after the conversion. Charged by the DC-DC</title><rect x="40" y="150" width="270" height="69" rx="6" fill="#fff8e6" stroke="#0969da" stroke-width="1.5"/>
 <text x="50" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">12 V aux battery</text>
 <text x="50" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">BAT12 · confirmed</text>
@@ -120,8 +122,8 @@
 <line x1="1360" y1="399" x2="1630" y2="399" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="1495" y="403" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VOUT</text>
 </g>
-<g data-device="PICO_BUCK" data-status="planned"><title>PICO_BUCK: Mini560 5 V buck (control box)</title><rect x="1360" y="443" width="270" height="89" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
-<text x="1370" y="461" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Mini560 5 V buck (control box)</text>
+<g data-device="PICO_BUCK" data-status="planned"><title>PICO_BUCK: 5 V 5 A buck (Sam&#x27;s, control box)</title><rect x="1360" y="443" width="270" height="89" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="1370" y="461" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">5 V 5 A buck (Sam&#x27;s, control box)</text>
 <text x="1370" y="476" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">PICO_BUCK · planned</text>
 <line x1="1360" y1="490" x2="1630" y2="490" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="1495" y="494" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VIN</text>
@@ -135,6 +137,14 @@
 <text x="1495" y="605" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VIN</text>
 <line x1="1360" y1="621" x2="1630" y2="621" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="1495" y="625" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VOUT</text>
+</g>
+<g data-device="MODEM_BUCK" data-status="planned"><title>MODEM_BUCK: Mini560 5 V buck (4G board) - Feeds the 4G board&#x27;s V pin (5 V, 2 A peaks when it transmits). In the Pi box, on the dash rail, so the 4G board is on when the Pi is</title><rect x="1360" y="665" width="270" height="89" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
+<text x="1370" y="683" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Mini560 5 V buck (4G board)</text>
+<text x="1370" y="698" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">MODEM_BUCK · planned · optional</text>
+<line x1="1360" y1="712" x2="1630" y2="712" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="716" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VIN</text>
+<line x1="1360" y1="732" x2="1630" y2="732" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="736" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VOUT</text>
 </g>
 <g data-device="PI5" data-status="confirmed"><title>PI5: Raspberry Pi 5 8GB - The 40-pin header and the PCIe port are kept for the AI HAT+ 2. CAN module wires go to header pins that come up through the HAT</title><rect x="1800" y="150" width="270" height="69" rx="6" fill="#eef9f1" stroke="#0969da" stroke-width="1.5"/>
 <text x="1810" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Raspberry Pi 5 8GB</text>
@@ -161,9 +171,15 @@
 <line x1="1800" y1="485" x2="2070" y2="485" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="1935" y="489" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">DC_IN</text>
 </g>
+<g data-device="MODEM_4G" data-status="placeholder"><title>MODEM_4G: SIMCom A7670SA 4G board - 6-pin header S G V K T R G. V takes 5-10 V from the spare Mini560 5 V buck. NEVER raw 12 V (10 V max, and the car runs 14.4 V with spikes). K is tied to ground on the board, so it starts by itself. T/R are 115200 baud TTL to the Pi&#x27;s GPIO 15/14; measure T before connecting (3.3 V ok, else BSS138). Micro USB also on board. Its GNSS (FASE version, u.FL GPS socket on Sam&#x27;s board) is the dash GPS too, so there is no separate USB GPS. Check on arrival that it gets a fix with the SIM out / 4G off. No USB: it&#x27;s on the header pins (soldered leads), so texts, GPS and slow data only, no live video over 4G</title><rect x="1800" y="529" width="270" height="69" rx="6" fill="#eef9f1" stroke="#8250df" stroke-width="1.5" stroke-dasharray="2 4"/>
+<text x="1810" y="547" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">SIMCom A7670SA 4G board</text>
+<text x="1810" y="562" font-size="10" text-anchor="start" font-weight="normal" fill="#8250df">MODEM_4G · placeholder · optional</text>
+<line x1="1800" y1="576" x2="2070" y2="576" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1935" y="580" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">V</text>
+</g>
 <text x="472" y="194" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P01  10 mm²  60 A</text>
 <text x="758" y="254" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P02  1 mm²</text>
-<text x="1198" y="385" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P03  1 mm²  7.5 A</text>
+<text x="1198" y="385" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P03  1 mm²  7.5 A  via Schottky diode 10 A</text>
 <text x="758" y="234" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P04  1 mm²</text>
 <text x="1198" y="274" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P05  1 mm²  7.5 A</text>
 <text x="1352" y="285" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P06  1 mm²</text>
@@ -181,4 +197,6 @@
 <text x="758" y="380" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P17  0.5 mm²  2 A</text>
 <text x="472" y="471" font-size="9.5" text-anchor="end" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">P18</text>
 <text x="472" y="562" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P19  10 mm²  60 A</text>
+<text x="1352" y="709" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P21  0.5 mm²  2 A</text>
+<text x="1638" y="729" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P22  0.5 mm²</text>
 </svg>
