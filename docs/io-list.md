@@ -88,7 +88,7 @@ Prices and links checked live: [`shopping-list.md`](shopping-list.md).
 
 | Pico pin | Function | Connects to |
 |---|---|---|
-| GP0 / GP1 | UART0 TX/RX | Debug header (spare) |
+| GP0 / GP1 | UART0 TX/RX | Debug header inside the box. Runs the vehicle lock workshop reset (`docs/vehicle-lock.md`) |
 | GP2 | SPI0 SCK | MCP2515 SCK |
 | GP3 | SPI0 MOSI | MCP2515 SI |
 | GP4 | SPI0 MISO | MCP2515 SO |

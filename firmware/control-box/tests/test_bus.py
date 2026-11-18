@@ -48,7 +48,7 @@ class Bus:
             if len(pkt) != 16:
                 continue
             can_id, dlc, _f, data = FMT.unpack(pkt)
-            if 0x710 <= can_id <= 0x714:
+            if 0x710 <= can_id <= 0x716:
                 self.last[can_id] = data[:dlc]
                 self.count[can_id] = self.count.get(can_id, 0) + 1
 
@@ -58,7 +58,9 @@ def main():
     bus = Bus()
     settings = tempfile.NamedTemporaryFile(delete=False).name
     os.unlink(settings)
-    proc = subprocess.Popen([exe, "--bus", f"udp:{GROUP}:{PORT}", "--settings", settings, "--quiet"],
+    lockfile = settings + ".lock"
+    proc = subprocess.Popen([exe, "--bus", f"udp:{GROUP}:{PORT}", "--settings", settings,
+                             "--lock", lockfile, "--quiet"],
                             stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     fails = []
 
@@ -133,6 +135,23 @@ def main():
         run(0.4)
         check(bus.last[0x711][0] & 0x01, "rear pods on in reverse (bench input)")
 
+        # Vehicle lock (docs/vehicle-lock.md): PIN 4821 as BCD, park brake on by bench frame
+        bus.send(0x705, [4, 4, 0x48, 0x21, 0, 0, 1])
+        bus.send(0x7E0, [0x41, 0x40, 0])
+        run(0.4)
+        check(bus.last.get(0x716, b"\0" * 8)[0] == 1, "PIN set, lock state unlocked on 0x716")
+        bus.send(0x705, [1, 0, 0, 0, 0, 0, 2])
+        run(0.4)
+        lk = bus.last[0x716]
+        check(lk[0] == 2 and lk[4] & 0x04, "locked, drive inhibit flag on")
+        check(os.path.exists(lockfile) and b"4821" not in open(lockfile, "rb").read(), "lock saved, PIN not in plain")
+        bus.send(0x705, [2, 4, 0x00, 0x00, 0, 0, 3])
+        run(0.3)
+        check(bus.last[0x716][5] == 2 and bus.last[0x716][1] == 4, "wrong PIN refused, 4 tries left")
+        bus.send(0x705, [2, 4, 0x48, 0x21, 0, 0, 4])
+        run(0.3)
+        check(bus.last[0x716][0] == 1, "right PIN unlocks")
+
         # Save settings, then firmware update request when parked
         bus.send(0x704, [0xF0, 0, 0, 0])
         bus.send(0x7E0, [0, 0, 0])
@@ -144,8 +163,9 @@ def main():
     finally:
         proc.terminate()
         out, _ = proc.communicate(timeout=5)
-        if os.path.exists(settings):
-            os.unlink(settings)
+        for f in (settings, lockfile):
+            if os.path.exists(f):
+                os.unlink(f)
     check("firmware update requested" in out, "host build acted out the bootloader reboot")
     print(f"\n{len(fails)} failed")
     return 1 if fails else 0

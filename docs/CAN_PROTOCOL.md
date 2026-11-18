@@ -73,6 +73,22 @@ On change, one key per frame. The Pico echoes it on 0x714 as an ack. Keys are in
 | `key` | byte 0 | u8 |  |  |
 | `value` | bytes 2-3 | u16 |  |  |
 
+### 0x705 PI_LOCK
+
+From **dash**, on change.
+
+Vehicle lock command, on demand (docs/vehicle-lock.md). Digits are BCD, first digit in the high nibble of d0. PIN 4-6 digits, recovery code 8. The Pico keeps only a salted hash and answers on 0x716 straight away.
+
+| Signal | Where | Type | Unit | Notes |
+|---|---|---|---|---|
+| `cmd` | byte 0 | u8 |  | 1=lock, 2=unlock, 3=verify, 4=set_pin, 5=set_puk, 6=remove |
+| `n_digits` | byte 1 | u8 |  |  |
+| `d0` | byte 2 | u8 |  |  |
+| `d1` | byte 3 | u8 |  |  |
+| `d2` | byte 4 | u8 |  |  |
+| `d3` | byte 5 | u8 |  |  |
+| `counter` | byte 6 | u8 |  |  |
+
 ### 0x71F PI_FW_UPDATE
 
 From **dash**, on change.
@@ -161,7 +177,7 @@ Echo of each 0x704 frame once the Pico has applied it (value is what it actually
 | Signal | Where | Type | Unit | Notes |
 |---|---|---|---|---|
 | `key` | byte 0 | u8 |  |  |
-| `status` | byte 1 | u8 |  | 0=ok, 1=unknown_key, 2=out_of_range |
+| `status` | byte 1 | u8 |  | 0=ok, 1=unknown_key, 2=out_of_range, 3=locked |
 | `value` | bytes 2-3 | u16 |  |  |
 
 ### 0x715 PICO_REGEN
@@ -178,6 +194,25 @@ Brake pedal regen (docs/brake-regen.md). All zero with state off while the featu
 | `limit` | byte 2 bit 4 (+4 bits) | u4 |  | What is holding regen back, if anything 0=none, 1=low_speed, 2=speed_unknown, 3=not_forward, 4=battery_full, 5=two_wd, 6=sensor, 7=throttle |
 | `pedal_raw` | bytes 3-4 | u16 |  | Raw ADS1115 reading, for calibrating keys 28/29 |
 | `brake_light` | byte 5 bit 0 | u1 |  | Regen is strong enough to light the brake lights |
+
+### 0x716 PICO_LOCK
+
+From **controlbox**, every 100 ms.
+
+Vehicle lock state (docs/vehicle-lock.md). Also sent straight after every 0x705.
+
+| Signal | Where | Type | Unit | Notes |
+|---|---|---|---|---|
+| `state` | byte 0 | u8 |  | 0=off, 1=unlocked, 2=locked |
+| `tries_left` | byte 1 | u8 |  | Wrong tries left before a lockout |
+| `lockout_s` | bytes 2-3 | u16 | s | Lockout time left |
+| `window` | byte 4 bit 0 | u1 |  | Change window open (PIN checked in the last 60 s) |
+| `puk_set` | byte 4 bit 1 | u1 |  | A recovery code is stored |
+| `inhibit` | byte 4 bit 2 | u1 |  | Drive inhibit asked for (how is TBC until the Shinegle is decoded) |
+| `lockout` | byte 4 bit 3 | u1 |  |  |
+| `result` | byte 5 | u8 |  | Result of the last 0x705 0=none, 1=ok, 2=wrong, 3=not_parked, 4=no_pin, 5=lockout, 6=bad_digits, 7=not_allowed, 8=recovered |
+| `result_count` | byte 6 | u8 |  | Goes up by one per 0x705 |
+| `fails` | byte 7 | u8 |  | Wrong tries in a row (kept over power cuts) |
 
 ## Bench only
 

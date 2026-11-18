@@ -27,6 +27,8 @@ Safety rules (IO list section 7, values from SETTINGS):
  8. Key-off -> hold power for shutdown_wait_s, then drop power.hold.
  9. Brake pedal regen (off by default, setting brake_regen_on): see teryx/regen.py.
     Regen strong enough also lights the trailer brake lights.
+10. Vehicle lock (PIN): see teryx/vehicle_lock.py and docs/vehicle-lock.md. Locked =
+    drive inhibit, nothing moves, lights off, no settings or firmware updates.
 
 Requests act on a *change* of value. The dash resends 0x701/0x702 every second
 so a rebooted Pico picks them up, but a refused 4WD request is not quietly
@@ -42,6 +44,7 @@ from ..canbus import messages as M
 from ..canbus import shinegle as SG
 from ..config import safety_defaults
 from ..regen import BrakeRegen
+from ..vehicle_lock import VehicleLock, decode_digits
 
 FW_VERSION = (0, 1)  # what the fake box reports as its firmware version
 
@@ -141,6 +144,9 @@ class ControlBox:
     reject_reason: str = "none"
     reject_count: int = 0
     acks: list = field(default_factory=list)   # pending 0x714 frames
+    # vehicle lock
+    lock: VehicleLock = field(default_factory=VehicleLock)
+    lock_replies: int = 0                      # 0x716 frames to send straight away
 
     def __post_init__(self):
         self.inputs["in.ignition"] = True
@@ -188,6 +194,8 @@ class ControlBox:
             self._hold_request(v, now)
         elif name == "PI_SETTINGS":
             self._setting(int(v["key"]), int(v["value"]))
+        elif name == "PI_LOCK":
+            self._lock_command(v, now)
         elif name == "BENCH_INPUTS":
             mask = int(v["force_mask"])
             self.forced = {n: bool(int(v["inputs"]) & (1 << b))
@@ -195,8 +203,47 @@ class ControlBox:
             self.bench_faults = set(M.bits_to_names(v["fault_inject"], M.BENCH_FAULTS))
             self.bench_aux_mv = int(v.get("aux_mv", 0))
 
+    # ------------------------------------------------------------ vehicle lock
+    @property
+    def locked(self) -> bool:
+        return self.lock.locked
+
+    @property
+    def drive_inhibit(self) -> bool:
+        """Locked: ask the Shinegle for no drive at all (how is TBC until it's decoded)."""
+        return self.lock.locked
+
+    def anything_moving(self) -> bool:
+        return self.fourwd.moving or self.diff.moving or self.tray.moving or self.winch_dir != 0
+
+    def can_lock(self) -> bool:
+        """Stopped (or key off), park brake on, nothing moving."""
+        if self.anything_moving() or not self.inp("in.park"):
+            return False
+        return self.stopped() or not self.inp("in.ignition")
+
+    def _lock_command(self, v: dict, now: float) -> None:
+        cmd = M.LOCK_CMD.get(int(v["cmd"]), "?")
+        was = self.lock.locked
+        self.lock.command(cmd, decode_digits(v), self.can_lock(), now)
+        if self.lock.locked and not was:
+            self._lock_down()
+        self.lock_replies += 1
+
+    def _lock_down(self) -> None:
+        self.fourwd.stop()
+        self.diff.stop()
+        self.tray.stop()
+        self.fourwd_wait = self.diff_wait = None
+        self.winch_armed = False
+        self.winch_dir = 0
+        self.hold_tray = self.hold_winch = 0
+
     def _setting(self, key: int, value: int) -> None:
         status = 0
+        if self.locked:
+            self.acks.append({"key": key, "status": 3, "value": value})
+            return
         if key == M.SETTING_RESET:
             self.settings = safety_defaults()
             self.on_defaults = True
@@ -222,6 +269,11 @@ class ControlBox:
     def _drive_request(self, v: dict) -> None:
         prev = self._last_drive_req
         self._last_drive_req = dict(v)
+        if self.locked:
+            # No 4WD / diff while locked, and nothing done later by surprise (change-only)
+            if prev is not None and (v["fourwd_req"] != prev["fourwd_req"] or v["diff_target"] != prev["diff_target"]):
+                self.reject("interlock")
+            return
         speed_ok = self.speed_known()
         resend_while_unknown = (prev is not None and v["fourwd_req"] == prev["fourwd_req"]
                                 and not self.fourwd_known and not self.fourwd.moving)
@@ -323,6 +375,13 @@ class ControlBox:
         self.last_hold = now
         tray, winch = int(v["tray"]), int(v["winch"])
         armed = bool(v["winch_armed"])
+        if self.locked:
+            if (tray and tray != self._last_hold_vals[0]) or (winch and winch != self._last_hold_vals[1]) \
+                    or (armed and not self.winch_armed):
+                self.reject("interlock")
+            self._last_hold_vals = (tray, winch)
+            self.hold_tray = self.hold_winch = 0
+            return
         if armed and not self.winch_armed:
             if not self.speed_known():
                 self.reject("speed_unknown")
@@ -408,6 +467,11 @@ class ControlBox:
                         speed_kmh=self.speed if self.speed_known() else None,
                         direction=self.direction, soc=self.soc, fourwd=self.fourwd_state(),
                         throttle_pct=self.throttle)
+
+        # --- vehicle lock: nothing moves while locked
+        self.lock.tick(now)
+        if self.locked and (self.anything_moving() or self.winch_armed or self.fourwd_wait or self.diff_wait):
+            self._lock_down()
 
         # --- waiting 4WD / diff requests
         self._wait_tick()
@@ -549,9 +613,11 @@ class ControlBox:
             if mask & 0b1111:
                 fronts = [round(b * k) for b in fronts]
         levels = fronts + [int(r["interior"])]
+        if self.locked:
+            levels = [0] * 5
         # On/off-only bars: anything above 0 is full on
         levels = [lvl if mask & (1 << i) else (255 if lvl else 0) for i, lvl in enumerate(levels)]
-        rear = bool(r["rear_on"]) or (bool(r["rear_auto"]) and self.inp("in.reverse"))
+        rear = not self.locked and (bool(r["rear_on"]) or (bool(r["rear_auto"]) and self.inp("in.reverse")))
         self.lights_out = {
             **{f"front_{n}": levels[n - 1] for n in range(1, 5)},
             "interior": levels[4], "effect": int(r["effect"]), "rear": rear,
@@ -669,5 +735,6 @@ class ControlBox:
                 "limit": M.enum_value(M.REGEN_LIMIT, rg.limit),
                 "pedal_raw": self.pedal_raw or 0, "brake_light": int(rg.brake_light),
             }),
+            ("PICO_LOCK", self.lock.frame(self.t, self.drive_inhibit)),
         ]
         return out

@@ -93,6 +93,24 @@ INPUT_BITS = {   # 0x710 byte 3, MCP23017 B0-B7
     6: "in.park",
     7: "in.spare",
 }
+# Vehicle lock (docs/vehicle-lock.md)
+LOCK_CMD = {1: "lock", 2: "unlock", 3: "verify", 4: "set_pin", 5: "set_puk", 6: "remove"}
+LOCK_STATE = {0: "off", 1: "unlocked", 2: "locked"}
+LOCK_RESULT = {
+    0: "none", 1: "ok", 2: "wrong", 3: "not_parked", 4: "no_pin", 5: "lockout",
+    6: "bad_digits", 7: "not_allowed", 8: "recovered",
+}
+LOCK_RESULT_TEXT = {
+    "wrong": "Wrong PIN",
+    "not_parked": "Stop, put the park brake on and wait for everything to finish first",
+    "no_pin": "Set a PIN first",
+    "lockout": "Too many wrong tries. Wait, then try again",
+    "bad_digits": "PIN must be 4 to 6 digits",
+    "not_allowed": "Not allowed right now",
+    "recovered": "Unlocked with the recovery code. Set a new PIN",
+}
+LOCK_PIN_MIN, LOCK_PIN_MAX, LOCK_PUK_LEN = 4, 6, 8
+
 FRONT_LIGHTS = ("light.front_1", "light.front_2", "light.front_3", "light.front_4")
 PWM_LIGHTS = FRONT_LIGHTS + ("light.interior",)
 
@@ -148,6 +166,18 @@ PI_SETTINGS = Message(
     signals=(
         S("key", 0, 8),
         S("value", 16, 16),
+    ),
+)
+PI_LOCK = Message(
+    "PI_LOCK", 0x705, "dash", 0,
+    comment="Vehicle lock command, on demand (docs/vehicle-lock.md). Digits are BCD, first digit "
+            "in the high nibble of d0. PIN 4-6 digits, recovery code 8. The Pico keeps only a "
+            "salted hash and answers on 0x716 straight away.",
+    signals=(
+        S("cmd", 0, 8, choices=LOCK_CMD),
+        S("n_digits", 8, 8),
+        S("d0", 16, 8), S("d1", 24, 8), S("d2", 32, 8), S("d3", 40, 8),
+        S("counter", 48, 8),
     ),
 )
 PI_FW_UPDATE = Message(
@@ -218,7 +248,7 @@ PICO_SETTINGS_ACK = Message(
     comment="Echo of each 0x704 frame once the Pico has applied it (value is what it actually used).",
     signals=(
         S("key", 0, 8),
-        S("status", 8, 8, choices={0: "ok", 1: "unknown_key", 2: "out_of_range"}),
+        S("status", 8, 8, choices={0: "ok", 1: "unknown_key", 2: "out_of_range", 3: "locked"}),
         S("value", 16, 16),
     ),
 )
@@ -233,6 +263,23 @@ PICO_REGEN = Message(
         S("limit", 20, 4, choices=REGEN_LIMIT, comment="What is holding regen back, if anything"),
         S("pedal_raw", 24, 16, comment="Raw ADS1115 reading, for calibrating keys 28/29"),
         S("brake_light", 40, 1, comment="Regen is strong enough to light the brake lights"),
+    ),
+)
+
+PICO_LOCK = Message(
+    "PICO_LOCK", 0x716, "controlbox", 100,
+    comment="Vehicle lock state (docs/vehicle-lock.md). Also sent straight after every 0x705.",
+    signals=(
+        S("state", 0, 8, choices=LOCK_STATE),
+        S("tries_left", 8, 8, comment="Wrong tries left before a lockout"),
+        S("lockout_s", 16, 16, unit="s", comment="Lockout time left"),
+        S("window", 32, 1, comment="Change window open (PIN checked in the last 60 s)"),
+        S("puk_set", 33, 1, comment="A recovery code is stored"),
+        S("inhibit", 34, 1, comment="Drive inhibit asked for (how is TBC until the Shinegle is decoded)"),
+        S("lockout", 35, 1),
+        S("result", 40, 8, choices=LOCK_RESULT, comment="Result of the last 0x705"),
+        S("result_count", 48, 8, comment="Goes up by one per 0x705"),
+        S("fails", 56, 8, comment="Wrong tries in a row (kept over power cuts)"),
     ),
 )
 
@@ -251,8 +298,8 @@ BENCH_INPUTS = Message(
 BENCH_FAULTS = {0: "jam_diff", 1: "jam_tray", 2: "fourwd_overcurrent", 3: "pot_disconnected", 4: "io_bus_dead"}
 
 TERYX_MESSAGES: tuple[Message, ...] = (
-    PI_HEARTBEAT, PI_LIGHTS, PI_DRIVE, PI_HOLD, PI_SETTINGS, PI_FW_UPDATE,
-    PICO_STATUS, PICO_OUTPUTS, PICO_ACTUATORS, PICO_POWER, PICO_SETTINGS_ACK, PICO_REGEN,
+    PI_HEARTBEAT, PI_LIGHTS, PI_DRIVE, PI_HOLD, PI_SETTINGS, PI_LOCK, PI_FW_UPDATE,
+    PICO_STATUS, PICO_OUTPUTS, PICO_ACTUATORS, PICO_POWER, PICO_SETTINGS_ACK, PICO_REGEN, PICO_LOCK,
     BENCH_INPUTS,
 )
 

@@ -6,6 +6,15 @@
 // Scenarios: ?demo=drive (driving a loop), ?demo=park (stopped, for winch/tray),
 //            ?demo=reverse, ?demo=faults
 
+// Vehicle lock, demo copy of teryx/vehicle_lock.py. Kept in this browser's storage so a reload
+// stays locked, like the real control box keeps it in flash. Demo only: a simple hash, not SHA-256.
+const LOCK_KEY = "teryx.demo.lock";
+const demoHash = (salt, d) => { let h = 2166136261; for (const c of salt + d) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; } return h.toString(16); };
+function loadLock() {
+  try { const v = JSON.parse(localStorage.getItem(LOCK_KEY)); if (v && typeof v === "object") return v; } catch {}
+  return { pin: null, puk: null, salt: "", locked: false, fails: 0 };
+}
+
 const LIGHT_IDS = ["light.front_1", "light.front_2", "light.front_3", "light.front_4", "light.interior"];
 
 export class DemoVehicle {
@@ -31,6 +40,80 @@ export class DemoVehicle {
     LIGHT_IDS.forEach((k) => (this.s[k] = 0));
     this.fourwdTimer = 0;
     this.armedIdle = 0;
+    this.lock = loadLock();
+    this.lockRam = { lockoutUntil: this.lock.fails >= 5 ? this.lockWait() : null, windowUntil: null, result: "none", count: 0 };
+  }
+
+  // ---- vehicle lock (same rules as the control box, docs/vehicle-lock.md) ----
+  lockWait() { let w = 30; for (let i = 5; i < this.lock.fails && w < 900; i++) w *= 2; return this.t + Math.min(w, 900); }
+  saveLock() { try { localStorage.setItem(LOCK_KEY, JSON.stringify(this.lock)); } catch {} }
+  canLock() {
+    const s = this.s;
+    return s["mc.speed"] < 0.5 && !!s["in.park"] && this.fourwdTimer <= 0 && Math.abs(this.req.diff - s["an.diff_pos"]) <= 0.5
+      && !this.holds["act.tray"].v && !(s["winch.in"] || s["winch.out"]);
+  }
+  lockCommand(cmd, d) {
+    const L = this.lock, R = this.lockRam, t = this.t;
+    if (R.lockoutUntil != null && t >= R.lockoutUntil) R.lockoutUntil = null;
+    if (R.windowUntil != null && t >= R.windowUntil) R.windowUntil = null;
+    const ok = /^\d+$/.test(d || "");
+    const wrong = () => { L.fails++; if (L.fails >= 5) R.lockoutUntil = this.lockWait(); this.saveLock(); return "wrong"; };
+    const run = () => {
+      if (cmd === "lock") {
+        if (!L.pin) return "no_pin";
+        if (L.locked) return "ok";
+        if (!this.canLock()) return "not_parked";
+        L.locked = true; R.windowUntil = null; this.saveLock(); return "ok";
+      }
+      if (cmd === "unlock" || cmd === "verify") {
+        if (!L.pin) return "no_pin";
+        if (R.lockoutUntil != null) return "lockout";
+        if (!ok || d.length < 4 || d.length > 8) return "bad_digits";
+        if (d.length === 8 && cmd === "unlock" && L.puk) {
+          if (demoHash(L.salt, d) !== L.puk) return wrong();
+          Object.assign(L, { pin: null, puk: null, salt: "", locked: false, fails: 0 }); R.windowUntil = t + 60; this.saveLock(); return "recovered";
+        }
+        if (d.length > 6) return "bad_digits";
+        if (demoHash(L.salt, d) !== L.pin) return wrong();
+        L.fails = 0;
+        if (cmd === "unlock") { L.locked = false; this.saveLock(); return "ok"; }
+        if (L.locked) return "not_allowed";
+        R.windowUntil = t + 60; this.saveLock(); return "ok";
+      }
+      const win = R.windowUntil != null;
+      if (cmd === "set_pin") {
+        if (L.locked || (L.pin && !win)) return "not_allowed";
+        if (!ok || d.length < 4 || d.length > 6) return "bad_digits";
+        L.salt = Math.random().toString(36).slice(2); L.pin = demoHash(L.salt, d); L.puk = null; L.fails = 0;
+        R.windowUntil = t + 60; this.saveLock(); return "ok";
+      }
+      if (cmd === "set_puk") {
+        if (L.locked || !L.pin || !win) return "not_allowed";
+        if (!ok || d.length !== 8) return "bad_digits";
+        L.puk = demoHash(L.salt, d); this.saveLock(); return "ok";
+      }
+      if (cmd === "remove") {
+        if (L.locked || !win) return "not_allowed";
+        Object.assign(L, { pin: null, puk: null, salt: "" }); R.windowUntil = null; this.saveLock(); return "ok";
+      }
+      return "not_allowed";
+    };
+    R.result = run(); R.count = (R.count + 1) & 255;
+    this.lockState();
+    this.onState && this.onState({ ...this.s });
+  }
+  lockState() {
+    const L = this.lock, R = this.lockRam, s = this.s;
+    if (R.lockoutUntil != null && this.t >= R.lockoutUntil) R.lockoutUntil = null;
+    if (R.windowUntil != null && this.t >= R.windowUntil) R.windowUntil = null;
+    const lockout = R.lockoutUntil != null;
+    Object.assign(s, {
+      "lock.state": L.locked ? "locked" : L.pin ? "unlocked" : "off",
+      "lock.tries_left": lockout ? 0 : L.fails < 5 ? 5 - L.fails : 1,
+      "lock.lockout_s": lockout ? Math.ceil(R.lockoutUntil - this.t) : 0, "lock.lockout": lockout,
+      "lock.window": R.windowUntil != null, "lock.puk_set": !!L.puk, "lock.inhibit": L.locked,
+      "lock.result": R.result, "lock.result_count": R.count, "lock.fails": L.fails,
+    });
   }
 
   start() {
@@ -45,6 +128,14 @@ export class DemoVehicle {
 
   receive(msg) {
     const s = this.s, spd = s["mc.speed"];
+    if (msg.type === "lock") { this.lockCommand(msg.cmd, msg.digits); return; }
+    if (this.lock.locked && (msg.type === "request" || (msg.type === "hold" && msg.value))) {
+      // Locked: the control box refuses everything (lights included)
+      const h = msg.type === "hold" ? this.holds[msg.id] : null;
+      if (!h || h.v === 0) this.reject("interlock");
+      if (h) h.v = 0;
+      return;
+    }
     if (msg.type === "request") {
       const { id, value } = msg;
       if (id.startsWith("light.front") || id === "light.interior") this.req.lights[id] = value;
@@ -84,6 +175,12 @@ export class DemoVehicle {
 
   scenarioDrive(dt) {
     const s = this.s, t = this.t;
+    if (this.lock.locked) {
+      // Drive inhibit: no throttle, it rolls to a stop and sits there
+      s["mc.throttle"] = 0; s["mc.speed"] = Math.max(0, s["mc.speed"] - 8 * dt); s["mc.batt_a"] = 0.8;
+      if (s["mc.speed"] < 0.3) { s["mc.direction"] = "neutral"; s["in.park"] = true; }
+      return;
+    }
     if (this.scenario === "park" || this.scenario === "faults") {
       s["mc.speed"] = 0; s["mc.direction"] = "neutral"; s["mc.throttle"] = 0; s["in.park"] = true;
       s["mc.batt_a"] = 1.2;
@@ -147,6 +244,13 @@ export class DemoVehicle {
       s["mc.ctrl_temp"] += ((32 + Math.abs(s["mc.batt_a"]) * 0.2) - s["mc.ctrl_temp"]) * dt * 0.05;
       s["an.aux_12v"] = 12.9 + Math.sin(this.t / 5) * 0.05;
     }
+
+    // Locked: lights off, winch disarmed, tray stopped (the control box does this)
+    if (this.lock.locked) {
+      LIGHT_IDS.forEach((k) => (r.lights[k] = 0)); r.rear = "auto"; r.effect = "none"; r.armed = false;
+      this.holds["act.tray"].v = 0; this.holds.winch.v = 0;
+    }
+    this.lockState();
 
     // Lights with effects
     const fx = r.effect, ph = this.t;

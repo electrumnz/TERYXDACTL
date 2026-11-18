@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 // Unit tests for the control box logic, run against the host plant model with
 // a fake clock. Each test drives the dash and Shinegle frames by hand.
 #include <stdio.h>
@@ -841,6 +842,232 @@ static void test_throttle_hold(void) {
     CHECK(R.c.diff.moving && !R.out.throttle_hold);
 }
 
+// ---- Vehicle lock (docs/vehicle-lock.md) ------------------------------------------
+#include "sha256.h"
+
+static void lock_cmd(uint8_t cmd, const char *digits) {
+    uint8_t d[8] = {cmd, 0};
+    uint8_t n = digits ? (uint8_t)strlen(digits) : 0;
+    d[1] = n;
+    for (uint8_t i = 0; i < n; i++) {
+        uint8_t v = (uint8_t)(digits[i] - '0');
+        d[2 + i / 2] |= (uint8_t)(i % 2 == 0 ? v << 4 : v);
+    }
+    frame(CAN_ID_PI_LOCK, 8, d);
+}
+static const uint8_t *lock_frame(void) { const can_frame_t *f = last_sent(CAN_ID_PICO_LOCK); return f ? f->data : NULL; }
+static void park_brake(bool on) {
+    if (on) R.p.din_model |= BIT(IN_PARK); else R.p.din_model &= (uint8_t)~BIT(IN_PARK);
+}
+static void hexcmp(const uint8_t *h, const char *hex) {
+    char buf[65];
+    for (int i = 0; i < 32; i++) sprintf(buf + 2 * i, "%02x", h[i]);
+    CHECK(strcmp(buf, hex) == 0);
+}
+
+static void test_lock_hash(void) {
+    sha256_t s;
+    uint8_t h[32];
+    sha256_init(&s);
+    sha256_update(&s, "abc", 3);
+    sha256_final(&s, h);
+    hexcmp(h, "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
+    uint8_t salt[16];
+    for (int i = 0; i < 16; i++) salt[i] = (uint8_t)i;
+    lock_hash(salt, "1234", 4, h);   // same vector as tests/test_vehicle_lock.py
+    hexcmp(h, "97ddbcf2cb504922480796891327ead84d3a26b65429411b513a9480e49a3e29");
+}
+
+static void test_lock_set_and_lock_rules(void) {
+    rig_init();
+    run(500);
+    CHECK(lock_frame() && lock_frame()[0] == LOCK_OFF);
+    lock_cmd(LOCK_CMD_LOCK, NULL);
+    CHECK(R.c.lock.result == LOCK_RES_NO_PIN && !ctl_locked(&R.c));
+    lock_cmd(LOCK_CMD_SET_PIN, "12");
+    CHECK(R.c.lock.result == LOCK_RES_BAD_DIGITS);
+    lock_cmd(LOCK_CMD_SET_PIN, "4821");
+    CHECK(R.c.lock.result == LOCK_RES_OK && lock_pin_set(&R.c.lock));
+    run(10);
+    CHECK(R.out.save_lock || R.c.lock.saved.crc != 0);
+    // The PIN itself is never stored.
+    CHECK(memmem(&R.c.lock.saved, sizeof(R.c.lock.saved), "4821", 4) == NULL);
+    lock_cmd(LOCK_CMD_SET_PUK, "11223344");
+    CHECK(R.c.lock.result == LOCK_RES_OK && (R.c.lock.saved.flags & LOCKF_PUK_SET));
+
+    // Rolling: refused. No park brake: refused.
+    R.speed_x10 = 50;
+    park_brake(true);
+    run(300);
+    lock_cmd(LOCK_CMD_LOCK, NULL);
+    CHECK(R.c.lock.result == LOCK_RES_NOT_PARKED && !ctl_locked(&R.c));
+    R.speed_x10 = 0;
+    park_brake(false);
+    run(300);
+    lock_cmd(LOCK_CMD_LOCK, NULL);
+    CHECK(R.c.lock.result == LOCK_RES_NOT_PARKED && !ctl_locked(&R.c));
+    // No speed signal and key on: can't prove it's stopped.
+    park_brake(true);
+    R.shinegle = false;
+    run(800);
+    lock_cmd(LOCK_CMD_LOCK, NULL);
+    CHECK(R.c.lock.result == LOCK_RES_NOT_PARKED);
+    R.shinegle = true;
+    run(300);
+    lock_cmd(LOCK_CMD_LOCK, NULL);
+    CHECK(R.c.lock.result == LOCK_RES_OK && ctl_locked(&R.c));
+    run(200);
+    CHECK(lock_frame()[0] == LOCK_LOCKED && (lock_frame()[4] & LOCK_FLAG_INHIBIT));
+    CHECK(R.out.drive_inhibit);
+}
+
+static void lock_up(void) {
+    rig_init();
+    park_brake(true);
+    run(500);
+    lock_cmd(LOCK_CMD_SET_PIN, "4821");
+    lock_cmd(LOCK_CMD_SET_PUK, "11223344");
+    lock_cmd(LOCK_CMD_LOCK, NULL);
+    run(100);
+}
+
+static void test_lock_blocks_everything(void) {
+    rig_init();
+    park_brake(true);
+    run(300);
+    // Lights on, winch armed before locking.
+    lights(255, 255, 0, 0, 200, FX_NONE, LIGHTS_FLAG_REAR_ON);
+    R.holding = true;
+    R.armed = true;
+    run(300);
+    CHECK(R.c.winch.armed && R.out.light[0] > 0);
+    lock_cmd(LOCK_CMD_SET_PIN, "4821");
+    lock_cmd(LOCK_CMD_LOCK, NULL);
+    CHECK(ctl_locked(&R.c));
+    run(400);
+    CHECK(!R.c.winch.armed && !(R.out.relays & BIT(R_WINCH_ISOLATOR)));
+    for (int i = 0; i < L_COUNT; i++) CHECK(R.out.light[i] == 0);
+    CHECK(!(R.out.relays & BIT(R_REAR)) && !(R.out.relays & BIT(R_TRAILER_TAIL)));
+    // Tray and winch presses refused.
+    R.armed = false;
+    R.hold_tray = 1;
+    run(500);
+    CHECK(R.c.tray.dir == 0 && R.out.act_dir[ACT_TRAY] == 0 && reject_reason() == REJ_INTERLOCK);
+    R.hold_tray = 0;
+    R.holding = false;
+    // 4WD / diff refused, and not done by surprise after unlock.
+    drive(REQ_4WD, 50);
+    run(500);
+    CHECK(!R.c.fwd.moving && !R.c.diff.moving && R.out.act_dir[ACT_4WD] == 0);
+    // Settings and firmware update refused.
+    setting(SET_SHIFT_WAIT_MS, 5000);
+    CHECK(last_sent(CAN_ID_PICO_SET_ACK)->data[1] == SET_ACK_LOCKED);
+    CHECK(S(&R.c, SET_SHIFT_WAIT_MS) == 10000);
+    uint8_t m[2] = {0x45, 0x54};
+    frame(CAN_ID_PI_FW_UPDATE, 2, m);
+    run(20);
+    CHECK(!R.out.enter_bootloader);
+    // Can't change or remove the PIN while locked.
+    lock_cmd(LOCK_CMD_SET_PIN, "0000");
+    CHECK(R.c.lock.result == LOCK_RES_NOT_ALLOWED);
+    lock_cmd(LOCK_CMD_REMOVE, NULL);
+    CHECK(R.c.lock.result == LOCK_RES_NOT_ALLOWED && ctl_locked(&R.c));
+    // Unlock: drive is allowed again but the old 4WD ask doesn't fire by itself.
+    lock_cmd(LOCK_CMD_UNLOCK, "4821");
+    CHECK(R.c.lock.result == LOCK_RES_OK && !ctl_locked(&R.c));
+    run(300);
+    CHECK(!R.out.drive_inhibit && !R.c.fwd.moving);
+    drive(REQ_2WD, 0);
+    drive(REQ_4WD, 0);
+    run(20);
+    CHECK(R.c.fwd.moving);
+}
+
+static void test_lock_survives_power_cut(void) {
+    lock_up();
+    CHECK(ctl_locked(&R.c));
+    lock_blob_t flash = R.c.lock.saved;   // what the Pico wrote
+    // Power cut: new controller, same flash.
+    ctl_init(&R.c, NULL, false, false, R.t);
+    ctl_load_lock(&R.c, &flash, R.t);
+    run(200);
+    CHECK(ctl_locked(&R.c) && R.out.drive_inhibit);
+    // A corrupt sector reads as "never set" (and doesn't lock).
+    flash.crc ^= 1;
+    ctl_init(&R.c, NULL, false, false, R.t);
+    ctl_load_lock(&R.c, &flash, R.t);
+    CHECK(!ctl_locked(&R.c) && !lock_pin_set(&R.c.lock));
+}
+
+static void test_lock_wrong_tries(void) {
+    lock_up();
+    for (int i = 0; i < LOCK_FREE_TRIES - 1; i++) {
+        lock_cmd(LOCK_CMD_UNLOCK, "0000");
+        CHECK(R.c.lock.result == LOCK_RES_WRONG);
+    }
+    run(100);
+    CHECK(lock_frame()[1] == 1 && lock_frame()[7] == LOCK_FREE_TRIES - 1);
+    lock_cmd(LOCK_CMD_UNLOCK, "0000");
+    CHECK(R.c.lock.result == LOCK_RES_WRONG && R.c.lock.lockout);
+    run(100);
+    CHECK(lock_frame()[1] == 0 && (lock_frame()[4] & LOCK_FLAG_LOCKOUT));
+    uint16_t left = (uint16_t)(lock_frame()[2] | lock_frame()[3] << 8);
+    CHECK(left >= 29 && left <= 30);
+    // Even the right PIN is refused during the lockout, and doesn't count.
+    lock_cmd(LOCK_CMD_UNLOCK, "4821");
+    CHECK(R.c.lock.result == LOCK_RES_LOCKOUT && ctl_locked(&R.c));
+    // A power cut doesn't clear it.
+    lock_blob_t flash = R.c.lock.saved;
+    ctl_init(&R.c, NULL, false, false, R.t);
+    ctl_load_lock(&R.c, &flash, R.t);
+    CHECK(R.c.lock.lockout);
+    run(30000);
+    CHECK(!R.c.lock.lockout);
+    // One more wrong try: twice as long.
+    lock_cmd(LOCK_CMD_UNLOCK, "9999");
+    CHECK(R.c.lock.lockout && R.c.lock.lockout_ms == 60000u);
+    run(60000);
+    lock_cmd(LOCK_CMD_UNLOCK, "4821");
+    CHECK(R.c.lock.result == LOCK_RES_OK && !ctl_locked(&R.c) && R.c.lock.saved.fails == 0);
+}
+
+static void test_lock_change_pin_and_recovery(void) {
+    lock_up();
+    lock_cmd(LOCK_CMD_UNLOCK, "4821");
+    // Change needs the old PIN first.
+    lock_cmd(LOCK_CMD_SET_PIN, "5555");
+    CHECK(R.c.lock.result == LOCK_RES_NOT_ALLOWED);
+    lock_cmd(LOCK_CMD_VERIFY, "4821");
+    CHECK(R.c.lock.result == LOCK_RES_OK && R.c.lock.window);
+    lock_cmd(LOCK_CMD_SET_PIN, "555555");
+    CHECK(R.c.lock.result == LOCK_RES_OK);
+    // Setting a PIN drops the old recovery code until a new one is sent.
+    CHECK(!(R.c.lock.saved.flags & LOCKF_PUK_SET));
+    lock_cmd(LOCK_CMD_SET_PUK, "87654321");
+    run(LOCK_WINDOW_MS + 100);
+    CHECK(!R.c.lock.window);
+    lock_cmd(LOCK_CMD_REMOVE, NULL);
+    CHECK(R.c.lock.result == LOCK_RES_NOT_ALLOWED);
+    // Lock, forget the PIN, use the recovery code: unlocked and wiped.
+    lock_cmd(LOCK_CMD_LOCK, NULL);
+    CHECK(ctl_locked(&R.c));
+    lock_cmd(LOCK_CMD_UNLOCK, "4821");
+    CHECK(R.c.lock.result == LOCK_RES_WRONG);
+    lock_cmd(LOCK_CMD_UNLOCK, "87654321");
+    CHECK(R.c.lock.result == LOCK_RES_RECOVERED && !ctl_locked(&R.c) && !lock_pin_set(&R.c.lock));
+    CHECK(R.c.lock.saved.fails == 0);
+    // Remove: needs the window.
+    lock_cmd(LOCK_CMD_SET_PIN, "2468");
+    lock_cmd(LOCK_CMD_VERIFY, "2468");
+    lock_cmd(LOCK_CMD_REMOVE, NULL);
+    CHECK(R.c.lock.result == LOCK_RES_OK && !lock_pin_set(&R.c.lock));
+    // Workshop reset (debug UART in the box).
+    lock_up();
+    lock_workshop_reset(&R.c.lock);
+    run(20);
+    CHECK(!ctl_locked(&R.c) && !lock_pin_set(&R.c.lock) && !R.out.drive_inhibit);
+}
+
 int main(void) {
     struct { const char *name; void (*fn)(void); } tests[] = {
         {"boot: all outputs off", test_boot_all_off},
@@ -872,6 +1099,12 @@ int main(void) {
         {"firmware update request", test_fw_update},
         {"IO bus dead", test_io_bus_dead},
         {"status frames", test_status_frames},
+        {"lock: SHA-256 and PIN hash vectors", test_lock_hash},
+        {"lock: set PIN, lock only when parked", test_lock_set_and_lock_rules},
+        {"lock: blocks motion, lights, settings, OTA", test_lock_blocks_everything},
+        {"lock: survives a power cut", test_lock_survives_power_cut},
+        {"lock: wrong tries and lockout", test_lock_wrong_tries},
+        {"lock: change PIN, recovery code, workshop reset", test_lock_change_pin_and_recovery},
     };
     for (size_t i = 0; i < sizeof(tests) / sizeof(tests[0]); i++) {
         int before = failures;

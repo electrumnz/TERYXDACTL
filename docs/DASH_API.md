@@ -68,6 +68,19 @@ Keys follow the io-map ids in `config/io-map.yaml`.
 | `light.effect` | string | Actual effect |
 | `light.rear`, `trailer.tail`, `trailer.brake`, `winch.in`, `winch.out`, `winch.isolator`, `aux.accessory`, `power.hold` | bool | Actual relay states |
 
+**Vehicle lock** (`0x716`, see `docs/vehicle-lock.md`)
+
+| Key | Type | Notes |
+|---|---|---|
+| `lock.state` | `off` / `unlocked` / `locked` | `off` = no PIN set |
+| `lock.tries_left` | count | Wrong tries left before a wait |
+| `lock.lockout`, `lock.lockout_s` | bool, s | Too many wrong tries, and how long is left |
+| `lock.window` | bool | PIN checked in the last 60 s, so it can be changed or removed |
+| `lock.puk_set` | bool | A recovery code is stored |
+| `lock.inhibit` | bool | The Pico is asking for no drive |
+| `lock.result`, `lock.result_text`, `lock.result_count` | string, string, count | Answer to the last lock command. `result_count` goes up by one per command |
+| `lock.fails` | count | Wrong tries in a row |
+
 **Dash's own**
 
 | Key | Notes |
@@ -128,6 +141,15 @@ that many seconds by itself (capped at its setting 21).
 
 Reply: `{"type": "setting_ack", "key": "fourwd_max_kmh", "ok": true}` once the
 Pico has acked it.
+
+**Vehicle lock** (`0x705`, see `docs/vehicle-lock.md`). The answer shows in `lock.*` above.
+
+```json
+{"type": "lock", "cmd": "unlock", "digits": "4821"}
+```
+
+`cmd`: `lock`, `unlock` (PIN, or the 8 digit recovery code), `verify` (opens the 60 s change
+window), `set_pin`, `set_puk`, `remove`. Nothing on the Pi keeps the digits.
 
 **Errors** come back as `{"type": "error", "error": "..."}`.
 

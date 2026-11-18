@@ -8,9 +8,11 @@
 #include "hardware/i2c.h"
 #include "hardware/pwm.h"
 #include "hardware/spi.h"
+#include "hardware/uart.h"
 #include "hardware/watchdog.h"
 #include "pico/bootrom.h"
 #include "pico/flash.h"
+#include "pico/rand.h"
 #include "pico/stdlib.h"
 
 #include "../core/config.h"
@@ -66,6 +68,50 @@ static void settings_save(const settings_t *s) {
     static settings_blob_t blob;
     settings_to_blob(s, &blob);
     flash_safe_execute(flash_write_cb, &blob, 100);
+}
+
+// ---- Vehicle lock in the sector before it (docs/vehicle-lock.md) ---------------
+#define LOCK_OFFSET (SETTINGS_OFFSET - FLASH_SECTOR_SIZE)
+
+static void lock_write_cb(void *param) {
+    static uint8_t page[FLASH_PAGE_SIZE];
+    _Static_assert(sizeof(lock_blob_t) <= sizeof(page), "lock blob too big");
+    memset(page, 0xFF, sizeof(page));
+    memcpy(page, param, sizeof(lock_blob_t));
+    flash_range_erase(LOCK_OFFSET, FLASH_SECTOR_SIZE);
+    flash_range_program(LOCK_OFFSET, page, sizeof(page));
+}
+
+static void lock_save(const lock_blob_t *b) {
+    static lock_blob_t copy;
+    copy = *b;
+    flash_safe_execute(lock_write_cb, &copy, 100);
+}
+
+uint32_t lock_random32(void) { return get_rand_32(); }
+
+// Workshop recovery: on the debug UART (GP0/GP1, inside the control box, not
+// the Pi's USB) type "LOCK RESET" then Enter, with the key on and the park
+// brake on. Wipes the PIN and recovery code and unlocks.
+static void uart_console(controller_t *c) {
+    static char line[24];
+    static uint8_t n;
+    while (uart_is_readable(uart0)) {
+        char ch = (char)uart_getc(uart0);
+        if (ch == '\r' || ch == '\n') {
+            line[n] = 0;
+            if (!strcmp(line, "LOCK RESET")) {
+                bool ok = (c->in.din & BIT(IN_IGNITION)) && (c->in.din & BIT(IN_PARK));
+                if (ok) lock_workshop_reset(&c->lock);
+                uart_puts(uart0, ok ? "lock: wiped and unlocked\r\n" : "lock: key on and park brake on first\r\n");
+            } else if (n) {
+                uart_puts(uart0, "?\r\n");
+            }
+            n = 0;
+        } else if (n < sizeof(line) - 1) {
+            line[n++] = ch;
+        }
+    }
 }
 
 // ---- PWM ----------------------------------------------------------------------
@@ -246,6 +292,11 @@ int main(void) {
 
     uint32_t now = to_ms_since_boot(get_absolute_time());
     ctl_init(&ctl, have_saved ? &saved : NULL, wd_reset, hold_on, now);
+    ctl_load_lock(&ctl, (const lock_blob_t *)(XIP_BASE + LOCK_OFFSET), now);  // checks magic + CRC
+
+    uart_init(uart0, 115200);
+    gpio_set_function(PIN_UART_TX, GPIO_FUNC_UART);
+    gpio_set_function(PIN_UART_RX, GPIO_FUNC_UART);
 
     watchdog_enable(WATCHDOG_MS, true);  // rule 9
 
@@ -275,6 +326,8 @@ int main(void) {
                 if (mcp23017_write_a(I2C_PORT, MCP23017_ADDR, pins)) relays_written = pins;
             }
 
+            if (out.save_lock) lock_save(&ctl.lock.saved);
+            uart_console(&ctl);
             if (out.save_settings) {
                 settings_save(&ctl.settings);
                 ctl.out.save_settings = false;

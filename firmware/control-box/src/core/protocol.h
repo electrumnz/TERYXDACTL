@@ -14,12 +14,14 @@
 #define CAN_ID_PI_DRIVE       0x702u  // Pi -> Pico, on change + every 1 s
 #define CAN_ID_PI_HOLD        0x703u  // Pi -> Pico, 10 Hz while held / armed
 #define CAN_ID_PI_SETTING     0x704u  // Pi -> Pico, on change
+#define CAN_ID_PI_LOCK        0x705u  // Pi -> Pico, vehicle lock commands (docs/vehicle-lock.md)
 #define CAN_ID_PICO_STATUS    0x710u  // Pico -> Pi, 10 Hz
 #define CAN_ID_PICO_OUTPUTS   0x711u  // Pico -> Pi, 10 Hz
 #define CAN_ID_PICO_ACT       0x712u  // Pico -> Pi, 10 Hz
 #define CAN_ID_PICO_POWER     0x713u  // Pico -> Pi, 1 Hz
 #define CAN_ID_PICO_SET_ACK   0x714u  // Pico -> Pi, reply to every 0x704
 #define CAN_ID_PICO_REGEN     0x715u  // Pico -> Pi, 10 Hz, brake pedal regen (not sent yet)
+#define CAN_ID_PICO_LOCK      0x716u  // Pico -> Pi, 10 Hz, vehicle lock state
 #define CAN_ID_PI_FW_UPDATE   0x71Fu  // Pi -> Pico, on demand (magic 0x5445)
 #define CAN_ID_BENCH          0x7E0u  // Simulator -> host build only
 
@@ -106,7 +108,40 @@ enum {
     SET_CMD_DEFAULTS = 0xF1,      // go back to defaults (not saved until 0xF0)
     SET_CMD_CLEAR_FAULTS = 0xF2,  // clear latched actuator faults
 };
-enum { SET_ACK_OK = 0, SET_ACK_UNKNOWN = 1, SET_ACK_RANGE = 2 };
+enum { SET_ACK_OK = 0, SET_ACK_UNKNOWN = 1, SET_ACK_RANGE = 2, SET_ACK_LOCKED = 3 };
+
+// ---- 0x705 vehicle lock (docs/vehicle-lock.md) --------------------------------------
+// Frame: [0] command, [1] number of digits, [2-5] digits as BCD, first digit in
+// the high nibble of byte 2, [6] counter. A PIN is 4-6 digits, the recovery
+// code 8. The Pico keeps only a salted hash of each, never the digits.
+enum {
+    LOCK_CMD_LOCK = 1,       // lock now (needs a PIN, stopped, park brake on)
+    LOCK_CMD_UNLOCK = 2,     // digits = PIN, or the 8 digit recovery code
+    LOCK_CMD_VERIFY = 3,     // digits = PIN: opens the 60 s change window
+    LOCK_CMD_SET_PIN = 4,    // digits = new PIN (first PIN, or inside the window)
+    LOCK_CMD_SET_PUK = 5,    // digits = new 8 digit recovery code (inside the window)
+    LOCK_CMD_REMOVE = 6,     // turn the lock off, forget PIN and code (inside the window)
+};
+// ---- 0x716 vehicle lock state --------------------------------------------------------
+// [0] state, [1] tries left before a lockout, [2-3] u16 lockout seconds left,
+// [4] flags, [5] last result, [6] result counter (goes up by one per command),
+// [7] wrong tries in a row.
+enum { LOCK_OFF = 0, LOCK_UNLOCKED = 1, LOCK_LOCKED = 2 };
+#define LOCK_FLAG_WINDOW        0x01u  // change window open
+#define LOCK_FLAG_PUK_SET       0x02u  // a recovery code is stored
+#define LOCK_FLAG_INHIBIT       0x04u  // drive inhibit is being asked for
+#define LOCK_FLAG_LOCKOUT       0x08u  // too many wrong tries, waiting
+enum {
+    LOCK_RES_NONE = 0,
+    LOCK_RES_OK = 1,
+    LOCK_RES_WRONG = 2,       // wrong PIN or code
+    LOCK_RES_NOT_PARKED = 3,  // lock needs stopped + park brake, nothing moving
+    LOCK_RES_NO_PIN = 4,      // set a PIN first
+    LOCK_RES_LOCKOUT = 5,     // too many wrong tries, wait
+    LOCK_RES_BAD_DIGITS = 6,  // wrong length or not digits
+    LOCK_RES_NOT_ALLOWED = 7, // e.g. change PIN without the window, or while locked
+    LOCK_RES_RECOVERED = 8,   // unlocked with the recovery code: PIN and code wiped
+};
 
 // ---- 0x710 status --------------------------------------------------------------
 // b0 counter, b1-2 faults, b3 inputs (B0-B7), b4 state, b5 reject, b6 flags,
