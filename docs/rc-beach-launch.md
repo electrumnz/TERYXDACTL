@@ -332,6 +332,34 @@ github.io it drives a pretend Teryx.
 On the real remote the app shows what the RC box reports; it doesn't make the
 safety calls itself.
 
+### 4d. A gamepad paired straight to the Pi (no phone)
+
+For close-range jobs, like hitching up or lining up the trailer, an Xbox or
+8BitDo style Bluetooth pad can pair straight to the Pi and drive with no phone
+at all. It goes through exactly the same RC box rules (link "bt",
+`teryx/rc_pad.py`). If Bluetooth drops, the packets stop and the Teryx stops
+and holds. When Linux reports the pad gone, a failsafe goes out straight away.
+There's no screen in your hand, so the **dash screen shows the RC banner**:
+who's driving, ready/driving/holding, the gear, the speed cap and why it
+stopped.
+
+| Pad | Does |
+|---|---|
+| LB (L1) held | Dead-man. Let go and it stops and holds |
+| Left stick up / down | Go forward / back, pull against the way you're moving to brake. F-N-R follows the stick (stop and re-centre to swap) |
+| RT / LT | Go / brake, if you'd rather use triggers |
+| Right stick left / right | Steer |
+| A held / B held | Winch in / out (only stopped, neutral, off the throttle) |
+| D-pad up / down | Lights / 2WD-4WD |
+| D-pad left / right | Diff lock down / up 25 % |
+| Start held 1 s | RC on / off. Needs LB let go and the sticks centred |
+| Select (View) | E-stop. Stays on until RC is turned off and on again |
+
+Lights, 4WD and diff go to the control box as normal dash buttons, with the same
+rules. Bluetooth range is short (not measured, our guess is tens of metres
+at best and less over water), so this is for close work. Use the phone for launching. **Not tested
+with a real pad yet.** The Pi needs `pip install evdev` (BSD licence).
+
 ## 5. RC rules (the RC box)
 
 Written as code in `teryx/rc_mode.py` with tests in `tests/test_rc_mode.py`. The

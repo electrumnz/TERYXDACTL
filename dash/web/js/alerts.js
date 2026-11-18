@@ -60,6 +60,24 @@ export function evaluate(st, settings, prev = new Set(), now = Date.now(), linkL
   if (wh && wh.state === "rest") add("a:winch_rest", "bad", `Winch motor needs a rest. Leave it about ${Math.ceil(wh.restS / 60)} min to cool.`);
   else if (wh && wh.state === "warm") add("a:winch_warm", "warn", "Winch motor getting hot. Give it a rest soon.");
 
+  // RC mode (docs/rc-beach-launch.md). With a Bluetooth pad paired to the Pi there's no
+  // screen in your hand, so this banner is the remote's screen: state, gear and why it stopped.
+  const rcs = st.get("rc.state");
+  if (rcs && rcs !== "off") {
+    const pad = st.get("rc.link") === "bt";
+    const who = pad ? "gamepad" : { wifi: "phone", "4g": "phone over 4G", radio: "handheld" }[st.get("rc.link")] || "remote";
+    const gear = { 1: "forward", "-1": "reverse", 0: "neutral" }[st.get("rc.dir") ?? 0];
+    const cap = st.get("rc.cap_kmh");
+    const why = { radio_lost: pad ? "gamepad lost, stopped on the brake" : "signal lost, stopped on the brake",
+      deadman: pad ? "hold LB to drive" : "thumb on the stick to drive", estop: "E-STOP. Turn RC off and on to reset",
+      recentre: "let the stick back to the middle", wheelspin: "digging in, stopped. Try 4WD and diff lock",
+      stalled: "stuck, stopped", water: "water at the limit, no more reverse", control_box_lost: "control box not answering" }[st.get("rc.reason")] || st.get("rc.reason");
+    const state = { armed: "ready", driving: "driving", hold: "holding", fault: "FAULT" }[rcs] || rcs;
+    const text = `RC on (${who}): ${state}, ${gear}${cap ? `, ${cap} km/h max` : ""}${why ? `. ${why[0].toUpperCase()}${why.slice(1)}` : ""}.`;
+    const lost = st.get("rc.reason") === "radio_lost" || rcs === "fault" || st.get("rc.reason") === "estop";
+    add(lost ? "a:rc_stop" : "a:rc", lost ? "bad" : rcs === "hold" ? "warn" : "info", text);
+  }
+
   const roll = st.get("pi.imu.roll"), pitch = st.get("pi.imu.pitch");
   const rw = settings.get("tilt.rollWarn"), rb = settings.get("tilt.rollBad");
   const pw = settings.get("tilt.pitchWarn"), pb = settings.get("tilt.pitchBad");
