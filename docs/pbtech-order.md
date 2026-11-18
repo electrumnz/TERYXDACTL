@@ -55,10 +55,11 @@ Pick listings marked "Choice" where you can: they usually ship free and faster.
 | **Phone gamepad grip** (Razer Kishi style) for RC mode | "GameSir G8 Galileo", from the **GameSir official store** | 1 | US$40-45 on deals (~NZ$73-82), list price [US$79.99](https://gamesir.com/collections/all-products/products/gamesir-g8-galileo). Deal posts: [Slickdeals](https://slickdeals.net/f/19268917-gamesir-phone-controllers-g8-galileo-usb-c-gray-44-79-g8-bluetooth-black-free-u-s-shipping-aliexpress) | Half the [Razer Kishi V3](https://www.pbtech.co.nz/product/JOYRAZ112682) at PB Tech (NZ$167.58, [`rc-beach-launch.md`](rc-beach-launch.md)). USB-C, Hall effect sticks and triggers, stretches to fit the phone. Get the **USB-C** one, not the Bluetooth G8+, so it plugs straight into the phone like the Kishi. Test it on the RC page (HTTPS) when it arrives |
 | **Blade fuse block, 20-way, with cover and negative bus** | "20 way blade fuse box negative bus cover" | 1 | ~US$15-25 (~NZ$27-46), my estimate. AliExpress search pages show bait prices like [US$1.09](https://www.aliexpress.com/w/wholesale-Modular%20Fuse%20Block.html); a similar 12-way Nilight is [US$22.99 at Walmart](https://www.walmart.com/c/kp/electrical-box-bus) | The wiring plan has **16 fused circuits** (`config/wiring.yaml`, F1-F16), so get a 20-way for spares. Look for: clip-on cover (ideally a seal), built-in negative bus, 30 A per way and 100 A total, studs or screw terminals for the feed (not a push-on spade), and blown-fuse LEDs are a bonus. A proper brand (Blue Sea, Narva) is better if it'll live where it gets wet |
 | **30 mm 5V fan, 2-pin (3007)** | "3007 5V fan 2 pin" | 1-2 | ~US$2-5 (~NZ$4-9), my estimate. A [reseller copy of an AliExpress listing](https://ubbthreads.com/store/item/4x-2-Pin-30MMx30MM-3007-5V-Cooling-Fan-radiating-For-Raspberry-Pi-2-3-Model-B-4B_285308377334.html) shows US$8.89 for 4 | Pi box lid. Must be 30 x 30 x 7 mm to fit the printed lid. Get a spare, they're cheap |
-| **4G module board, SIMCom A7670SA** (Sam's pick: a bare board to solder in, not a stick) | "A7670SA core board B28" | 1 | ~US$15.46 (~NZ$28). [Listing with B1/B2/B3/B4/B5/B7/B8/B28/B66](https://www.aliexpress.us/item/3256808314829525.html) | **Must be the A7670SA**, and the listing must show **B28** (700 MHz, the NZ country band). The A7670E and some "A7670SA" listings only have B1/B3/B5/B7/B8/B20, no B28 ([SIMCom table via manuals.plus](https://manuals.plus/ae/1005008976290540)). Cat-1 LTE, about 10 Mbps down: plenty for light data and SMS. SIM slot and TTL UART on the board. Talks plain AT commands, so SMS is easy on Linux |
-| Adjustable buck module (MP1584 or similar) + 1000 µF capacitor | "MP1584 buck" | 1 | ~NZ$3 (estimate) | Set to about **3.8-4.0 V** for the module, unless the board takes 5V itself. The module can pull **about 2 A in short bursts** when it transmits, so it gets its own supply and a big capacitor right at the board, not the Pi's 3.3V pin |
+| **4G module board, SIMCom A7670SA** (Sam's pick: a bare board to solder in, not a stick) | "A7670SA core board B28" | 1 | ~US$15.46 (~NZ$28). [Listing with B1/B2/B3/B4/B5/B7/B8/B28/B66](https://www.aliexpress.us/item/3256808314829525.html) | **Must be the A7670SA**, and the listing must show **B28** (700 MHz, the NZ country band). The A7670E and some "A7670SA" listings only have B1/B3/B5/B7/B8/B20, no B28 ([SIMCom table via manuals.plus](https://manuals.plus/ae/1005008976290540)). Cat-1 LTE, about 10 Mbps down: plenty for light data and SMS. SIM slot and TTL UART on the board. Talks plain AT commands, so SMS is easy on Linux. **Over UART only it does texts, WHERE and LOCK, but the data is far too slow for live cameras or RC over 4G.** Better buy if you can find one: an A7670SA board whose USB-C goes to the module's **own USB pins** (not a CH340-type USB-serial chip), so it plugs into the Pi over USB at full speed |
+| Adjustable buck module, **3 A rated** (MP1584 or similar) + 1000 µF capacitor | "MP1584 3A buck" | 1 | ~NZ$3 (estimate) | Set to **3.8 V** for the module, unless the board takes 5V itself. The datasheet gives a **2.8 A peak** when it transmits, so it gets its own supply and a big capacitor right at the board, not the Pi's 3.3V pin |
+| 4-channel BSS138 level shifter | "BSS138 level shifter 4 channel" | 1 | ~NZ$2 (estimate) | Only if the board brings out the module's **1.8 V** UART directly. The Pi's pins are 3.3 V |
 | LTE antenna, wideband 698-2700 MHz, u.FL to SMA lead | "4G LTE antenna 698-2700 SMA" | 1 | ~NZ$12 (estimate) | The little PCB stick antennas are poor at 700 MHz (B28), which is what you'll be on out in the country. Mount it outside the metal, near the GPS puck |
-| | | | **about NZ$338** | Dongle NZ$65, amp NZ$82, 2 x BTS7960 NZ$24, grip NZ$78, fuse block ~NZ$40, fan ~NZ$6, 4G board, buck and antenna ~NZ$43. Opto and MOSFET boards on top |
+| | | | **about NZ$340** | Dongle NZ$65, amp NZ$82, 2 x BTS7960 NZ$24, grip NZ$78, fuse block ~NZ$40, fan ~NZ$6, 4G board, buck, level shifter and antenna ~NZ$45. Opto and MOSFET boards on top |
 
 ### Better bought in NZ or from a proper shop, not AliExpress
 
@@ -100,19 +101,19 @@ AUD to NZD at 1.234 (Wise, 17 Nov). USD to NZD at 1.822 (Wise, 18 Nov, no time s
 | | NZ$ |
 |---|---|
 | Buy tomorrow (all PB Tech) | ~597 |
-| AliExpress cart | ~338 |
+| AliExpress cart | ~340 |
 | Other online orders (Core, Gogo, element14) | ~270 |
 | Aqua column | ~115 |
-| **Everything priced** | **about NZ$1,319** |
+| **Everything priced** | **about NZ$1,321** |
 
 The amp (NZ$82) and the gamepad grip (NZ$78) are new to the list today. Without those two it's
-about NZ$1,159. Not counted: blade fuses, the opto and MOSFET boards, Narva socket, trailer camera bits,
+about NZ$1,161. Not counted: blade fuses, the opto and MOSFET boards, Narva socket, trailer camera bits,
 speakers and amp wiring, and everything under "Later".
 
 ## Wiring the 4G board
 
-- **To the Pi:** the A7670SA's UART goes to the Pi's UART pins (GPIO 14/15, 3.3V logic; check the
-  board's logic level, some need a level shifter). The Pi sends AT commands for SMS and can run
+- **To the Pi:** the A7670SA's UART goes to the Pi's UART pins (GPIO 14/15, 3.3V logic; if the board
+  brings out the module's 1.8 V UART, use the BSS138 level shifter). The code supports this (PR #42). The Pi sends AT commands for SMS and can run
   PPP over it for light data.
 - **Or always on, off a spare Pico:** the Pi is off when the key is off, so for "text the Teryx to
   lock it" while parked, the module has to stay powered from the 12V battery and something small
