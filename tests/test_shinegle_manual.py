@@ -7,7 +7,7 @@ def test_params_have_the_basics():
     params = M.load_params()
     assert len(params) >= 60
     for p in params:
-        assert {"page", "name", "cn", "cn_ours", "en"} <= set(p), p
+        assert {"page", "name", "cn", "en", "remark"} <= set(p), p
         assert str(p["page"]) in "0123456789abcdef"
     keys = [(p["page"], p["name"]) for p in params]
     assert len(keys) == len(set(keys))
@@ -17,7 +17,7 @@ def test_params_have_the_basics():
 
 def test_regen_parameters_are_there():
     by = {(p["page"], p["name"]): p for p in M.load_params()}
-    assert "Regenerative" in by[("9", "B_Cur")]["remark_en"]
+    assert "Regenerative" in by[("9", "B_Cur")]["remark"]
     assert by[("4", "B_Rat")]["value"] == "12"
 
 
@@ -25,13 +25,14 @@ def test_fault_codes_cover_1_to_46_once():
     seen = []
     for f in M.load_faults():
         seen += list(M._codes(f))
-        assert {"cn", "cn_ours", "en"} <= set(f)
+        assert {"cn", "en"} <= set(f)
     assert sorted(seen) == list(range(1, 47))
 
 
 def test_fault_lookup():
-    assert M.fault(7)["cn_ours"] == "Phase V fault"
-    assert M.fault(33)["en"] == "System Error 2"
+    assert M.fault(7)["en"] == "Phase V fault"
+    assert M.fault(18)["en"] == "Current sensor 2 fault"
+    assert M.fault(33)["en"] == "System error 2"
     assert M.fault(0) is None and M.fault(99) is None
 
 
