@@ -297,7 +297,7 @@ From [`io-list.md`](io-list.md) and [`wiring.md`](wiring.md).
 | BTS7960 H-bridge | 3 (io-list says 1 on hand) | AliExpress | **Not verified** | No NZ shop stocks them that I could find. Fruugo NZ lists them but the prices and dates on the page looked stale |
 | 8-channel PC817 opto board, 12V in | 1 | AliExpress | ~NZ$9 estimate | Needed: all 8 control box inputs |
 | Isolated MOSFET switch module, LR7843 | 6 (5 + spare) | AliExpress | ~NZ$5 each estimate | Needed: switches and dims the light bars, one per bar |
-| 16-channel 5V relay board, mechanical, opto + JD-VCC jumper (AliExpress cart) | 1 | | ~NZ$21 | All 10 relays plus 6 spare, aux box. The solid state G3MB-202P board on order is AC only and can't switch 12 V DC |
+| 16-channel 5V relay board, mechanical, opto + JD-VCC jumper (AliExpress cart) | 1 | | ~NZ$21 | All 10 relays plus 6 spare, aux box. The solid state G3MB-202P board on order is AC only and can't switch 12 V DC. Its 10 A relays are fine for every load in the plan (all under about 7 A, winch motor goes through its own contactor) |
 | Micro switch with lever (tray limits) | 2 | Jaycar SM1038 | **NZ price not verified** | [Australian page](https://jaycar-prod.australia-southeast1.gcp.storefrontcloud.io/spdt-250v-3a-miniature-micro-switch-with-lever/p/SM1038) shows $4.95. Wants to be sealed for under a tray: look for IP67 |
 | Resistors, diodes, 3.3V zener, 4.7k pull-ups | a few | Gogo:Tronics or Jaycar | **Not verified** | Values in `wiring.md` |
 | IMU (optional) | 1 | | **Not verified** | |
