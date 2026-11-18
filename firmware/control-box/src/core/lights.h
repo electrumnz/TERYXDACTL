@@ -10,7 +10,7 @@
 enum {
     LP_HEAD_L_LOW = 0, LP_HEAD_L_HIGH, LP_HEAD_R_LOW, LP_HEAD_R_HIGH,
     LP_TAIL_L, LP_BRAKE_L, LP_TAIL_R, LP_BRAKE_R,
-    LP_TRAILER_TAIL, LP_TRAILER_STOP, LP_FLOOD_L, LP_FLOOD_R, LP_BEACON, LP_TRAILER_BAR,
+    LP_TRAILER_TAIL, LP_TRAILER_STOP, LP_FLOOD_L, LP_FLOOD_R, LP_BEACON, LP_TRAILER_BAR, LP_BEACON_WHITE,
     LP_COUNT
 };
 // The 0x701 lights, as the show sees them.
@@ -22,7 +22,7 @@ enum { SHOW_NONE = 0, SHOW_WAVE = 1, SHOW_BREATHE = 2, SHOW_ROAR = 3, SHOW_PARTY
 #define BEACON_ON_MS     167u
 
 typedef struct {          // 0x706 + the rear bits of 0x701
-    uint8_t head_low, head_high, tail, rear, trailer_bar, beacon, show;
+    uint8_t head_low, head_high, tail, rear, trailer_bar, beacon, show, beacon_white;
     bool rear_on, rear_auto;
 } lights_req_t;
 

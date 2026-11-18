@@ -25,7 +25,7 @@ enum {
 // Relays (MCP23017 port A). Bit 0 = relay 1.
 enum {
     R_REAR = 0, R_TRAILER_TAIL = 1, R_TRAILER_BRAKE = 2, R_WINCH_IN = 3,
-    R_WINCH_OUT = 4, R_WINCH_ISOLATOR = 5, R_ACCESSORY = 6, R_POWER_HOLD = 7,
+    R_WINCH_OUT = 4, R_SPARE6 = 5, R_ACCESSORY = 6, R_POWER_HOLD = 7,
 };
 
 enum { ACT_DIFF = 0, ACT_4WD = 1, ACT_TRAY = 2, ACT_COUNT = 3 };

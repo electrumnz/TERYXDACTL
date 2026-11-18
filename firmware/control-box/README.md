@@ -80,7 +80,7 @@ If CAN is down it falls back to `picotool reboot -f -u` over USB. Needs
 
 | Rule | What the firmware does |
 |---|---|
-| 1 Lost dash | No `0x700` for 500 ms: stop tray, 4WD and diff actuators, winch off and disarmed, isolator off. Lights stay. 3 s grace after boot |
+| 1 Lost dash | No `0x700` for 500 ms: stop tray, 4WD and diff actuators, winch off and disarmed. Lights stay. 3 s grace after boot |
 | 2 Lost speed | No Shinegle speed for 500 ms: speed unknown, so anything that needs "stopped" or a speed check is refused |
 | 3 2WD/4WD | Starts only when stopped (under 1 km/h, Kawasaki says stop first, see `docs/teryx-drivetrain.md`). Requests act on a change only, except that while the position is unknown (after boot) a resend homes it once it is safe. Full power to the end. Done when the current drops away (actuator's own limit switch), fault on over 6 A, gives up after 3 s |
 | 3/4 waiting | A 4WD or diff request that is only too fast waits up to `shift_wait_ms` (10 s) and runs once the speed is right. Asking for what's already there cancels it. Hard reasons (no speed, key off, lost dash, fault) drop it, a time-out rejects it (14). One drive change at a time (15 busy), except unlocking. Throttle hold only while a shift runs from a standstill, dropped for good if it rolls |
@@ -151,9 +151,9 @@ These are in the firmware and need adding to the test environment's
 - Diff pot calibration: set keys 14 and 15 to the raw readings at 0 % and
   100 % (the dash can show the raw value during calibration).
 - Tray travel time: the 20 s tray limit must be longer than a full lift.
-- Winch isolator: with the isolator off whenever the winch is disarmed, the
-  handheld remote only works while armed. If the remote must always work as a
-  backup, wire it to bypass the isolator relay.
+- Winch: there's no isolator contactor (dropped 18 Nov). Arming on the dash
+  only gates the control box's own in/out relays. The XBull remote and hand
+  switches work whenever the 250 A breaker is on, so that breaker is the kill.
 - Pico power: if the Pico runs off switched 12V it loses power at key-off
   and can't hold the Pi on. Feed its buck from the power-hold side too.
 

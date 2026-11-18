@@ -129,7 +129,7 @@ def test_every_show_uses_every_lamp_and_stays_in_range():
 
 def test_can_frames_round_trip():
     v = {"head_low": 10, "head_high": 0, "tail": 0, "rear": 200, "trailer_bar": 30,
-         "beacon": 255, "show": 3, "counter": 7}
+         "beacon": 255, "show": 3, "counter": 7, "beacon_white": 90}
     assert M.PI_LIGHTS2.decode(M.PI_LIGHTS2.encode(v)) == v
     lv = {k: i for i, k in enumerate(LAMPS)}
     d = M.PICO_LIGHTS2.decode(M.PICO_LIGHTS2.encode({**lv, "show_running": 1, "show_blocked": 0, "pwm_ok": 1}))
@@ -141,7 +141,8 @@ def test_sim_control_box_runs_a_show_and_reports_it():
     cb = ControlBox()
     cb.on_frame("PI_HEARTBEAT", {"counter": 0, "dash_state": 1}, 0.0)
     cb.on_frame("PI_LIGHTS2", {"head_low": 0, "head_high": 0, "tail": 0, "rear": 0,
-                                "trailer_bar": 0, "beacon": 0, "show": 2, "counter": 0}, 0.0)
+                                "trailer_bar": 0, "beacon": 0, "show": 2, "counter": 0,
+                                "beacon_white": 0}, 0.0)
     cb.step(0.01, 0.01)
     frames = dict(cb.frames())
     assert frames["PICO_LIGHTS2"]["show_blocked"] == 1     # no speed signal, park brake off
@@ -153,3 +154,17 @@ def test_no_dash_with_the_key_on_puts_low_beams_and_tails_on():
     lv = run(LightsReq(head_high=255), driving(dash_ok=False))
     assert lv["head_l_high"] == 255 and lv["head_l_low"] == 0
     assert run(LightsReq(), driving(dash_ok=False, ignition=False))["head_l_low"] == 0
+
+
+def test_white_beacon_takes_turns_with_amber_and_only_when_stopped():
+    L, st = Lights(), parked()
+    both = 0
+    for ms in range(0, 3000, 5):
+        st.now_ms = ms
+        lv = L.step(LightsReq(beacon=200, beacon_white=150), st).level
+        assert not (lv["beacon"] and lv["beacon_white"])
+        both += bool(lv["beacon_white"])
+    assert both > 200 and max(run(LightsReq(beacon_white=150), parked(), ms=200).values()) == 150
+    for ms in range(0, 1000, 7):                       # moving: never white
+        assert run(LightsReq(beacon_white=255), driving(), ms=ms)["beacon_white"] == 0
+    assert run(LightsReq(beacon_white=255), parked(locked=True), ms=200)["beacon_white"] == 0

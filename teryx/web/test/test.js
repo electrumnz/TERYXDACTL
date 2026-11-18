@@ -2,7 +2,7 @@
 const $ = id => document.getElementById(id);
 const link = new TeryxLink();
 const LIGHTS = ["light.front_1", "light.front_2", "light.front_3", "light.front_4", "light.interior"];
-const RELAYS = ["light.rear", "trailer.tail", "trailer.brake", "winch.in", "winch.out", "winch.isolator", "aux.accessory", "power.hold"];
+const RELAYS = ["light.rear", "trailer.tail", "trailer.brake", "winch.in", "winch.out", "relay.spare6", "aux.accessory", "power.hold"];
 const FAULT_TEXT = {
   over_current: "Motor over current", over_voltage: "Battery voltage too high",
   under_voltage: "Battery voltage too low", motor_over_temp: "Motor too hot",

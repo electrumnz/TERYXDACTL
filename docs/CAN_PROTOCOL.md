@@ -103,8 +103,9 @@ Stock lamps, rear floods, beacon, trailer bar and the light show (docs/lights.md
 | `rear` | byte 3 | u8 |  | Rear flood level while 0x701 rear_on is set, 0 = full |
 | `trailer_bar` | byte 4 | u8 |  |  |
 | `beacon` | byte 5 | u8 |  | Roof beacon brightness, 0 = off. The Pico flashes it at 3 Hz |
-| `show` | byte 6 | u8 |  | Light show, parked only 0=none, 1=wave, 2=breathe, 3=roar, 4=party |
-| `counter` | byte 7 | u8 |  |  |
+| `show` | byte 6 bit 0 (+4 bits) | u4 |  | Light show, parked only 0=none, 1=wave, 2=breathe, 3=roar, 4=party |
+| `counter` | byte 6 bit 4 (+4 bits) | u4 |  |  |
+| `beacon_white` | byte 7 | u8 |  | White side of the beacon, 0 = off. 3 Hz opposite the amber, only when stopped |
 
 ### 0x71F PI_FW_UPDATE
 
@@ -256,9 +257,10 @@ What the PCA9685 lamps are actually doing, after every safety rule (docs/lights.
 | `flood_r` | byte 5 bit 4 (+4 bits) | u4 |  |  |
 | `beacon` | byte 6 bit 0 (+4 bits) | u4 |  |  |
 | `trailer_bar` | byte 6 bit 4 (+4 bits) | u4 |  |  |
-| `show_running` | byte 7 bit 0 | u1 |  |  |
-| `show_blocked` | byte 7 bit 1 | u1 |  | A show was asked for but the Teryx isn't parked (key on, park brake, stopped) |
-| `pwm_ok` | byte 7 bit 2 | u1 |  | PCA9685 answering |
+| `beacon_white` | byte 7 bit 0 (+4 bits) | u4 |  |  |
+| `show_running` | byte 7 bit 4 | u1 |  |  |
+| `show_blocked` | byte 7 bit 5 | u1 |  | A show was asked for but the Teryx isn't parked (key on, park brake, stopped) |
+| `pwm_ok` | byte 7 bit 6 | u1 |  | PCA9685 answering |
 
 ## Bench only
 
@@ -330,7 +332,7 @@ HOST/BENCH BUILD ONLY. Lets the simulator drive the Pico's wired inputs and inje
 | 2 | `trailer.brake` |
 | 3 | `winch.in` |
 | 4 | `winch.out` |
-| 5 | `winch.isolator` |
+| 5 | `relay.spare6` |
 | 6 | `aux.accessory` |
 | 7 | `power.hold` |
 

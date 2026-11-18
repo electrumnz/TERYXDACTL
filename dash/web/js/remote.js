@@ -281,7 +281,7 @@
     if (dashWs.readyState === 1) dashWs.send(msg);
     else dashWs.addEventListener("open", () => dashWs.send(msg), { once: true });
   }
-  const lights = { bars: 0, head: 100, headMode: "off", cabin: 0, rear: 0, trailer: 0, beacon: 0 };
+  const lights = { bars: 0, head: 100, headMode: "off", cabin: 0, rear: 0, trailer: 0, beacon: 0, white: 0 };
   const to255 = (pct) => Math.round((pct / 100) * 255);
   function lightsSend(which) {
     if (which === "bars") ["light.front_1", "light.front_2", "light.front_3", "light.front_4"].forEach((id) => dashSend(id, to255(lights.bars)));
@@ -290,6 +290,7 @@
     if (which === "rear") { dashSend("light.rear_level", to255(lights.rear)); dashSend("light.rear", lights.rear ? "on" : "auto"); }
     if (which === "trailer") dashSend("light.trailer_bar", to255(lights.trailer));
     if (which === "beacon") dashSend("light.beacon", to255(lights.beacon));
+    if (which === "white") dashSend("light.beacon_white", to255(lights.white));
     veh.lights = lights.bars > 0 || lights.headMode !== "off" || lights.rear > 0;
   }
   document.querySelectorAll("[data-light]").forEach((r) => r.addEventListener("input", () => {

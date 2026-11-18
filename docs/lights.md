@@ -20,9 +20,8 @@ channels (`LAMP_PWM_HZ` in `firmware/control-box/src/core/config.h`).
 | 7 / 8 | Right tail / right brake | BTS7960 no. 7 |
 | 9 / 10 | Trailer tail / trailer stop | BTS7960 no. 8 |
 | 11 / 12 | Rear flood left / right | MOSFET board ch7 / ch8 |
-| 13 | Roof beacon | 4-ch MOSFET board ch1 (3 spare) |
-| 14 | Spare | |
-| 15 | Enable for all five BTS7960s | 10k pull-down, so they're off at boot |
+| 13 / 14 | Roof beacon amber / white | BTS7960 no. 9 (RPWM / LPWM) |
+| 15 | Enable for all six BTS7960s | 10k pull-down, so they're off at boot |
 
 ## Why the stock lamps go on BTS7960 boards
 
@@ -60,7 +59,8 @@ same rules in C, and `tests/test_lights_parity.py` checks the two match.
    off is full. Dimming them is for when you're parked.
 4. Tails come on by themselves with any headlight or front bar (tail slider
    at 0 = automatic).
-5. The beacon flashes at a fixed 3 Hz.
+5. The beacon flashes at a fixed 3 Hz. The white side takes the other half of
+   each flash, and only while the Teryx is stopped.
 6. Rear floods: off, on, or on by themselves in reverse. Always full in reverse.
 7. The trailer bar is only live with the trailer plugged in.
 8. Locked: everything off except rule 1.
@@ -74,6 +74,11 @@ same rules in C, and `tests/test_lights_parity.py` checks the two match.
 - **Beacon flash rate:** Land Transport Rule: Vehicle Lighting 2004, clause
   11.1(2), a flashing warning lamp must flash at 2 to 4 times a second. We use
   3 Hz, fixed, so it can't be changed into something that isn't allowed.
+- **White beacon:** lamps showing to the rear must be red or amber on the
+  road (Vehicle Lighting Amendment 2011), and the NZTA beacon checks say a
+  beacon must not show anything but red or amber to the rear. So the white
+  side only works when you're stopped (beach launching, finding the Teryx
+  in the dark), never while driving.
 - **Amber beacons:** clause 11.2(4) lists the vehicles allowed an amber
   beacon (including agricultural vehicles and vehicles that are a hazard to
   other road users). Use it off-road, on the beach or when you're a hazard.
@@ -86,9 +91,9 @@ Rules text: <https://www.nzta.govt.nz/resources/rules/vehicle-lighting-2004/>
 ## CAN
 
 - **0x706 PI_LIGHTS2** (dash to Pico): head low, head high, tail (0 = auto),
-  rear flood level (0 = full), trailer bar, beacon, show, counter. Sent on
+  rear flood level (0 = full), trailer bar, beacon amber, show + counter (4 bits each), beacon white. Sent on
   change and every second.
-- **0x717 PICO_LIGHTS2** (Pico to dash, 10 Hz): what each of the 14 lamps is
+- **0x717 PICO_LIGHTS2** (Pico to dash, 10 Hz): what each of the 15 lamps is
   really doing (4-bit level each), plus show running, show blocked and PWM
   board OK.
 

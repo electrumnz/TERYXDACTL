@@ -315,7 +315,8 @@ void ctl_on_frame(controller_t *c, const can_frame_t *f, uint32_t now,
         c->lreq.rear = f->data[3];
         c->lreq.trailer_bar = f->data[4];
         c->lreq.beacon = f->data[5];
-        c->lreq.show = f->data[6] < SHOW_COUNT ? f->data[6] : SHOW_NONE;
+        c->lreq.show = (f->data[6] & 0x0Fu) < SHOW_COUNT ? (f->data[6] & 0x0Fu) : SHOW_NONE;
+        c->lreq.beacon_white = f->dlc >= 8 ? f->data[7] : 0;
         break;
 
     case CAN_ID_PI_DRIVE: {
@@ -681,7 +682,6 @@ static void run_winch(controller_t *c, uint32_t now, cb_out_t *o, bool dash_ok) 
     // In and out can never be on together. Belt and braces.
     if (w->active > 0) o->relays |= BIT(R_WINCH_IN);
     else if (w->active < 0) o->relays |= BIT(R_WINCH_OUT);
-    if (w->armed) o->relays |= BIT(R_WINCH_ISOLATOR);
 }
 
 // ---------------------------------------------------------------------------

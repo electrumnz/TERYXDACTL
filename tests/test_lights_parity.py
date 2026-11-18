@@ -48,7 +48,7 @@ def test_rules_match(harness):
     for _ in range(3000):
         now += rng.choice((5, 5, 5, 40, 333))
         lv = lambda: rng.choice((0, 0, 1, 60, 128, 255))   # noqa: E731
-        r = LightsReq(head_low=lv(), head_high=lv(), tail=lv(), rear=lv(), trailer_bar=lv(), beacon=lv(),
+        r = LightsReq(head_low=lv(), head_high=lv(), tail=lv(), rear=lv(), trailer_bar=lv(), beacon=lv(), beacon_white=lv(),
                       show=rng.choice((0, 0, 1, 2, 3, 4)), rear_on=rng.random() < 0.5, rear_auto=rng.random() < 0.5)
         b = lambda p=0.5: rng.random() < p   # noqa: E731
         st = LightsState(brake=b(0.2), reverse=b(0.2), trailer=b(), stopped=b(0.7), park=b(0.7), ignition=b(0.9),
@@ -57,7 +57,7 @@ def test_rules_match(harness):
         want.append(" ".join(str(o.level[k]) for k in LAMPS) + f" {int(o.show_running)} {int(o.show_blocked)}")
         vals = [r.head_low, r.head_high, r.tail, r.rear, r.trailer_bar, r.beacon, r.show, r.rear_on, r.rear_auto,
                 st.brake, st.reverse, st.trailer, st.stopped, st.park, st.ignition, st.locked, st.dash_ok,
-                st.front_on, st.now_ms]
+                st.front_on, st.now_ms, r.beacon_white]
         lines.append("S " + " ".join(str(int(v)) for v in vals))
     got = [g.strip() for g in ask(harness, lines)]
     for i, (g, w) in enumerate(zip(got, want)):

@@ -20,7 +20,7 @@ export class LightsScreen {
     this.lastLevel = Object.fromEntries(LIGHTS.map((l) => [l.id, 255]));
     this.effect = "none"; this.rear = "auto";
     this.head = "off"; this.showSel = "none";
-    this.more = { "light.head_level": 255, "light.tail": 0, "light.rear_level": 0, "light.trailer_bar": 0, "light.beacon": 0 };
+    this.more = { "light.head_level": 255, "light.tail": 0, "light.rear_level": 0, "light.trailer_bar": 0, "light.beacon": 0, "light.beacon_white": 0 };
     this.lastBeacon = 255;
   }
 
@@ -59,7 +59,8 @@ export class LightsScreen {
     other.lastElementChild.style.gridColumn = "span 2";
     const more = $(root, "#l-more");
     more.appendChild(this.makeLevelTile("light.tail", "Tail lights", "Brake always full", { zeroText: "AUTO", min: 0 }));
-    more.appendChild(this.makeLevelTile("light.beacon", "Roof beacon", "Flashes 3 times a second", { toggle: true, min: 10 }));
+    more.appendChild(this.makeLevelTile("light.beacon", "Beacon amber", "Flashes 3 times a second", { toggle: true, min: 10 }));
+    more.appendChild(this.makeLevelTile("light.beacon_white", "Beacon white", "Takes turns with amber. Stopped only", { toggle: true, min: 10 }));
     this.trailerTile = this.makeLevelTile("light.trailer_bar", "Trailer bar", "Only with the trailer plugged in", { toggle: true, min: 10 });
     this.trailerTile.appendChild(el(`<div class="lt-sub">Trailer tail <b id="l-tt">--</b> · brake <b id="l-tb">--</b></div>`));
     more.appendChild(this.trailerTile);

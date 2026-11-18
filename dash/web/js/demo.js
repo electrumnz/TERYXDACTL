@@ -23,7 +23,7 @@ export class DemoVehicle {
   constructor(scenario = "drive") {
     this.scenario = scenario;
     this.t = 0;
-    this.more = { "light.head": "off", "light.head_level": 255, "light.tail": 0, "light.rear_level": 0, "light.trailer_bar": 0, "light.beacon": 0, "light.show": "none" };
+    this.more = { "light.head": "off", "light.head_level": 255, "light.tail": 0, "light.rear_level": 0, "light.trailer_bar": 0, "light.beacon": 0, "light.beacon_white": 0, "light.show": "none" };
     this.req = { lights: Object.fromEntries(LIGHT_IDS.map((k) => [k, 0])), effect: "none", rear: "auto", fourwd: 0, diff: 0, armed: false };
     this.holds = { "act.tray": { v: 0, at: 0 }, winch: { v: 0, at: 0 } };
     this.rejectCount = 0;
@@ -37,7 +37,7 @@ export class DemoVehicle {
       "in.trailer": (() => { try { return new URLSearchParams(location.search).has("trailer"); } catch { return false; } })(),
       "an.diff_pos": 0, "an.aux_12v": 12.9, "an.4wd_current": 0, "an.tray_current": 0, "an.diff_current": 0,
       "light.rear": false, "light.effect": "none", "trailer.tail": false, "trailer.brake": false,
-      "winch.in": false, "winch.out": false, "winch.isolator": false, "winch.armed": false,
+      "winch.in": false, "winch.out": false, "winch.armed": false,
       "aux.accessory": true, "power.hold": true,
       "act.4wd": "2wd", "act.diff_target": 0, "act.tray": "down", "act.tray_pct": 0,
       "pi.imu.roll": 0, "pi.imu.pitch": 0,
@@ -277,13 +277,14 @@ export class DemoVehicle {
     s["trailer.brake"] = s["in.brake"];
     // Headlights, beacon, trailer bar and the parked-only light show (the control box rules, roughly)
     const m = this.more;
-    if (this.lock.locked) { m["light.head"] = "off"; m["light.beacon"] = 0; m["light.show"] = "none"; }
+    if (this.lock.locked) { m["light.head"] = "off"; m["light.beacon"] = 0; m["light.beacon_white"] = 0; m["light.show"] = "none"; }
     for (const k of Object.keys(m)) s[`req.${k}`] = m[k];
     const parked = !!s["in.park"] && spdNow(s) < 0.5 && !this.lock.locked;
     s["light.show_running"] = m["light.show"] !== "none" && parked;
     s["light.show_blocked"] = m["light.show"] !== "none" && !parked;
     s["light.pwm_ok"] = true;
     s["lamp.beacon"] = m["light.beacon"] && (this.t % 0.333) < 0.167 ? m["light.beacon"] : 0;
+    s["lamp.beacon_white"] = m["light.beacon_white"] && spdNow(s) < 0.5 && (this.t % 0.333) >= 0.167 ? m["light.beacon_white"] : 0;
     s["lamp.brake_l"] = s["lamp.brake_r"] = s["in.brake"] ? 255 : 0;
 
     // 4WD actuator runs to its end stop
@@ -318,7 +319,7 @@ export class DemoVehicle {
     }
     const wv = wh.secs && wh.done ? 0 : wh.v;
     if (r.armed) { this.armedIdle = wv ? 0 : this.armedIdle + dt; if (this.armedIdle > 120) r.armed = false; }
-    s["winch.armed"] = r.armed; s["winch.isolator"] = r.armed;
+    s["winch.armed"] = r.armed;
     s["winch.in"] = r.armed && wv > 0; s["winch.out"] = r.armed && wv < 0;
     s["winch.idle_s"] = this.armedIdle;
     // The 12V battery sags while the winch pulls (roughly what the sim does)

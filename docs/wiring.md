@@ -134,13 +134,13 @@ ground (0x48). RESET on the MCP23017 to 3.3V through 10kΩ.
 | A2 | 3 | Spare (trailer stop moved to BTS7960 no. 8) |
 | A3 | 4 | Fuse block 3A → winch solenoid box "in" coil wire |
 | A4 | 5 | Fuse block 3A → winch solenoid box "out" coil wire |
-| A5 | 6 | Fuse block 3A → winch isolator/contactor coil |
+| A5 | 6 | Spare (was the winch isolator, dropped) |
 | A6 | 7 | Fuse block 10A (shared with interior bar) → accessory 12V |
 | A7 | 8 | Fuse block 7.5A → dash 12V rail (see power) |
 | MCP2 A0 | 9 | Steering ECU ignition feed |
 | MCP2 A1 | 10 | Drive lock, NC contact in the Shinegle KSI line |
 
-8 of the 16 relays are used, 8 spare (2, 3, 11-16).
+7 of the 16 relays are used, 9 spare (2, 3, 6, 11-16).
 
 - Remove the JD-VCC/VCC jumper and feed JD-VCC from the Pico's 5V buck, VCC
   from the Pico's 3.3V. That keeps the relay coils isolated and lets 3.3V logic

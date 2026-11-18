@@ -4,7 +4,7 @@
 
 #include <string.h>
 
-// Every lamp the show knows: the 14 PCA9685 lamps, then the 5 0x701 lights.
+// Every lamp the show knows: the 15 PCA9685 lamps, then the 5 0x701 lights.
 enum { U_FRONT0 = LP_COUNT, U_COUNT = LP_COUNT + LF_COUNT };
 #define K_RED   0x01u
 #define K_HIGH  0x02u
@@ -29,6 +29,7 @@ static const lamp_info_t INFO[U_COUNT] = {
     [LP_FLOOD_R] = {6, K_RIGHT},
     [LP_BEACON] = {0, 0},
     [LP_TRAILER_BAR] = {0, 0},
+    [LP_BEACON_WHITE] = {0, 0},
     [U_FRONT0 + LF_FRONT_1] = {-6, K_LEFT | K_BAR},
     [U_FRONT0 + LF_FRONT_2] = {-2, K_LEFT | K_BAR},
     [U_FRONT0 + LF_FRONT_3] = {2, K_RIGHT | K_BAR},
@@ -50,7 +51,7 @@ static uint8_t show_level(uint8_t show, int u, uint32_t t) {
     case SHOW_WAVE: {
         int32_t pos = (int32_t)(tri(t, 2000u) * 24u / 255u) - 12;
         if ((k & K_HIGH) || brake) return 0;
-        if (u == LP_BEACON) return (pos >= -2 && pos <= 2) ? 255 : 0;
+        if (u == LP_BEACON || u == LP_BEACON_WHITE) return (pos >= -2 && pos <= 2) ? 255 : 0;
         if (interior) return 60;
         int32_t d = INFO[u].x - pos;
         if (d < 0) d = -d;
@@ -86,6 +87,7 @@ static uint8_t show_level(uint8_t show, int u, uint32_t t) {
         uint32_t step = t / 125u;
         if ((k & K_HIGH) || interior) return 0;
         if (u == LP_BEACON) return step % 4u == 0u ? 255 : 0;
+        if (u == LP_BEACON_WHITE) return step % 4u == 2u ? 255 : 0;
         if (k & K_BAR) return (uint32_t)(u - U_FRONT0) == step % 4u ? 255 : 0;
         if (k & K_LEFT) return step % 2u == 0u ? 255 : 0;
         if (k & K_RIGHT) return step % 2u == 1u ? 255 : 0;
@@ -130,6 +132,8 @@ void lights_step(lights_t *L, const lights_req_t *r, const lights_state_t *s, li
         lv[LP_FLOOD_L] = lv[LP_FLOOD_R] = r->rear ? r->rear : 255;
     }
     if (r->beacon && s->now_ms % BEACON_PERIOD_MS < BEACON_ON_MS) lv[LP_BEACON] = r->beacon;   // rule 5
+    if (r->beacon_white && s->stopped && s->now_ms % BEACON_PERIOD_MS >= BEACON_ON_MS)
+        lv[LP_BEACON_WHITE] = r->beacon_white;   // white: other half of the flash, stopped only
     if (s->trailer) lv[LP_TRAILER_BAR] = r->trailer_bar;
     if (s->ignition && !s->dash_ok) {   // rule 9: no dash, key on: low beams + tails
         if (!lv[LP_HEAD_L_HIGH]) lv[LP_HEAD_L_LOW] = lv[LP_HEAD_R_LOW] = 255;

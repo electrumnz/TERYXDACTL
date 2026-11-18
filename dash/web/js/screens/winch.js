@@ -245,7 +245,6 @@ export class WinchScreen {
       [st.get("pico.online", false), "Control box online"],
       [st.get("mc.online") !== false && spd < 0.5, "Stopped"],
       [armed, "Armed"],
-      [!!st.get("winch.isolator"), "Winch power on"],
       [st.get("an.aux_12v", 13) >= 11.8, `12V battery ${st.get("an.aux_12v", 0).toFixed(1)} V`],
       [!hand, hand ? "Remote or hand switch in use" : "Remote and hand switches idle"],
       [!heat || heat.state !== "rest", !heat || heat.state !== "rest" ? "Winch motor OK" : "Winch motor resting"],

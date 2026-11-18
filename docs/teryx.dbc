@@ -90,8 +90,9 @@ BO_ 1798 PI_LIGHTS2: 8 PI_DASH
  SG_ rear : 24|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ trailer_bar : 32|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ beacon : 40|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ show : 48|8@1+ (1,0) [0|255] "" Vector__XXX
- SG_ counter : 56|8@1+ (1,0) [0|255] "" Vector__XXX
+ SG_ show : 48|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ counter : 52|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ beacon_white : 56|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 1823 PI_FW_UPDATE: 8 PI_DASH
  SG_ magic : 0|16@1+ (1,0) [0|65535] "" Vector__XXX
@@ -184,9 +185,10 @@ BO_ 1815 PICO_LIGHTS2: 8 PICO_BOX
  SG_ flood_r : 44|4@1+ (1,0) [0|15] "" Vector__XXX
  SG_ beacon : 48|4@1+ (1,0) [0|15] "" Vector__XXX
  SG_ trailer_bar : 52|4@1+ (1,0) [0|15] "" Vector__XXX
- SG_ show_running : 56|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ show_blocked : 57|1@1+ (1,0) [0|1] "" Vector__XXX
- SG_ pwm_ok : 58|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ beacon_white : 56|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ show_running : 60|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ show_blocked : 61|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ pwm_ok : 62|1@1+ (1,0) [0|1] "" Vector__XXX
 
 BO_ 2016 BENCH_INPUTS: 8 BENCH
  SG_ inputs : 0|8@1+ (1,0) [0|255] "" Vector__XXX
@@ -226,6 +228,7 @@ CM_ SG_ 1798 tail "Tail lights, 0 = automatic (on with any headlight or front ba
 CM_ SG_ 1798 rear "Rear flood level while 0x701 rear_on is set, 0 = full";
 CM_ SG_ 1798 beacon "Roof beacon brightness, 0 = off. The Pico flashes it at 3 Hz";
 CM_ SG_ 1798 show "Light show, parked only";
+CM_ SG_ 1798 beacon_white "White side of the beacon, 0 = off. 3 Hz opposite the amber, only when stopped";
 CM_ BO_ 1798 "Stock lamps, rear floods, beacon, trailer bar and the light show (docs/lights.md). On change, plus a resend every 1 s. Levels 0-255, 0 = off. The Pico keeps brake lights at full, never dims headlights or tails while moving, and only runs a show when parked.";
 CM_ BO_ 1823 "Pico reboots to its bootloader when magic = 0x5445 ('TE') and parked.";
 CM_ SG_ 1808 fault_bits "See FAULT_BITS";

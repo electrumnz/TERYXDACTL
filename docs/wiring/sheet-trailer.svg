@@ -73,7 +73,7 @@
 <line x1="480" y1="499" x2="750" y2="499" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="503" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">M-</text>
 </g>
-<g data-device="PCA" data-status="planned"><title>PCA: PCA9685 16-ch PWM board (0x40) - Every light that isn&#x27;t a front bar or the cabin bar dims through this (docs/lights.md). Wires soldered straight to the pads, no header pins. VCC 3.3 V so the outputs are 3.3 V, which the MOSFET boards (3-20 V input) and the BTS7960s (3.3 V logic like BTS1-3) take. Leave V+ (servo power) empty. OE tied low on the board. PWM0 trailer bar, 1-10 stock lights on BTS7960 4-8, 11-12 rear floods, 13 beacon, 14 spare, 15 BTS7960 enable. All outputs are off at power-up</title><rect x="920" y="150" width="270" height="129" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<g data-device="PCA" data-status="planned"><title>PCA: PCA9685 16-ch PWM board (0x40) - Every light that isn&#x27;t a front bar or the cabin bar dims through this (docs/lights.md). Wires soldered straight to the pads, no header pins. VCC 3.3 V so the outputs are 3.3 V, which the MOSFET boards (3-20 V input) and the BTS7960s (3.3 V logic like BTS1-3) take. Leave V+ (servo power) empty. OE tied low on the board. PWM0 trailer bar, 1-10 stock lights on BTS7960 4-8, 11-12 rear floods, 13-14 beacon amber / white on BTS7960 9, 15 BTS7960 enable. All outputs are off at power-up</title><rect x="920" y="150" width="270" height="129" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
 <text x="930" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">PCA9685 16-ch PWM board (0x40)</text>
 <text x="930" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">PCA · planned · optional</text>
 <line x1="920" y1="197" x2="1190" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
@@ -83,7 +83,7 @@
 <line x1="920" y1="237" x2="1190" y2="237" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="1055" y="241" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">PWM10</text>
 <line x1="920" y1="257" x2="1190" y2="257" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="261" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">PWM15  BTS7960 4-8 enable (off at power…</text>
+<text x="1055" y="261" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">PWM15  BTS7960 4-9 enable (off at power…</text>
 </g>
 <g data-device="FB" data-status="tbc"><title>FB: Blade fuse block - 12 fuses in use. Small loads that can go out together share a fuse (front bars in pairs, trailer tail + stop, interior bar + accessory). All four front bars are NOT on one fuse, so one fault can&#x27;t black out the front at night. The winch, control box power, key, power hold and each actuator keep their own. Sam&#x27;s 12-way (in the post) is used, so it is full with no spares; add a small 6-way next to it if more circuits come</title><rect x="920" y="301" width="270" height="89" rx="6" fill="#f0f6ff" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
 <text x="930" y="319" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Blade fuse block</text>

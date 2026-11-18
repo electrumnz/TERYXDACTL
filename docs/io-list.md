@@ -133,7 +133,6 @@ so the wiring doesn't change. Effects (strobe, chase) still work.
 | `trailer.brake` | Trailer brake lights | Relay 3 | MCP23017 A2 | 5A | Follows brake input. Also hard-wire a diode from the brake switch as backup |
 | `winch.in` | Winch in | Relay 4 → winch solenoid coil | MCP23017 A3 | 3A (coil) | Never the motor current through the relay board |
 | `winch.out` | Winch out | Relay 5 → winch solenoid coil | MCP23017 A4 | 3A (coil) | Interlocked with `winch.in` |
-| `winch.isolator` | Winch main power enable | Relay 6 → isolator / contactor coil | MCP23017 A5 | 3A (coil) | Off unless winch is armed |
 | `aux.accessory` | Accessory 12V (camera, USB, spare) | Relay 7 | MCP23017 A6 | 10A | On with ignition |
 | `power.hold` | Pi + Pico power hold | Relay 8 | MCP23017 A7 | 7.5A | Keeps power on after key-off for clean shutdown |
 | `act.diff` | Front diff lock actuator (%) | BTS7960 #1 | GP7/8/9 | 10A | Closed loop on pot, 0–100% |
@@ -236,7 +235,7 @@ the Pico (for speed interlocks).
 All limits are adjustable in settings, with these defaults:
 
 1. **Lost dash:** no heartbeat from the Pi for 500 ms → stop winch, tray and
-   actuators, turn off the winch isolator. Lights stay as they were. Driving
+   actuators, disarm the winch. Lights stay as they were. Driving
    is never affected.
 2. **Lost speed:** no Shinegle speed for 500 ms → treat speed as unknown and
    block anything that needs "stopped".
@@ -329,12 +328,10 @@ box coil wires, so they work even if the dash or the Pico is down:
   diodes (1N4148 is fine) onto opto input 6, so `in.winch_remote` goes high
   when any hand control is pressed. See [`wiring.md`](wiring.md).
 - Fuse the switch feed at 3 A, like the relay coil feeds.
-- The winch isolator (relay 6) is only on while the winch is armed on the
-  dash. Whether the remote and hand switches should bypass the isolator (so
-  they work with the dash dead) is still a bench decision, same as the
-  existing "winch remote vs isolator wiring" check. If they need to work
-  with the dash down, give the isolator coil a second feed from a hidden
-  key switch.
+- No winch isolator (Sam, 18 Nov). The 250 A manual reset breaker is the
+  kill switch: push it off and the winch is dead. Arming on the dash only
+  gates the control box's relays 4-5, so the remote and hand switches work
+  whenever the breaker is on, dash or no dash.
 
 **Motor heat.** There's no current or temperature sensor on the winch (a
 500 A hall sensor on the motor cable could be added later). The dash guesses

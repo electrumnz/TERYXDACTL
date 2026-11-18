@@ -202,8 +202,8 @@ class ControlBox:
             self.lights_req = {k: v[k] for k in self.lights_req}
         elif name == "PI_LIGHTS2":
             r = self.lights2_req
-            for k in ("head_low", "head_high", "tail", "rear", "trailer_bar", "beacon", "show"):
-                setattr(r, k, int(v[k]))
+            for k in ("head_low", "head_high", "tail", "rear", "trailer_bar", "beacon", "show", "beacon_white"):
+                setattr(r, k, int(v.get(k, 0)))
         elif name == "PI_DRIVE":
             self._drive_request(v)
         elif name == "PI_HOLD":
@@ -696,7 +696,6 @@ class ControlBox:
             "trailer.brake": bool(self.lights2_out and self.lights2_out.level["trailer_stop"]),
             "winch.in": self.winch_dir == 1,
             "winch.out": self.winch_dir == -1,
-            "winch.isolator": self.winch_armed,
             "aux.accessory": ign,
             "power.hold": holding,
         }

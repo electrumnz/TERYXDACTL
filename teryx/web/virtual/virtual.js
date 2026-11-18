@@ -438,7 +438,7 @@ function frame(now) {
   if (S["light.rear"]) tags.push(tag("REAR PODS", "on"));
   if (S["trailer.tail"]) tags.push(tag("TRAILER TAIL", "on"));
   if (S["trailer.brake"]) tags.push(tag("TRAILER BRAKE", "on"));
-  if (S["winch.isolator"]) tags.push(tag("WINCH POWER", "on"));
+  if (S["winch.armed"]) tags.push(tag("WINCH ARMED", "on"));
   if (S["light.effect"] && S["light.effect"] !== "none") tags.push(tag("FX " + S["light.effect"].toUpperCase(), "on"));
   (S["mc.faults"] || []).forEach(f => tags.push(tag(f.replace(/_/g, " ").toUpperCase(), "bad")));
   (S["pico.faults"] || []).forEach(f => tags.push(tag(f.replace(/_/g, " ").toUpperCase(), "warn")));

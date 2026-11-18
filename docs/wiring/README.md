@@ -10,7 +10,7 @@ Why things are wired this way (power hold, diodes, CAN rules): [`docs/wiring.md`
 Viewer with search: [`index.html`](index.html), also online at
 <https://electrumnz.github.io/TERYXDACTL/wiring/>.
 
-**93 devices, 305 wires.** By status: 19 from_manual, 3 confirmed, 247 planned, 32 tbc, 4 placeholder.
+**92 devices, 304 wires.** By status: 19 from_manual, 3 confirmed, 245 planned, 33 tbc, 4 placeholder.
 Nothing has been checked on the real Teryx yet.
 
 Wire sizes follow the conservative table in the YAML (from
@@ -82,8 +82,7 @@ runs up to about 5 m). Go one size up for bundled or hot runs.
 - [ ] **Rear flood left (4 in pod)** (FLOOD_L): Light bars and pods dim with PWM? Test one on a cheap dimmer
 - [ ] **Left headlight (stock, 12 V 35/35 W)** (HEAD_L): Unplug a headlight and photo the plug. Which pin is low, high and earth?
 - [ ] **Left tail / brake light (stock, 12 V 8/27 W)** (TAIL_L): Photo the tail light plug. Which wire is tail, brake and earth?
-- [ ] **Roof beacon (amber LED, steady-on)** (BEACON): Measure the hole in the roof. The beacon must have a steady (non-flashing) mode
-- [ ] **Winch isolator contactor** (WINCH_ISO): Do the remote and hand switches need to work with the dash dead? If so the isolator needs a second coil feed from a hidden key switch
+- [ ] **Roof beacon (amber + white LED, steady-on)** (BEACON): Count the wires. Common earth + one wire per colour is what this plan expects. If each colour has its own earth it still works (join the earths). If it has a mode wire instead (one + feed, cycles colours on a pulse), tell the dash thread
 - [ ] **XBull solenoid box** (WINCH_SOL): Photo the XBull solenoid box terminals and the remote plug pins
 - [ ] **2WD/4WD actuator** (ACT_4WD): Is the stock electric 4WD actuator still on the front diff, and is the dash 2WD/4WD switch still wired to it? Photo its plug
 - [ ] **Brake light switch (stock)** (BRAKE_SW): Find the brake light switch wire and meter it (12 V when pressed?)
@@ -101,6 +100,7 @@ Wires marked TBC, with what's unknown:
 - S18 SG1202.J3 to PROG.PLUG: Setup only. J3 to J1-25/28/29/7 TBC
 - P13 RAIL.BUS to SCREEN_PSU.VIN: Fuse size depends on the screen's draw
 - P18 DCDC.out_pos to BAT12.pos: DC-DC charge lead. Size and fuse depend on its rating
+- G33 BEACON.GND to GND_STAR.G: Beacon earth, or a good chassis earth on the roll cage
 - G27 HEAD_L.GND to GND_STAR.G: Stock earth, keep it if it's good
 - C01 SG1202.CAN_H to PICO_CAN.CANH: Twisted pair. CAN is optional on the SG1202, check it's fitted. Bit rate TBC (try 250k then 500k)
 - I03 FNR.R to OPTO.IN3: The F-N-R switch is on the Shinegle key line. If J1-1 runs at 72 V, this needs a 72 V rated input, not the 12 V opto
@@ -120,7 +120,7 @@ Wires marked TBC, with what's unknown:
 | F2 | 15 A | front bars 2 + 3 (inner pair) | LT02, LT03 |
 | F3 | 10 A | rear floods (MOSFET 7-8) + relay 1 trailer reverse pin | LT16, LT17, LT18 |
 | F4 | 7.5 A | BTS7960 8 trailer tail + stop | T01 |
-| F5 | 3 A | relays 4-6 winch coils | WN07, WN08, WN09 |
+| F5 | 3 A | relays 4-5 winch coils | WN07, WN08 |
 | F6 | 3 A | winch hand switches, tray limits, trailer reed | I13, WN13, WN14 |
 | F7 | 10 A | extras - interior bar + relay 7 accessory (phone charger, trailer cam) | P15, LT05 |
 | F8 | 7.5 A | relay 8 power hold | P04 |
@@ -145,11 +145,9 @@ Fuses not in the block (inline, at the battery or on a board):
 | P19 | 60 A | BAT12.pos | EPS_ECU.B+ |
 | I01 | 7.5 A | KEY.IGN | OPTO.IN1 |
 | WN01 | 250 A | BAT12.pos | BRK_WINCH.in |
-| WN02 | 250 A | BRK_WINCH.out | WINCH_ISO.in |
-| WN03 | 250 A | WINCH_ISO.out | WINCH_SOL.B+ |
+| WN02 | 250 A | BRK_WINCH.out | WINCH_SOL.B+ |
 | WN10 | 3 A | RELAYS.NO4 | WINCH_SOL.COIL_IN |
 | WN11 | 3 A | RELAYS.NO5 | WINCH_SOL.COIL_OUT |
-| WN12 | 3 A | RELAYS.NO6 | WINCH_ISO.coil_pos |
 | WN15 | 3 A | HSW_WINCH.IN | WINCH_SOL.COIL_IN |
 | WN16 | 3 A | HSW_WINCH.OUT | WINCH_SOL.COIL_OUT |
 | WN17 | 3 A | HSW_CAB.IN | WINCH_SOL.COIL_IN |
@@ -247,7 +245,8 @@ Fuses not in the block (inline, at the battery or on a board):
 | G10 | AMP.GND | GND_STAR.G | 6 mm² |  |  | planned (optional) | Same size as the feed |
 | G24 | GLOVE_USB.GND | GND_STAR.G | 0.75 mm² |  |  | planned (optional) |  |
 | G11 | MOSFET.GND | GND_STAR.G | 4 mm² |  |  | planned | Carries the current of all 8 lights on the board (about 30 A with everything on) |
-| G15 | MOSFET2.GND | GND_STAR.G | 1 mm² |  |  | planned |  |
+| G15 | BTS9.B- | GND_STAR.G | 1 mm² |  |  | planned |  |
+| G33 | BEACON.GND | GND_STAR.G | 1 mm² |  |  | tbc | Beacon earth, or a good chassis earth on the roll cage |
 | G16 | BTS4.B- | GND_STAR.G | 1.5 mm² |  |  | planned |  |
 | G31 | BTS5.B- | GND_STAR.G | 1.5 mm² |  |  | planned |  |
 | G32 | BTS6.B- | GND_STAR.G | 1.5 mm² |  |  | planned |  |
@@ -261,7 +260,6 @@ Fuses not in the block (inline, at the battery or on a board):
 | G13 | BTS2.B- | GND_STAR.G | 1.5 mm² |  |  | planned |  |
 | G14 | BTS3.B- | GND_STAR.G | 2.5 mm² |  |  | planned |  |
 | G17 | WINCH_SOL.GND | BAT12.neg | 35 mm² |  |  | planned | Winch return straight to the battery, cable from the winch kit |
-| G18 | WINCH_ISO.coil_neg | GND_STAR.G | 0.5 mm² |  |  | planned |  |
 | G19 | OPTO.COM12 | GND_STAR.G | 0.5 mm² |  |  | planned | 12 V side ground of the opto board |
 | G20 | TRAILER.P3_EARTH | GND_STAR.G | 2.5 mm² |  |  | planned |  |
 | G21 | TCAM_PLUG.GND | GND_STAR.G | 0.5 mm² |  |  | planned (optional) |  |
@@ -304,7 +302,6 @@ Fuses not in the block (inline, at the battery or on a board):
 | L19 | MCP1.A0 | RELAYS.IN1 |  |  |  | planned | light.rear (relay 1 now only feeds the trailer reverse pin) |
 | L22 | MCP1.A3 | RELAYS.IN4 |  |  |  | planned | winch.in |
 | L23 | MCP1.A4 | RELAYS.IN5 |  |  |  | planned | winch.out |
-| L24 | MCP1.A5 | RELAYS.IN6 |  |  |  | planned | winch.isolator |
 | L25 | MCP1.A6 | RELAYS.IN7 |  |  |  | planned | aux.accessory |
 | L26 | MCP1.A7 | RELAYS.IN8 |  |  |  | planned | power.hold |
 | L27 | MCP2.A0 | RELAYS2.IN1 |  |  |  | planned (optional) | steering enable |
@@ -410,26 +407,26 @@ Fuses not in the block (inline, at the battery or on a board):
 | LT52 | LIMP_SW.OUT | HEAD_R.LO | 1.5 mm² |  | Schottky diode 5 A | planned |  |
 | LT54 | LIMP_SW.OUT | TAIL_L.TAIL | 1 mm² |  | Schottky diode 5 A | planned | Tails on with the backup toggle too |
 | LT55 | LIMP_SW.OUT | TAIL_R.TAIL | 1 mm² |  | Schottky diode 5 A | planned |  |
-| LT56 | FB2.F4 | BEACON.pos | 0.75 mm² | 5 A |  | planned |  |
-| LT57 | BEACON.neg | MOSFET2.OUT1 | 0.75 mm² |  |  | planned |  |
-| LT58 | PCA.PWM13 | MOSFET2.IN1 |  |  |  | planned | light.beacon: flashed at 3 Hz by the Pico |
+| LT56 | FB2.F4 | BTS9.B+ | 1 mm² | 5 A |  | planned |  |
+| LT57 | BTS9.M+ | BEACON.AMBER | 0.75 mm² |  |  | planned | light.beacon (amber) |
+| LT58 | PCA.PWM13 | BTS9.RPWM |  |  |  | planned | light.beacon: flashed at 3 Hz by the Pico |
+| LT59 | BTS9.M- | BEACON.WHITE | 0.75 mm² |  |  | planned | light.beacon_white |
+| LT60 | PCA.PWM14 | BTS9.LPWM |  |  |  | planned | light.beacon_white: 3 Hz, opposite amber, stopped only |
+| LT61 | PCA.PWM15 | BTS9.EN |  |  |  | planned |  |
 
 ### Winch
 
 | Wire | From | To | Size | Fuse | Via | Status | Note |
 |---|---|---|---|---|---|---|---|
 | WN01 | BAT12.pos | BRK_WINCH.in | 35 mm² | 250 A |  | planned | Cable that came with the winch |
-| WN02 | BRK_WINCH.out | WINCH_ISO.in | 35 mm² | 250 A |  | planned |  |
-| WN03 | WINCH_ISO.out | WINCH_SOL.B+ | 35 mm² | 250 A |  | planned |  |
+| WN02 | BRK_WINCH.out | WINCH_SOL.B+ | 35 mm² | 250 A |  | planned |  |
 | WN04 | WINCH_SOL.M1 | WINCH_MOTOR.M1 | 35 mm² |  |  | confirmed |  |
 | WN05 | WINCH_SOL.M2 | WINCH_MOTOR.M2 | 35 mm² |  |  | confirmed |  |
 | WN06 | WINCH_SOL.REMOTE | WINCH_REMOTE.PLUG |  |  |  | confirmed | XBull remote stays as a backup |
 | WN07 | FB.F5 | RELAYS.COM4 | 0.5 mm² | 3 A |  | planned |  |
 | WN08 | FB.F5 | RELAYS.COM5 | 0.5 mm² | 3 A |  | planned |  |
-| WN09 | FB.F5 | RELAYS.COM6 | 0.5 mm² | 3 A |  | planned |  |
 | WN10 | RELAYS.NO4 | WINCH_SOL.COIL_IN | 0.5 mm² | 3 A | 3 A diode (1N5408) | planned | winch.in. Never the motor current through the relay board |
 | WN11 | RELAYS.NO5 | WINCH_SOL.COIL_OUT | 0.5 mm² | 3 A | 3 A diode (1N5408) | planned | winch.out, interlocked with in |
-| WN12 | RELAYS.NO6 | WINCH_ISO.coil_pos | 0.5 mm² | 3 A |  | planned | winch.isolator, only while armed |
 | WN13 | FB.F6 | HSW_WINCH.FEED | 0.5 mm² | 3 A |  | planned |  |
 | WN14 | FB.F6 | HSW_CAB.FEED | 0.5 mm² | 3 A |  | planned |  |
 | WN15 | HSW_WINCH.IN | WINCH_SOL.COIL_IN | 0.5 mm² | 3 A | 3 A diode (1N5408) | planned |  |
@@ -566,7 +563,7 @@ Fuses not in the block (inline, at the battery or on a board):
 | EPS_CAN | MCP2515 CAN module (steering bus) | control_box | planned (optional) | Own 500 kbit/s bus to the steering ECU. Transmit only, INT not wired See [`docs/power-steering-wrecker.md`](../../docs/power-steering-wrecker.md). |
 | MCP1 | MCP23017 I/O expander (0x20) | control_box | planned |  |
 | MCP2 | Second MCP23017 (0x21) | control_box | planned (optional) | More outputs for the steering enable and the drive lock relay. The first one is full See [`docs/vehicle-lock.md`](../../docs/vehicle-lock.md). |
-| PCA | PCA9685 16-ch PWM board (0x40) | control_box | planned (optional) | Every light that isn't a front bar or the cabin bar dims through this (docs/lights.md). Wires soldered straight to the pads, no header pins. VCC 3.3 V so the outputs are 3.3 V, which the MOSFET boards (3-20 V input) and the BTS7960s (3.3 V logic like BTS1-3) take. Leave V+ (servo power) empty. OE tied low on the board. PWM0 trailer bar, 1-10 stock lights on BTS7960 4-8, 11-12 rear floods, 13 beacon, 14 spare, 15 BTS7960 enable. All outputs are off at power-up |
+| PCA | PCA9685 16-ch PWM board (0x40) | control_box | planned (optional) | Every light that isn't a front bar or the cabin bar dims through this (docs/lights.md). Wires soldered straight to the pads, no header pins. VCC 3.3 V so the outputs are 3.3 V, which the MOSFET boards (3-20 V input) and the BTS7960s (3.3 V logic like BTS1-3) take. Leave V+ (servo power) empty. OE tied low on the board. PWM0 trailer bar, 1-10 stock lights on BTS7960 4-8, 11-12 rear floods, 13-14 beacon amber / white on BTS7960 9, 15 BTS7960 enable. All outputs are off at power-up |
 | ADS1 | ADS1115 ADC (0x48) | control_box | planned | ALERT pin left free so GP22 can be the steering CAN chip select (read "ready" over I2C) |
 | ADS2 | Second ADS1115 (0x49) | control_box | planned (optional) | Brake pedal regen only See [`docs/brake-regen.md`](../../docs/brake-regen.md). |
 | OPTO | 8-ch opto board (PC817, 12 V in) | control_box | planned | All 8 channels used. A second 8-ch board (AliExpress cart) gives 8 spare inputs, read on MCP2 port B |
@@ -580,8 +577,8 @@ Fuses not in the block (inline, at the battery or on a board):
 | BTS6 | BTS7960 6 (left tail / brake) | control_box | planned |  |
 | BTS7 | BTS7960 7 (right tail / brake) | control_box | planned |  |
 | BTS8 | BTS7960 8 (trailer tail / stop) | control_box | planned |  |
+| BTS9 | BTS7960 9 (roof beacon amber / white) | control_box | planned | Two-colour beacons usually share one earth wire, so the colours are switched on the + side like the stock lamps: RPWM amber, LPWM white |
 | MOSFET | 8-ch isolated MOSFET board (low side, all 8 used) | control_box | planned | Sam's board: 8-channel opto-isolated MOSFET driver, DC 3.7-27 V, 10 A per channel, PWM input 3-20 V, 0-20 kHz. 1-4 front bars, 5 cabin bar, 6 trailer bar, 7-8 rear floods. Low side switching, so each light's + comes from its fuse and its - goes to an OUT pin |
-| MOSFET2 | 4-ch MOSFET board (beacon, 3 spare) | control_box | planned | Sam's 4-channel version of the same board (3-20 V PWM input, 3.7-27 V 10 A per channel, opto isolated). Channel 1 roof beacon, 3 spare for later lights |
 | LB1 | Front bar 1 (far left) | front | confirmed |  |
 | LB2 | Front bar 2 (inner left) | front | confirmed |  |
 | LB3 | Front bar 3 (inner right) | front | confirmed |  |
@@ -595,9 +592,8 @@ Fuses not in the block (inline, at the battery or on a board):
 | TAIL_L | Left tail / brake light (stock, 12 V 8/27 W) | rear | from_manual | Dual filament bulb, 8 W tail and 27 W brake, one shared earth (owner's manual: tail/brake light 12 V 8/27 W x 2) |
 | TAIL_R | Right tail / brake light (stock, 12 V 8/27 W) | rear | from_manual |  |
 | LIMP_SW | Backup lights toggle (hidden) | cab | planned | The Teryx has no headlight switch, so the dash and the Pico do everything. This hidden toggle is the backup if the control box dies: it feeds both low beams and both tails at full through diodes. Leave it off normally. The Pico also turns low beams and tails on by itself if the dash goes quiet with the key on |
-| BEACON | Roof beacon (amber LED, steady-on) | rear | planned | Plain amber LED beacon that stays on steady. The Pico flashes it at 3 Hz (NZ Vehicle Lighting Rule 11.1(2): 2 to 4 Hz) and dims it. Fits Sam's existing hole on the roof |
-| BRK_WINCH | 250 A breaker | engine_bay | planned |  |
-| WINCH_ISO | Winch isolator contactor | engine_bay | planned | Only on while the winch is armed on the dash (relay 6) |
+| BEACON | Roof beacon (amber + white LED, steady-on) | rear | planned | Sam's amber + white LED beacon (bought 18 Nov). Each colour stays on steady and the Pico flashes them at 3 Hz (NZ Vehicle Lighting Rule 11.1(2): 2 to 4 Hz), amber and white taking turns. White only when stopped: on the road only red or amber may show to the rear. Fits Sam's existing hole on the roof |
+| BRK_WINCH | 250 A breaker | engine_bay | planned | Manual reset breaker, also the winch's kill switch: push it off to make the winch dead. No isolator contactor (Sam, 18 Nov), so the XBull remote and hand switches work whenever this is on |
 | WINCH_SOL | XBull solenoid box | front | confirmed |  |
 | WINCH_MOTOR | XBull 5000 lb winch motor | front | confirmed |  |
 | WINCH_REMOTE | XBull handheld remote | front | confirmed |  |

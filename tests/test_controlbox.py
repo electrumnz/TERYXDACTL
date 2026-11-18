@@ -181,7 +181,7 @@ def test_winch_needs_arming(b):
     assert not b.cb.relays()["winch.in"]
     b.hold = (0, 0, 1)
     b.run(0.2)
-    assert b.cb.relays()["winch.isolator"]
+    assert b.cb.winch_armed
     b.hold = (0, 1, 1)
     b.run(0.5)
     assert b.cb.relays()["winch.in"] and not b.cb.relays()["winch.out"]

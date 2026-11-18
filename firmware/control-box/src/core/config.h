@@ -54,8 +54,8 @@
 #define LAMP_PWM_HZ        500u      // PCA9685 (one speed for all 16). Lower it if an LED lamp flickers
 
 // PCA9685 channel for each lamp, in LP_* order (lights.h). docs/lights.md
-#define LAMP_PCA_CH { 1, 2, 3, 4,  5, 6, 7, 8,  9, 10, 11, 12, 13, 0 }
-#define PCA_CH_LAMP_ENABLE 15       // BTS7960 4-8 EN pins (10k to ground on the board side)
+#define LAMP_PCA_CH { 1, 2, 3, 4,  5, 6, 7, 8,  9, 10, 11, 12, 13, 0, 14 }
+#define PCA_CH_LAMP_ENABLE 15       // BTS7960 4-9 EN pins (10k to ground on the board side)
 #define ACT_PWM_HZ         20000u    // BTS7960, above hearing
 
 // BTS7960 current sense: IS pins diode-OR'd into 1k to ground.

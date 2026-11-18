@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2200 765" width="2200" height="765" font-family="Arial, Helvetica, sans-serif" data-sheet="winch">
-<rect width="2200" height="765" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2200 805" width="2200" height="805" font-family="Arial, Helvetica, sans-serif" data-sheet="winch">
+<rect width="2200" height="805" fill="#ffffff"/>
 <text x="40" y="40" font-size="22" text-anchor="start" font-weight="bold" fill="#1f2328">Winch</text>
 <text x="40" y="62" font-size="12" text-anchor="start" font-weight="normal" fill="#57606a">Teryx OS wiring, sheet &#x27;winch&#x27;. Made from config/wiring.yaml by `python -m teryx wiring`. Don&#x27;t edit this file.</text>
 <line x1="40" y1="92" x2="74" y2="92" stroke="#1a7f37" stroke-width="2.5"/>
@@ -14,30 +14,27 @@
 <text x="920" y="96" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">Placeholder / later</text>
 <text x="40" y="120" font-size="11" text-anchor="start" font-weight="normal" fill="#57606a">Labels: wire id, size, fuse (if the wire has its own), and anything in between. Faded = optional. Hover for notes. Full table: docs/wiring/README.md</text>
 <g data-wire="WN01" data-from="BAT12.pos" data-to="BRK_WINCH.in" data-status="planned"><title>WN01: BAT12.pos -&gt; BRK_WINCH.in - Cable that came with the winch</title><path d="M310,197 C395,197 395,197 480,197" fill="none" stroke="#424a53" stroke-width="4.5"/></g>
-<g data-wire="WN02" data-from="BRK_WINCH.out" data-to="WINCH_ISO.in" data-status="planned"><title>WN02: BRK_WINCH.out -&gt; WINCH_ISO.in</title><path d="M750,217 C835,217 835,197 920,197" fill="none" stroke="#424a53" stroke-width="4.5"/></g>
-<g data-wire="WN03" data-from="WINCH_ISO.out" data-to="WINCH_SOL.B+" data-status="planned"><title>WN03: WINCH_ISO.out -&gt; WINCH_SOL.B+</title><path d="M1190,217 C1275,217 1275,197 1360,197" fill="none" stroke="#424a53" stroke-width="4.5"/></g>
-<g data-wire="WN04" data-from="WINCH_SOL.M1" data-to="WINCH_MOTOR.M1" data-status="confirmed"><title>WN04: WINCH_SOL.M1 -&gt; WINCH_MOTOR.M1</title><path d="M1630,217 C1715,217 1715,197 1800,197" fill="none" stroke="#0969da" stroke-width="4.5"/></g>
-<g data-wire="WN05" data-from="WINCH_SOL.M2" data-to="WINCH_MOTOR.M2" data-status="confirmed"><title>WN05: WINCH_SOL.M2 -&gt; WINCH_MOTOR.M2</title><path d="M1630,237 C1715,237 1715,217 1800,217" fill="none" stroke="#0969da" stroke-width="4.5"/></g>
-<g data-wire="WN06" data-from="WINCH_SOL.REMOTE" data-to="WINCH_REMOTE.PLUG" data-status="confirmed"><title>WN06: WINCH_SOL.REMOTE -&gt; WINCH_REMOTE.PLUG - XBull remote stays as a backup</title><path d="M1630,297 C1715,297 1715,570 1800,570" fill="none" stroke="#0969da" stroke-width="1.4"/></g>
-<g data-wire="WN07" data-from="FB.F5" data-to="RELAYS.COM4" data-status="planned"><title>WN07: FB.F5 -&gt; RELAYS.COM4</title><path d="M1800,661 C1715,661 1715,388 1630,388" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="WN08" data-from="FB.F5" data-to="RELAYS.COM5" data-status="planned"><title>WN08: FB.F5 -&gt; RELAYS.COM5</title><path d="M1800,661 C1715,661 1715,408 1630,408" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="WN09" data-from="FB.F5" data-to="RELAYS.COM6" data-status="planned"><title>WN09: FB.F5 -&gt; RELAYS.COM6</title><path d="M1800,661 C1715,661 1715,428 1630,428" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="WN10" data-from="RELAYS.NO4" data-to="WINCH_SOL.COIL_IN" data-status="planned"><title>WN10: RELAYS.NO4 -&gt; WINCH_SOL.COIL_IN - winch.in. Never the motor current through the relay board</title><path d="M1630,448 C1690,448 1690,257 1630,257" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="WN11" data-from="RELAYS.NO5" data-to="WINCH_SOL.COIL_OUT" data-status="planned"><title>WN11: RELAYS.NO5 -&gt; WINCH_SOL.COIL_OUT - winch.out, interlocked with in</title><path d="M1630,468 C1690,468 1690,277 1630,277" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="WN12" data-from="RELAYS.NO6" data-to="WINCH_ISO.coil_pos" data-status="planned"><title>WN12: RELAYS.NO6 -&gt; WINCH_ISO.coil_pos - winch.isolator, only while armed</title><path d="M1360,488 C1275,488 1275,237 1190,237" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="WN13" data-from="FB.F6" data-to="HSW_WINCH.FEED" data-status="planned"><title>WN13: FB.F6 -&gt; HSW_WINCH.FEED</title><path d="M2070,681 C2130,681 2130,308 2070,308" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="WN14" data-from="FB.F6" data-to="HSW_CAB.FEED" data-status="planned"><title>WN14: FB.F6 -&gt; HSW_CAB.FEED</title><path d="M2070,681 C2130,681 2130,439 2070,439" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="WN15" data-from="HSW_WINCH.IN" data-to="WINCH_SOL.COIL_IN" data-status="planned"><title>WN15: HSW_WINCH.IN -&gt; WINCH_SOL.COIL_IN</title><path d="M1800,328 C1715,328 1715,257 1630,257" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="WN16" data-from="HSW_WINCH.OUT" data-to="WINCH_SOL.COIL_OUT" data-status="planned"><title>WN16: HSW_WINCH.OUT -&gt; WINCH_SOL.COIL_OUT</title><path d="M1800,348 C1715,348 1715,277 1630,277" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="WN17" data-from="HSW_CAB.IN" data-to="WINCH_SOL.COIL_IN" data-status="planned"><title>WN17: HSW_CAB.IN -&gt; WINCH_SOL.COIL_IN</title><path d="M1800,459 C1715,459 1715,257 1630,257" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="WN18" data-from="HSW_CAB.OUT" data-to="WINCH_SOL.COIL_OUT" data-status="planned"><title>WN18: HSW_CAB.OUT -&gt; WINCH_SOL.COIL_OUT</title><path d="M1800,479 C1715,479 1715,277 1630,277" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="WN02" data-from="BRK_WINCH.out" data-to="WINCH_SOL.B+" data-status="planned"><title>WN02: BRK_WINCH.out -&gt; WINCH_SOL.B+</title><path d="M750,217 C835,217 835,197 920,197" fill="none" stroke="#424a53" stroke-width="4.5"/></g>
+<g data-wire="WN04" data-from="WINCH_SOL.M1" data-to="WINCH_MOTOR.M1" data-status="confirmed"><title>WN04: WINCH_SOL.M1 -&gt; WINCH_MOTOR.M1</title><path d="M1190,217 C1275,217 1275,197 1360,197" fill="none" stroke="#0969da" stroke-width="4.5"/></g>
+<g data-wire="WN05" data-from="WINCH_SOL.M2" data-to="WINCH_MOTOR.M2" data-status="confirmed"><title>WN05: WINCH_SOL.M2 -&gt; WINCH_MOTOR.M2</title><path d="M1190,237 C1275,237 1275,217 1360,217" fill="none" stroke="#0969da" stroke-width="4.5"/></g>
+<g data-wire="WN06" data-from="WINCH_SOL.REMOTE" data-to="WINCH_REMOTE.PLUG" data-status="confirmed"><title>WN06: WINCH_SOL.REMOTE -&gt; WINCH_REMOTE.PLUG - XBull remote stays as a backup</title><path d="M1190,297 C1275,297 1275,721 1360,721" fill="none" stroke="#0969da" stroke-width="1.4"/></g>
+<g data-wire="WN07" data-from="FB.F5" data-to="RELAYS.COM4" data-status="planned"><title>WN07: FB.F5 -&gt; RELAYS.COM4</title><path d="M1800,197 C1715,197 1715,308 1630,308" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="WN08" data-from="FB.F5" data-to="RELAYS.COM5" data-status="planned"><title>WN08: FB.F5 -&gt; RELAYS.COM5</title><path d="M1800,197 C1715,197 1715,328 1630,328" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="WN10" data-from="RELAYS.NO4" data-to="WINCH_SOL.COIL_IN" data-status="planned"><title>WN10: RELAYS.NO4 -&gt; WINCH_SOL.COIL_IN - winch.in. Never the motor current through the relay board</title><path d="M1360,348 C1275,348 1275,257 1190,257" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="WN11" data-from="RELAYS.NO5" data-to="WINCH_SOL.COIL_OUT" data-status="planned"><title>WN11: RELAYS.NO5 -&gt; WINCH_SOL.COIL_OUT - winch.out, interlocked with in</title><path d="M1360,368 C1275,368 1275,277 1190,277" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="WN13" data-from="FB.F6" data-to="HSW_WINCH.FEED" data-status="planned"><title>WN13: FB.F6 -&gt; HSW_WINCH.FEED</title><path d="M1800,217 C1715,217 1715,459 1630,459" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="WN14" data-from="FB.F6" data-to="HSW_CAB.FEED" data-status="planned"><title>WN14: FB.F6 -&gt; HSW_CAB.FEED</title><path d="M1800,217 C1715,217 1715,590 1630,590" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="WN15" data-from="HSW_WINCH.IN" data-to="WINCH_SOL.COIL_IN" data-status="planned"><title>WN15: HSW_WINCH.IN -&gt; WINCH_SOL.COIL_IN</title><path d="M1360,479 C1275,479 1275,257 1190,257" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="WN16" data-from="HSW_WINCH.OUT" data-to="WINCH_SOL.COIL_OUT" data-status="planned"><title>WN16: HSW_WINCH.OUT -&gt; WINCH_SOL.COIL_OUT</title><path d="M1360,499 C1275,499 1275,277 1190,277" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="WN17" data-from="HSW_CAB.IN" data-to="WINCH_SOL.COIL_IN" data-status="planned"><title>WN17: HSW_CAB.IN -&gt; WINCH_SOL.COIL_IN</title><path d="M1360,610 C1275,610 1275,257 1190,257" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="WN18" data-from="HSW_CAB.OUT" data-to="WINCH_SOL.COIL_OUT" data-status="planned"><title>WN18: HSW_CAB.OUT -&gt; WINCH_SOL.COIL_OUT</title><path d="M1360,630 C1275,630 1275,277 1190,277" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
 <g data-device="BAT12" data-status="confirmed"><title>BAT12: 12 V aux battery - Kept after the conversion. Charged by the DC-DC</title><rect x="40" y="150" width="270" height="69" rx="6" fill="#fff8e6" stroke="#0969da" stroke-width="1.5"/>
 <text x="50" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">12 V aux battery</text>
 <text x="50" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">BAT12 · confirmed</text>
 <line x1="40" y1="197" x2="310" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="175" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">pos</text>
 </g>
-<g data-device="BRK_WINCH" data-status="planned"><title>BRK_WINCH: 250 A breaker</title><rect x="480" y="150" width="270" height="89" rx="6" fill="#fff8e6" stroke="#424a53" stroke-width="1.5"/>
+<g data-device="BRK_WINCH" data-status="planned"><title>BRK_WINCH: 250 A breaker - Manual reset breaker, also the winch&#x27;s kill switch: push it off to make the winch dead. No isolator contactor (Sam, 18 Nov), so the XBull remote and hand switches work whenever this is on</title><rect x="480" y="150" width="270" height="89" rx="6" fill="#fff8e6" stroke="#424a53" stroke-width="1.5"/>
 <text x="490" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">250 A breaker</text>
 <text x="490" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">BRK_WINCH · planned</text>
 <line x1="480" y1="197" x2="750" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
@@ -45,106 +42,89 @@
 <line x1="480" y1="217" x2="750" y2="217" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">out</text>
 </g>
-<g data-device="WINCH_ISO" data-status="planned"><title>WINCH_ISO: Winch isolator contactor - Only on while the winch is armed on the dash (relay 6)</title><rect x="920" y="150" width="270" height="109" rx="6" fill="#fff8e6" stroke="#424a53" stroke-width="1.5"/>
-<text x="930" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Winch isolator contactor</text>
-<text x="930" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">WINCH_ISO · planned</text>
+<g data-device="WINCH_SOL" data-status="confirmed"><title>WINCH_SOL: XBull solenoid box</title><rect x="920" y="150" width="270" height="169" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
+<text x="930" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">XBull solenoid box</text>
+<text x="930" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">WINCH_SOL · confirmed</text>
 <line x1="920" y1="197" x2="1190" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">in</text>
+<text x="1055" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">B+</text>
 <line x1="920" y1="217" x2="1190" y2="217" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">out</text>
+<text x="1055" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">M1</text>
 <line x1="920" y1="237" x2="1190" y2="237" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="241" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">coil_pos</text>
+<text x="1055" y="241" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">M2</text>
+<line x1="920" y1="257" x2="1190" y2="257" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="261" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">COIL_IN</text>
+<line x1="920" y1="277" x2="1190" y2="277" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="281" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">COIL_OUT</text>
+<line x1="920" y1="297" x2="1190" y2="297" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="301" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">REMOTE</text>
 </g>
-<g data-device="WINCH_SOL" data-status="confirmed"><title>WINCH_SOL: XBull solenoid box</title><rect x="1360" y="150" width="270" height="169" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
-<text x="1370" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">XBull solenoid box</text>
-<text x="1370" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">WINCH_SOL · confirmed</text>
+<g data-device="WINCH_MOTOR" data-status="confirmed"><title>WINCH_MOTOR: XBull 5000 lb winch motor</title><rect x="1360" y="150" width="270" height="89" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
+<text x="1370" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">XBull 5000 lb winch motor</text>
+<text x="1370" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">WINCH_MOTOR · confirmed</text>
 <line x1="1360" y1="197" x2="1630" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1495" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">B+</text>
+<text x="1495" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">M1</text>
 <line x1="1360" y1="217" x2="1630" y2="217" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1495" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">M1</text>
-<line x1="1360" y1="237" x2="1630" y2="237" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1495" y="241" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">M2</text>
-<line x1="1360" y1="257" x2="1630" y2="257" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1495" y="261" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">COIL_IN</text>
-<line x1="1360" y1="277" x2="1630" y2="277" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1495" y="281" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">COIL_OUT</text>
-<line x1="1360" y1="297" x2="1630" y2="297" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1495" y="301" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">REMOTE</text>
+<text x="1495" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">M2</text>
 </g>
-<g data-device="RELAYS" data-status="planned"><title>RELAYS: 16-ch relay board, channels 1-8 - One 16-channel board of mechanical 5 V relays with opto and JD-VCC jumper (AliExpress cart), in an aux box next to the control box. RELAYS2 is channels 9-16 of the same board. The solid state G3MB-202P board Sam has is AC only and won&#x27;t turn off on 12 V DC. JD-VCC jumper off, coils on 5 V, inputs from 3.3 V</title><rect x="1360" y="341" width="270" height="169" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
-<text x="1370" y="359" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">16-ch relay board, channels 1-8</text>
-<text x="1370" y="374" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">RELAYS · planned</text>
-<line x1="1360" y1="388" x2="1630" y2="388" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1495" y="392" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">COM4</text>
-<line x1="1360" y1="408" x2="1630" y2="408" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1495" y="412" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">COM5</text>
-<line x1="1360" y1="428" x2="1630" y2="428" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1495" y="432" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">COM6</text>
-<line x1="1360" y1="448" x2="1630" y2="448" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1495" y="452" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">NO4</text>
-<line x1="1360" y1="468" x2="1630" y2="468" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1495" y="472" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">NO5</text>
-<line x1="1360" y1="488" x2="1630" y2="488" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1495" y="492" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">NO6</text>
+<g data-device="RELAYS" data-status="planned"><title>RELAYS: 16-ch relay board, channels 1-8 - One 16-channel board of mechanical 5 V relays with opto and JD-VCC jumper (AliExpress cart), in an aux box next to the control box. RELAYS2 is channels 9-16 of the same board. The solid state G3MB-202P board Sam has is AC only and won&#x27;t turn off on 12 V DC. JD-VCC jumper off, coils on 5 V, inputs from 3.3 V</title><rect x="1360" y="261" width="270" height="129" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="1370" y="279" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">16-ch relay board, channels 1-8</text>
+<text x="1370" y="294" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">RELAYS · planned</text>
+<line x1="1360" y1="308" x2="1630" y2="308" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="312" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">COM4</text>
+<line x1="1360" y1="328" x2="1630" y2="328" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="332" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">COM5</text>
+<line x1="1360" y1="348" x2="1630" y2="348" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="352" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">NO4</text>
+<line x1="1360" y1="368" x2="1630" y2="368" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="372" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">NO5</text>
 </g>
-<g data-device="WINCH_MOTOR" data-status="confirmed"><title>WINCH_MOTOR: XBull 5000 lb winch motor</title><rect x="1800" y="150" width="270" height="89" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
-<text x="1810" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">XBull 5000 lb winch motor</text>
-<text x="1810" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">WINCH_MOTOR · confirmed</text>
+<g data-device="HSW_WINCH" data-status="confirmed"><title>HSW_WINCH: Hidden winch switch (at the winch) - Momentary (ON)-OFF-(ON)</title><rect x="1360" y="412" width="270" height="109" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
+<text x="1370" y="430" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Hidden winch switch (at the winch)</text>
+<text x="1370" y="445" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">HSW_WINCH · confirmed</text>
+<line x1="1360" y1="459" x2="1630" y2="459" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="463" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">FEED</text>
+<line x1="1360" y1="479" x2="1630" y2="479" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="483" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN</text>
+<line x1="1360" y1="499" x2="1630" y2="499" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="503" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT</text>
+</g>
+<g data-device="HSW_CAB" data-status="confirmed"><title>HSW_CAB: Hidden winch switch (in the cab) - Momentary (ON)-OFF-(ON)</title><rect x="1360" y="543" width="270" height="109" rx="6" fill="#f0f6ff" stroke="#0969da" stroke-width="1.5"/>
+<text x="1370" y="561" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Hidden winch switch (in the cab)</text>
+<text x="1370" y="576" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">HSW_CAB · confirmed</text>
+<line x1="1360" y1="590" x2="1630" y2="590" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="594" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">FEED</text>
+<line x1="1360" y1="610" x2="1630" y2="610" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="614" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN</text>
+<line x1="1360" y1="630" x2="1630" y2="630" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="634" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT</text>
+</g>
+<g data-device="WINCH_REMOTE" data-status="confirmed"><title>WINCH_REMOTE: XBull handheld remote</title><rect x="1360" y="674" width="270" height="69" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
+<text x="1370" y="692" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">XBull handheld remote</text>
+<text x="1370" y="707" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">WINCH_REMOTE · confirmed</text>
+<line x1="1360" y1="721" x2="1630" y2="721" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="725" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">PLUG</text>
+</g>
+<g data-device="FB" data-status="tbc"><title>FB: Blade fuse block - 12 fuses in use. Small loads that can go out together share a fuse (front bars in pairs, trailer tail + stop, interior bar + accessory). All four front bars are NOT on one fuse, so one fault can&#x27;t black out the front at night. The winch, control box power, key, power hold and each actuator keep their own. Sam&#x27;s 12-way (in the post) is used, so it is full with no spares; add a small 6-way next to it if more circuits come</title><rect x="1800" y="150" width="270" height="89" rx="6" fill="#f0f6ff" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
+<text x="1810" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Blade fuse block</text>
+<text x="1810" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#bf8700">FB · tbc</text>
 <line x1="1800" y1="197" x2="2070" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1935" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">M1</text>
+<text x="1935" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F5  relays 4-5 winch coils</text>
 <line x1="1800" y1="217" x2="2070" y2="217" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1935" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">M2</text>
-</g>
-<g data-device="HSW_WINCH" data-status="confirmed"><title>HSW_WINCH: Hidden winch switch (at the winch) - Momentary (ON)-OFF-(ON)</title><rect x="1800" y="261" width="270" height="109" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
-<text x="1810" y="279" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Hidden winch switch (at the winch)</text>
-<text x="1810" y="294" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">HSW_WINCH · confirmed</text>
-<line x1="1800" y1="308" x2="2070" y2="308" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1935" y="312" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">FEED</text>
-<line x1="1800" y1="328" x2="2070" y2="328" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1935" y="332" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN</text>
-<line x1="1800" y1="348" x2="2070" y2="348" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1935" y="352" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT</text>
-</g>
-<g data-device="HSW_CAB" data-status="confirmed"><title>HSW_CAB: Hidden winch switch (in the cab) - Momentary (ON)-OFF-(ON)</title><rect x="1800" y="392" width="270" height="109" rx="6" fill="#f0f6ff" stroke="#0969da" stroke-width="1.5"/>
-<text x="1810" y="410" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Hidden winch switch (in the cab)</text>
-<text x="1810" y="425" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">HSW_CAB · confirmed</text>
-<line x1="1800" y1="439" x2="2070" y2="439" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1935" y="443" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">FEED</text>
-<line x1="1800" y1="459" x2="2070" y2="459" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1935" y="463" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN</text>
-<line x1="1800" y1="479" x2="2070" y2="479" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1935" y="483" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT</text>
-</g>
-<g data-device="WINCH_REMOTE" data-status="confirmed"><title>WINCH_REMOTE: XBull handheld remote</title><rect x="1800" y="523" width="270" height="69" rx="6" fill="#f4f4f4" stroke="#0969da" stroke-width="1.5"/>
-<text x="1810" y="541" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">XBull handheld remote</text>
-<text x="1810" y="556" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">WINCH_REMOTE · confirmed</text>
-<line x1="1800" y1="570" x2="2070" y2="570" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1935" y="574" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">PLUG</text>
-</g>
-<g data-device="FB" data-status="tbc"><title>FB: Blade fuse block - 12 fuses in use. Small loads that can go out together share a fuse (front bars in pairs, trailer tail + stop, interior bar + accessory). All four front bars are NOT on one fuse, so one fault can&#x27;t black out the front at night. The winch, control box power, key, power hold and each actuator keep their own. Sam&#x27;s 12-way (in the post) is used, so it is full with no spares; add a small 6-way next to it if more circuits come</title><rect x="1800" y="614" width="270" height="89" rx="6" fill="#f0f6ff" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
-<text x="1810" y="632" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Blade fuse block</text>
-<text x="1810" y="647" font-size="10" text-anchor="start" font-weight="normal" fill="#bf8700">FB · tbc</text>
-<line x1="1800" y1="661" x2="2070" y2="661" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1935" y="665" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F5  relays 4-6 winch coils</text>
-<line x1="1800" y1="681" x2="2070" y2="681" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1935" y="685" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F6  winch hand switches, tray limits, t…</text>
+<text x="1935" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F6  winch hand switches, tray limits, t…</text>
 </g>
 <text x="318" y="194" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">WN01  35 mm²  250 A</text>
 <text x="758" y="214" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">WN02  35 mm²  250 A</text>
-<text x="1198" y="214" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">WN03  35 mm²  250 A</text>
-<text x="1638" y="214" font-size="9.5" text-anchor="start" font-weight="normal" fill="#0969da" stroke="#ffffff" stroke-width="3" paint-order="stroke">WN04  35 mm²</text>
-<text x="1638" y="234" font-size="9.5" text-anchor="start" font-weight="normal" fill="#0969da" stroke="#ffffff" stroke-width="3" paint-order="stroke">WN05  35 mm²</text>
-<text x="1638" y="294" font-size="9.5" text-anchor="start" font-weight="normal" fill="#0969da" stroke="#ffffff" stroke-width="3" paint-order="stroke">WN06</text>
-<text x="1638" y="385" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">WN07  0.5 mm²</text>
-<text x="1638" y="405" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">WN08  0.5 mm²</text>
-<text x="1638" y="425" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">WN09  0.5 mm²</text>
-<text x="1638" y="445" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">WN10  0.5 mm²  3 A  via 3 A diode (1N5408)</text>
-<text x="1638" y="465" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">WN11  0.5 mm²  3 A  via 3 A diode (1N5408)</text>
-<text x="1352" y="485" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">WN12  0.5 mm²  3 A</text>
-<text x="2078" y="305" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">WN13  0.5 mm²</text>
-<text x="2078" y="436" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">WN14  0.5 mm²</text>
-<text x="1792" y="325" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">WN15  0.5 mm²  3 A  via 3 A diode (1N5408)</text>
-<text x="1792" y="345" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">WN16  0.5 mm²  3 A  via 3 A diode (1N5408)</text>
-<text x="1792" y="456" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">WN17  0.5 mm²  3 A  via 3 A diode (1N5408)</text>
-<text x="1792" y="476" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">WN18  0.5 mm²  3 A  via 3 A diode (1N5408)</text>
+<text x="1198" y="214" font-size="9.5" text-anchor="start" font-weight="normal" fill="#0969da" stroke="#ffffff" stroke-width="3" paint-order="stroke">WN04  35 mm²</text>
+<text x="1198" y="234" font-size="9.5" text-anchor="start" font-weight="normal" fill="#0969da" stroke="#ffffff" stroke-width="3" paint-order="stroke">WN05  35 mm²</text>
+<text x="1198" y="294" font-size="9.5" text-anchor="start" font-weight="normal" fill="#0969da" stroke="#ffffff" stroke-width="3" paint-order="stroke">WN06</text>
+<text x="1638" y="305" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">WN07  0.5 mm²</text>
+<text x="1638" y="325" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">WN08  0.5 mm²</text>
+<text x="1352" y="345" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">WN10  0.5 mm²  3 A  via 3 A diode (1N5408)</text>
+<text x="1352" y="365" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">WN11  0.5 mm²  3 A  via 3 A diode (1N5408)</text>
+<text x="1638" y="456" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">WN13  0.5 mm²</text>
+<text x="1638" y="587" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">WN14  0.5 mm²</text>
+<text x="1352" y="476" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">WN15  0.5 mm²  3 A  via 3 A diode (1N5408)</text>
+<text x="1352" y="496" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">WN16  0.5 mm²  3 A  via 3 A diode (1N5408)</text>
+<text x="1352" y="607" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">WN17  0.5 mm²  3 A  via 3 A diode (1N5408)</text>
+<text x="1352" y="627" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">WN18  0.5 mm²  3 A  via 3 A diode (1N5408)</text>
 </svg>
