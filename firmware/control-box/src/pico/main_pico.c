@@ -88,7 +88,7 @@ static void lock_save(const lock_blob_t *b) {
     flash_safe_execute(lock_write_cb, &copy, 100);
 }
 
-uint32_t lock_random32(void) { return get_rand_32(); }
+uint32_t vlock_random32(void) { return get_rand_32(); }
 
 // Workshop recovery: on the debug UART (GP0/GP1, inside the control box, not
 // the Pi's USB) type "LOCK RESET" then Enter, with the key on and the park
@@ -102,7 +102,7 @@ static void uart_console(controller_t *c) {
             line[n] = 0;
             if (!strcmp(line, "LOCK RESET")) {
                 bool ok = (c->in.din & BIT(IN_IGNITION)) && (c->in.din & BIT(IN_PARK));
-                if (ok) lock_workshop_reset(&c->lock);
+                if (ok) vlock_workshop_reset(&c->lock);
                 uart_puts(uart0, ok ? "lock: wiped and unlocked\r\n" : "lock: key on and park brake on first\r\n");
             } else if (n) {
                 uart_puts(uart0, "?\r\n");

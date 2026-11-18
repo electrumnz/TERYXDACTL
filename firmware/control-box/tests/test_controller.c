@@ -874,7 +874,7 @@ static void test_lock_hash(void) {
     hexcmp(h, "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
     uint8_t salt[16];
     for (int i = 0; i < 16; i++) salt[i] = (uint8_t)i;
-    lock_hash(salt, "1234", 4, h);   // same vector as tests/test_vehicle_lock.py
+    vlock_hash(salt, "1234", 4, h);   // same vector as tests/test_vehicle_lock.py
     hexcmp(h, "97ddbcf2cb504922480796891327ead84d3a26b65429411b513a9480e49a3e29");
 }
 
@@ -887,7 +887,7 @@ static void test_lock_set_and_lock_rules(void) {
     lock_cmd(LOCK_CMD_SET_PIN, "12");
     CHECK(R.c.lock.result == LOCK_RES_BAD_DIGITS);
     lock_cmd(LOCK_CMD_SET_PIN, "4821");
-    CHECK(R.c.lock.result == LOCK_RES_OK && lock_pin_set(&R.c.lock));
+    CHECK(R.c.lock.result == LOCK_RES_OK && vlock_pin_set(&R.c.lock));
     run(10);
     CHECK(R.out.save_lock || R.c.lock.saved.crc != 0);
     // The PIN itself is never stored.
@@ -996,7 +996,7 @@ static void test_lock_survives_power_cut(void) {
     flash.crc ^= 1;
     ctl_init(&R.c, NULL, false, false, R.t);
     ctl_load_lock(&R.c, &flash, R.t);
-    CHECK(!ctl_locked(&R.c) && !lock_pin_set(&R.c.lock));
+    CHECK(!ctl_locked(&R.c) && !vlock_pin_set(&R.c.lock));
 }
 
 static void test_lock_wrong_tries(void) {
@@ -1054,18 +1054,18 @@ static void test_lock_change_pin_and_recovery(void) {
     lock_cmd(LOCK_CMD_UNLOCK, "4821");
     CHECK(R.c.lock.result == LOCK_RES_WRONG);
     lock_cmd(LOCK_CMD_UNLOCK, "87654321");
-    CHECK(R.c.lock.result == LOCK_RES_RECOVERED && !ctl_locked(&R.c) && !lock_pin_set(&R.c.lock));
+    CHECK(R.c.lock.result == LOCK_RES_RECOVERED && !ctl_locked(&R.c) && !vlock_pin_set(&R.c.lock));
     CHECK(R.c.lock.saved.fails == 0);
     // Remove: needs the window.
     lock_cmd(LOCK_CMD_SET_PIN, "2468");
     lock_cmd(LOCK_CMD_VERIFY, "2468");
     lock_cmd(LOCK_CMD_REMOVE, NULL);
-    CHECK(R.c.lock.result == LOCK_RES_OK && !lock_pin_set(&R.c.lock));
+    CHECK(R.c.lock.result == LOCK_RES_OK && !vlock_pin_set(&R.c.lock));
     // Workshop reset (debug UART in the box).
     lock_up();
-    lock_workshop_reset(&R.c.lock);
+    vlock_workshop_reset(&R.c.lock);
     run(20);
-    CHECK(!ctl_locked(&R.c) && !lock_pin_set(&R.c.lock) && !R.out.drive_inhibit);
+    CHECK(!ctl_locked(&R.c) && !vlock_pin_set(&R.c.lock) && !R.out.drive_inhibit);
 }
 
 int main(void) {

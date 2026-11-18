@@ -157,7 +157,7 @@ typedef struct {
     bool bootloader_pending;
 
     // Vehicle lock (docs/vehicle-lock.md)
-    lock_t lock;
+    vlock_t lock;
 
     uint8_t tx_counter;
     uint32_t last_tx_fast_ms;

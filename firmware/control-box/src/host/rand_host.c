@@ -5,7 +5,7 @@
 
 #include "lock.h"
 
-uint32_t lock_random32(void) {
+uint32_t vlock_random32(void) {
     uint32_t r = 0;
     FILE *fp = fopen("/dev/urandom", "rb");
     if (fp) {

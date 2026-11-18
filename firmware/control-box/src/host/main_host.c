@@ -98,7 +98,7 @@ int main(int argc, char **argv) {
     bool have_lock = load_lock(lock_path, &lock_saved);
     ctl_load_lock(&ctl, have_lock ? &lock_saved : NULL, t);
     if (lock_reset) {
-        lock_workshop_reset(&ctl.lock);
+        vlock_workshop_reset(&ctl.lock);
         printf("vehicle lock: workshop reset, PIN and recovery code wiped\n");
     }
     printf("Teryx control box host build v%d.%d.%d on %s (%s settings)\n",

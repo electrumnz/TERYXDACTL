@@ -41,7 +41,7 @@ bool ctl_parked(const controller_t *c, uint32_t now) {
     return stopped(c, now) || !ignition(c) || (c->in.din & BIT(IN_PARK));
 }
 
-bool ctl_locked(const controller_t *c) { return lock_is_locked(&c->lock); }
+bool ctl_locked(const controller_t *c) { return vlock_is_locked(&c->lock); }
 
 bool ctl_can_lock(const controller_t *c, uint32_t now) {
     if (anything_moving(c)) return false;
@@ -94,11 +94,11 @@ void ctl_init(controller_t *c, const settings_t *saved, bool watchdog_reset,
     c->last_tx_slow_ms = now;
     c->winch.off_since_ms = now;
     c->in.io_ok = true;
-    lock_init(&c->lock, NULL, now);
+    vlock_init(&c->lock, NULL, now);
 }
 
 void ctl_load_lock(controller_t *c, const lock_blob_t *saved, uint32_t now) {
-    lock_init(&c->lock, saved, now);
+    vlock_init(&c->lock, saved, now);
 }
 
 // ---------------------------------------------------------------------------
@@ -393,7 +393,7 @@ void ctl_on_frame(controller_t *c, const can_frame_t *f, uint32_t now,
 
     case CAN_ID_PI_LOCK: {
         bool was = ctl_locked(c);
-        lock_on_frame(&c->lock, f->data, f->dlc, ctl_can_lock(c, now), now);
+        vlock_on_frame(&c->lock, f->data, f->dlc, ctl_can_lock(c, now), now);
         if (!was && ctl_locked(c)) stop_all_motion(c);
         send_lock(c, now, send, user);  // answer straight away, not on the next 100 ms
         break;
@@ -787,7 +787,7 @@ static void send_status(controller_t *c, uint32_t now, cb_send_fn send, void *u)
 
 static void send_lock(controller_t *c, uint32_t now, cb_send_fn send, void *u) {
     can_frame_t f = {.id = CAN_ID_PICO_LOCK, .dlc = 8};
-    lock_status(&c->lock, now, ctl_locked(c), f.data);
+    vlock_status(&c->lock, now, ctl_locked(c), f.data);
     send(&f, u);
 }
 
@@ -829,7 +829,7 @@ void ctl_tick(controller_t *c, const cb_in_t *in, cb_out_t *out, cb_send_fn send
 
     // Vehicle lock: nothing moves, lights off, drive inhibited. The lock
     // sits in flash, so this holds from the first tick after a power cut.
-    lock_tick(&c->lock, now);
+    vlock_tick(&c->lock, now);
     bool locked = ctl_locked(c);
     if (locked && (anything_moving(c) || c->fwd.waiting || c->diff.waiting || c->winch.armed))
         stop_all_motion(c);

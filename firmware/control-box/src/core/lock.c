@@ -8,7 +8,7 @@
 
 static uint32_t since(uint32_t now, uint32_t then) { return now - then; }
 
-void lock_hash(const uint8_t salt[16], const char *digits, uint8_t n, uint8_t out[32]) {
+void vlock_hash(const uint8_t salt[16], const char *digits, uint8_t n, uint8_t out[32]) {
     sha256_t s;
     sha256_init(&s);
     sha256_update(&s, salt, 16);
@@ -22,18 +22,18 @@ void lock_hash(const uint8_t salt[16], const char *digits, uint8_t n, uint8_t ou
     }
 }
 
-uint32_t lock_blob_crc(const lock_blob_t *b) {
+uint32_t vlock_blob_crc(const lock_blob_t *b) {
     return settings_crc32(b, offsetof(lock_blob_t, crc));
 }
 
-static void save(lock_t *l) {
+static void save(vlock_t *l) {
     l->saved.magic = LOCK_MAGIC;
     l->saved.version = 1;
-    l->saved.crc = lock_blob_crc(&l->saved);
+    l->saved.crc = vlock_blob_crc(&l->saved);
     l->dirty = true;
 }
 
-static void forget(lock_t *l) {
+static void forget(vlock_t *l) {
     uint8_t fails = l->saved.fails;
     memset(&l->saved, 0, sizeof(l->saved));
     l->saved.fails = fails;
@@ -46,22 +46,22 @@ static uint32_t wait_ms(uint8_t fails) {
     return s * 1000u;
 }
 
-static void start_lockout(lock_t *l, uint32_t now) {
+static void start_lockout(vlock_t *l, uint32_t now) {
     l->lockout = true;
     l->lockout_from_ms = now;
     l->lockout_ms = wait_ms(l->saved.fails);
 }
 
-void lock_init(lock_t *l, const lock_blob_t *saved, uint32_t now) {
+void vlock_init(vlock_t *l, const lock_blob_t *saved, uint32_t now) {
     memset(l, 0, sizeof(*l));
-    if (saved && saved->magic == LOCK_MAGIC && saved->version == 1 && saved->crc == lock_blob_crc(saved))
+    if (saved && saved->magic == LOCK_MAGIC && saved->version == 1 && saved->crc == vlock_blob_crc(saved))
         l->saved = *saved;
     // A power cut doesn't reset the count: a lockout starts over after boot.
     if (l->saved.fails >= LOCK_FREE_TRIES) start_lockout(l, now);
 }
 
-bool lock_pin_set(const lock_t *l) { return (l->saved.flags & LOCKF_PIN_SET) != 0; }
-bool lock_is_locked(const lock_t *l) { return (l->saved.flags & LOCKF_LOCKED) != 0; }
+bool vlock_pin_set(const vlock_t *l) { return (l->saved.flags & LOCKF_PIN_SET) != 0; }
+bool vlock_is_locked(const vlock_t *l) { return (l->saved.flags & LOCKF_LOCKED) != 0; }
 
 // BCD digits to ASCII. Returns false if a nibble isn't 0-9 or the length is off.
 static bool digits(const uint8_t *d, uint8_t dlc, char out[8], uint8_t *n) {
@@ -83,33 +83,33 @@ static bool same(const uint8_t *a, const uint8_t *b) {
     return diff == 0;
 }
 
-static bool check(const lock_t *l, const char *p, uint8_t n, bool puk) {
+static bool check(const vlock_t *l, const char *p, uint8_t n, bool puk) {
     uint8_t h[32];
-    lock_hash(l->saved.salt, p, n, h);
+    vlock_hash(l->saved.salt, p, n, h);
     return same(h, puk ? l->saved.puk_hash : l->saved.pin_hash);
 }
 
-static uint8_t wrong(lock_t *l, uint32_t now) {
+static uint8_t wrong(vlock_t *l, uint32_t now) {
     if (l->saved.fails < 255) l->saved.fails++;
     save(l);
     if (l->saved.fails >= LOCK_FREE_TRIES) start_lockout(l, now);
     return LOCK_RES_WRONG;
 }
 
-static void right(lock_t *l) {
+static void right(vlock_t *l) {
     if (l->saved.fails) { l->saved.fails = 0; save(l); }
 }
 
-static uint8_t handle(lock_t *l, const uint8_t *d, uint8_t dlc, bool can_lock, uint32_t now) {
+static uint8_t handle(vlock_t *l, const uint8_t *d, uint8_t dlc, bool can_lock, uint32_t now) {
     uint8_t cmd = d[0];
     char p[8];
     uint8_t n = 0;
-    bool locked = lock_is_locked(l);
+    bool locked = vlock_is_locked(l);
     bool window = l->window;
 
     switch (cmd) {
     case LOCK_CMD_LOCK:
-        if (!lock_pin_set(l)) return LOCK_RES_NO_PIN;
+        if (!vlock_pin_set(l)) return LOCK_RES_NO_PIN;
         if (locked) return LOCK_RES_OK;
         if (!can_lock) return LOCK_RES_NOT_PARKED;
         l->saved.flags |= LOCKF_LOCKED;
@@ -119,7 +119,7 @@ static uint8_t handle(lock_t *l, const uint8_t *d, uint8_t dlc, bool can_lock, u
 
     case LOCK_CMD_UNLOCK:
     case LOCK_CMD_VERIFY: {
-        if (!lock_pin_set(l)) return LOCK_RES_NO_PIN;
+        if (!vlock_pin_set(l)) return LOCK_RES_NO_PIN;
         if (l->lockout) return LOCK_RES_LOCKOUT;
         if (!digits(d, dlc, p, &n)) return LOCK_RES_BAD_DIGITS;
         if (n == LOCK_PUK_LEN && cmd == LOCK_CMD_UNLOCK && (l->saved.flags & LOCKF_PUK_SET)) {
@@ -147,14 +147,14 @@ static uint8_t handle(lock_t *l, const uint8_t *d, uint8_t dlc, bool can_lock, u
 
     case LOCK_CMD_SET_PIN:
         if (locked) return LOCK_RES_NOT_ALLOWED;
-        if (lock_pin_set(l) && !window) return LOCK_RES_NOT_ALLOWED;
+        if (vlock_pin_set(l) && !window) return LOCK_RES_NOT_ALLOWED;
         if (!digits(d, dlc, p, &n) || n > LOCK_PIN_MAX) return LOCK_RES_BAD_DIGITS;
         // New salt each time a PIN is set. The old recovery code goes with it.
         for (int i = 0; i < 16; i += 4) {
-            uint32_t r = lock_random32();
+            uint32_t r = vlock_random32();
             memcpy(&l->saved.salt[i], &r, 4);
         }
-        lock_hash(l->saved.salt, p, n, l->saved.pin_hash);
+        vlock_hash(l->saved.salt, p, n, l->saved.pin_hash);
         memset(l->saved.puk_hash, 0, sizeof(l->saved.puk_hash));
         l->saved.flags = LOCKF_PIN_SET;
         l->saved.fails = 0;
@@ -164,9 +164,9 @@ static uint8_t handle(lock_t *l, const uint8_t *d, uint8_t dlc, bool can_lock, u
         return LOCK_RES_OK;
 
     case LOCK_CMD_SET_PUK:
-        if (locked || !lock_pin_set(l) || !window) return LOCK_RES_NOT_ALLOWED;
+        if (locked || !vlock_pin_set(l) || !window) return LOCK_RES_NOT_ALLOWED;
         if (!digits(d, dlc, p, &n) || n != LOCK_PUK_LEN) return LOCK_RES_BAD_DIGITS;
-        lock_hash(l->saved.salt, p, n, l->saved.puk_hash);
+        vlock_hash(l->saved.salt, p, n, l->saved.puk_hash);
         l->saved.flags |= LOCKF_PUK_SET;
         save(l);
         return LOCK_RES_OK;
@@ -183,22 +183,22 @@ static uint8_t handle(lock_t *l, const uint8_t *d, uint8_t dlc, bool can_lock, u
     }
 }
 
-uint8_t lock_on_frame(lock_t *l, const uint8_t *d, uint8_t dlc, bool can_lock, uint32_t now) {
-    lock_tick(l, now);
+uint8_t vlock_on_frame(vlock_t *l, const uint8_t *d, uint8_t dlc, bool can_lock, uint32_t now) {
+    vlock_tick(l, now);
     uint8_t r = dlc < 1 ? LOCK_RES_BAD_DIGITS : handle(l, d, dlc, can_lock, now);
     l->result = r;
     l->result_count++;
     return r;
 }
 
-void lock_tick(lock_t *l, uint32_t now) {
+void vlock_tick(vlock_t *l, uint32_t now) {
     if (l->lockout && since(now, l->lockout_from_ms) >= l->lockout_ms) l->lockout = false;
     if (l->window && since(now, l->window_from_ms) >= LOCK_WINDOW_MS) l->window = false;
 }
 
-void lock_status(const lock_t *l, uint32_t now, bool inhibit, uint8_t out[8]) {
+void vlock_status(const vlock_t *l, uint32_t now, bool inhibit, uint8_t out[8]) {
     memset(out, 0, 8);
-    out[0] = lock_is_locked(l) ? LOCK_LOCKED : lock_pin_set(l) ? LOCK_UNLOCKED : LOCK_OFF;
+    out[0] = vlock_is_locked(l) ? LOCK_LOCKED : vlock_pin_set(l) ? LOCK_UNLOCKED : LOCK_OFF;
     uint8_t f = l->saved.fails;
     out[1] = l->lockout ? 0 : f < LOCK_FREE_TRIES ? (uint8_t)(LOCK_FREE_TRIES - f) : 1;
     uint32_t left = 0;
@@ -216,7 +216,7 @@ void lock_status(const lock_t *l, uint32_t now, bool inhibit, uint8_t out[8]) {
     out[7] = f;
 }
 
-void lock_workshop_reset(lock_t *l) {
+void vlock_workshop_reset(vlock_t *l) {
     memset(&l->saved, 0, sizeof(l->saved));
     save(l);
     l->lockout = false;

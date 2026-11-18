@@ -42,7 +42,7 @@ HASH_ROUNDS = 512
 
 
 def lock_hash(salt: bytes, digits: str) -> bytes:
-    """Same as lock_hash() in lock.c."""
+    """Same as vlock_hash() in lock.c."""
     h = hashlib.sha256(salt + digits.encode()).digest()
     for _ in range(HASH_ROUNDS - 1):
         h = hashlib.sha256(h + salt).digest()
