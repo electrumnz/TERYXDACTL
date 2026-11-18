@@ -58,7 +58,7 @@ DEFAULTS = {
     "link_timeout_4g_s": 0.50,  # 4G jitter would trip 200 ms all the time. 0.5 s at 2 km/h is 28 cm
 }
 
-LINKS = ("radio", "wifi", "4g")
+LINKS = ("radio", "wifi", "4g", "bt")   # bt: a Bluetooth pad paired to the Pi (rc_pad.py)
 
 
 @dataclass
@@ -74,7 +74,7 @@ class Radio:
     winch: int = 0              # -1 out, 0, +1 in (hold-to-run buttons)
     drive: float | None = None  # stick mode: -1 full back .. +1 full forward. None = trigger mode
     failsafe: bool = False      # receiver says it has lost the transmitter
-    link: str = "radio"         # radio (handheld's own link), wifi (phone on the Teryx's hotspot), 4g
+    link: str = "radio"         # radio (handheld's own link), wifi (phone on the Teryx's hotspot), 4g, bt (pad on the Pi)
     rtt_s: float | None = None  # round trip the Pi measured to the phone (wifi and 4g)
     video_ok: bool = True       # the phone says its camera picture is live and fresh
 

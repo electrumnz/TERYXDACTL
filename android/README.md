@@ -16,6 +16,9 @@ What the app adds over the web page:
   shows "READY".
 - The page is served from inside the app on a secure address, so gamepads work
   with no certificate setup. The Pi can still be plain http on the hotspot.
+- On a Samsung XCover phone, the **XCover key is a hardware STOP** (e-stop). Pick
+  the app under Settings > Advanced features > XCover key > Control XCover key
+  with app.
 - Settings has **WI-FI** (join the Teryx's hotspot) and **PHONE SETTINGS** (behind
   the PIN, the only way out of the kiosk).
 

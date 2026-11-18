@@ -33,6 +33,15 @@
             </intent-filter>
         </activity>
 
+        <!-- Samsung XCover key = hardware STOP. Makes the app show up under Settings >
+             Advanced features > XCover key > Control XCover key with app. -->
+        <meta-data android:name="com.samsung.android.knox.intent.action.HARD_KEY_PRESS" android:value="true" />
+        <receiver android:name=".XCoverKeyReceiver" android:exported="true">
+            <intent-filter>
+                <action android:name="com.samsung.android.knox.intent.action.HARD_KEY_REPORT" />
+            </intent-filter>
+        </receiver>
+
         <!-- Only used if you make the app the phone's "device owner" with adb (full kiosk lock).
              See android/README.md. Nothing happens otherwise. -->
         <receiver

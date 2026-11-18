@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.provider.Settings;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
@@ -51,6 +52,27 @@ public class MainActivity extends Activity {
 
     private WebView web;
     private BroadcastReceiver power;
+    private static MainActivity live;   // for the XCover key receiver
+
+    /** Hardware STOP (XCover key): e-stop the remote and wake the screen to show it. */
+    static void hardStop() {
+        MainActivity a = live;
+        if (a == null) return;
+        a.runOnUiThread(() -> {
+            a.wakeScreen();
+            a.web.evaluateJavascript("window.dispatchEvent(new CustomEvent('teryx-hardstop'))", null);
+        });
+    }
+
+    /** Some phones send the XCover key to the app on screen as a normal key press instead. */
+    @Override
+    public boolean onKeyDown(int code, KeyEvent e) {
+        if (code == XCoverKeyReceiver.KEY_XCOVER || code == XCoverKeyReceiver.KEY_TOP) {
+            if (e.getRepeatCount() == 0) hardStop();
+            return true;
+        }
+        return super.onKeyDown(code, e);
+    }
 
     @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface"})
     @Override
@@ -94,6 +116,7 @@ public class MainActivity extends Activity {
             }
         };
         registerReceiver(power, new IntentFilter(Intent.ACTION_POWER_DISCONNECTED));
+        live = this;
     }
 
     @Override
@@ -118,6 +141,7 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        if (live == this) live = null;
         if (power != null) unregisterReceiver(power);
         web.destroy();
         super.onDestroy();

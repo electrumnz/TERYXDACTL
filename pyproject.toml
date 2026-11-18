@@ -17,6 +17,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "pytest-asyncio>=0.23", "pytest-aiohttp>=1.0"]
+pad = ["evdev>=1.6"]   # Bluetooth gamepad paired to the Pi for RC (teryx/rc_pad.py). BSD licence
 
 [project.scripts]
 teryx = "teryx.__main__:main"
