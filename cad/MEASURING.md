@@ -62,7 +62,7 @@ at how it was held in.
    M5 = 5.5).
 5. Check the back won't hit anything: the panel and rim are about 41 mm
    deep, the back plate is `bp_t` (6 mm) thick, and the Pi box sticks out
-   52 mm behind that (more with the fan cowl). If there isn't room straight behind, change `pi_box_pos`
+   about 102 mm behind that with its heatsink (leave 20 mm of air behind the fins). If there isn't room straight behind, change `pi_box_pos`
    to slide the box sideways or up.
 6. Note the angle of the dash face. If the screen should tilt back more than
    the dash does, tell Claude and we'll add a wedge spacer.

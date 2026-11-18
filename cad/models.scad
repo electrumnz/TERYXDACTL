@@ -184,16 +184,12 @@ module pi_box_model() {
         translate([pi_cable[0], pi_cable[1], -1]) cylinder(d = scr_cable_d, h = box_floor + 2);
         translate([pi_cable[0], pi_cable[1], -e]) linear_extrude(groove_d)
             difference() { circle(d = scr_cable_d + 6 + groove_w); circle(d = scr_cable_d + 6 - groove_w); }
-        // SMA bulkheads for the 4G aerials, right-hand wall above the vents
+        // SMA bulkheads for the 4G aerials, right-hand wall
         if (modem_on) for (h = sma_holes) translate([in[0] / 2 - 1, h[0], h[1]]) rotate([0, 90, 0]) {
             cylinder(d = sma_hole, h = box_wall + 2);
             // ID ring engraved on the outside face
             if (h[2] == 1) translate([0, 0, 1 + box_wall - 0.6]) difference() { cylinder(d = 17, h = 1); cylinder(d = 15, h = 1); }
         }
-        // air vents, louvred so the outside opening points down
-        for (sx = [-1, 1], y = linspace(-in[1] / 2 + 10, -4, 4))
-            translate([sx * (in[0] / 2 + box_wall / 2), y, box_floor + in[2] / 2])
-                rotate([0, 0, -sx * 35]) cube([box_wall * 3, 2.4, in[2] - 18], center = true);
     }
 }
 
@@ -237,35 +233,68 @@ module ssd_cradle() {
     }
 }
 
-module pi_lid_model() {
-    in = pi_box_in;
+// Lid. With pi_lid_metal (the default) the lid is a 3 mm aluminium plate (DXF)
+// with the heatsink on top, and this printed liner hangs under it, held up by
+// the heatsink screws. The liner carries the SSD cradle and the 4G board and has
+// a big window over the Pi, so the aluminium pillar can reach the plate (and a
+// second one from the AI HAT's chip later). Without pi_lid_metal it's the old
+// printed lid with the same mounts and no window.
+// Drawn with the lid face at z = 0 and everything hanging below it.
+liner_corner = 12;      // notch for the lid bolt bosses in the box corners
+lw_x = [-54, 18];       // liner window over the Pi, box coordinates
+lw_y = [0, 47];
+module pi_lid_mounts() {
     if (ssd_on) ssd_cradle();
-    difference() {
-        box_lid(in);
-        if (pi_fan > 0) translate([pi_pos[0], pi_pos[1], 0]) {
-            for (sx = [-1, 1], sy = [-1, 1]) translate([sx * pi_fan_hole / 2, sy * pi_fan_hole / 2, -2]) cylinder(d = m3_clear, h = lid_t + 4);
-            // grille
-            intersection() {
-                translate([0, 0, -2]) cylinder(d = pi_fan - 3, h = lid_t + 4);
-                for (i = [-6 : 6], j = [-6 : 6]) translate([i * 4.5 + (j % 2) * 2.25, j * 3.9, -2]) cylinder(d = 3.4, h = lid_t + 4, $fn = 6);
-            }
-        }
-    }
     if (modem_on) modem_mount();
 }
-
-// Rain cowl over the fan, open at the bottom. The fan screws go through it,
-// the lid and the fan. Drawn flange down at z = 0.
-module pi_cowl_model() {
-    w = pi_fan + 10;
+module pi_liner_model() {
+    in = pi_box_in;
+    s = [in[0] - 2 * fit, in[1] - 2 * fit];
     difference() {
-        union() {
-            translate([-w / 2, -w / 2, 0]) cube([w, w, 2]);
-            translate([-w / 2, -w / 2, 0]) cube([w, w, 14]);
+        translate([0, 0, -liner_t]) linear_extrude(liner_t) difference() {
+            rrect(s[0], s[1], max(box_r - box_wall - fit, 0.5));
+            for (sx = [-1, 1], sy = [-1, 1]) translate([sx * s[0] / 2, sy * s[1] / 2]) square(2 * liner_corner, center = true);
+            translate([lw_x[0], lw_y[0]]) square([lw_x[1] - lw_x[0], lw_y[1] - lw_y[0]]);
         }
-        translate([-(w - 4) / 2, -w / 2 - 1, 2]) cube([w - 4, w - 1, 10]);  // open to -y (down)
-        translate([0, 0, -1]) cylinder(d = pi_fan - 3, h = 4);
-        for (sx = [-1, 1], sy = [-1, 1]) translate([sx * pi_fan_hole / 2, sy * pi_fan_hole / 2, -1]) cylinder(d = m3_clear, h = 4);
+        for (p = hs_screws) translate([p[0], p[1], -liner_t - 1]) cylinder(d = m3_clear, h = liner_t + 2);
+    }
+    translate([0, 0, -liner_t]) pi_lid_mounts();
+}
+module pi_lid_model() {
+    if (pi_lid_metal) pi_liner_model();
+    else { box_lid(pi_box_in); pi_lid_mounts(); }
+}
+
+// Aluminium lid plate, drawn from z = 0 (box side) to lid_plate_t. Cut from the
+// DXF (parts/pi_lid_2d.scad). Countersink the pillar hole on the outside by hand.
+module pi_lid_plate_model() {
+    o = box_out(pi_box_in);
+    difference() {
+        rbox(o[0], o[1], lid_plate_t, box_r);
+        for (p = box_boss_pts(pi_box_in)) translate([p[0], p[1], -1]) cylinder(d = m3_clear, h = lid_plate_t + 2);
+        for (p = hs_screws) translate([p[0], p[1], -1]) cylinder(d = m3_clear, h = lid_plate_t + 2);
+        translate([soc_pos[0], soc_pos[1], -1]) cylinder(d = m3_clear, h = lid_plate_t + 2);
+    }
+}
+
+// Not printed: bought parts, drawn for the assembly view and for the sums.
+module pi_heatsink_model() {
+    n = 12;     // GUESS fin count, only for the picture
+    translate([hs_pos[0], hs_pos[1], 0]) {
+        translate([-hs_size[0] / 2, -hs_size[1] / 2, 0]) cube([hs_size[0], hs_size[1], hs_base]);
+        for (i = [0 : n - 1]) translate([-hs_size[0] / 2 + (i + 0.5) * hs_size[0] / n - 0.9, -hs_size[1] / 2, 0])
+            cube([1.8, hs_size[1], hs_size[2]]);
+    }
+}
+// Top of the Pi chip, from the box floor's underside
+soc_top = box_floor + pi_standoff + pi_pcb_t + soc_h;
+// Pillar length: from the squashed pad on the chip up to the lid plate
+pillar_len = box_out(pi_box_in)[2] - soc_top - (pad_t - pad_squash);
+echo(str("PILLAR length=", pillar_len, " mm (cut a 20 x 20 aluminium bar to this, CHECK on the real parts)"));
+module pi_pillar_model() {
+    translate([soc_pos[0] - pillar_w / 2, soc_pos[1] - pillar_w / 2, soc_top]) {
+        color("Pink") cube([pillar_w, pillar_w, pad_t - pad_squash]);
+        translate([0, 0, pad_t - pad_squash]) cube([pillar_w, pillar_w, pillar_len]);
     }
 }
 

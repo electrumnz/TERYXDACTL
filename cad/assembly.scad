@@ -12,5 +12,9 @@ color("SlateGray") translate([0, 0, -explode]) back_plate_model();
 translate([pi_box_pos[0], pi_box_pos[1], -bp_t - 2 * explode]) mirror([0, 0, 1]) {
     color("DarkSlateGray") pi_box_model();
     color("SlateGray") translate([0, 0, box_out(pi_box_in)[2] + explode]) pi_lid_model();
-    if (pi_fan > 0) color("Gray") translate([pi_pos[0], pi_pos[1], box_out(pi_box_in)[2] + lid_t + 2 * explode]) pi_cowl_model();
+    if (pi_lid_metal) {
+        color("Silver") pi_pillar_model();
+        color("Gainsboro") translate([0, 0, box_out(pi_box_in)[2] + 2 * explode]) pi_lid_plate_model();
+        color([0.12, 0.12, 0.13]) translate([0, 0, box_out(pi_box_in)[2] + lid_plate_t + 3 * explode]) pi_heatsink_model();
+    }
 }

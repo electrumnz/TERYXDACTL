@@ -126,19 +126,26 @@ PG9  = 15.2;            // 4-8 mm cable
 M16  = 16.2;
 M20  = 20.2;
 PG16 = 22.5;            // 10-14 mm cable, or a multi-hole insert
+M12V = 12.2;            // M12 breather vent plug (membrane vent)
 
 // ---------------------------------------------------------------------------
 // Pi 5 box (bolts on the back plate, behind the screen)
-// Holds the Pi 5 with the Active Cooler and the AI HAT+ 2 on top, a small
-// MCP2515 CAN module on the wall, and the 5V 5A buck.
+// Sealed for wash-downs (splash and hose spray, about IP65, not for dunking).
+// No vents and no fan: the lid is a 3 mm aluminium plate (cut from the DXF with
+// the back plate) with a finned heatsink bolted on the outside. Heat goes:
+// Pi chip -> thermal pad -> aluminium pillar -> lid plate -> heatsink -> air.
+// See docs/pi-box-cooling.md for the sums and the parts.
 // Height, from the box floor (2026-11-18):
 //   6 standoff + 1.6 Pi board + 16 AI HAT spacers (Raspberry Pi supply 16 mm,
 //   made to clear the Active Cooler) + 1.6 HAT board = HAT top at about 25 mm.
 //   The HAT's heatsink is about 14 mm tall including its push pins (Raspberry
 //   Pi), so call its top about 37 mm. Jumper leads to the CAN module plug onto
 //   the stacking header's pins on top of the HAT: about 45 mm.
-//   56 leaves about 11 mm over the leads and 19 mm of air over the heatsink for
-//   the lid fan. The old CAN HAT can't stack over the heatsink, hence the module.
+//   56 inside, less the 2 mm printed liner under the lid plate, leaves about
+//   9 mm over the leads. Kept so the AI HAT+ 2 still fits later (then the
+//   pillar comes out, the Active Cooler goes on the Pi and a short pillar goes
+//   from the HAT's chip to the lid). The old CAN HAT can't stack over the HAT,
+//   hence the module.
 //   CHECK on the real parts before printing.
 // ---------------------------------------------------------------------------
 pi_box_in   = [130, 105, 56];    // inside size: X, Y, height away from the back plate
@@ -147,16 +154,38 @@ pi_holes    = [58, 49];         // Pi 5 mounting hole spacing (Raspberry Pi spec
 pi_board    = [85, 56];
 pi_standoff = 6;                // height of the Pi off the floor
 pi_pos      = [-18, 20];         // Pi centre inside the box (leaves room for the buck)
-pi_fan      = 30;               // lid fan size (30 or 40), 0 for no fan
-pi_fan_hole = 24;               // fan screw spacing (30 mm fan = 24, 40 mm = 32)
-// Glands go in the bottom wall so water runs off them
-pi_glands   = [PG9, PG9, PG7, PG7];   // 12V in, CAN, camera, spare
+// Glands go in the bottom wall so water runs off them. The last hole is for an
+// M12 breather (a vent plug with a membrane): lets the air in the box breathe as
+// it heats and cools, so it doesn't suck water past the seals.
+pi_glands   = [PG9, PG9, PG7, PG7, M12V];   // 12V in, CAN, camera, spare, breather
+
+// Lid and heatsink (2026-11-18, Sam: "heatsink on outside of box")
+pi_lid_metal = true;            // aluminium lid plate + heatsink. false = old all-printed lid
+lid_plate_t  = 3;               // aluminium lid plate, same 3 mm sheet as the back plate
+liner_t      = 2;               // printed liner under the lid plate (holds the SSD and 4G board)
+// Heatsink: Fischer Elektronik SK 92/100 SA, 100 x 100 x 40 mm, black anodised,
+// 1.4 K/W (element14 listing). Any 100 x 100 x 40 finned block fits the same holes.
+hs_size      = [100, 100, 40];  // X, Y, fin height. Fins run along Y: mount the box
+                                // so the fin channels run up and down (hot air rises out)
+hs_base      = 5;               // GUESS base thickness. CHECK: needs 5 mm for blind M3 threads
+hs_pos       = [0, 0];          // heatsink centre on the lid, box coordinates
+// M3 screws from inside the box, through the liner and the lid plate, into
+// tapped blind holes in the heatsink base. Placed clear of the SSD and 4G board.
+hs_screws    = [[-44, 44], [44, 44], [-44, -3], [8, -3]];
+// Pi chip (BCM2712) centre, box coordinates. GUESS from photos: about 29 mm in
+// from the USB-C end and 31 mm up from the HDMI edge. CHECK on the real Pi and
+// mark it on the lid plate before drilling the pillar hole.
+soc_pos      = [pi_pos[0] - pi_board[0] / 2 + 29, pi_pos[1] - pi_board[1] / 2 + 31];
+soc_h        = 2.4;             // GUESS chip height above the board, with its metal lid
+pillar_w     = 20;              // 20 x 20 mm solid aluminium bar
+pad_t        = 1.0;             // thermal pad on the chip (T-Global PC94, 1 mm, 4 W/mK)
+pad_squash   = 0.3;             // how much the pad gets squashed when the lid goes on
 // Video SSD for sentry and dashcam clips (docs/sentry.md): Kingston XS1000, 69.54 x 32.58
 // x 13.5 mm (Kingston datasheet). It sits in a cradle on the inside of the lid, over the
-// free strip below the Pi, so it's clear of the AI HAT stack, the lid fan and the side vents.
+// free strip below the Pi, so it's clear of the AI HAT stack and the pillar.
 // A short right-angle USB-C to USB-A lead goes to one of the Pi's USB 3 ports. Held in with a
 // cable tie through the two slots. Another small USB SSD fits if it's within ssd_size.
-// The 4G board (A7670SA) is under the lid too, right of the Pi, with its aerials outside
+// The 4G board (A7670SA) is on the liner too, right of the Pi, with its aerials outside
 // on SMA bulkheads: see "Pi box extras" at the end of this file.
 ssd_size    = [70.2, 33.2, 13.5];   // XS1000 plus 0.6 mm play in X and Y
 ssd_pos     = [-18, -30];           // centre, box coordinates (same X and Y as the box)
@@ -209,7 +238,7 @@ hdmi_pad     = 1.0;               // gap left under the plug for foam tape, so t
                                   // cradle never pushes the plug up
 
 // 4G board inside the Pi box, under the lid, over the strip right of the Pi
-// (clear of the lid fan, the SSD cradle and the AI HAT's leads).
+// (clear of the pillar, the SSD cradle and the AI HAT's leads).
 // Board: SIMCom A7670SA core board (AliExpress, must list B28, see the shopping
 // list). SIMCom's manual gives 44.45 x 31.75 x 12.44 mm including the header
 // pins, micro SIM holder and one IPEX (u.FL) aerial socket. It hangs parts-down

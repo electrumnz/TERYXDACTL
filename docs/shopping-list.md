@@ -4,9 +4,11 @@
 > Sam isn't sold on the HAT yet, so it's moved to section 4c ("Later"). Every design still
 > leaves room for it: the Pi box stays 56 mm tall, the PCIe slot and the HAT's header stay
 > free, and the Pololu regulator has the spare power. The CarPlay dongle (Carlinkit CCPA) is
-> now on the list (from AliExpress), plus an AliExpress cart (amp, fuse block, fan, H-bridges,
+> now on the list (from AliExpress), plus an AliExpress cart (amp, fuse block, heatsink parts, H-bridges,
 > 4G board; the phone gamepad grip is "later"), a 20-way fuse block for the 16 planned fuses, a 4th CAN board for the power steering column, and the 4G modem and
-> video SSD as "later". **The list for buying tomorrow (19 Nov), by shop with SKUs and a
+> video SSD as "later". **Later on 18 Nov the Pi box went sealed and fanless** for wash-downs:
+> aluminium lid with a heatsink outside, no lid fan, Active Cooler only with the HAT later
+> ([`pi-box-cooling.md`](pi-box-cooling.md)). **The list for buying tomorrow (19 Nov), by shop with SKUs and a
 > total, is [`pbtech-order.md`](pbtech-order.md).** Cameras have their own write-up in
 > [`cameras.md`](cameras.md).
 
@@ -24,7 +26,7 @@ section 5 below, so tick off whatever you really do have.
 
 ## 1. Short answer
 
-**Buy a Raspberry Pi 5 8GB with the Active Cooler. The AI HAT+ 2 can come later** (section 4c).
+**Buy a Raspberry Pi 5 8GB. The AI HAT+ 2 can come later** (section 4c). It's cooled by the Pi box's heatsink lid, no fan ([`pi-box-cooling.md`](pi-box-cooling.md)).
 
 - It needs **no code changes**, draws the least power of the options, and fits the plan.
 - If it goes in later, the AI HAT+ 2 runs the camera AI and a small local language model for the voice assistant,
@@ -52,8 +54,8 @@ So: 4GB leaves about 1.3-2 GB, 8GB leaves about 5.3-6 GB.
 
 ### Rough cost (dash computer, section 4 and 4a)
 
-About **NZ$590** for the Pi 5 8GB, Active Cooler, HDMI adaptor, 128GB card, CAN module, lid fan
-and front camera, plus about **NZ$115** for proper 12V protection and a good 5V regulator, and
+About **NZ$610** for the Pi 5 8GB, heatsink lid parts (about NZ$37), HDMI adaptor, 128GB card,
+CAN module and front camera, plus about **NZ$115** for proper 12V protection and a good 5V regulator, and
 about **NZ$118-180** for the CarPlay dongle. The control box (section 6) is extra. The AI HAT+ 2
 would add about NZ$360-425 later.
 
@@ -131,7 +133,7 @@ not a bigger Pi.
 | **RAM for this job** | Plenty (section 2) | More than plenty | Plenty | Plenty | Plenty |
 | **Power in** | 5V only, needs a 12V to 5V regulator | Same | **12V DC in** (12V/3A on the PB Tech listing) | 5V or 12V depending on board | Own battery + charger |
 | **Power draw** | 1.8 W idle at the wall ([Jeff Geerling](https://www.jeffgeerling.com/blog/2023/answering-some-questions-about-raspberry-pi-5/)); 4.8 W idle, 6.5 W typical load, 11.6 W flat out ([bret.dk](https://bret.dk/how-to-power-the-raspberry-pi-5-a-complete-guide)) | About the same | MINIX doesn't publish a figure. A fanless N100 box measured 10.5-12 W idle, 22-23 W flat out ([ServeTheHome](https://servethehome.com/fanless-intel-n100-firewall-and-virtualization-appliance-review/4)) | Not checked | Not checked |
-| **Heat in a sealed box** | Hard throttles at 85°C. With no cooler it hit 83°C in 30 s of full load; with the Active Cooler it peaked at 71°C over 2 min ([Raspberry Pi white paper](https://pip-assets.raspberrypi.com/categories/685-app-notes-guides-whitepapers/documents/RP-010139-WP-1-Use-case-specific%20thermal%20performance%20of%20Raspberry%20Pi%20SBCs.pdf)). Our Pi box already has a 30 mm fan and cowl | Same | Fanless, so the case is the heatsink. Two to three times the heat of a Pi, and it won't fit the Pi box | Hotter than a Pi 5 under load (8 cores) | Built for it |
+| **Heat in a sealed box** | Hard throttles at 85°C. With no cooler it hit 83°C in 30 s of full load; with the Active Cooler it peaked at 71°C over 2 min ([Raspberry Pi white paper](https://pip-assets.raspberrypi.com/categories/685-app-notes-guides-whitepapers/documents/RP-010139-WP-1-Use-case-specific%20thermal%20performance%20of%20Raspberry%20Pi%20SBCs.pdf)). Our Pi box is sealed with a finned heatsink lid and a pillar on the chip ([`pi-box-cooling.md`](pi-box-cooling.md)) | Same | Fanless, so the case is the heatsink. Two to three times the heat of a Pi, and it won't fit the Pi box | Hotter than a Pi 5 under load (8 cores) | Built for it |
 | **CAN** | Waveshare HAT on the header, `can0`, working today | Same | No GPIO. Use the spare Pico 2 + MCP2515 running our `firmware/can-sniffer` as a USB CAN adaptor (bridge GP15 to GND so it can send). The code already accepts `slcan:/dev/ttyACM0@250000` | HATs may work, overlays differ by board | USB CAN adaptor, Windows or Android driver |
 | **CarPlay video** | Software H.264 (see above) | Same | Intel has H.264 hardware decode, but Chromium on Linux only uses it with VA-API turned on. Not tested with our stack | Has H.264 hardware decode, but Chromium only uses it with the vendor kernel and an extra PPA ([Armbian forum](https://forum.armbian.com/topic/61548-how-to-hardware-video-decode-in-google-chrome-firefox-on-rk3588-orange-pi-5b-ubuntu-rockchip-bsp/)) | Depends |
 | **Boot time** | **Not verified.** I couldn't find a measured figure I'd trust. Measure it with `systemd-analyze` on the bench | Same | Not verified. Has a BIOS step a Pi doesn't | Not verified | Usually sleeps instead |
@@ -161,16 +163,16 @@ The more RAM, the bigger the jump, which is another reason 4GB is the sweet spot
 | Part | Why | Where | Price | Notes |
 |---|---|---|---|---|
 | Raspberry Pi 5 **8GB** | The dash | [PB Tech](https://www.pbtech.co.nz/product/SEVRBP0502/Raspberry-Pi-5-8GB-LPDDR4-24GHz-Quad-Core-ARM-Cort) | NZ$371.39 | Checked 17 Nov: on order, ships about 30 Nov. A search result on 18 Nov showed NZ$254.15, which may be an old cached price, so check. The 16GB is about [NZ$644](https://www.pbtech.co.nz/product/SEVRBP0505/Raspberry-Pi-5-16GB-LPDDR4-24GHz-Quad-Core-ARM-Cor) (search result), not needed |
-| Raspberry Pi Active Cooler | Keeps the Pi under 85°C in a closed box | [PB Tech](https://www.pbtech.co.nz/product/SEVRBP0531) | NZ$11.21 | In stock (17 Nov). **Still needed without the AI HAT**: CarPlay video is decoded on the CPU the whole time it runs, which is a long steady load, and Raspberry Pi say a long heavy load throttles a bare Pi 5 ([Raspberry Pi](https://www.raspberrypi.com/news/heating-and-cooling-raspberry-pi-5/)). It's also what goes under the HAT later: with the AI HAT+ 2 on top, Raspberry Pi say fit the Active Cooler on the Pi and the HAT's heatsink on the AI chip ([Raspberry Pi docs](https://www.raspberrypi.com/documentation/accessories/ai-hat-plus.html)). Keep the passive one for the bench. Don't take the Active Cooler off once fitted, the push pins and pads don't like it |
+| Pi box heatsink lid: finned heatsink 100 x 100 x 40, 20 x 20 aluminium pillar, 1 mm thermal pad, paste, M12 breather | Keeps the Pi under 80°C in a **sealed** box with no fan, so it can be hosed down | AliExpress cart, or the rated Fischer SK 92/100 SA from [element14 NZ](https://nz.element14.com/fischer-elektronik/sk-92-100-sa/heat-sink-100mm-1-4-c-w/dp/4621580) | ~NZ$37 (estimates) | **Changed 18 Nov (Sam):** replaces the Active Cooler and the 30 mm lid fan. The pillar takes the chip's heat through the aluminium lid plate to the fins. Sums, parts and how to put it together: [`pi-box-cooling.md`](pi-box-cooling.md). The Active Cooler (NZ$11.21, [PB Tech](https://www.pbtech.co.nz/product/SEVRBP0531)) comes back only with the AI HAT, under it, as [Raspberry Pi say](https://www.raspberrypi.com/documentation/accessories/ai-hat-plus.html). Keep the passive heatsink for the bench |
 | Micro HDMI to HDMI cable | Pi to screen | [PB Tech, Raspberry Pi official 1 m SEVRBP0207](https://www.pbtech.co.nz/product/SEVRBP0207/Raspberry-Pi-Official-1M-White-Cable-Micro-HDMI-to) | NZ$11.80 (search result) | For the bench. In the car it may need to be longer: the 2 m [Vention](https://www.pbtech.co.nz/product/VNT1306/Vention-VAA-D03-B200-Micro-HDMI-Cable---2m---Black) (NZ$12.41) has no stock, ships about 28 Jan. In stock now: [Jaycar micro HDMI adaptor](https://jaycar.co.nz/micro-hdmi-plug-to-hdmi-socket-adaptor/p/PA3649) NZ$20.90 plus an HDMI cable |
 | microSD card **128GB A2** | OS, apps, logs | [PB Tech, official Raspberry Pi card](https://www.pbtech.co.nz/product/SEVRBP0538/Raspberry-Pi-Official-A2---Class-UltraSD-Card-128G) | **Not verified** | Doesn't have to be the Pi one, but the Pi 5 turns on command queueing for it, and one guide says a SanDisk Extreme runs below its A2 rating on the Pi 5 ([HackMD guide](https://hackmd.io/@ampheo/what-is-the-best-micro-sd-card-for-raspberry-pi-5)); other guides disagree. Not a "high endurance" card: those are for dashcams and aren't A2 rated. The 64GB [SanDisk Extreme](https://www.pbtech.co.nz/product/MEMSDK33210/SanDisk-Extreme-64GB-microSDXC-Memory-Card-Class-1) (NZ$56.35, 17 Nov) is the fallback |
 | MCP2515 CAN module (same Seeed board as the control box, section 6) | CAN for the Pi | [Core Electronics (AU)](https://core-electronics.com.au/seeed-studio-can-bus-breakout-board-for-xiao-and-qt-py-mcp2515-controller-sn65hvd230-transceiver-chip.html) | AU$18.45 (about NZ$23) | **Changed 18 Nov:** the Waveshare CAN HAT can't stack over the AI HAT+ 2's heatsink, so a small module sits on the Pi box wall, wired to the GPIO pins on top of the HAT (pins in [`wiring.md`](wiring.md)). Run `pi-setup.sh --can-osc <its crystal>`. Interrupt is GPIO 25, our default |
-| 30 mm 5V fan (3007, 2-pin) | Pi box lid (see `cad/README.md`) | AliExpress (Sam's pick), or [Jaycar YX2500](https://www.jaycar.co.nz/5vdc-30mm-thin-2-wire-fan/p/YX2500) NZ$31.90 | ~NZ$4-9 (estimate) | Not needed for the bench. Less critical without the HAT (about 7-12 W in the box instead of up to 16 W) but still worth it: the Active Cooler only stirs the air inside, the lid fan swaps it for outside air, and the box may sit in the sun. Needed for sure with the HAT |
+| Quiet 40 mm 5V fan, Noctua NF-A4x10 5V PWM (optional, later) | Blows on the outside of the heatsink if the Pi box runs hot, and with the AI HAT | [Newegg NZ](https://www.newegg.com/global/nz-en/noctua-nf-a4x10-5v-pwm/p/1YF-000T-000N2) | ~NZ$22 (search result) | **Not now.** Outside the sealed box. Runs off the Pi 5 fan connector, so it's off below 50°C. The 30 mm 3007 lid fan is gone |
 | USB audio out (optional, for the amp) | Pi 5 has no audio jack | [Jaycar USB to 3.5 mm](https://jaycar.co.nz/p/XC4953) | NZ$24.90 | NZ stock. It's a headphone output, not a line out, so keep the amp gain low |
 | **Carlinkit CPC200-CCPA** ("Autokit") | CarPlay / Android Auto | **AliExpress** (Sam's pick, ~NZ$60-71), or [Carlinkit's Autokit store](https://autokitcarplay.com/products/autokit-ccpa-wireless-carplay-dongle-special-for-android-head-unit) US$65 (~NZ$118), or [Audio City NZ](https://www.audiocity.co.nz/ottocast/carlinkit-android-system-to-wireless-apple-carplay-android-auto-dongle.html) NZ$180 in stock (photo shows the CCPA code) | NZ$60-180 | Must be the CCPA / Autokit type for Android head units (see [`audio.md`](audio.md)). **Not** the "wired to wireless" ones (MINIX CA525 at PB Tech, Carlinkit 5.0 / 2Air at Mighty Ape): those need a car with CarPlay built in. On arrival `lsusb` must show `1314:1520` or `1314:1521`. Don't update its firmware. More in [`pbtech-order.md`](pbtech-order.md) |
 | USB AV capture dongle (only if the camera is RCA/AHD) | Camera into the Pi | AliExpress, or [EasyCAP DC60 at PB Tech](https://www.pbtech.co.nz/product/SEVOEM9701) NZ$28.75 (composite only) | **Not verified** for AHD | Needs to be UVC so Linux sees it as a webcam. One per RCA/AHD camera. See [`cameras.md`](cameras.md) |
 
-**Subtotal (Pi 8GB, cooler, HDMI adaptor, CAN module, fan): about NZ$458**, plus the SD card
+**Subtotal (Pi 8GB, heatsink lid parts, HDMI adaptor, CAN module): about NZ$478**, plus the SD card
 (~NZ$47, search result), front camera (section 4a) and CarPlay dongle.
 
 ### 4a. Added for headroom (18 November)
@@ -187,12 +189,13 @@ The more RAM, the bigger the jump, which is another reason 4GB is the sweet spot
 ([Core Electronics](https://core-electronics.com.au/raspberry-pi-ai-hat-plus-2.html)). Its chip
 draws about 2.5 to 4.5 W depending on the job ([heise](https://heise.de/-11136612),
 [Jeff Geerling](https://jeffgeerling.com/blog/2026/raspberry-pi-ai-hat-2)). So the Pi box's
-lid fan has to move air through the box, and the box wants to stay out of direct sun.
+sealed box needs the quiet fan on the outside of its heatsink once the HAT is in, and the box
+wants to stay out of direct sun ([`pi-box-cooling.md`](pi-box-cooling.md)).
 
 **Pi box height. Done 18 Nov:** the box was 46 mm tall inside; it's now 56 mm
 (`cad/measurements.scad`, `pi_box_in`), sized for the Pi on 6 mm standoffs, the Active
-Cooler, the AI HAT+ 2 on its 16 mm spacers and its heatsink, with about 19 mm of air under
-the lid fan. The side vents grow with it. The CAN HAT is replaced by a small CAN module on the
+Cooler, the AI HAT+ 2 on its 16 mm spacers and its heatsink. Since the evening of 18 Nov the box
+is sealed (no vents, no lid fan) with a heatsink lid; the height is kept for the HAT. The CAN HAT is replaced by a small CAN module on the
 box wall. Check the stack on the real parts before printing.
 
 **Power.** The Pololu 5V 5.5A regulator in section 5 is still the pick. The Pi 5 flat out is
