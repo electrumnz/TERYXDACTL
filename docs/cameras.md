@@ -1,6 +1,6 @@
 # Cameras: rear, front, trailer and cabin
 
-> **Changed 18 Nov (Sam):** three cameras: front (CSI ribbon), rear (Sam's 200 degree camera) and trailer (only when a trailer is on). Cabin camera moved to "later" (the 2nd ribbon port stays free for it). If the rear camera is analogue, rear and trailer share one capture dongle, swapped by a spare relay when the trailer plug is in, so only two streams ever record.
+> **Changed 18 Nov (Sam):** three cameras: front (CSI ribbon), rear (Sam's 200 degree camera) and trailer (only when a trailer is on). Cabin camera moved to "later" (the 2nd ribbon port stays free for it). Sam thinks the rear and trailer cameras are AHD, so they share one AHD-to-USB (UVC) capture dongle, swapped by a spare relay when the trailer plug is in, so only two streams ever record. No AHD-to-ribbon (CSI) board has proven Raspberry Pi 5 support yet (bridge boards are still rough on the Pi 5), so this dongle is the one USB plug we keep for cameras, on a right-angle lead tied down. The front stays a Camera Module 3 on its ribbon: sharper, and no capture board needed.
 
 Researched 18 November 2026 (NZ time). Prices incl GST unless it says otherwise. Each price
 says where it came from. Some came from search results because the shop page wouldn't open,

@@ -46,7 +46,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | MPU-6050 IMU board (roll / pitch) | 1 | 5.00 | 5.00 | Estimate | I2C to the Pi |
 | 12V AHD reversing camera (trailer) | 1 | 30.00 | 30.00 | Estimate |  |
 | 4-pin waterproof aviation plug + socket (trailer camera) | 1 | 8.00 | 8.00 | Estimate | Next to the 7-pin |
-| AHD to USB (UVC) capture dongle | 1 | 25.00 | 25.00 | Estimate |  |
+| AHD to USB (UVC) capture dongle | 1 | 25.00 | 25.00 | Estimate | Rear + trailer share it; a spare relay swaps them. Must match the cameras' AHD resolution (720p or 1080p) |
 | SIMCom A7670SA 4G board (B28, GPS 'FASE' option) | 1 | 28.00 | 28.00 | US$15.46 x 1.822 | Must list B28; V pin from the 2nd Mini560, never raw 12V |
 | 4-channel BSS138 level shifter | 1 | 2.00 | 2.00 | Estimate | Probably not needed; measure the T pin first |
 | Active GPS antenna, SMA male | 1 | 8.00 | 8.00 | Estimate |  |

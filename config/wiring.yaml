@@ -526,7 +526,7 @@ devices:
     optional: true
     pins: {V12: 12v, GND: gnd, VID: video, VID_GND: video}
   TCAM_DONGLE:
-    name: UVC capture dongle (trailer camera)
+    name: AHD to USB (UVC) capture dongle (rear + trailer, relay-switched)
     zone: dash
     status: planned
     optional: true
@@ -598,7 +598,7 @@ devices:
     name: Rear camera (200 degree, Sam's)
     zone: rear
     status: tbc
-    note: "If it's analogue (RCA/AHD), it shares one capture dongle with the trailer camera, swapped by a spare relay when the trailer plug is in. Only 2 streams ever (front + rear or trailer). No cabin camera (Sam 18 Nov)"
+    note: "Sam thinks it's AHD. Then it shares the one AHD-to-USB (UVC) dongle with the trailer camera: a spare relay swaps the video to the trailer cam when the trailer plug is in. Only 2 streams ever (front on its ribbon + rear or trailer). No AHD-to-ribbon (CSI) board has proven Pi 5 support yet, so the dongle is the one USB we keep: right-angle lead, tied down. Cabin camera is 'later' on the 2nd ribbon port"
     check: Rear camera USB or RCA/AHD? Photo its plug
     pins: {USB: usb}
   CAM_FRONT:

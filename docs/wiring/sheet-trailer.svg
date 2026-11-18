@@ -78,9 +78,9 @@
 <line x1="480" y1="519" x2="750" y2="519" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="523" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VID_GND</text>
 </g>
-<g data-device="TCAM_DONGLE" data-status="planned"><title>TCAM_DONGLE: UVC capture dongle (trailer camera)</title><rect x="480" y="563" width="270" height="104" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
-<text x="490" y="581" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">UVC capture dongle (trailer</text>
-<text x="490" y="596" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">camera)</text>
+<g data-device="TCAM_DONGLE" data-status="planned"><title>TCAM_DONGLE: AHD to USB (UVC) capture dongle (rear + trailer, relay-switched)</title><rect x="480" y="563" width="270" height="104" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
+<text x="490" y="581" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">AHD to USB (UVC) capture dongle</text>
+<text x="490" y="596" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">(rear + trailer, relay-switched)</text>
 <text x="490" y="611" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">TCAM_DONGLE · planned · optional</text>
 <line x1="480" y1="625" x2="750" y2="625" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="629" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VID</text>

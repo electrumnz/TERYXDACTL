@@ -90,7 +90,7 @@
 <line x1="40" y1="637" x2="310" y2="637" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="175" y="641" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">P24_CE0</text>
 </g>
-<g data-device="CAM_REAR" data-status="tbc"><title>CAM_REAR: Rear camera (200 degree, Sam&#x27;s) - If it&#x27;s analogue (RCA/AHD), it shares one capture dongle with the trailer camera, swapped by a spare relay when the trailer plug is in. Only 2 streams ever (front + rear or trailer). No cabin camera (Sam 18 Nov)</title><rect x="480" y="150" width="270" height="69" rx="6" fill="#f4f4f4" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
+<g data-device="CAM_REAR" data-status="tbc"><title>CAM_REAR: Rear camera (200 degree, Sam&#x27;s) - Sam thinks it&#x27;s AHD. Then it shares the one AHD-to-USB (UVC) dongle with the trailer camera: a spare relay swaps the video to the trailer cam when the trailer plug is in. Only 2 streams ever (front on its ribbon + rear or trailer). No AHD-to-ribbon (CSI) board has proven Pi 5 support yet, so the dongle is the one USB we keep: right-angle lead, tied down. Cabin camera is &#x27;later&#x27; on the 2nd ribbon port</title><rect x="480" y="150" width="270" height="69" rx="6" fill="#f4f4f4" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
 <text x="490" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Rear camera (200 degree, Sam&#x27;s)</text>
 <text x="490" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#bf8700">CAM_REAR · tbc</text>
 <line x1="480" y1="197" x2="750" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
@@ -104,9 +104,9 @@
 <line x1="480" y1="308" x2="750" y2="308" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="312" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">USB</text>
 </g>
-<g data-device="TCAM_DONGLE" data-status="planned"><title>TCAM_DONGLE: UVC capture dongle (trailer camera)</title><rect x="480" y="352" width="270" height="84" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
-<text x="490" y="370" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">UVC capture dongle (trailer</text>
-<text x="490" y="385" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">camera)</text>
+<g data-device="TCAM_DONGLE" data-status="planned"><title>TCAM_DONGLE: AHD to USB (UVC) capture dongle (rear + trailer, relay-switched)</title><rect x="480" y="352" width="270" height="84" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
+<text x="490" y="370" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">AHD to USB (UVC) capture dongle</text>
+<text x="490" y="385" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">(rear + trailer, relay-switched)</text>
 <text x="490" y="400" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">TCAM_DONGLE · planned · optional</text>
 <line x1="480" y1="414" x2="750" y2="414" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="418" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">USB</text>

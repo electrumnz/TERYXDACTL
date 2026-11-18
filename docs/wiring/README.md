@@ -544,13 +544,13 @@ Fuses not in the block (inline, at the battery or on a board):
 | TRAILER | 7-pin flat trailer socket (Narva 82043BL, reed switch) | rear | planned | See [`docs/cameras.md`](../../docs/cameras.md). |
 | TCAM_PLUG | Trailer camera 4-pin plug | rear | planned (optional) | Own small waterproof plug next to the 7-pin (pick from cameras.md) |
 | CAM_TRAILER | Trailer camera (12 V AHD) | trailer | planned (optional) |  |
-| TCAM_DONGLE | UVC capture dongle (trailer camera) | dash | planned (optional) |  |
+| TCAM_DONGLE | AHD to USB (UVC) capture dongle (rear + trailer, relay-switched) | dash | planned (optional) |  |
 | PI5 | Raspberry Pi 5 8GB | dash | confirmed | The 40-pin header and the PCIe port are kept for the AI HAT+ 2. CAN module wires go to header pins that come up through the HAT See [`docs/wiring.md`](../../docs/wiring.md). |
 | AIHAT | AI HAT+ 2 (later) | dash | placeholder (optional) | Not buying yet. Room, cooling (about 4.5 W) and the PCIe port stay free for it See [`docs/ai-hat-ideas.md`](../../docs/ai-hat-ideas.md). |
 | PI_CAN | MCP2515 CAN module (Pi) | dash | planned | Seeed MCP2515 + SN65HVD230 on the Pi box wall |
 | SCREEN | 10.1 in touch screen | dash | confirmed | 1280x800, HDMI + USB touch, 3.5 mm audio in |
 | GLOVE_USB | Glove box USB-C charger (RC phone) | dash | planned (optional) | 12 V to USB-C PD socket for the phone that lives in the glove box (docs/rc-beach-launch.md 4b). Fed from the accessory relay so it's off with the key off |
-| CAM_REAR | Rear camera (200 degree, Sam's) | rear | tbc | If it's analogue (RCA/AHD), it shares one capture dongle with the trailer camera, swapped by a spare relay when the trailer plug is in. Only 2 streams ever (front + rear or trailer). No cabin camera (Sam 18 Nov) |
+| CAM_REAR | Rear camera (200 degree, Sam's) | rear | tbc | Sam thinks it's AHD. Then it shares the one AHD-to-USB (UVC) dongle with the trailer camera: a spare relay swaps the video to the trailer cam when the trailer plug is in. Only 2 streams ever (front on its ribbon + rear or trailer). No AHD-to-ribbon (CSI) board has proven Pi 5 support yet, so the dongle is the one USB we keep: right-angle lead, tied down. Cabin camera is 'later' on the 2nd ribbon port |
 | CAM_FRONT | Camera Module 3 Wide (front) | dash | planned | Inside the screen housing, 200-300 mm ribbon |
 | MODEM_4G | SIMCom A7670SA 4G board | dash | placeholder (optional) | 6-pin header S G V K T R G. V takes 5-10 V from the spare Mini560 5 V buck. NEVER raw 12 V (10 V max, and the car runs 14.4 V with spikes). K is tied to ground on the board, so it starts by itself. T/R are 115200 baud TTL to the Pi's GPIO 15/14; measure T before connecting (3.3 V ok, else BSS138). Micro USB also on board. Its GNSS (FASE version, u.FL GPS socket on Sam's board) is the dash GPS too, so there is no separate USB GPS. Check on arrival that it gets a fix with the SIM out / 4G off. No USB: it's on the header pins (soldered leads), so texts, GPS and slow data only, no live video over 4G |
 | CARPLAY | Carlinkit CPC200-CCPA | dash | planned (optional) |  |
