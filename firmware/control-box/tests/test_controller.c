@@ -108,7 +108,7 @@ static void test_boot_all_off(void) {
     run(50);
     CHECK(R.out.light[0] == 0 && R.out.light[4] == 0);
     for (int i = 0; i < ACT_COUNT; i++) CHECK(R.out.act_dir[i] == 0);
-    CHECK((R.out.relays & (BIT(R_WINCH_IN) | BIT(R_WINCH_OUT) | BIT(R_WINCH_ISOLATOR) | BIT(R_REAR))) == 0);
+    CHECK((R.out.relays & (BIT(R_WINCH_IN) | BIT(R_WINCH_OUT) | BIT(R_REAR))) == 0);
     CHECK(R.out.relays & BIT(R_ACCESSORY));  // key is on in the bench model
     CHECK(R.out.relays & BIT(R_POWER_HOLD));
     run(200);
@@ -329,7 +329,6 @@ static void test_lost_dash_stops_motion_keeps_lights(void) {
     run(700);
     CHECK(R.c.tray.dir == 0);
     CHECK(!R.c.winch.armed);
-    CHECK((R.out.relays & BIT(R_WINCH_ISOLATOR)) == 0);
     CHECK(R.out.light[0] == 200 && R.out.light[4] == 50);
     CHECK(fault(FAULT_DASH_LINK));
 }
@@ -348,7 +347,6 @@ static void test_winch_rules(void) {
     R.hold_winch = 0;
     run(200);
     CHECK(R.c.winch.armed);
-    CHECK(R.out.relays & BIT(R_WINCH_ISOLATOR));
     R.hold_winch = 1;
     run(300);
     CHECK(R.out.relays & BIT(R_WINCH_IN));
@@ -372,7 +370,7 @@ static void test_winch_rules(void) {
     R.speed_x10 = 50;
     run(200);
     CHECK(!R.c.winch.armed);
-    CHECK((R.out.relays & (BIT(R_WINCH_IN) | BIT(R_WINCH_OUT) | BIT(R_WINCH_ISOLATOR))) == 0);
+    CHECK((R.out.relays & (BIT(R_WINCH_IN) | BIT(R_WINCH_OUT))) == 0);
 }
 
 static void test_winch_auto_disarm(void) {
@@ -730,7 +728,7 @@ static void test_fw_update(void) {
     plant_inputs(&R.p, &R.in, R.t);
     ctl_tick(&R.c, &R.in, &R.out, on_send, NULL);
     CHECK(R.out.enter_bootloader);
-    CHECK((R.out.relays & (BIT(R_WINCH_IN) | BIT(R_WINCH_OUT) | BIT(R_WINCH_ISOLATOR))) == 0);
+    CHECK((R.out.relays & (BIT(R_WINCH_IN) | BIT(R_WINCH_OUT))) == 0);
     CHECK(R.out.relays & BIT(R_POWER_HOLD));
 }
 
@@ -1071,7 +1069,7 @@ static void test_lock_blocks_everything(void) {
     lock_cmd(LOCK_CMD_LOCK, NULL);
     CHECK(ctl_locked(&R.c));
     run(400);
-    CHECK(!R.c.winch.armed && !(R.out.relays & BIT(R_WINCH_ISOLATOR)));
+    CHECK(!R.c.winch.armed);
     for (int i = 0; i < L_COUNT; i++) CHECK(R.out.light[i] == 0);
     CHECK(!(R.out.relays & BIT(R_REAR)) && !(R.out.relays & BIT(R_TRAILER_TAIL)));
     // Tray and winch presses refused.

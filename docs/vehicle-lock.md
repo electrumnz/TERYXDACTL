@@ -33,7 +33,7 @@ The PIN on the dash unlocks it as normal, and also cancels a lock that's still w
 |---|---|
 | Drive | Drive inhibit asked for. **See "The gap" below.** In the simulator the throttle does nothing |
 | 4WD / diff | Refused. Not done later by surprise after unlocking |
-| Tray, winch | Refused. Winch disarmed, isolator off |
+| Tray, winch | Refused. Winch disarmed (the XBull remote still works while the 250 A breaker is on: turn it off to leave the winch dead) |
 | Lights | All bars, interior and rear pods off. Trailer brake lights still follow the brake pedal |
 | Settings (`0x704`) | Refused (ack status 3 "locked") |
 | Firmware update (`0x71F`) | Refused |

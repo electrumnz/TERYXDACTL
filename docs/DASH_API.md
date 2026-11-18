@@ -66,7 +66,7 @@ Keys follow the io-map ids in `config/io-map.yaml`.
 | `winch.armed` | bool | |
 | `light.front_1` to `light.front_4`, `light.interior` | 0-255 | Actual output, after effects |
 | `light.effect` | string | Actual effect |
-| `light.rear`, `trailer.tail`, `trailer.brake`, `winch.in`, `winch.out`, `winch.isolator`, `aux.accessory`, `power.hold` | bool | Actual relay states |
+| `light.rear`, `trailer.tail`, `trailer.brake`, `winch.in`, `winch.out`, `relay.spare6`, `aux.accessory`, `power.hold` | bool | Actual relay states |
 | `lamp.head_l_low` ... `lamp.trailer_bar` (14, see `LAMPS` in teryx/lights.py) | 0-255 | Actual PCA9685 lamp levels, in steps of 17 (0x717) |
 | `light.trailer_bar` | 0-255 | Actual trailer bar level |
 | `light.show_running`, `light.show_blocked`, `light.pwm_ok` | bool | Light show running; asked for but not parked; PWM board answering |

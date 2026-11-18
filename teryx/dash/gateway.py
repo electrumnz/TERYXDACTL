@@ -33,7 +33,7 @@ LIGHT_IDS = {"light.front_1": "front_1", "light.front_2": "front_2", "light.fron
              "light.front_4": "front_4", "light.interior": "interior"}
 # 0x706 levels, 0-255 (docs/lights.md)
 LIGHT2_LEVELS = {"light.head_level": 255, "light.tail": 0, "light.rear_level": 0,
-                 "light.trailer_bar": 0, "light.beacon": 0}
+                 "light.trailer_bar": 0, "light.beacon": 0, "light.beacon_white": 0}
 
 
 class Gateway:
@@ -195,7 +195,7 @@ class Gateway:
         return {"head_low": lvl if r["light.head"] == "low" else 0,
                 "head_high": lvl if r["light.head"] == "high" else 0,
                 "tail": r["light.tail"], "rear": r["light.rear_level"],
-                "trailer_bar": r["light.trailer_bar"], "beacon": r["light.beacon"],
+                "trailer_bar": r["light.trailer_bar"], "beacon": r["light.beacon"], "beacon_white": r["light.beacon_white"],
                 "show": M.enum_value(LIGHT_SHOW, r["light.show"])}
 
     def _drive_values(self) -> dict:

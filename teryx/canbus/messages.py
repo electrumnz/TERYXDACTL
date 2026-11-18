@@ -80,7 +80,7 @@ RELAY_BITS = {   # 0x711 byte 0, relay 1 = bit 0
     2: "trailer.brake",    # the bits still say whether the trailer tail / stop are lit
     3: "winch.in",
     4: "winch.out",
-    5: "winch.isolator",
+    5: "relay.spare6",     # was the winch isolator (dropped 18 Nov)
     6: "aux.accessory",
     7: "power.hold",
 }
@@ -195,8 +195,9 @@ PI_LIGHTS2 = Message(
         S("rear", 24, 8, comment="Rear flood level while 0x701 rear_on is set, 0 = full"),
         S("trailer_bar", 32, 8),
         S("beacon", 40, 8, comment="Roof beacon brightness, 0 = off. The Pico flashes it at 3 Hz"),
-        S("show", 48, 8, choices=LIGHT_SHOW, comment="Light show, parked only"),
-        S("counter", 56, 8),
+        S("show", 48, 4, choices=LIGHT_SHOW, comment="Light show, parked only"),
+        S("counter", 52, 4),
+        S("beacon_white", 56, 8, comment="White side of the beacon, 0 = off. 3 Hz opposite the amber, only when stopped"),
     ),
 )
 PI_FW_UPDATE = Message(
@@ -310,9 +311,9 @@ PICO_LIGHTS2 = Message(
     comment="What the PCA9685 lamps are actually doing, after every safety rule (docs/lights.md). "
             "Levels are 0-15 (top 4 bits of 0-255).",
     signals=tuple(S(name, i * 4, 4) for i, name in enumerate(LAMPS)) + (
-        S("show_running", 56, 1),
-        S("show_blocked", 57, 1, comment="A show was asked for but the Teryx isn't parked (key on, park brake, stopped)"),
-        S("pwm_ok", 58, 1, comment="PCA9685 answering"),
+        S("show_running", 60, 1),
+        S("show_blocked", 61, 1, comment="A show was asked for but the Teryx isn't parked (key on, park brake, stopped)"),
+        S("pwm_ok", 62, 1, comment="PCA9685 answering"),
     ),
 )
 

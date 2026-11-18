@@ -14,6 +14,8 @@ Rules:
     off is full. Dimming them is a parked thing.
  4. Tails come on by themselves with any headlight or front bar.
  5. Beacon flashes at a fixed 3 Hz (NZ Vehicle Lighting Rule 11.1(2): 2 to 4 Hz).
+    The white side takes turns with the amber, and only while stopped: on the
+    road only red or amber may show to the rear.
  6. Rear floods: on, or on by themselves in reverse (setting on the dash). In
     reverse they're always full.
  7. The trailer bar is only live while the trailer plug is in.
@@ -34,7 +36,7 @@ from dataclasses import dataclass, field
 # Order matters: it's the order of the CAN nibbles in 0x717 and the PCA9685 map.
 LAMPS = ("head_l_low", "head_l_high", "head_r_low", "head_r_high",
          "tail_l", "brake_l", "tail_r", "brake_r",
-         "trailer_tail", "trailer_stop", "flood_l", "flood_r", "beacon", "trailer_bar")
+         "trailer_tail", "trailer_stop", "flood_l", "flood_r", "beacon", "trailer_bar", "beacon_white")
 FRONT = ("front_1", "front_2", "front_3", "front_4", "interior")   # 0x701 lights
 LIGHT_SHOW = {0: "none", 1: "wave", 2: "breathe", 3: "roar", 4: "party"}
 SHOW_TEXT = {"wave": "Wave", "breathe": "Breathe", "roar": "Roar", "party": "Party"}
@@ -46,7 +48,7 @@ SHOW_PERIOD_MS = {1: 2000, 2: 3000, 3: 8000, 4: 2000}
 # Where each lamp sits, left (-1) to right (+1), for the sweeps.
 _X = {"head_l_low": -1.0, "front_1": -0.6, "front_2": -0.2, "front_3": 0.2, "front_4": 0.6,
       "head_r_low": 1.0, "tail_l": -1.0, "flood_l": -0.6, "trailer_tail": 0.0, "trailer_bar": 0.0,
-      "flood_r": 0.6, "tail_r": 1.0, "brake_l": -1.0, "brake_r": 1.0, "beacon": 0.0, "interior": 0.0,
+      "flood_r": 0.6, "tail_r": 1.0, "beacon_white": 0.0, "brake_l": -1.0, "brake_r": 1.0, "beacon": 0.0, "interior": 0.0,
       "head_l_high": -1.0, "head_r_high": 1.0, "trailer_stop": 0.0}
 _RED = {"tail_l", "tail_r", "brake_l", "brake_r", "trailer_tail", "trailer_stop"}
 _HIGH = {"head_l_high", "head_r_high"}
@@ -68,7 +70,7 @@ def show_level(show: int, lamp: str, t: int) -> int:
         pos = _tri(t, period) * 24 // 255 - 12          # -12 .. +12 (tenths)
         if lamp in _HIGH or lamp in ("brake_l", "brake_r", "trailer_stop"):
             return 0
-        if lamp == "beacon":
+        if lamp in ("beacon", "beacon_white"):
             return 255 if -2 <= pos <= 2 else 0
         if lamp == "interior":
             return 60
@@ -110,6 +112,8 @@ def show_level(show: int, lamp: str, t: int) -> int:
             return 0
         if lamp == "beacon":
             return 255 if step % 4 == 0 else 0
+        if lamp == "beacon_white":
+            return 255 if step % 4 == 2 else 0
         if lamp in ("front_1", "front_2", "front_3", "front_4"):
             return 255 if int(lamp[-1]) - 1 == step % 4 else 0
         if lamp in _LEFT:
@@ -130,6 +134,7 @@ class LightsReq:
     trailer_bar: int = 0
     beacon: int = 0
     show: int = 0
+    beacon_white: int = 0
     rear_on: bool = False
     rear_auto: bool = True
 
@@ -191,6 +196,8 @@ class Lights:
             lv["flood_l"] = lv["flood_r"] = req.rear or 255
         if req.beacon and st.now_ms % BEACON_PERIOD_MS < BEACON_ON_MS:   # rule 5
             lv["beacon"] = req.beacon
+        if req.beacon_white and st.stopped and st.now_ms % BEACON_PERIOD_MS >= BEACON_ON_MS:
+            lv["beacon_white"] = req.beacon_white
         if st.trailer:
             lv["trailer_bar"] = req.trailer_bar
         if st.ignition and not st.dash_ok:                   # rule 9
