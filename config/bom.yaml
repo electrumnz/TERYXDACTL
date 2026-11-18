@@ -101,7 +101,6 @@ lines:
   - {id: glove_usb, shop: aliexpress, part: "12V USB-C PD panel socket, 30W, waterproof cap", qty: 1, each: 15.00, source: Estimate, covers: [GLOVE_USB], notes: Glove box phone (RC remote)}
   - {id: imu, shop: aliexpress, part: MPU-6050 IMU board (roll / pitch), qty: 1, each: 5.00, source: Estimate, covers: [IMU], notes: "I2C to the Pi"}
   - {id: tcam, shop: aliexpress, part: "12V AHD reversing camera (trailer)", qty: 1, each: 30.00, source: Estimate, covers: [CAM_TRAILER]}
-  - {id: tcam_plug, shop: aliexpress, part: "Deutsch DT 8-pin kit: DT04-08PA + DT06-08SA, wedgelocks, size 16 pins, seals", qty: 1, each: 15.00, source: Estimate, covers: [TCAM_PLUG], notes: "Trailer camera + light bar, next to the 7-pin. Needs the Deutsch crimp tool or a careful plier crimp"}
   - {id: tcam_dongle, shop: aliexpress, part: "CVBS (PAL) to MIPI CSI-2 board, ADV7280-M, multi-input", qty: 1, each: 120.00, source: "Estimate. AliExpress search: ADV7282 MIPI CSI (or ADV7280 CSI Raspberry Pi). No official Pi product does this", covers: [TCAM_DONGLE], notes: "Chip must be ADV7280-M, ADV7281-M or ADV7282-M (the -M is the ribbon output), 2+ CVBS inputs, Pi camera ribbon socket. Not TP28xx (no Pi driver) or HDMI-to-CSI. Bench test on the Pi 5"}
   - {id: a7670, shop: aliexpress, part: "SIMCom A7670SA 4G board (B28, GPS 'FASE' option)", qty: 1, each: 28.00, source: "US$15.46 x 1.822", covers: [MODEM_4G], notes: "Must list B28; V pin from the 2nd Mini560, never raw 12V"}
   - {id: bss138, shop: aliexpress, part: 4-channel BSS138 level shifter, qty: 1, each: 2.00, source: Estimate, notes: "Probably not needed; measure the T pin first"}
@@ -144,6 +143,7 @@ lines:
   - {id: heatshrink, shop: local, part: Heatshrink assortment (glue-lined), qty: 1, each: 20.00, source: Estimate}
   - {id: loom, shop: local, part: "Split corrugated loom 10mm + 16mm, 10m each", qty: 1, each: 30.00, source: Estimate}
   - {id: ties, shop: local, part: "UV-black cable ties + adhesive P-clips", qty: 1, each: 20.00, source: Estimate}
+  - {id: grease, shop: local, part: "Dielectric grease, small tube", qty: 1, each: 12.00, source: Estimate, notes: "Trailer plugs and outdoor connectors"}
   - {id: foam, shop: local, part: "2mm closed-cell foam tape, 1m+", qty: 1, each: 10.00, source: Estimate, notes: Bezel to panel}
   - {id: asa, shop: local, part: "ASA filament 1.75mm 1kg (dash panel, hood, back plate)", qty: 2, each: 45.00, source: Estimate, notes: Leave out what you already have}
   - {id: petg, shop: local, part: "PETG filament 1.75mm 1kg (boxes, liner)", qty: 1, each: 35.00, source: Estimate}
@@ -169,6 +169,7 @@ owned:
   LB4: 12 in light bar
   LB_INT: 7 in light bar
   LB_TRL: spare light bar (trailer)
+  TCAM_PLUG: EU 7-pin round trailer plug (check the socket half and cap came too)
   FLOOD_L: 4 in pod
   FLOOD_R: 4 in pod
   WINCH_SOL: XBull solenoid box
