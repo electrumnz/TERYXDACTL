@@ -18,8 +18,7 @@ AliExpress,AliExpress,"4-channel 5V relay board, same type",,1,9.00,9.00,"~US$5 
 AliExpress,AliExpress,20-way blade fuse block with cover + negative bus (16 fuses planned),,1,40.00,40.00,"~US$15-25 estimate","Buy the blade fuses in NZ; 30A/way, 100A total, stud feed",https://www.aliexpress.com/w/wholesale-Modular%20Fuse%20Block.html
 AliExpress,AliExpress,30mm 5V 2-pin fan (3007),,1,6.00,6.00,"~US$2-5 estimate","Pi box lid; 30x30x7mm",
 AliExpress,AliExpress,SIMCom A7670SA 4G Cat-1 core board (must list B28),,1,28.00,28.00,"US$15.46 x 1.822","UART only = texts/WHERE/LOCK, too slow for cameras; better if USB-C goes to the module's own USB pins",https://www.aliexpress.us/item/3256808314829525.html
-AliExpress,AliExpress,MP1584 adjustable buck 3A rated + 1000uF cap (4G board at 3.8V; 2.8A peak),,1,3.00,3.00,Estimate,,
-AliExpress,AliExpress,4-channel BSS138 level shifter (only if board has 1.8V UART),,1,2.00,2.00,Estimate,,
+AliExpress,AliExpress,4-channel BSS138 level shifter,,1,2.00,2.00,Estimate,"Probably not needed; measure the board's T pin first (3.3V ok straight to the Pi)",
 AliExpress,AliExpress,Active GPS antenna IPEX (with the GPS/FASE version),,1,8.00,8.00,Estimate,,
 AliExpress,AliExpress,LTE antenna 698-2700MHz + u.FL to SMA lead,,1,12.00,12.00,Estimate,Must cover 700MHz B28,
 Later,GameSir official store on AliExpress,GameSir G8 Galileo USB-C phone gamepad grip (RC mode),,0,78.00,0.00,"US$40-45 deals x 1.822 (list US$79.99)","Not now (Sam 18 Nov); instead of Razer Kishi V3 NZ$167.58 at PB Tech",https://gamesir.com/collections/all-products/products/gamesir-g8-galileo
@@ -29,7 +28,7 @@ Order online,Core Electronics (AU),MCP23017 board,WS-15391,1,13.45,13.45,AU$10.9
 Order online,Core Electronics (AU),DFRobot USB GPS receiver,TEL0138,1,25.98,25.98,AU$21.05 x 1.234 (search result),"Alt RS NZ 247-3251 NZ$30.85",https://core-electronics.com.au/catalog/product/view/sku/TEL0138
 Order online,Core Electronics (AU),Pololu D36V50F5 5V 5.5A regulator,POLOLU-4091,1,111.20,111.20,AU$90.11 x 1.234,In stock 17 Nov,https://core-electronics.com.au/catalog/product/view/sku/POLOLU-4091
 Order online,Core Electronics (AU),Shipping to NZ (estimate),,1,17.50,17.50,AU$12-16 from product page,Check at checkout,
-Order online,Gogo:Tronics,Mini560 5V 5A buck,,2,2.95,5.90,Checked 17 Nov,,https://sparks.gogo.co.nz/catalog/DC-Power-260/Fixed-Output-Step-Down-Converter-Out-5v-up-to-5A-Continuous-In-7-20v-1009.html
+Order online,Gogo:Tronics,Mini560 5V 5A buck,,2,2.95,5.90,Checked 17 Nov,"Control box + 4G board (V pin, 5V)",https://sparks.gogo.co.nz/catalog/DC-Power-260/Fixed-Output-Step-Down-Converter-Out-5v-up-to-5A-Continuous-In-7-20v-1009.html
 Order online,element14 NZ,1.5KE18A TVS diode,9884831,2,2.24,4.48,Checked 17 Nov (GST unclear),,https://nz.element14.com/stmicroelectronics/1-5ke18a/diode-tvs-1-5kw-18v/dp/9884831
 Order online,Narva stockist,Narva 7-pin flat socket with reed switch,82043BL,1,,,Not priced,Trailer detect,https://narva.com.au/products/narva-7-pin-flat-quickfit-trailer-socket-with-reed-switch-for-use-with-normally-closed-circuits-1-pack
 Separate pickup,Dodson's (Trade Me),Toyota Aqua EPS column (ECU 89650-52B51),,1,115.00,115.00,About NZ$115,Picking up 19 Nov,
@@ -44,6 +43,6 @@ Later (optional),PB Tech,Raspberry Pi Camera Module 3 NoIR Wide (cabin camera),S
 Later,TBC,Powered USB hub,,0,,0.00,Not priced,Pi 5 has 4 USB ports,
 Later,PB Tech,EasyCAP DC60 USB capture (only if rear cam is RCA),SEVOEM9701,0,28.75,0.00,Search result 18 Nov,Optional,https://www.pbtech.co.nz/product/SEVOEM9701
 ,,TOTAL buy tomorrow (all PB Tech),,,,596.65,,,
-,,TOTAL AliExpress (priced),,,,294.00,,,
+,,TOTAL AliExpress (priced),,,,291.00,,,
 ,,TOTAL other online (priced),,,,269.59,,,
-,,TOTAL everything priced incl Aqua column,,,,1275.24,,,
+,,TOTAL everything priced incl Aqua column,,,,1272.24,,,

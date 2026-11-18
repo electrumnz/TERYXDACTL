@@ -57,11 +57,10 @@ Pick listings marked "Choice" where you can: they usually ship free and faster.
 | **Blade fuse block, 20-way, with cover and negative bus** | "20 way blade fuse box negative bus cover" | 1 | ~US$15-25 (~NZ$27-46), my estimate. AliExpress search pages show bait prices like [US$1.09](https://www.aliexpress.com/w/wholesale-Modular%20Fuse%20Block.html); a similar 12-way Nilight is [US$22.99 at Walmart](https://www.walmart.com/c/kp/electrical-box-bus) | The wiring plan has **16 fused circuits** (`config/wiring.yaml`, F1-F16), so get a 20-way for spares. Look for: clip-on cover (ideally a seal), built-in negative bus, 30 A per way and 100 A total, studs or screw terminals for the feed (not a push-on spade), and blown-fuse LEDs are a bonus. A proper brand (Blue Sea, Narva) is better if it'll live where it gets wet |
 | **30 mm 5V fan, 2-pin (3007)** | "3007 5V fan 2 pin" | 1-2 | ~US$2-5 (~NZ$4-9), my estimate. A [reseller copy of an AliExpress listing](https://ubbthreads.com/store/item/4x-2-Pin-30MMx30MM-3007-5V-Cooling-Fan-radiating-For-Raspberry-Pi-2-3-Model-B-4B_285308377334.html) shows US$8.89 for 4 | Pi box lid. Must be 30 x 30 x 7 mm to fit the printed lid. Get a spare, they're cheap |
 | **4G module board, SIMCom A7670SA** (Sam's pick: a bare board to solder in, not a stick) | "A7670SA core board B28" | 1 | ~US$15.46 (~NZ$28). [Listing with B1/B2/B3/B4/B5/B7/B8/B28/B66](https://www.aliexpress.us/item/3256808314829525.html) | **Must be the A7670SA**, and the listing must show **B28** (700 MHz, the NZ country band). The A7670E and some "A7670SA" listings only have B1/B3/B5/B7/B8/B20, no B28 ([SIMCom table via manuals.plus](https://manuals.plus/ae/1005008976290540)). Cat-1 LTE, about 10 Mbps down: plenty for light data and SMS. SIM slot and TTL UART on the board. Talks plain AT commands, so SMS is easy on Linux. **Over UART only it does texts, WHERE and LOCK, but the data is far too slow for live cameras or RC over 4G.** Better buy if you can find one: an A7670SA board whose USB-C goes to the module's **own USB pins** (not a CH340-type USB-serial chip), so it plugs into the Pi over USB at full speed. **Pick the GPS option ("FASE" or "GNSS"; "LASE" has no GPS)**: it can track with the key off for anti-theft. Keep the TEL0138 puck for the dash until the module's GPS proves itself. Skip the flat FPC antenna option. Sam found a candidate at ~NZ$34, still to check against these points |
-| Adjustable buck module, **3 A rated** (MP1584 or similar) + 1000 µF capacitor | "MP1584 3A buck" | 1 | ~NZ$3 (estimate) | Set to **3.8 V** for the module, unless the board takes 5V itself. The datasheet gives a **2.8 A peak** when it transmits, so it gets its own supply and a big capacitor right at the board, not the Pi's 3.3V pin |
-| 4-channel BSS138 level shifter | "BSS138 level shifter 4 channel" | 1 | ~NZ$2 (estimate) | Only if the board brings out the module's **1.8 V** UART directly. The Pi's pins are 3.3 V |
+| 4-channel BSS138 level shifter | "BSS138 level shifter 4 channel" | 1 | ~NZ$2 (estimate) | **Probably not needed.** Sam's board has its own regulator and TTL serial pins. Before wiring T to the Pi, power the board and measure the T pin against G with a multimeter: about 3.3 V is fine straight to the Pi; 5 V or 1.8 V needs this shifter. It's NZ$2, so worth having in the cart anyway |
 | Active GPS antenna, IPEX/u.FL (only with the GPS version) | "active GPS antenna ipex" | 1 | ~NZ$8 (estimate) | Check the board powers an active antenna |
 | LTE antenna, wideband 698-2700 MHz, u.FL to SMA lead | "4G LTE antenna 698-2700 SMA" | 1 | ~NZ$12 (estimate) | The little PCB stick antennas are poor at 700 MHz (B28), which is what you'll be on out in the country. Mount it outside the metal, near the GPS puck |
-| | | | **about NZ$294** | Dongle NZ$65, amp NZ$82, 2 x BTS7960 NZ$24, fuse block ~NZ$40, relay boards ~NZ$24, fan ~NZ$6, 4G board, buck, level shifter, LTE and GPS antennas ~NZ$53. Opto and MOSFET boards on top |
+| | | | **about NZ$291** | Dongle NZ$65, amp NZ$82, 2 x BTS7960 NZ$24, fuse block ~NZ$40, relay boards ~NZ$24, fan ~NZ$6, 4G board, level shifter, LTE and GPS antennas ~NZ$50. Opto and MOSFET boards on top |
 
 **The 8-channel solid state relay board you've got coming won't work here.** Those boards use Omron G3MB-202P relays, which are for AC only. On 12 V DC they switch on but never switch off again until the power is cut ([Omron FAQ](https://www.ia.omron.com/support/faq/answer/18/faq02101/index.html)). Keep it for a mains project, or send it back if you can.
 
@@ -87,10 +86,10 @@ Pick listings marked "Choice" where you can: they usually ship free and faster.
 | [DFRobot USB GPS TEL0138](https://core-electronics.com.au/catalog/product/view/sku/TEL0138) | Core Electronics (AU) | 1 | AU$21.05 (~NZ$26) | Search result. Or [RS NZ](https://nz.rs-online.com/web/p/gnss-gps-modules/2473251) NZ$30.85 |
 | [Pololu D36V50F5 5V 5.5A regulator](https://core-electronics.com.au/catalog/product/view/sku/POLOLU-4091) | Core Electronics (AU) | 1 | AU$90.11 (~NZ$111) | Powers the Pi from the 12V battery. Big enough for the AI HAT later |
 | Core Electronics shipping | | | ~NZ$15-20 | Check at checkout |
-| [Mini560 5V 5A buck](https://sparks.gogo.co.nz/catalog/DC-Power-260/Fixed-Output-Step-Down-Converter-Out-5v-up-to-5A-Continuous-In-7-20v-1009.html) | Gogo:Tronics | 2 | NZ$2.95 each | Pico control box power and a spare |
+| [Mini560 5V 5A buck](https://sparks.gogo.co.nz/catalog/DC-Power-260/Fixed-Output-Step-Down-Converter-Out-5v-up-to-5A-Continuous-In-7-20v-1009.html) | Gogo:Tronics | 2 | NZ$2.95 each | Pico control box power, and the second one powers the 4G board (5 V into its V pin). Grab a third (NZ$2.95) if you want a spare |
 | [1.5KE18A TVS diode](https://nz.element14.com/stmicroelectronics/1-5ke18a/diode-tvs-1-5kw-18v/dp/9884831) | element14 NZ | 2 | NZ$2.24 each | Spike clamp on the dash 12V |
 | [Narva 7-pin flat socket with reed switch 82043BL](https://narva.com.au/products/narva-7-pin-flat-quickfit-trailer-socket-with-reed-switch-for-use-with-normally-closed-circuits-1-pack) | Narva stockists | 1 | **Not priced** | Trailer detect |
-| | | | **about NZ$294** | Priced items |
+| | | | **about NZ$291** | Priced items |
 
 AUD to NZD at 1.234 (Wise, 17 Nov). USD to NZD at 1.822 (Wise, 18 Nov, no time shown on the page).
 
@@ -105,19 +104,29 @@ AUD to NZD at 1.234 (Wise, 17 Nov). USD to NZD at 1.822 (Wise, 18 Nov, no time s
 | | NZ$ |
 |---|---|
 | Buy tomorrow (all PB Tech) | ~597 |
-| AliExpress cart | ~294 |
+| AliExpress cart | ~291 |
 | Other online orders (Core, Gogo, element14) | ~270 |
 | Aqua column | ~115 |
-| **Everything priced** | **about NZ$1,275** |
+| **Everything priced** | **about NZ$1,272** |
 
-The amp (NZ$82) is new to the list today. Without it, it's about NZ$1,193. Not counted: blade fuses, the opto and MOSFET boards, Narva socket, trailer camera bits,
+The amp (NZ$82) is new to the list today. Without it, it's about NZ$1,190. Not counted: blade fuses, the opto and MOSFET boards, Narva socket, trailer camera bits,
 speakers and amp wiring, and everything under "Later".
 
 ## Wiring the 4G board
 
-- **To the Pi:** the A7670SA's UART goes to the Pi's UART pins (GPIO 14/15, 3.3V logic; if the board
-  brings out the module's 1.8 V UART, use the BSS138 level shifter). The code supports this (PR #42). The Pi sends AT commands for SMS and can run
-  PPP over it for light data.
+Sam's board (from its datasheet): a 6-pin header marked **S** (sleep), **G** (ground), **V** (power,
+**5-10 V**), **K** (power key), **T** (TX out), **R** (RX in), **G** (ground). It has its own regulator, a
+470 µF tantalum capacitor for the transmit peaks, a GPS antenna plug, a micro USB and runs at 115200 baud.
+
+- **Power:** feed **V** from the spare **Mini560 5 V buck**, with both grounds joined. No separate 3.8 V
+  buck or big capacitor needed: the board does that itself. **Never put raw 12 V on V**, as 10 V is its
+  limit and a car's 12 V runs at 14.4 V when charging, with spikes on top.
+- **Power key (K):** tied to ground on the board by default (R104), so the module starts by itself when
+  power comes on. Leave it unconnected.
+- **Sleep (S):** leave it unconnected for now. It can go to a spare GPIO later to save battery when parked.
+- **To the Pi:** T goes to the Pi's RX (GPIO 15), R goes to the Pi's TX (GPIO 14), G to ground. **Measure
+  T first** (see the level shifter row): about 3.3 V is fine straight in. The code supports this (PR #42).
+  The Pi sends AT commands for SMS and can run PPP over it for light data.
 - **Or always on, off a spare Pico:** the Pi is off when the key is off, so for "text the Teryx to
   lock it" while parked, the module has to stay powered from the 12V battery and something small
   has to listen. The control box Pico has no spare pins, but the Pico 5-pack has spares. A spare

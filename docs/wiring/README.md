@@ -556,7 +556,7 @@ Fuses not in the block (inline, at the battery or on a board):
 | CAM_FRONT | Camera Module 3 Wide (front) | dash | planned | Inside the screen housing, 200-300 mm ribbon |
 | CAM_CABIN | Cabin camera (sentry) | dash | placeholder (optional) | Being worked out in the 4G / sentry thread. Port TBC |
 | GPS | DFRobot TEL0138 USB GPS | dash | planned (optional) |  |
-| MODEM_4G | 4G USB modem | dash | placeholder (optional) | Being worked out in the 4G / sentry thread |
+| MODEM_4G | SIMCom A7670SA 4G board | dash | placeholder (optional) | 6-pin header S G V K T R G. V takes 5-10 V from the spare Mini560 5 V buck. NEVER raw 12 V (10 V max, and the car runs 14.4 V with spikes). K is tied to ground on the board, so it starts by itself. T/R are 115200 baud TTL to the Pi's GPIO 15/14; measure T before connecting (3.3 V ok, else BSS138). Micro USB also on board |
 | SSD | USB SSD (recordings) | dash | placeholder (optional) | Only if we record footage. Shares the hub's bandwidth; never NVMe on the PCIe port |
 | CARPLAY | Carlinkit CPC200-CCPA | dash | planned (optional) |  |
 | USB_DAC | USB audio out | dash | planned (optional) |  |

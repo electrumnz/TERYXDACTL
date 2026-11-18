@@ -620,11 +620,11 @@ devices:
     optional: true
     pins: {USB: usb}
   MODEM_4G:
-    name: 4G USB modem
+    name: SIMCom A7670SA 4G board
     zone: dash
     status: placeholder
     optional: true
-    note: Being worked out in the 4G / sentry thread
+    note: "6-pin header S G V K T R G. V takes 5-10 V from the spare Mini560 5 V buck. NEVER raw 12 V (10 V max, and the car runs 14.4 V with spikes). K is tied to ground on the board, so it starts by itself. T/R are 115200 baud TTL to the Pi's GPIO 15/14; measure T before connecting (3.3 V ok, else BSS138). Micro USB also on board"
     pins: {USB: usb}
   SSD:
     name: USB SSD (recordings)
