@@ -63,21 +63,33 @@ looking at which J1 pins have wires in Sam's harness.
 ## The programmer lead (Sam's 4-pin plug)
 
 The manual wires the SG1810 to four J1 pins: **+12 V (J1-25), Tx (J1-28),
-Rx (J1-29), Ground (J1-7)**. That matches Sam's 4-pin plug. So:
+Rx (J1-29), Ground (J1-7)**. The SG1810's own manual says its 6-pin 5557-6P
+plug goes into a socket called **J3**. Most likely J3 carries those same four
+signals, but that's **TBC**. Details and how to check:
+[`shinegle-sg1810-programmer.md`](shinegle-sg1810-programmer.md#the-programmer-port-j3).
 
 * The lead carries **12 V**. Never plug the handheld or its lead into a
-  laptop or the Pi's USB. The USB-shaped socket on the handheld is not USB.
+  laptop or the Pi's USB. The USB-shaped plug on the lead is not USB.
 * It's a plain serial link. The voltage level (3.3 V/5 V logic or RS-232)
   is **TBC**; measure Tx to ground with a meter before connecting anything.
-* That serial port is how the Pi or the Pico could read live data later
-  (battery current, torque, power), if we can learn the protocol by
-  listening to the programmer. Listen-only until we understand it.
+* If anything is plugged in at key-on, the controller goes into parameter
+  mode and won't drive.
+* That port gives live data (error code, direction, throttle, RPM, motor
+  temp, volts). Leaving the Pi or Pico on it instead of the handheld is
+  planned in
+  [`shinegle-sg1810-programmer.md`](shinegle-sg1810-programmer.md#leaving-the-pi-on-j3-instead-of-the-programmer):
+  listen-only sniff first, then a read-only reader, 12 V isolated, no
+  parameter writes.
 
 ## What this means for Teryx OS
 
 * **Brake pedal regen:** regen is built in, but this manual shows no brake
-  input and no regen settings. The SG1810 menus are the next place to look.
-  See [`brake-regen.md`](brake-regen.md).
+  input. The SG1810 menus have the regen coefficient `B_Cur` (locked) and the
+  brake and decel rates `B_Rat`/`DecRat` (allowed to change). See
+  [`brake-regen.md`](brake-regen.md) and
+  [`shinegle-sg1810-tables.md`](shinegle-sg1810-tables.md).
+* **Fault codes:** codes 1-46 with fixes, in English and Chinese, are in
+  [`config/shinegle-faults.yaml`](../config/shinegle-faults.yaml).
 * **CAN decode:** CAN is optional on this controller. If Sam's has it, it's
   CANopen with 29-bit IDs, so the sniffer must capture extended frames. If
   the bus is quiet, the Shinegle dash may be running off the J1-6 speed

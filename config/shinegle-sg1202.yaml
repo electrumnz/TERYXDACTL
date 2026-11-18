@@ -32,6 +32,8 @@ connectors:
   J7: {type: DJ7041-1.5-11, use: speed sensor (motor side)}
   J8: {type: DJ7021-1.5-21, use: motor temp sensor (controller side)}
   J9: {type: DJ7021-1.5-11, use: motor temp sensor (motor side)}
+  J3: {type: 6-pin socket for a 5557-6P plug, use: SG1810 programmer port, status: tbc,
+       note: "From the SG1810 manual. The SG12X2 manual draws the programmer on J1-25/28/29/7 instead. Pins TBC. See docs/shinegle-sg1810-programmer.md"}
 
 # J1 pins. Anything from 1 to 35 not listed here is unknown.
 j1:
@@ -57,7 +59,7 @@ not_drawn:
 
 # Outside devices, for the diagram.
 devices:
-  programmer: {name: SG1810 handheld programmer, pins: [25, 28, 29, 7], note: "4-pin lead, carries +12 V. Not USB"}
+  programmer: {name: SG1810 handheld programmer, pins: [25, 28, 29, 7], note: "Plugs into J3 (6-pin). J3 to J1 pins TBC"}
   throttle:   {name: Throttle pedal, pins: [25, 16, 18, 9]}
   speed_sensor: {name: Motor speed sensor, pins: [25, 31, 32, 7], via: J6/J7}
   motor_temp: {name: Motor temp sensor, pins: [8, 7], via: J8/J9}

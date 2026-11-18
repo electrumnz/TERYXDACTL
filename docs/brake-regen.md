@@ -117,6 +117,25 @@ J1-7 ground). CAN is listed as **optional** (CANopen, 29-bit IDs). So items 1
 and 2 below are now the main job: the SG1810 menus, and which J1 pins
 actually have wires in the harness.
 
+**Update 2026-11-18 (later): we have the SG1810 programmer manual**, copied in
+[`shinegle-sg1810-programmer.md`](shinegle-sg1810-programmer.md), with the
+full parameter list in [`shinegle-sg1810-tables.md`](shinegle-sg1810-tables.md).
+What it says about regen:
+
+* **`B_Cur` (page 9) is the regen strength**, "Regenerative brake
+  Coefficient", 512-4096. Locked: "prohibited to change without authorized".
+* **`B_Rat` (brake rate) and `DecRat` (deceleration rate), page 4**, default
+  12, range 3-36, green = Shinegle allow changing them. These are the knobs to
+  try first for lift-off regen feel (item 3 below).
+* Other brake ones, all "already optimised" or "special vehicle": `B_Trat`
+  (braking current response, 32, range 24-64), `B_Trat2`, `BrkRat2`, `BrkTm`.
+* **Fault 13 is "main contactor or brake fault"** (Chinese 制动器 = brake), so
+  the controller does watch some brake device. Its pin is still unknown.
+* **Faults 14 and 19**: braking too hard can over-volt the battery; the fix is
+  a lower brake or deceleration rate. So keep regen soft when the pack is full.
+* Nothing in the menus is a brake *input* setting, so item 2 (harness pins)
+  still decides routes A to C.
+
 Takes about half an hour with the Shinegle programmer and the wiring diagram
 that came in the box. Ticks here decide which way we go.
 
@@ -181,7 +200,8 @@ sensor. Treat these as rough, prices weren't checked in NZ shops.
 | Confirmed | The manual shows no brake input and no regen settings (source 12) |
 | **To check** | Whether the Shinegle has a brake input on an undrawn J1 pin, of what type, and its voltage (section 3) |
 | **To check** | Whether Sam's SG1202 has CAN fitted |
-| **To check** | What regen settings the SG1810 menus have |
+| Confirmed | SG1810 menus: regen coefficient `B_Cur` (locked), brake rate `B_Rat` and decel rate `DecRat` (3-36, allowed to change). Fault 13 = contactor or brake fault (source 13) |
+| **To check** | What `B_Cur`, `B_Rat` and `DecRat` are set to on Sam's controller (photo page 4 and page 9 in Mode A) |
 | **To check** | Whether the Shinegle's signal ground is the pack negative (assumed, so we isolate) |
 | **To check** | How much regen the Shinegle can actually give (sim guesses 4 kW) |
 | **To check** | Teryx brake pedal free play and where the pads bite (sets setting 25) |
@@ -203,3 +223,4 @@ sensor. Treat these as rough, prices weren't checked in NZ shops.
 10. [Kawasaki Teryx 750 FI 4x4 Sport specs, CycleChaos](https://www.cyclechaos.com/wiki/Kawasaki_Teryx_750_FI_4x4_Sport).
 11. [GEVCU analogue brake discussion](https://groups.google.com/g/gevcu-development/c/X3sNoh9HC9E): a DIY VCU reading an existing brake pressure sensor for regen; set the "brake min" above the resting reading or it thinks you're braking, and brake overrides throttle.
 12. Shinegle "SG12X2 Manual" (SG1202/1212/1222), 9 pages, 2017, supplied by Sam. Summary: [`shinegle-controller.md`](shinegle-controller.md).
+13. Shinegle "6_Programmer SG1810 Instruction English 20220415", screenshots supplied by Sam. Copy: [`shinegle-sg1810-programmer.md`](shinegle-sg1810-programmer.md).

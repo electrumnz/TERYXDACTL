@@ -24,7 +24,7 @@
 <text x="50" y="306" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Throttle pedal</text>
 <rect x="40" y="410" width="260" height="106" rx="6" fill="#f6f8fa" stroke="#57606a"/>
 <text x="50" y="428" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">SG1810 handheld programmer</text>
-<text x="50" y="508" font-size="10" text-anchor="start" font-weight="normal" fill="#57606a">4-pin lead, carries +12 V. Not USB</text>
+<text x="50" y="508" font-size="10" text-anchor="start" font-weight="normal" fill="#57606a">Plugs into J3 (6-pin). J3 to J1 pins TBC</text>
 <rect x="40" y="532" width="260" height="44" rx="6" fill="#f6f8fa" stroke="#57606a"/>
 <text x="50" y="550" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Speedo / Shinegle dash</text>
 <rect x="900" y="150" width="260" height="106" rx="6" fill="#f6f8fa" stroke="#57606a"/>

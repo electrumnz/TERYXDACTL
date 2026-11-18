@@ -1,0 +1,345 @@
+# Shinegle controller fault codes, from the SG1810 programmer manual:
+#   附表 2 SHINEGLE 控制器故障代码列表及原因分析  (Chinese table)
+#   "Attached List 2 Error Code and Solution for Controller"  (English table)
+# Transcribed from Sam's screenshots, 2026-11-18. The code is both the LED
+# flash count and the number the programmer shows as ErrorCode (Mode B).
+#
+# Per code:
+#   cn / cn_ours / en             what the programmer shows (Chinese, our translation, Shinegle's English)
+#   cause_cn / cause_cn_ours / cause_en   lists, as printed (typos kept)
+#   fix_cn / fix_cn_ours / fix_en         lists, as printed
+#   note                           where the two languages disagree
+# Lists are as printed, so the Chinese and English can have different lengths.
+# "cut off" marks text that runs off the edge of the screenshot.
+#
+# Note: on the Mode B status screen the manual says ErrorCode 0 = normal,
+# but this table uses 1 = no fault. Both are kept as printed.
+
+faults:
+  - code: 1
+    cn: 正常
+    cn_ours: Normal
+    en: NO KNOWN FAULTS
+    cause_cn: [无]
+    cause_cn_ours: [None]
+    cause_en: [Good]
+    fix_cn: [无]
+    fix_cn_ours: [None]
+    fix_en: [OK]
+    note: The Mode B text says ErrorCode 0 = normal. This table starts at 1 = normal.
+
+  - code: 2
+    cn: 电池电压低
+    cn_ours: Battery voltage low
+    en: LOW BATTERY VOLTAGE
+    cause_cn: [电池电压小于控制器最低工作电压, 电池端子腐蚀, 电池或控制器接线端子松动]
+    cause_cn_ours: [Battery voltage below the controller's minimum working voltage, Battery terminal corrosion, Battery or controller terminal loose]
+    cause_en: [Battery Low Voltage, B+or B- terminal corrosion, Terminal of Battery or controller loosening.]
+    fix_cn: [使电池电压高于控制器最低工作电压]
+    fix_cn_ours: [Bring the battery voltage above the controller's minimum working voltage]
+    fix_en: [Check battery voltage, Replace new terminal, Return to factory]
+    note: The Chinese numbers 4 causes but prints 3.
+
+  - code: 3
+    cn: U相电流传感器故障
+    cn_ours: Phase U current sensor fault
+    en: PHASE U CURRENT SHUNT FAULT
+    cause_cn: [车辆操作错误导致高电流尖锋, 电流传感器超范围, 控制器故障]
+    cause_cn_ours: [Wrong vehicle operation caused a high current spike, Current sensor out of range, Controller fault]
+    cause_en: [Current spike, Over range for current sensor, Controller fault]
+    fix_cn: [重新开启钥匙开关，如问题继续存在，更换控制器]
+    fix_cn_ours: [Cycle the key switch. If it keeps happening, replace the controller]
+    fix_en: ["Reset the controller,", Return to factory]
+
+  - code: 4
+    cn: V相电流传感器故障
+    cn_ours: Phase V current sensor fault
+    en: PHASE V CURRENT SHUNT FAULT
+    cause_cn: [车辆操作错误导致高电流尖锋, 电流传感器超范围, 控制器故障]
+    cause_cn_ours: [Wrong vehicle operation caused a high current spike, Current sensor out of range, Controller fault]
+    cause_en: [Current spike, Over range for current sensor, Controller fault]
+    fix_cn: [重新开启钥匙开关，如问题继续存在，更换控制器]
+    fix_cn_ours: [Cycle the key switch. If it keeps happening, replace the controller]
+    fix_en: [Reset the controller, Reset the controller, Return to factory]
+
+  - code: 5
+    cn: 系统错误
+    cn_ours: System error
+    en: System FAULT
+    cause_cn: [环境干扰大, 过载]
+    cause_cn_ours: [Heavy electrical noise, Overload]
+    cause_en: [Environmental noise, Overload]
+    fix_cn: [重新开启钥匙开关，如问题继续存在，更换控制器]
+    fix_cn_ours: [Cycle the key switch. If it keeps happening, replace the controller]
+    fix_en: [Reset the controller, Return to factory]
+
+  - code: 6
+    cn: U 相故障
+    cn_ours: Phase U fault
+    en: PHASE U FAULT
+    cause_cn: [环境干扰大, 死区时间设置不当, 控制器故障]
+    cause_cn_ours: [Heavy electrical noise, Dead time set wrong, Controller fault]
+    cause_en: [Environmental noise, Wrong dead time setup, Controller fault]
+    fix_cn: [减少环境干扰, 调整死区时间, 如问题继续存在，更换控制器]
+    fix_cn_ours: [Reduce the noise, Adjust the dead time, If it keeps happening, replace the controller]
+    fix_en: [Eliminate noise, Modify dead time, Return to factory]
+
+  - code: 7
+    cn: V 相故障
+    cn_ours: Phase V fault
+    en: PHASE U FAULT
+    cause_cn: [环境干扰大, 死区时间设置不当, 控制器故障]
+    cause_cn_ours: [Heavy electrical noise, Dead time set wrong, Controller fault]
+    cause_en: [Environmental noise, Wrong dead time setup, Controller fault]
+    fix_cn: [减少环境干扰, 调整死区时间, 如问题继续存在，更换控制器]
+    fix_cn_ours: [Reduce the noise, Adjust the dead time, If it keeps happening, replace the controller]
+    fix_en: [Eliminate noise, Modify dead time, Return to factory]
+    note: English says PHASE U. The Chinese says phase V, which is right.
+
+  - code: 8
+    cn: W 相故障
+    cn_ours: Phase W fault
+    en: PHASE U FAULT
+    cause_cn: [环境干扰大, 死区时间设置不当, 控制器故障]
+    cause_cn_ours: [Heavy electrical noise, Dead time set wrong, Controller fault]
+    cause_en: [Environmental noise, Wrong dead time setup, Controller fault]
+    fix_cn: [减少环境干扰, 调整死区时间, 如问题继续存在，更换控制器]
+    fix_cn_ours: [Reduce the noise, Adjust the dead time, If it keeps happening, replace the controller]
+    fix_en: [Eliminate noise, Modify dead time, Return to factory]
+    note: English says PHASE U. The Chinese says phase W, which is right.
+
+  - code: 9
+    cn: 电机温度传感器故障
+    cn_ours: Motor temperature sensor fault
+    en: MOTOR SENSOR FAULT
+    cause_cn: [电机温度传感器坏, 电机温升过高, 电机温度传感器线松动]
+    cause_cn_ours: [Motor temp sensor broken, Motor running too hot, Motor temp sensor wire loose]
+    cause_en: [Bad motor temperature sensor, Motor temperature too high, Sensor terminal loosening]
+    fix_cn: [更换电机温度传感器, 使电机温升恢复正常值, 接好传感器线]
+    fix_cn_ours: [Replace the motor temp sensor, Let the motor cool back to normal, Reconnect the sensor wire]
+    fix_en: [Replace new sensor, Lower motor temperature, Tightening the terminal]
+    note: The English just says "motor sensor". It is the motor temperature sensor, not the speed sensor (those are codes 20-23).
+
+  - code: 10
+    cn: 预充电电压低
+    cn_ours: Precharge voltage low
+    en: LOW PRECHARGE VOLTAG
+    cause_cn: [电池预充电电压小于设定值, 预充电电阻故障]
+    cause_cn_ours: [Precharge voltage below the set value, Precharge resistor fault]
+    cause_en: [Precharge voltage is low, Precharge circuit fault]
+    fix_cn: [使电池电压恢复正常值, 更换预充电电阻]
+    fix_cn_ours: [Bring the battery voltage back to normal, Replace the precharge resistor]
+    fix_en: [Recharge the battery, Return to factory]
+    note: The Chinese says replace the precharge resistor. The English says return to factory.
+
+  - code: 11
+    cn: 硬件安全故障
+    cn_ours: Hardware safety fault
+    en: HW FAILSAFE
+    cause_cn: [环境干扰大, 自检或看门狗出错, 控制器故障]
+    cause_cn_ours: [Heavy electrical noise, Self-test or watchdog error, Controller fault]
+    cause_en: [Environmental noise, Self-test or watchdog fault, Controller fault]
+    fix_cn: [重新开启钥匙开关，如问题继续存在，更换控制器]
+    fix_cn_ours: [Cycle the key switch. If it keeps happening, replace the controller]
+    fix_en: ["Lower environmental noise, return to factory if fault remains"]
+
+  - code: 12
+    cn: 控制器温升故障
+    cn_ours: Controller over-temperature
+    en: CONTROLLER HOT
+    cause_cn: [温度过高, 车辆过载, 控制器安装错误]
+    cause_cn_ours: [Temperature too high, Vehicle overloaded, Controller mounted wrong]
+    cause_en: [Controller temperature too high, Vehicle overload, inappropriate install]
+    fix_cn: [使温度恢复至正常值]
+    fix_cn_ours: [Let the temperature come back to normal]
+    fix_en: [Lower temperature, Lower vehicle load, Proper installation]
+
+  - code: 13
+    cn: 主接触器或者制动器故障
+    cn_ours: Main contactor or brake fault
+    en: CONTACTOR OR BRAKER FAULT
+    cause_cn: [主接触器故障, 制动器故障]
+    cause_cn_ours: [Main contactor fault, Brake fault]
+    cause_en: [Main contactor fault, Breaker fault]
+    fix_cn: [更换主接触, 更换制动器]
+    fix_cn_ours: [Replace the main contactor, Replace the brake]
+    fix_en: [Replace Main contactor, Replace breaker]
+    note: 制动器 means brake (an electric brake device), not a circuit breaker. So the controller knows about some brake device. Which pin is not documented. See docs/brake-regen.md.
+
+  - code: 14
+    cn: 电池电压过高
+    cn_ours: Battery voltage too high
+    en: OVERVOLTAGE
+    cause_cn: [电池电压高于控制器最高截止工作电压, "电源来自电网或者发电时，制… (cut off)"]
+    cause_cn_ours: [Battery voltage above the controller's top cut-off voltage, "When the power comes from the grid (charger) or from generating (regen), braking… (cut off)"]
+    cause_en: [Battery voltage too high, Breaking is too fast]
+    fix_cn: [使电池电压低于控制器上限截止工作电压]
+    fix_cn_ours: [Bring the battery voltage below the controller's upper cut-off voltage]
+    fix_en: [Lower battery voltage, Lower break rate]
+    note: Regen can push the pack over the limit, most likely when the pack is full. The English fix is to lower the brake rate (B_Rat).
+
+  - code: 15
+    cn: 电池电压过低
+    cn_ours: Battery voltage too low
+    en: TOO LOW BATTERY VOLTAGE
+    cause_cn: [电池电压过低, 突然断电, 接线端子松动]
+    cause_cn_ours: [Battery voltage too low, Power cut suddenly, Terminal loose]
+    cause_en: [Battery running voltage too low, Turn off suddenly, Connector terminal loosening]
+    fix_cn: [使电池电压恢复至正常值]
+    fix_cn_ours: [Bring the battery voltage back to normal]
+    fix_en: [Return to normal value, No fault, Lightening terminal]
+    note: '"Lightening terminal" is a typo for tightening.'
+
+  - code: 16
+    cn: 预充电压2过低
+    cn_ours: Precharge voltage 2 too low
+    en: PRECHARGE VOLTAGE TOO SLOW
+    cause_cn: [预充电电压太低, 充电电路故障]
+    cause_cn_ours: [Precharge voltage too low, Charging (precharge) circuit fault]
+    cause_en: [Precharge voltage 2 too low, Precharge circuit fault]
+    fix_cn: [检查电池电压, 更换控制器]
+    fix_cn_ours: [Check the battery voltage, Replace the controller]
+    fix_en: [Return to normal value, Return to factory]
+    note: English title says "too slow", the Chinese says too low.
+
+  - code: 17
+    cn: 电路传感器故障1
+    cn_ours: Current sensor 1 fault
+    en: CURRENT SENSOR 1
+    cause_cn: [电流传感器1故障, 端子松动]
+    cause_cn_ours: [Current sensor 1 fault, Terminal loose]
+    cause_en: [Current sensor 1 fault, Phase terminal loosening]
+    fix_cn: [更换电流传感器, 拧紧端子]
+    fix_cn_ours: [Replace the current sensor, Tighten the terminal]
+    fix_en: [Replace current sensor, Lightening terminal]
+    note: The Chinese title says 电路 (circuit), a typo for 电流 (current).
+
+  - code: 18
+    cn: 电路传感器故障2
+    cn_ours: Current sensor 2 fault
+    en: CURRENT SENSOR 1
+    cause_cn: [电流传感器1故障, 端子松动]
+    cause_cn_ours: [Current sensor 1 fault (sic, should be 2), Terminal loose]
+    cause_en: [Current sensor 2 fault, Phase terminal loosening]
+    fix_cn: [更换电流传感器, 拧紧端子]
+    fix_cn_ours: [Replace the current sensor, Tighten the terminal]
+    fix_en: [Replace current sensor, Lightening terminal]
+    note: Each language has one slip. The English title says sensor 1, the Chinese cause says sensor 1. It is current sensor 2.
+
+  - code: 19
+    cn: 电池电压高
+    cn_ours: Battery voltage high
+    en: HIGH BATTERY VOLTAGE
+    cause_cn: [电池电压高于控制器设定工作电压, 电压控制器制动过快]
+    cause_cn_ours: [Battery voltage above the controller's set working voltage, Controller braking too fast]
+    cause_en: [Battery voltage 2 is too high, Breaking voltage is too high]
+    fix_cn: [使电池电压低于控制器设定工作电压, "减小减速速率或者延长减速时间 (bottom line partly cut off)"]
+    fix_cn_ours: [Bring the battery voltage below the controller's set working voltage, Lower the deceleration rate or make the deceleration time longer]
+    fix_en: [Return to normal value, Lower break rate]
+    note: The Chinese fix points at the deceleration rate (DecRat), the English at the brake rate (B_Rat). Both are on page 4 and adjustable 3-36.
+
+  - code: 20
+    cn: 速度编码器故障1
+    cn_ours: Speed encoder fault 1
+    en: ENCODER 1
+    cause_cn: [速度编码器坏, 接口松动或断线]
+    cause_cn_ours: [Speed encoder broken, Plug loose or wire broken]
+    cause_en: [Speed sensor fault 1, Sensor interface loosening]
+    fix_cn: [更换速度编码器, 更换接插件或接线]
+    fix_cn_ours: [Replace the speed encoder, Replace the plug or the wiring]
+    fix_en: [Replace a new sensor, Replace a new connector]
+
+  - code: 21
+    cn: 速度编码器故障2
+    cn_ours: Speed encoder fault 2
+    en: ENCODER 2
+    cause_cn: [速度编码器坏, 接口松动或断线]
+    cause_cn_ours: [Speed encoder broken, Plug loose or wire broken]
+    cause_en: [Speed sensor fault 2, Sensor interface loosening]
+    fix_cn: [更换速度编码器, 更换接插件或接线]
+    fix_cn_ours: [Replace the speed encoder, Replace the plug or the wiring]
+    fix_en: [Replace a new sensor, Replace a new connector]
+
+  - code: 22
+    cn: 速度编码器故障3
+    cn_ours: Speed encoder fault 3
+    en: ENCODER 3
+    cause_cn: [速度编码器坏, 接口松动或断线]
+    cause_cn_ours: [Speed encoder broken, Plug loose or wire broken]
+    cause_en: [Speed sensor fault 3, Sensor interface loosening, No sensor]
+    fix_cn: [更换速度编码器, 更换接插件或接线]
+    fix_cn_ours: [Replace the speed encoder, Replace the plug or the wiring]
+    fix_en: [Replace a new sensor, Replace a new connector, Add a sensor]
+    note: Only the English adds "no sensor / add a sensor".
+
+  - code: 23
+    cn: 速度编码器故障4
+    cn_ours: Speed encoder fault 4
+    en: ENCODER 4
+    cause_cn: [速度编码器坏, 接口松动或断线]
+    cause_cn_ours: [Speed encoder broken, Plug loose or wire broken]
+    cause_en: [Speed sensor fault 4, Interface loosening]
+    fix_cn: [更换速度编码器, 更换接插件或接线]
+    fix_cn_ours: [Replace the speed encoder, Replace the plug or the wiring]
+    fix_en: [Replace a new sensor, Replace a new connector]
+
+  - code: 24
+    cn: 系统负载故障1
+    cn_ours: System load fault 1
+    en: System Load Error 1
+    cause_cn: [电机缺相, 接口松动, 电机相序接反, 环境干扰]
+    cause_cn_ours: [Motor missing a phase, Plug loose, Motor phases in the wrong order, Electrical noise]
+    cause_en: ["Absence of Motor's Phase", Terminal of Battery or Controller Loosening, Wrong Phase Order of Motor, Environmental Noise]
+    fix_cn: [检查电机UVW相, 拧紧接口, 对调UW相, 消除干扰源]
+    fix_cn_ours: [Check motor phases U V W, Tighten the plug, Swap U and W, Remove the noise source]
+    fix_en: ["Check Motor's Phase", Tight Terminal of Battery or Controller, Swap Phase U with W ot Motor, Lower Environmental Noise]
+
+  - code: 25
+    cn: 系统负载故障2
+    cn_ours: System load fault 2
+    en: System Load Error 2
+    cause_cn: [电机缺相, 接口松动, 电机相序接反, 环境干扰]
+    cause_cn_ours: [Motor missing a phase, Plug loose, Motor phases in the wrong order, Electrical noise]
+    cause_en: ["Absence of Motor's Phase", Terminal of Battery or Controller Loosening, Wrong Phase Order of Motor, Environmental Noise]
+    fix_cn: [检查电机UVW相, 拧紧接口, 对调UW相, 消除干扰源]
+    fix_cn_ours: [Check motor phases U V W, Tighten the plug, Swap U and W, Remove the noise source]
+    fix_en: ["Check Motor's Phase", Tight Terminal of Battery or Controller, Swap Phase U with W ot Motor, Lower Environmental Noise]
+
+  - code: 26
+    cn: 电池电压低
+    cn_ours: Battery voltage low (under load)
+    en: Low Running Battery Voltage
+    cause_cn: [负载过大, 电池电量不足, 电池接线柱子或控制器接线端子松动]
+    cause_cn_ours: [Load too high, Battery charge low, Battery post or controller terminal loose]
+    cause_en: [Over Load, Low battery voltage, Terminal of Battery or Controller Loosening]
+    fix_cn: [减小负载, 充电, 拧紧接线端子]
+    fix_cn_ours: [Reduce the load, Charge, Tighten the terminals]
+    fix_en: [Decrease Load, Charge Battery, Tight Terminal of Battery or Controller]
+
+  - {code: "27-29", cn: 预留, cn_ours: Reserved, en: Reserved}
+
+  - code: 30
+    cn: 参数Kf设置错误
+    cn_ours: Parameter Kf set wrong
+    en: Parameter Kf Wrong Setting
+    cause_cn: [参数设置错误]
+    cause_cn_ours: [Parameter set wrong]
+    cause_en: [Wrong Setting]
+    fix_cn: [设置正确的参数]
+    fix_cn_ours: [Set the correct value]
+    fix_en: [Set Right Value]
+
+  - code: "31-37"
+    cn: 系统错误2
+    cn_ours: System error 2
+    en: System Error 2
+    cause_cn: [环境干扰, 硬件错误]
+    cause_cn_ours: [Electrical noise, Hardware error]
+    cause_en: [Environmental Noise, Hardware Fault]
+    fix_cn: [减少干扰, 重启, 如错误仍然发生，返厂维修]
+    fix_cn_ours: [Reduce the noise, Restart, If it still happens, send it back to the factory]
+    fix_en: [Lower Environmental Noise, Restart, Return to Factory]
+
+  - {code: "38-42", cn: 预留, cn_ours: Reserved, en: Reserved}
+
+  - {code: "43-46", cn: 无刷直流控制器专用, cn_ours: Only for brushless DC (BLDC) controllers, en: Just For BLDC Controller}
