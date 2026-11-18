@@ -68,7 +68,7 @@ Pick listings marked "Choice" where you can: they usually ship free and faster.
 | Seeed CAN boards | They're 3.3V all through, which is what the firmware and `wiring.md` expect. The cheap blue AliExpress MCP2515 boards are 5V and need extra wiring. Already in the Core parcel, so no extra shipping |
 | TVS diodes | Fake parts are common in cheap diodes, and element14 has them for NZ$2.24 |
 | Mini560 bucks | Already cheap in NZ (Gogo:Tronics NZ$2.95). Not worth the wait |
-| 4G dongle (later) | Get the real Waveshare SIM7600G-H from [Waveshare](https://www.waveshare.com/sim7600g-h-4g-dongle.htm) (AU$115.90 on their site). Third-party listings call it "unbranded" |
+| 4G dongle (later) | The Huawei E3372h-607 is fine from AliExpress or Trade Me if the label checks out. If you go Waveshare SIM7600G-H, buy it from [Waveshare](https://www.waveshare.com/sim7600g-h-4g-dongle.htm) directly: third-party listings call it "unbranded" |
 
 ## Order online this week (other shops)
 
@@ -151,7 +151,8 @@ screens. Most "wireless CarPlay adapters" in NZ shops are the wrong kind.
 | Part | Why | Price | Notes |
 |---|---|---|---|
 | [Raspberry Pi AI HAT+ 2](https://www.pbtech.co.nz/product/SEVRBP0446/Raspberry-Pi-5-Official-AI-Hat-2) | Camera AI, local voice assistant | ~NZ$423 PB Tech (search result), or [Core Electronics](https://core-electronics.com.au/raspberry-pi-ai-hat-plus-2.html) AU$289 (~NZ$357-373 landed) | **Not buying now.** The Pi box stays 56 mm tall for it, the Pi's PCIe slot stays free, its header stays clear (the CAN board sits on the box wall), and the Pololu regulator has the spare power |
-| **Waveshare SIM7600G-H 4G Dongle** (optional) | Anti-theft tracking and remote access | US$101.99 at [waveshare.com](https://www.waveshare.com/sim7600g-h-4g-dongle.htm), or about NZ$139-179 plus shipping on Fruugo NZ | Picked by the 4G anti-theft work. Not at PB Tech. Goes inside the Pi box |
+| **Huawei E3372h-607 4G USB stick** (optional, cheaper pick) | Anti-theft tracking, SMS and remote access | ~US$36-42 (~NZ$66-77) on eBay/AliExpress (search results), or second-hand on Trade Me | Bands 1/3/7/8/28/40, which covers Spark, One NZ and 2degrees including the 700 MHz B28 country band ([listing](https://ubbthreads.com/store/item/Huawei-E3372h-607-4G-LTE-FDD-TDD-B40-4GX-USB-Dongle-Mobile-Broadband-150Mbps-NEW_314457944618.html)). Shows up on the Pi as a plain network adaptor, no driver needed, and SMS works through its built-in web API. **Check the label under the cap says E3372h-607** (other versions like -153 or -320 miss B28), and that it's unlocked if second-hand. No GPS built in, but the Pi already has the GPS puck. Light data and SMS is all we need |
+| Waveshare SIM7600G-H 4G Dongle (optional, dearer) | Same, plus its own GPS | US$101.99 at [waveshare.com](https://www.waveshare.com/sim7600g-h-4g-dongle.htm), or about NZ$139-179 plus shipping on Fruugo NZ | The 4G anti-theft work's first pick. Worth it only if we want a GPS fix that keeps working when the Pi's own GPS puck is unplugged or cut. Goes inside the Pi box |
 | Prepaid SIM (optional) | For the 4G dongle | | Needs topping up once a year |
 | AirTag (optional) | Backup tracker | about NZ$47-68 | Hidden somewhere separate from the Pi box |
 | **Kingston XS1000 1TB USB-C SSD** (optional) | Video drive for the dashcam and Sentry | NZ$189-253 at PB Tech (HDDKCP225100, the price moved between checks) | USB, not NVMe, so the PCIe slot stays free for the AI HAT. Sits in a cradle in the Pi box lid, no case needed |
