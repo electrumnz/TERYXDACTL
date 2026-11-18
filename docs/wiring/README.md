@@ -511,8 +511,8 @@ Fuses not in the block (inline, at the battery or on a board):
 | ADS1 | ADS1115 ADC (0x48) | control_box | planned | ALERT pin left free so GP22 can be the steering CAN chip select (read "ready" over I2C) |
 | ADS2 | Second ADS1115 (0x49) | control_box | planned (optional) | Brake pedal regen only See [`docs/brake-regen.md`](../../docs/brake-regen.md). |
 | OPTO | 8-ch opto board (PC817, 12 V in) | control_box | planned |  |
-| RELAYS | 8-ch relay board | control_box | confirmed | Owned. JD-VCC jumper off, coils on 5 V, inputs from 3.3 V |
-| RELAYS2 | 2-ch relay board | control_box | planned (optional) | Relay 9 steering enable, relay 10 drive lock (uses the NC contact) |
+| RELAYS | 8-ch relay board | control_box | planned | Mechanical 5 V relays with opto and JD-VCC jumper (AliExpress cart). The solid state G3MB-202P board Sam has is AC only and won't turn off on 12 V DC. JD-VCC jumper off, coils on 5 V, inputs from 3.3 V |
+| RELAYS2 | 4-ch relay board (2 used, 2 spare) | control_box | planned (optional) | Relay 9 steering enable, relay 10 drive lock (uses the NC contact) |
 | BTS1 | BTS7960 1 (front diff) | control_box | confirmed |  |
 | BTS2 | BTS7960 2 (2WD/4WD) | control_box | planned |  |
 | BTS3 | BTS7960 3 (tray) | control_box | planned |  |
@@ -556,7 +556,7 @@ Fuses not in the block (inline, at the battery or on a board):
 | CAM_FRONT | Camera Module 3 Wide (front) | dash | planned | Inside the screen housing, 200-300 mm ribbon |
 | CAM_CABIN | Cabin camera (sentry) | dash | placeholder (optional) | Being worked out in the 4G / sentry thread. Port TBC |
 | GPS | DFRobot TEL0138 USB GPS | dash | planned (optional) |  |
-| MODEM_4G | 4G USB modem | dash | placeholder (optional) | Being worked out in the 4G / sentry thread |
+| MODEM_4G | SIMCom A7670SA 4G board | dash | placeholder (optional) | 6-pin header S G V K T R G. V takes 5-10 V from the spare Mini560 5 V buck. NEVER raw 12 V (10 V max, and the car runs 14.4 V with spikes). K is tied to ground on the board, so it starts by itself. T/R are 115200 baud TTL to the Pi's GPIO 15/14; measure T before connecting (3.3 V ok, else BSS138). Micro USB also on board |
 | SSD | USB SSD (recordings) | dash | placeholder (optional) | Only if we record footage. Shares the hub's bandwidth; never NVMe on the PCIe port |
 | CARPLAY | Carlinkit CPC200-CCPA | dash | planned (optional) |  |
 | USB_DAC | USB audio out | dash | planned (optional) |  |
