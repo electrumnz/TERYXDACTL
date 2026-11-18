@@ -94,8 +94,9 @@ Keys follow the io-map ids in `config/io-map.yaml`.
 
 **Pi sensors (not fitted yet)**
 
-The dash's tilt/GPS widget, tilt alarms and day/night Auto read these when they're there. A
-sensor service on the Pi will publish them later; the simulator fakes them now.
+The dash's tilt/GPS widget, tilt alarms and day/night Auto read these when they're there. On the
+Pi they come from `teryx_dash/imu.py` and the 4G board's GPS (`teryx_dash/remote.py`); the
+simulator fakes them when those aren't there.
 
 | Key | Type | Notes |
 |---|---|---|
