@@ -153,6 +153,15 @@ A small built-in fake vehicle runs in the page. Other demos: `?demo=park`, `?dem
 to open a screen straight away. Settings that need the Pi (limits, updates, Wi-Fi) say
 "not available in demo mode".
 
+### Online copy (for a phone)
+
+Every merge to `main` that touches `dash/web` puts it online on GitHub Pages
+(`.github/workflows/dash-site.yml`) at https://electrumnz.github.io/TERYXDACTL/. On a
+`*.github.io` or `*.vercel.app` address the dash runs the demo vehicle on its own, so no Pi or
+laptop is needed. Add `?demo=park`, `?demo=reverse` or `?demo=faults` for the other demos. Hold the phone sideways (it asks you
+to in portrait), and "Add to Home Screen" opens it full screen. Search engines are told not to
+list it. One-off setup: repo Settings > Pages > Source: GitHub Actions.
+
 ### On the Pi
 
 ```bash
