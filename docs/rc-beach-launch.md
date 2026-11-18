@@ -204,6 +204,31 @@ jet ski. It doesn't need a SIM: it joins the Teryx's hotspot.
 | Speed | Slow chip (Helio G36). Fine for one camera at a time, **test it** | Varies | Better |
 | Cost | About €142-152 in Europe, US$127 in the US. NZ$396 at Rugged Phones NZ. AliExpress price **not checked** (it blocks us) | Trade Me, often under NZ$150 (**not checked**) | NZ$598.99 at PB Tech |
 
+**Sam's pick: Samsung Galaxy XCover 5 (second hand, Android 14).** 5.3"
+screen with a glove and wet-hands touch mode, IP68 (1.5 m fresh water for 30
+min), MIL-STD drops, a swappable battery, Wi-Fi 5 and USB-C. Small enough for the
+glove box. It also has the **XCover key**, a programmable side button, which our
+Android app uses as a **hardware STOP**: one press e-stops the remote, and the
+Teryx stops and holds on the brake. It only ever turns the e-stop on, never off,
+so a double press can't undo it. Reset with RESET on screen.
+
+XCover 5 setup:
+
+1. Install our app (`android/README.md`) and make it the Home app.
+2. **XCover key:** Settings > Advanced features > XCover key > turn on "Control
+   XCover key with app" and pick Teryx Remote. (Samsung's Knox docs describe this
+   setting. The menu wording may differ a little on Android 14.)
+3. **Touch sensitivity** on (Settings > Display), so wet fingers work.
+4. **Protect battery** on (Settings > Battery > More battery settings), which
+   stops charging at about 85 % (Samsung One UI) while it lives on the glove box charger.
+5. Turn off the side key's Bixby / power-menu shortcuts if they get in the way,
+   and set the screen timeout long. The app keeps the screen on while it's open
+   anyway.
+6. Optional full kiosk lock: factory reset, skip the Google account, then the adb
+   `dpm set-device-owner` step in `android/README.md`.
+
+**Not tested on a real XCover 5 yet**, so check the key on the first day.
+
 **Samsung Galaxy Tab Active2 (SM-T395), second hand.** Sam found one on Trade
 Me. It's an 8" 1280x800 rugged tablet with Wi-Fi 5 (802.11ac), a 4450 mAh
 swappable battery and an Exynos chip with 3 GB RAM. Samsung's last update for it
@@ -545,6 +570,7 @@ reason, throttle, brake, direction, link age).
 - Ulefone Armor X13 specs: https://m.gsmarena.com/ulefone_armor_x13-12475.php , https://smartprix.com/mobiles/ulefone-armor-x13-ppd14y4ftqd8 ; EU prices: https://aio.lv/en/product--ulefone-uf-ax13bk--11204123.md , https://arvutitark.ee/en/smart-devices/phones/nutitelefon-ulefone-armor-x13-664gb-must-1360683 ; NZ prices: https://ruggedphones.co.nz/product-category/rugged-android-phones/
 - Galaxy Tab Active2 SM-T395 last firmware (Android 9, Jan 2022 patch): https://doc.samsungmobile.com/SM-T395/007628190704/mlt.html ; specs: https://icecat.co.uk/fl-ph/amp/p/samsung/sm-t395nzkaitv/galaxy+tab-tablets-8806088952352-sm-t395-39302007.html , https://devicebeast.com/tablets/galaxy-tab-active-2
 - Chrome 138 is the last for Android 8 and 9: https://www.androidauthority.com/chrome-dropping-support-android-8-9-3571442 , https://9to5google.com/2025/06/26/google-chrome-android-versions-no-longer-supported-2025/
+- Samsung XCover key to an app (HARD_KEY_REPORT broadcast, key code 1015, "Control XCover key with app"): https://docs.samsungknox.com/dev/knox-sdk/features/independent-software-vendors-da/hardware-key-mappings/unmanaged-key-mappings/
 - Android kiosk: screen pinning vs kiosk app: https://help.virtualfrontdesk.com/en/article/android-tablets-chrome-in-full-screen-and-kiosk-mode-pinned-app ; Fully Kiosk launch on boot: https://community.home-assistant.io/t/fully-kiosk-not-launching-at-boot-on-my-android-tablet/1021331
 - PB Tech: Razer Kishi V3 https://www.pbtech.co.nz/product/JOYRAZ112682 , Backbone One Gen2 https://www.pbtech.co.nz/product/JOYBBN1006/BACKBONE-One-Classic-Gaming-Controller-Gen2-USB-C
 - Salt and connectors (dielectric grease, splices, washer distance): https://buywitchdoctors.com/blogs/news/ultimate-guide-on-how-to-protect-utv-atv-electronics-from-water-damage

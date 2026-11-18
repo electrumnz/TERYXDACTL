@@ -96,6 +96,12 @@
     $("estop").textContent = inp.estop ? "RESET" : "STOP";
     if (!inp.estop && box.state !== "off") box.state = "hold";
   });
+  // Hardware STOP: the Samsung XCover key, sent in by the Android app. Only ever turns
+  // the e-stop on (never off), so a double press can't undo it. Reset with the RESET button.
+  addEventListener("teryx-hardstop", () => {
+    if (!inp.estop) $("estop").click();
+    flash("XCOVER KEY: E-STOP", true);
+  });
 
   const dz = (v, d = 0.08) => (Math.abs(v) < d ? 0 : v);
   function readInputs() {
