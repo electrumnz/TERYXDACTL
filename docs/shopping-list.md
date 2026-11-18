@@ -294,7 +294,8 @@ From [`io-list.md`](io-list.md) and [`wiring.md`](wiring.md).
 | BTS7960 H-bridge | 3 (io-list says 1 on hand) | AliExpress | **Not verified** | No NZ shop stocks them that I could find. Fruugo NZ lists them but the prices and dates on the page looked stale |
 | 8-channel PC817 opto board, 12V in | 1 | AliExpress | **Not verified** | |
 | MOSFET PWM board, logic level (AOD4184 or similar), 5 channels | 1 (or five 1-channel boards) | AliExpress | **Not verified** | Only once a light bar is shown to dim |
-| 8-channel relay board | 1 (io-list says on hand) | | | Check it switches from 3.3V |
+| 8-channel 5V relay board, mechanical, opto + JD-VCC jumper (AliExpress cart) | 1 | | | The solid state G3MB-202P board on order is AC only and can't switch 12 V DC. Check it switches from 3.3V |
+| 4-channel 5V relay board, same type (AliExpress cart) | 1 | | | Relays 9-10 plus 2 spare |
 | Micro switch with lever (tray limits) | 2 | Jaycar SM1038 | **NZ price not verified** | [Australian page](https://jaycar-prod.australia-southeast1.gcp.storefrontcloud.io/spdt-250v-3a-miniature-micro-switch-with-lever/p/SM1038) shows $4.95. Wants to be sealed for under a tray: look for IP67 |
 | Resistors, diodes, 3.3V zener, 4.7k pull-ups | a few | Gogo:Tronics or Jaycar | **Not verified** | Values in `wiring.md` |
 | IMU (optional) | 1 | | **Not verified** | |

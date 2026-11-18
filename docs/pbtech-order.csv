@@ -13,6 +13,8 @@ AliExpress,AliExpress,4-channel class D amp 12V (RCA in + remote turn-on),,1,82.
 AliExpress,AliExpress,BTS7960 43A H-bridge,,2,12.00,24.00,"~US$6-7 each (Walmart 2-pack US$11.56)",One on hand; 3 needed,
 AliExpress,AliExpress,8-channel PC817 opto board 12V,,1,,,Not priced,,
 AliExpress,AliExpress,MOSFET PWM board 5ch (AOD4184),,1,,,Not priced,Only once a light bar dims,
+AliExpress,AliExpress,"8-channel 5V relay board, mechanical, opto + JD-VCC jumper, 10A NO/NC",,1,15.00,15.00,"US$8.29 x 1.822","Relays 1-8; not the solid state G3MB-202P kind (AC only); VCC 3.3V, JD-VCC 5V; active low",https://reach.dog/shop/treedix-official/products/treedix-dc-5v-8-channel-relay-board-module-isolated-optocoupler-high-and-low-level-h-l-level-trigger-module-triggered-compatible-with-arduino-raspberry-pi-8-channel
+AliExpress,AliExpress,"4-channel 5V relay board, same type",,1,9.00,9.00,"~US$5 estimate","Relays 9-10 + 2 spare",
 AliExpress,AliExpress,20-way blade fuse block with cover + negative bus (16 fuses planned),,1,40.00,40.00,"~US$15-25 estimate","Buy the blade fuses in NZ; 30A/way, 100A total, stud feed",https://www.aliexpress.com/w/wholesale-Modular%20Fuse%20Block.html
 AliExpress,AliExpress,30mm 5V 2-pin fan (3007),,1,6.00,6.00,"~US$2-5 estimate","Pi box lid; 30x30x7mm",
 AliExpress,AliExpress,SIMCom A7670SA 4G Cat-1 core board (must list B28),,1,28.00,28.00,"US$15.46 x 1.822","UART only = texts/WHERE/LOCK, too slow for cameras; better if USB-C goes to the module's own USB pins",https://www.aliexpress.us/item/3256808314829525.html
@@ -42,6 +44,6 @@ Later (optional),PB Tech,Raspberry Pi Camera Module 3 NoIR Wide (cabin camera),S
 Later,TBC,Powered USB hub,,0,,0.00,Not priced,Pi 5 has 4 USB ports,
 Later,PB Tech,EasyCAP DC60 USB capture (only if rear cam is RCA),SEVOEM9701,0,28.75,0.00,Search result 18 Nov,Optional,https://www.pbtech.co.nz/product/SEVOEM9701
 ,,TOTAL buy tomorrow (all PB Tech),,,,596.65,,,
-,,TOTAL AliExpress (priced),,,,270.00,,,
+,,TOTAL AliExpress (priced),,,,294.00,,,
 ,,TOTAL other online (priced),,,,269.59,,,
-,,TOTAL everything priced incl Aqua column,,,,1251.24,,,
+,,TOTAL everything priced incl Aqua column,,,,1275.24,,,
