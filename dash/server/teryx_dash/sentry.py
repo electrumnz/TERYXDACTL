@@ -33,6 +33,8 @@ import time
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
+
+from . import videoboard
 from typing import Any, Callable
 
 from aiohttp import web
@@ -283,6 +285,12 @@ def record_command(cam: str, device: str, out_dir: Path, cfg: dict, h264_camera:
     motion = ["-map", "0:v", "-vf", "fps=2,scale=64:36,format=gray", "-f", "rawvideo", "pipe:1"]
     enc = ["-c:v", "libx264", "-preset", "ultrafast", "-tune", "zerolatency", "-b:v", f"{kbps}k",
            "-maxrate", f"{kbps}k", "-bufsize", f"{kbps * 2}k", "-g", str(fps * 2), "-pix_fmt", "yuv420p"]
+    adv = videoboard.parse(device)
+    if adv is not None:
+        # Analogue camera on the video board: pick its input, raw PAL in, x264 out.
+        src = " ".join(videoboard.ffmpeg_source())
+        return ["sh", "-c", videoboard.shell_prefix(adv) + f"exec ffmpeg -loglevel error {src} -map 0:v "
+                f"-vf {videoboard.DEINTERLACE} " + " ".join(enc) + " " + " ".join(seg) + " " + " ".join(motion)]
     if re.fullmatch(r"csi[01]", device):
         # Ribbon camera: rpicam-vid encodes (in software on the Pi 5), ffmpeg only cuts it up.
         return ["sh", "-c",
@@ -363,6 +371,9 @@ async def cabin_snapshot(device: str) -> bytes | None:
     if re.fullmatch(r"csi[01]", device):
         cmd = ["rpicam-still", "-n", "--camera", device[-1], "-t", "500", "--width", "1280", "--height", "960",
                "-e", "jpg", "-o", "-"]
+    elif (adv := videoboard.parse(device)) is not None:
+        cmd = ["sh", "-c", videoboard.shell_prefix(adv) + "exec ffmpeg -loglevel error "
+               + " ".join(videoboard.ffmpeg_source()) + " -vf yadif -frames:v 1 -f mjpeg pipe:1"]
     else:
         cmd = ["ffmpeg", "-loglevel", "error", "-f", "v4l2", "-i", device, "-frames:v", "1", "-f", "mjpeg", "pipe:1"]
     if not shutil.which(cmd[0]):
@@ -411,7 +422,7 @@ class SentryService:
 
     def _device(self, cam: str) -> tuple[str, bool]:
         c = ((self.dash_settings().get("camera") or {}).get("cams") or {}).get(cam) or {}
-        dev = c.get("v4l2Device") or ("/dev/video0" if cam == "rear" else "")
+        dev = c.get("v4l2Device") or ("adv:0" if cam == "rear" else "")
         return dev, bool(c.get("h264"))
 
     async def tick(self) -> dict:
@@ -424,9 +435,17 @@ class SentryService:
         recording = []
         if self.plan.mode in ("dashcam", "sentry") and store and self.recorder and self.recorder.available():
             wanted = {}
+            board_used = False   # the video board has one decoder: one of its cameras at a time
             for cam in fitted_cams(self.dash_settings()):
                 dev, h264 = self._device(cam)
-                if dev and ((dev.startswith("csi") and shutil.which("rpicam-vid")) or Path(dev).exists()):
+                if dev.startswith("adv:"):
+                    if board_used or not Path(videoboard.node()).exists():
+                        continue
+                    board_used = True
+                    out = store.loop / cam
+                    out.mkdir(parents=True, exist_ok=True)
+                    wanted[cam] = record_command(cam, dev, out, cfg, h264)
+                elif dev and ((dev.startswith("csi") and shutil.which("rpicam-vid")) or Path(dev).exists()):
                     out = store.loop / cam
                     out.mkdir(parents=True, exist_ok=True)
                     wanted[cam] = record_command(cam, dev, out, cfg, h264)

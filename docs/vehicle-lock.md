@@ -76,7 +76,7 @@ Nothing here can be done by the dash on its own, on purpose.
 
 ## The gap: actually stopping it driving
 
-The Pico sets `drive_inhibit` (firmware `cb_out_t.drive_inhibit`, `0x716` flag bit 2) the whole
+The Pico sets `drive_inhibit` (firmware `cb_out_t.drive_inhibit`, `0x716` flag bit 2) and energises relay 10 (second MCP23017, 0x21; its NC contact opens the Shinegle KSI line) the whole
 time it's locked, but **nothing tells the Shinegle yet**, because its CAN isn't decoded. Until
 then the lock blocks everything the control box runs (4WD, diff, tray, winch, lights) and the
 simulator honours drive inhibit, but **on the real Teryx the motor would still drive.**

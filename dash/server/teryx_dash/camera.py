@@ -1,8 +1,8 @@
 """Camera as an MJPEG stream, for when the browser can't open the camera itself.
 
-Works for a USB camera or an RCA/AHD camera on a USB capture dongle (both are /dev/videoN, read
-with ffmpeg), and for a Raspberry Pi camera on the ribbon port ("csi0" or "csi1", read with
-rpicam-vid). Both tools are on Raspberry Pi OS. One ffmpeg per viewer; the dash shows one camera at a time (?cam=rear|front|trailer).
+Works for a Raspberry Pi camera on the ribbon port ("csi0", read with rpicam-vid), for an
+analogue camera on the video board on the second ribbon port ("adv:N", see videoboard.py), and
+for a /dev/videoN device (read with ffmpeg). Both tools are on Raspberry Pi OS. One ffmpeg per viewer; the dash shows one camera at a time (?cam=rear|front|trailer).
 """
 
 from __future__ import annotations
@@ -13,6 +13,8 @@ import shutil
 
 from aiohttp import web
 
+from . import videoboard
+
 BOUNDARY = "teryxframe"
 
 
@@ -20,7 +22,8 @@ async def mjpeg_response(req: web.Request, device: str) -> web.StreamResponse:
     if not device:
         return web.json_response({"error": "no device set for this camera (Settings > Camera)"}, status=404)
     csi = re.fullmatch(r"csi([01])", device)
-    if not csi and not re.fullmatch(r"/dev/video\d+", device):
+    adv = videoboard.parse(device)
+    if not csi and adv is None and not re.fullmatch(r"/dev/video\d+", device):
         return web.json_response({"error": "bad camera device"}, status=400)
     tool = "rpicam-vid" if csi else "ffmpeg"
     if not shutil.which(tool):
@@ -30,6 +33,14 @@ async def mjpeg_response(req: web.Request, device: str) -> web.StreamResponse:
         # itself, so they always come through here. rpicam-vid is on Raspberry Pi OS.
         cmd = ["rpicam-vid", "-n", "-t", "0", "--camera", csi.group(1), "--width", "1280", "--height", "720",
                "--framerate", "25", "--codec", "mjpeg", "-o", "-"]
+    elif adv is not None:
+        # Analogue camera on the video board: pick its input, then raw PAL -> MJPEG.
+        if shutil.which("v4l2-ctl"):
+            sel = await asyncio.create_subprocess_exec(*videoboard.select_cmd(adv), stdout=asyncio.subprocess.DEVNULL,
+                                                       stderr=asyncio.subprocess.DEVNULL)
+            await sel.wait()
+        cmd = ["ffmpeg", "-loglevel", "error", *videoboard.ffmpeg_source(), "-vf", videoboard.DEINTERLACE,
+               "-f", "mjpeg", "-q:v", "5", "-r", "25", "pipe:1"]
     else:
         cmd = ["ffmpeg", "-loglevel", "error", "-f", "v4l2", "-input_format", "mjpeg", "-video_size", "1280x720",
                "-i", device, "-f", "mjpeg", "-q:v", "5", "-r", "25", "pipe:1"]

@@ -136,6 +136,9 @@ def test_record_commands():
     assert "libx264" not in copy and "-c:v copy" in copy and "-input_format h264" in copy
     csi = record_command("cabin", "csi1", S.Path("/v"), CFG)
     assert csi[0] == "sh" and "rpicam-vid" in csi[2] and "--camera 1" in csi[2]
+    adv = record_command("trailer", "adv:1", S.Path("/v"), CFG)
+    assert adv[0] == "sh" and "--set-input=1" in adv[2] and "-standard PAL" in adv[2] and "yadif" in adv[2]
+    assert "libx264" in adv[2] and "-segment_time 60" in adv[2]
 
 
 class Gw:

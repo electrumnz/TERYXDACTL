@@ -36,7 +36,7 @@
 #define PIN_LIGHT_FRONT_4  19
 #define PIN_LIGHT_INTERIOR 20
 #define PIN_EXP_INT        21
-#define PIN_ADC_RDY        22
+#define PIN_EPS_CAN_CS     22   // steering CAN chip select (ADS1115 ALERT left free)
 #define PIN_I2C_SDA        26
 #define PIN_I2C_SCL        27
 #define PIN_DIFF_IS        28   // ADC2
@@ -46,6 +46,7 @@
 #define MCP2515_OSC_HZ     8000000u  // most cheap modules have an 8 MHz crystal. Check yours.
 #define I2C_BAUD           400000u
 #define MCP23017_ADDR      0x20
+#define MCP23017_2_ADDR    0x21      // relays 9-16: steering enable, drive lock
 #define ADS1115_ADDR       0x48
 #define PCA9685_ADDR       0x40      // PWM board: stock lamps, floods, beacon, trailer bar
 

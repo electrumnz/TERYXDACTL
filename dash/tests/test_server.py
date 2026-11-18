@@ -63,10 +63,10 @@ async def test_camera_picks_device_per_camera(client, monkeypatch):
         return web.json_response({"device": device})
 
     monkeypatch.setattr(cam_mod, "mjpeg_response", fake_mjpeg)
-    # Nothing saved yet: rear falls back to /dev/video0, trailer has no device.
+    # Nothing saved yet: rear falls back to the video board's input 0, trailer has no device.
     await client.get("/api/camera.mjpg")
     await client.get("/api/camera.mjpg?cam=trailer")
-    assert seen == ["/dev/video0", ""]
+    assert seen == ["adv:0", ""]
     # Old single-camera settings file: its device is the rear camera.
     await client.put("/api/settings", json={"camera": {"v4l2Device": "/dev/video4"}})
     await client.get("/api/camera.mjpg?cam=rear")

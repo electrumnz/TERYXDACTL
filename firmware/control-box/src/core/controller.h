@@ -28,6 +28,12 @@ enum {
     R_WINCH_OUT = 4, R_SPARE6 = 5, R_ACCESSORY = 6, R_POWER_HOLD = 7,
 };
 
+// Relays 9-16 (second MCP23017 port A). Bit 0 = relay 9.
+enum {
+    R2_STEER_ENABLE = 0,    // relay 9: EPS ignition feed (assist on)
+    R2_DRIVE_LOCK = 1,      // relay 10: opens the Shinegle KSI line (NC contact) while locked
+};
+
 enum { ACT_DIFF = 0, ACT_4WD = 1, ACT_TRAY = 2, ACT_COUNT = 3 };
 enum { L_FRONT_1 = 0, L_FRONT_2, L_FRONT_3, L_FRONT_4, L_INTERIOR, L_COUNT };
 
@@ -55,6 +61,10 @@ typedef struct {
     bool throttle_hold;        // ask the Shinegle to hold throttle (how is TBC until it's decoded)
     bool drive_inhibit;        // vehicle locked: no drive at all (how is TBC, docs/vehicle-lock.md)
     bool save_lock;            // hardware layer: write c->lock.saved to its flash sector, then clear
+    uint8_t relays2;           // R2_* bits on the second MCP23017 (0x21), logical
+    bool eps_on;               // send the Toyota EPS frames (eps.h) every 20 ms
+    bool eps_speed_known;
+    uint16_t eps_speed_x10;    // 0.1 km/h, for the EPS speed frame
 } cb_out_t;
 
 typedef void (*cb_send_fn)(const can_frame_t *f, void *user);

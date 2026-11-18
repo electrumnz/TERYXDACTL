@@ -124,8 +124,9 @@ export class CameraScreen {
     // Demo mode, or the bench simulator with no camera plugged in: show a fake view instead.
     const fake = () => this.ctx.store.get("link.demo") || this.ctx.store.get("sim.scenario") != null;
     if (this.ctx.store.get("link.demo")) { this.testPattern(); return; }
-    // A Raspberry Pi ribbon camera (v4l2Device "csi0"/"csi1") can only come through the server stream.
-    const csi = /^csi\d$/.test(cam.v4l2Device || "");
+    // A Raspberry Pi ribbon camera ("csi0") or the analogue video board ("adv:N") can only come
+    // through the server stream.
+    const csi = /^(csi\d|adv:\d)$/.test(cam.v4l2Device || "");
     if (!csi && (src === "usb" || src === "auto")) {
       try {
         const id = cam.deviceId, size = { width: { ideal: 1280 }, height: { ideal: 720 } };

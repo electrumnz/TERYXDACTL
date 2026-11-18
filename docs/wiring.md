@@ -120,7 +120,7 @@ flowchart LR
 | GP6 | MCP2515 INT | |
 | GP26 / GP27 | MCP23017 + ADS1115 SDA / SCL | 4.7kΩ pull-ups to 3.3V (once, not on every board) |
 | GP21 | MCP23017 INTB | |
-| GP22 | ADS1115 ALERT/RDY | |
+| GP22 | Steering CAN chip select | ADS1115 ALERT left free |
 | 3V3(OUT) | MCP2515 module VCC (if 3.3V type), MCP23017 VDD, ADS1115 VDD | If the MCP2515 module is a 5V TJA1050 type, power its transceiver from 5V but keep the MCP2515 chip's SPI at 3.3V, or use a SN65HVD230 (3.3V) module instead |
 | GND | All boards | |
 
