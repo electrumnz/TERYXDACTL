@@ -235,7 +235,7 @@
 <line x1="920" y1="357" x2="1190" y2="357" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="1055" y="361" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN8</text>
 </g>
-<g data-device="OPTO" data-status="planned"><title>OPTO: 8-ch opto board (PC817, 12 V in)</title><rect x="920" y="401" width="270" height="229" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<g data-device="OPTO" data-status="planned"><title>OPTO: 8-ch opto board (PC817, 12 V in) - All 8 channels used. A second 8-ch board (AliExpress cart) gives 8 spare inputs, read on MCP2 port B</title><rect x="920" y="401" width="270" height="229" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
 <text x="930" y="419" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">8-ch opto board (PC817, 12 V in)</text>
 <text x="930" y="434" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">OPTO · planned</text>
 <line x1="920" y1="448" x2="1190" y2="448" stroke="#d0d7de" stroke-width="0.5"/>
