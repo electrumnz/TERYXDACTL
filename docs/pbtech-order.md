@@ -52,7 +52,6 @@ Pick listings marked "Choice" where you can: they usually ship free and faster.
 | **BTS7960 43A H-bridge** | "BTS7960" | 2 | ~US$6-7 each (~NZ$12). Not found on AliExpress itself; [Walmart](https://www.walmart.com/ip/BTS7960-43A-High-Power-Motor-Driver-Module-Smart-Car-Driver-Module-for-Current-Limit/8904873796) has 2 for US$11.56 | Actuators. You have one already (io-list), 3 needed |
 | **8-channel PC817 opto board, 12V in** | "8 channel optocoupler PC817 12V" | 1 | Not priced | See `shopping-list.md` section 6 |
 | **MOSFET PWM board, 5 channels** | "AOD4184 MOSFET module" | 1 (or 5 singles) | Not priced | Only once a light bar is shown to dim |
-| **Phone gamepad grip** (Razer Kishi style) for RC mode | "GameSir G8 Galileo", from the **GameSir official store** | 1 | US$40-45 on deals (~NZ$73-82), list price [US$79.99](https://gamesir.com/collections/all-products/products/gamesir-g8-galileo). Deal posts: [Slickdeals](https://slickdeals.net/f/19268917-gamesir-phone-controllers-g8-galileo-usb-c-gray-44-79-g8-bluetooth-black-free-u-s-shipping-aliexpress) | Half the [Razer Kishi V3](https://www.pbtech.co.nz/product/JOYRAZ112682) at PB Tech (NZ$167.58, [`rc-beach-launch.md`](rc-beach-launch.md)). USB-C, Hall effect sticks and triggers, stretches to fit the phone. Get the **USB-C** one, not the Bluetooth G8+, so it plugs straight into the phone like the Kishi. Test it on the RC page (HTTPS) when it arrives |
 | **Blade fuse block, 20-way, with cover and negative bus** | "20 way blade fuse box negative bus cover" | 1 | ~US$15-25 (~NZ$27-46), my estimate. AliExpress search pages show bait prices like [US$1.09](https://www.aliexpress.com/w/wholesale-Modular%20Fuse%20Block.html); a similar 12-way Nilight is [US$22.99 at Walmart](https://www.walmart.com/c/kp/electrical-box-bus) | The wiring plan has **16 fused circuits** (`config/wiring.yaml`, F1-F16), so get a 20-way for spares. Look for: clip-on cover (ideally a seal), built-in negative bus, 30 A per way and 100 A total, studs or screw terminals for the feed (not a push-on spade), and blown-fuse LEDs are a bonus. A proper brand (Blue Sea, Narva) is better if it'll live where it gets wet |
 | **30 mm 5V fan, 2-pin (3007)** | "3007 5V fan 2 pin" | 1-2 | ~US$2-5 (~NZ$4-9), my estimate. A [reseller copy of an AliExpress listing](https://ubbthreads.com/store/item/4x-2-Pin-30MMx30MM-3007-5V-Cooling-Fan-radiating-For-Raspberry-Pi-2-3-Model-B-4B_285308377334.html) shows US$8.89 for 4 | Pi box lid. Must be 30 x 30 x 7 mm to fit the printed lid. Get a spare, they're cheap |
 | **4G module board, SIMCom A7670SA** (Sam's pick: a bare board to solder in, not a stick) | "A7670SA core board B28" | 1 | ~US$15.46 (~NZ$28). [Listing with B1/B2/B3/B4/B5/B7/B8/B28/B66](https://www.aliexpress.us/item/3256808314829525.html) | **Must be the A7670SA**, and the listing must show **B28** (700 MHz, the NZ country band). The A7670E and some "A7670SA" listings only have B1/B3/B5/B7/B8/B20, no B28 ([SIMCom table via manuals.plus](https://manuals.plus/ae/1005008976290540)). Cat-1 LTE, about 10 Mbps down: plenty for light data and SMS. SIM slot and TTL UART on the board. Talks plain AT commands, so SMS is easy on Linux. **Over UART only it does texts, WHERE and LOCK, but the data is far too slow for live cameras or RC over 4G.** Better buy if you can find one: an A7670SA board whose USB-C goes to the module's **own USB pins** (not a CH340-type USB-serial chip), so it plugs into the Pi over USB at full speed. **Pick the GPS option ("FASE" or "GNSS"; "LASE" has no GPS)**: it can track with the key off for anti-theft. Keep the TEL0138 puck for the dash until the module's GPS proves itself. Skip the flat FPC antenna option. Sam found a candidate at ~NZ$34, still to check against these points |
@@ -60,7 +59,7 @@ Pick listings marked "Choice" where you can: they usually ship free and faster.
 | 4-channel BSS138 level shifter | "BSS138 level shifter 4 channel" | 1 | ~NZ$2 (estimate) | Only if the board brings out the module's **1.8 V** UART directly. The Pi's pins are 3.3 V |
 | Active GPS antenna, IPEX/u.FL (only with the GPS version) | "active GPS antenna ipex" | 1 | ~NZ$8 (estimate) | Check the board powers an active antenna |
 | LTE antenna, wideband 698-2700 MHz, u.FL to SMA lead | "4G LTE antenna 698-2700 SMA" | 1 | ~NZ$12 (estimate) | The little PCB stick antennas are poor at 700 MHz (B28), which is what you'll be on out in the country. Mount it outside the metal, near the GPS puck |
-| | | | **about NZ$348** | Dongle NZ$65, amp NZ$82, 2 x BTS7960 NZ$24, grip NZ$78, fuse block ~NZ$40, fan ~NZ$6, 4G board, buck, level shifter, LTE and GPS antennas ~NZ$53. Opto and MOSFET boards on top |
+| | | | **about NZ$270** | Dongle NZ$65, amp NZ$82, 2 x BTS7960 NZ$24, fuse block ~NZ$40, fan ~NZ$6, 4G board, buck, level shifter, LTE and GPS antennas ~NZ$53. Opto and MOSFET boards on top |
 
 ### Better bought in NZ or from a proper shop, not AliExpress
 
@@ -102,13 +101,12 @@ AUD to NZD at 1.234 (Wise, 17 Nov). USD to NZD at 1.822 (Wise, 18 Nov, no time s
 | | NZ$ |
 |---|---|
 | Buy tomorrow (all PB Tech) | ~597 |
-| AliExpress cart | ~348 |
+| AliExpress cart | ~270 |
 | Other online orders (Core, Gogo, element14) | ~270 |
 | Aqua column | ~115 |
-| **Everything priced** | **about NZ$1,329** |
+| **Everything priced** | **about NZ$1,251** |
 
-The amp (NZ$82) and the gamepad grip (NZ$78) are new to the list today. Without those two it's
-about NZ$1,169. Not counted: blade fuses, the opto and MOSFET boards, Narva socket, trailer camera bits,
+The amp (NZ$82) is new to the list today. Without it, it's about NZ$1,169. Not counted: blade fuses, the opto and MOSFET boards, Narva socket, trailer camera bits,
 speakers and amp wiring, and everything under "Later".
 
 ## Wiring the 4G board
@@ -168,6 +166,7 @@ screens. Most "wireless CarPlay adapters" in NZ shops are the wrong kind.
 
 | Part | Why | Price | Notes |
 |---|---|---|---|
+| GameSir G8 Galileo phone gamepad grip, USB-C (GameSir official store on AliExpress) | RC mode | US$40-45 on deals (~NZ$73-82), list [US$79.99](https://gamesir.com/collections/all-products/products/gamesir-g8-galileo) | **Not now (Sam, 18 Nov).** RC mode uses on-screen sticks until then; gamepad support stays in the code. Half the price of the Razer Kishi V3 (NZ$167.58 at PB Tech) |
 | [Raspberry Pi AI HAT+ 2](https://www.pbtech.co.nz/product/SEVRBP0446/Raspberry-Pi-5-Official-AI-Hat-2) | Camera AI, local voice assistant | ~NZ$423 PB Tech (search result), or [Core Electronics](https://core-electronics.com.au/raspberry-pi-ai-hat-plus-2.html) AU$289 (~NZ$357-373 landed) | **Not buying now.** The Pi box stays 56 mm tall for it, the Pi's PCIe slot stays free, its header stays clear (the CAN board sits on the box wall), and the Pololu regulator has the spare power |
 | Huawei E3372h-607 4G USB stick (plug-in alternative to the A7670SA board in the AliExpress cart) | Anti-theft tracking, SMS and remote access | ~US$36-42 (~NZ$66-77) on eBay/AliExpress (search results), or second-hand on Trade Me | Bands 1/3/7/8/28/40, which covers Spark, One NZ and 2degrees including the 700 MHz B28 country band ([listing](https://ubbthreads.com/store/item/Huawei-E3372h-607-4G-LTE-FDD-TDD-B40-4GX-USB-Dongle-Mobile-Broadband-150Mbps-NEW_314457944618.html)). Shows up on the Pi as a plain network adaptor, no driver needed, and SMS works through its built-in web API. **Check the label under the cap says E3372h-607** (other versions like -153 or -320 miss B28), and that it's unlocked if second-hand. No GPS built in, but the Pi already has the GPS puck. Light data and SMS is all we need |
 | Waveshare SIM7600G-H 4G Dongle (dearer alternative) | Same, plus its own GPS | US$101.99 at [waveshare.com](https://www.waveshare.com/sim7600g-h-4g-dongle.htm), or about NZ$139-179 plus shipping on Fruugo NZ | The 4G anti-theft work's first pick. Worth it only if we want a GPS fix that keeps working when the Pi's own GPS puck is unplugged or cut. Goes inside the Pi box |
@@ -186,7 +185,7 @@ screens. Most "wireless CarPlay adapters" in NZ shops are the wrong kind.
 | Pi 5 8GB | NZ$371.39 | [Core Electronics](https://core-electronics.com.au/raspberry-pi-5-model-b-8gb.html) AU$283.85 (~NZ$350-366 landed) + shipping | **No.** About the same once shipping is on. Buy at PB Tech for the local warranty |
 | Camera Module 3 Wide | ~NZ$80.71, out of stock | element14 NZ ~NZ$69, out of stock | Whoever has stock first |
 | CarPlay dongle | Not stocked (CA525 is the wrong type) | AliExpress ~NZ$60-71, Carlinkit's own store ~NZ$118, Audio City NZ$180 | **AliExpress** (Sam's pick). Audio City if you want it now |
-| Phone gamepad grip | Razer Kishi V3 NZ$167.58 | GameSir G8 Galileo ~NZ$73-82 on AliExpress | **Yes**, about half |
+| Phone gamepad grip (later) | Razer Kishi V3 NZ$167.58 | GameSir G8 Galileo ~NZ$73-82 on AliExpress | **Yes**, about half, when you get one |
 | AI HAT+ 2 (later) | ~NZ$423 | Core Electronics ~NZ$357-373 landed | **Yes**, when the time comes |
 | Everything small | | | Not worth splitting: savings would be smaller than a shipping fee |
 

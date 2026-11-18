@@ -5,7 +5,7 @@
 > leaves room for it: the Pi box stays 56 mm tall, the PCIe slot and the HAT's header stay
 > free, and the Pololu regulator has the spare power. The CarPlay dongle (Carlinkit CCPA) is
 > now on the list (from AliExpress), plus an AliExpress cart (amp, fuse block, fan, H-bridges,
-> phone gamepad grip), a 20-way fuse block for the 16 planned fuses, a 4th CAN board for the power steering column, and the 4G modem and
+> 4G board; the phone gamepad grip is "later"), a 20-way fuse block for the 16 planned fuses, a 4th CAN board for the power steering column, and the 4G modem and
 > video SSD as "later". **The list for buying tomorrow (19 Nov), by shop with SKUs and a
 > total, is [`pbtech-order.md`](pbtech-order.md).** Cameras have their own write-up in
 > [`cameras.md`](cameras.md).
