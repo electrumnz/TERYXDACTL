@@ -215,3 +215,60 @@ async def test_phone_app_link(tmp_path):
         assert (await r.json())["replies"] == []
     finally:
         await c.close()
+
+
+class FakeAt:
+    """Stands in for the module on the UART: answers like an A7670 does."""
+
+    def __init__(self, inbox=""):
+        self.cmds, self.inbox = [], inbox
+
+    async def __call__(self, cmd, body=None, timeout=5):
+        self.cmds.append((cmd, body))
+        if cmd.startswith("AT+CMGL"):
+            out, self.inbox = self.inbox, ""
+            return out + "\r\nOK\r\n"
+        if cmd.startswith("AT+CMGS"):
+            return "\r\n> \r\n+CMGS: 12\r\n\r\nOK\r\n"
+        if cmd == "AT+CSQ":
+            return "\r\n+CSQ: 20,99\r\n\r\nOK\r\n"
+        if cmd == "AT+COPS?":
+            return '\r\n+COPS: 0,0,"Spark NZ",7\r\n\r\nOK\r\n'
+        return "\r\nOK\r\n"
+
+
+def test_cmgl_parse_and_times():
+    txt = ('\r\n+CMGL: 3,"REC UNREAD","+64211234567","","26/11/18,19:04:11+52"\r\nWHERE 4821\r\n'
+           '+CMGL: 4,"REC UNREAD","+6427000000","","26/11/18,19:05:00+52"\r\nhello\r\nsecond line\r\n')
+    got = R.parse_cmgl(txt)
+    assert [i for i, _ in got] == [3, 4]
+    assert got[0][1].sender == "+64211234567" and got[0][1].text == "WHERE 4821"
+    assert got[1][1].text == "hello\nsecond line"
+    assert abs(got[0][1].when - parse_mm_time("2026-11-18T19:04:11+13:00")) < 1
+
+
+async def test_at_modem_over_uart(tmp_path):
+    at = FakeAt('\r\n+CMGL: 3,"REC UNREAD","+64211234567","","26/11/18,19:04:11+52"\r\nWHERE 4821\r\n')
+    m = R.AtModem(at)
+    msgs = await m.read_sms()
+    assert msgs[0].text == "WHERE 4821" and ("AT+CMGD=3", None) in at.cmds and ("AT+CMGF=1", None) in at.cmds
+    await m.send_sms("021 123 4567", "Hi — there")
+    cmd, body = at.cmds[-1]
+    assert cmd == 'AT+CMGS="+64211234567"' and body == "Hi   there"
+    st = await m.status()
+    assert st["present"] and st["operator"] == "Spark NZ" and st["signal_pct"] == 65 and st["texts_only"]
+    # The service: texts work, CAMS says honestly there's no data on this setup.
+    gw = Gw()
+    svc = RemoteService(m, tmp_path / "remote.json", gw, gw.snapshot, rules=RemoteRules(cfg()))
+    at.inbox = '\r\n+CMGL: 5,"REC UNREAD","+64211234567","","99/01/01,00:00:00+00"\r\nCAMS 4821\r\n'
+    svc.clock = lambda: R.parse_at_time("99/01/01,00:00:10+00")
+    await svc.poll()
+    assert "no 4G data" in at.cmds[-1][1] and svc.data_off_at is None
+
+
+def test_make_modem_picks_uart(monkeypatch):
+    monkeypatch.setenv("TERYX_MODEM", "at:/dev/ttyAMA0:921600")
+    m = R.make_modem()
+    assert isinstance(m, R.AtModem) and m.at.port == "/dev/ttyAMA0" and m.at.baud == 921600
+    monkeypatch.setenv("TERYX_MODEM", "fake")
+    assert isinstance(R.make_modem(), FakeModem)
