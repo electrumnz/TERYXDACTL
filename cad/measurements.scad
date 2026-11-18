@@ -220,8 +220,11 @@ modem_buck     = [17, 22];          // MP1584 module, X and Y
 modem_buck_pos = [39, -37.5];
 modem_cap      = [10.5, 21];        // 1000 uF capacitor, diameter and length (16 V is usually 10 x 20)
 modem_cap_pos  = [39, -20];         // lies along X
-modem_sma      = 1;                 // SMA bulkheads in the right wall
+// SMA bulkheads in the right-hand wall: [y, z, ring] each. y along the wall,
+// z up from the box floor's underside. ring = 1 engraves a ring round the hole on
+// the outside, so you can tell them apart: plain hole = 4G, ringed and higher = GPS
+// (for the A7670SA FASE/GNSS board's active GPS aerial). Delete the GPS row if the
+// board has no GPS.
+sma_holes      = [[4, 38, 0],       // 4G (LTE) aerial
+                  [22, 48, 1]];     // GPS aerial, ringed
 sma_hole       = 6.6;               // 1/4"-36 SMA bulkhead thread is 6.35 mm
-sma_z          = 40;                // height of the SMA hole from the box floor's underside
-sma_y0         = 4;                 // first SMA hole (Y), above the side vents
-sma_pitch      = 14;                // gap between holes if there's more than one

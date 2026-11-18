@@ -185,8 +185,11 @@ module pi_box_model() {
         translate([pi_cable[0], pi_cable[1], -e]) linear_extrude(groove_d)
             difference() { circle(d = scr_cable_d + 6 + groove_w); circle(d = scr_cable_d + 6 - groove_w); }
         // SMA bulkheads for the 4G aerials, right-hand wall above the vents
-        if (modem_on) for (i = [0 : modem_sma - 1])
-            translate([in[0] / 2 - 1, sma_y0 + i * sma_pitch, sma_z]) rotate([0, 90, 0]) cylinder(d = sma_hole, h = box_wall + 2);
+        if (modem_on) for (h = sma_holes) translate([in[0] / 2 - 1, h[0], h[1]]) rotate([0, 90, 0]) {
+            cylinder(d = sma_hole, h = box_wall + 2);
+            // ID ring engraved on the outside face
+            if (h[2] == 1) translate([0, 0, 1 + box_wall - 0.6]) difference() { cylinder(d = 17, h = 1); cylinder(d = 15, h = 1); }
+        }
         // air vents, louvred so the outside opening points down
         for (sx = [-1, 1], y = linspace(-in[1] / 2 + 10, -4, 4))
             translate([sx * (in[0] / 2 + box_wall / 2), y, box_floor + in[2] / 2])
