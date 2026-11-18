@@ -16,7 +16,7 @@ async function api(path, opts = {}) {
 }
 
 const SECTIONS = [
-  ["display", "Display"], ["lock", "Vehicle lock"], ["remote", "Remote control"], ["sounds", "Sounds and alerts"], ["audio", "Audio and media"], ["lights", "Lights setup"], ["camera", "Cameras"], ["limits", "Safety limits"],
+  ["display", "Display"], ["lock", "Vehicle lock"], ["remote", "Remote control"], ["sounds", "Sounds and alerts"], ["audio", "Audio and media"], ["lights", "Lights setup"], ["camera", "Cameras"], ["sentry", "Sentry and clips"], ["phone4g", "Remote (4G texts)"], ["limits", "Safety limits"],
   ["diff", "Diff calibration"], ["features", "Features"], ["faults", "Faults"], ["updates", "Updates"], ["wifi", "Wi-Fi"], ["about", "About"],
 ];
 
@@ -292,7 +292,7 @@ export class SettingsScreen {
   // ---------- Camera ----------
   async sec_camera(body) {
     const s = this.ctx.settings;
-    this.title(body, "Cameras", "Up to three: rear, front and trailer. Each can be a USB camera, or an RCA/AHD camera through a USB capture dongle. Both show up below as a device. Cameras that aren't fitted show greyed out on the Cameras screen.");
+    this.title(body, "Cameras", "Up to four: rear, front, trailer and cabin. Each can be a USB camera, or an RCA/AHD camera through a USB capture dongle. Both show up below as a device. Cameras that aren't fitted show greyed out on the Cameras screen.");
     body.appendChild(row("Source", "Auto tries the camera directly, then the server stream.", seg([["auto", "Auto"], ["usb", "Camera"], ["stream", "Server stream"]], s.get("camera.source"), (v) => s.set("camera.source", v))));
     body.appendChild(row("Pop up in reverse", "Shows a camera when you select reverse, and goes back after.", toggle(s.get("camera.autoOnReverse"), (v) => s.set("camera.autoOnReverse", v))));
     body.appendChild(row("Trailer camera in reverse", "With a trailer plugged in, reverse shows the trailer camera instead of the rear one. You can still swap on the Cameras screen.", toggle(s.get("camera.trailerInReverse") !== false, (v) => s.set("camera.trailerInReverse", v))));
@@ -303,6 +303,7 @@ export class SettingsScreen {
       rear: "Mirror on, so left on screen is left behind you.",
       front: "Grille or bull bar camera, for seeing over a crest. Usually no mirror and no guide lines.",
       trailer: "On the back of the trailer. Only shows when a trailer is plugged in (reed switch in the 7-pin socket).",
+      cabin: "Small camera on the dash looking at the seats, on the Pi's second ribbon port (csi1). Records with the others and takes the face shot if someone tries the key while it's locked.",
     };
     CAMS.forEach((c) => {
       const k = `camera.cams.${c.id}`, cfg = s.get(k) || {};
@@ -315,7 +316,106 @@ export class SettingsScreen {
       body.appendChild(row("Which device", c.id === "rear" ? "" : "With more than one camera plugged in, pick which one this is.", sel));
       body.appendChild(row("Mirror image", "", toggle(!!cfg.mirror, (v) => s.set(`${k}.mirror`, v))));
       body.appendChild(row("Guide lines", "", toggle(!!cfg.guides, (v) => s.set(`${k}.guides`, v))));
+      body.appendChild(row("Camera sends H.264", "Turn on if this camera sends H.264 itself. It's then recorded as is, with no work for the Pi (docs/sentry.md).", toggle(!!cfg.h264, (v) => s.set(`${k}.h264`, v))));
     });
+  }
+
+  // ---------- Sentry and clips (docs/sentry.md) ----------
+  // Nothing here texts or alerts anyone: clips are saved, and you look when you want to.
+  async sec_sentry(body) {
+    const s = this.ctx.settings;
+    this.title(body, "Sentry and clips", "With the Teryx locked and the key off, the cameras keep recording and save a clip when something moves. Someone trying the key while it's locked saves one too, with a photo from the cabin camera. With the key on, the cameras record in a loop like a dashcam. Nothing is sent anywhere: look at clips here, or from your phone (Remote (4G texts)).");
+    const stat = el(`<div class="set-row"><div><div class="lbl">Now</div><div class="desc" id="sn-now">…</div></div></div>`);
+    body.appendChild(stat);
+    body.appendChild(row("Sentry when locked", "Keeps the Pi on with the key off while the Teryx is locked. Uses about 0.9 A from the 12V battery (docs/sentry.md).", toggle(s.get("sentry.enabled") !== false, (v) => s.set("sentry.enabled", v))));
+    body.appendChild(row("Stop sentry after", "Then everything turns off until the key goes on.", stepper(s.get("sentry.maxHours") ?? 12, { step: 1, min: 1, max: 72, fmt: (v) => `${v} h`, onChange: (v) => s.set("sentry.maxHours", v) })));
+    body.appendChild(row("Or when the 12V drops under", "Leaves enough in the battery for the winch and to start up. The control box checks this too (Safety limits, setting 32).", stepper(s.get("sentry.min12v") ?? 12.2, { step: 0.1, min: 11.5, max: 13, fmt: (v) => `${v.toFixed(1)} V`, onChange: (v) => s.set("sentry.min12v", Math.round(v * 10) / 10) })));
+    body.appendChild(row("Dashcam while driving", "Records every fitted camera with the key on. Oldest is deleted first when the drive fills.", toggle(s.get("sentry.dashcam") !== false, (v) => s.set("sentry.dashcam", v))));
+    body.appendChild(row("Frame rate", "Lower uses less of the Pi and less space. Takes effect next time recording starts.", stepper(s.get("sentry.fps") ?? 15, { step: 5, min: 5, max: 30, fmt: (v) => `${v} fps`, onChange: (v) => s.set("sentry.fps", v) })));
+    body.appendChild(row("Space for saved clips", "Share of the video drive kept for saved clips. The loop gets the rest. Kept clips are never deleted.", stepper(s.get("sentry.eventsPct") ?? 25, { step: 5, min: 10, max: 60, fmt: (v) => `${v}%`, onChange: (v) => s.set("sentry.eventsPct", v) })));
+    const save = el(`<button class="btn">Save a clip now</button>`);
+    save.onclick = async () => { try { await api("sentry/save", { method: "POST" }); toast("Saved the last 30 s and the next 30 s.", "good"); draw(); } catch (e) { toast(`Couldn't save: ${e.message}`, "bad"); } };
+    body.appendChild(row("Save", "Keeps 30 s before and 30 s after now, from every camera.", save));
+    const list = el(`<div style="margin-top:14px"></div>`);
+    body.appendChild(list);
+    const WHY = { motion: "Movement", attempted_start: "Key tried while locked", manual: "Saved by hand" };
+    const draw = async (full = true) => {
+      let d;
+      const now = $(body, "#sn-now");
+      if (!now) return;
+      try { d = await api("sentry"); } catch (e) { now.textContent = `No answer (${e.message}).`; return; }
+      const mode = { off: "Off", dashcam: "Dashcam recording", sentry: "Sentry watching" }[d.mode] || d.mode;
+      const disk = d.disk ? ` Video drive: ${d.disk.free_gb} GB free of ${d.disk.total_gb} GB.` : " No video drive found.";
+      now.textContent = `${mode}${d.recording.length ? ` (${d.recording.join(", ")})` : ""}.${d.stop_reason ? ` Sentry stopped: ${d.stop_reason}.` : ""}${disk}${d.problem ? ` ${d.problem}` : ""}`;
+      if (!full) return;
+      list.innerHTML = `<h3>Saved clips</h3>${d.events.length ? "" : `<div class="muted small">None yet.</div>`}`;
+      if (d.simulated) {
+        const fake = el(`<button class="btn sm">Pretend movement</button>`);
+        fake.onclick = async () => { await api("sentry/sim-motion", { method: "POST", body: { cam: "front" } }); toast("Simulator: the front camera saw something.", "good"); setTimeout(draw, 1500); };
+        list.appendChild(row("Simulator", "Only works in Sentry: lock it and turn the key off first.", fake));
+      }
+      d.events.forEach((e) => {
+        const when = new Date(e.t * 1000).toLocaleString("en-NZ", { dateStyle: "medium", timeStyle: "short" });
+        const r = el(`<div class="set-row"><div><div class="lbl">${WHY[e.reason] || e.reason}${e.kept ? " (kept)" : ""}</div><div class="desc">${when}, ${e.mb} MB</div><div class="clips"></div></div><div class="ctl"></div></div>`);
+        const clips = r.querySelector(".clips");
+        e.files.forEach((f) => {
+          const url = `/api/clips/${e.id}/${f}`;
+          clips.appendChild(f.endsWith(".jpg") ? el(`<img src="${url}" alt="Cabin photo" style="max-width:220px;margin:6px 6px 0 0;border-radius:6px">`)
+            : el(`<a class="btn sm" style="margin:6px 6px 0 0" href="${url}" target="_blank">${f.split("-")[0]} ${f.slice(-10, -4).replace(/(..)(..)(..)/, "$1:$2:$3")}</a>`));
+        });
+        if (!e.files.length) clips.appendChild(el(`<div class="muted small">No video (no camera recording then${d.disk ? "" : ", or no video drive"}).</div>`));
+        const keep = el(`<button class="btn sm">Keep</button>`), del = el(`<button class="btn sm">Delete</button>`);
+        keep.onclick = async () => { await api(`clips/${e.id}/keep`, { method: "POST" }); draw(); };
+        del.onclick = async () => { await api(`clips/${e.id}`, { method: "DELETE" }); draw(); };
+        if (!e.kept) r.querySelector(".ctl").appendChild(keep);
+        r.querySelector(".ctl").appendChild(del);
+        list.appendChild(r);
+      });
+    };
+    draw();
+    this._poll = setInterval(() => { if (!document.hidden) draw(false); }, 5000);
+  }
+
+  // ---------- Remote (4G) (docs/remote-access.md) ----------
+  async sec_phone4g(body) {
+    this.title(body, "Remote (4G)", "A 4G stick with a prepaid SIM, data normally off. Text the Teryx from your phone: WHERE, LOCK, CAMS or OFF, then your code. It only answers your number with the right code, and never texts on its own.");
+    let d;
+    try { d = await api("remote"); } catch (e) { body.appendChild(el(`<div class="muted">No answer (${e.message}).</div>`)); return; }
+    const put = async (b, okText) => { try { d = { ...d, ...(await api("remote", { method: "PUT", body: b })) }; if (okText) toast(okText, "good"); this.open("phone4g"); } catch (e) { toast(e.message, "bad"); } };
+    const m = d.modem || {};
+    body.appendChild(row("4G stick", "", el(`<span class="muted">${m.present ? `Found${m.operator ? `, ${m.operator}` : ""}${m.signal_pct != null ? `, signal ${m.signal_pct}%` : ""}. Data ${m.data_on ? "ON" : "off"}.` : "Not plugged in."}${d.simulated ? " (simulator)" : ""}</span>`)));
+    body.appendChild(row("Remote texts", d.code_set && d.numbers.length ? "" : "Add your number and a code first.", toggle(!!d.enabled, (v) => put({ enabled: v }, v ? "Remote texts on." : "Remote texts off."))));
+    const nums = el(`<button class="btn">${d.numbers.length ? d.numbers.join(", ") : "Add"}</button>`);
+    nums.onclick = async () => {
+      const t = await keyboard({ title: "Your mobile number(s), comma between", value: d.numbers.join(", "), hint: "Up to 3, like 021 123 4567", doneLabel: "Save" });
+      if (t != null) put({ numbers: t.split(",").map((x) => x.trim()).filter(Boolean) }, "Saved.");
+    };
+    body.appendChild(row("Phones allowed", "Texts from any other number are ignored, with no reply.", nums));
+    const code = el(`<button class="btn">${d.code_set ? "Change" : "Set"}</button>`);
+    code.onclick = async () => {
+      const c = await askPin("Text code", "4 to 8 digits. Different from the lock PIN.", { max: 8 });
+      if (c) put({ code: c }, "Code saved. Only a scrambled copy is kept.");
+    };
+    body.appendChild(row("Code", "Goes after each word, like LOCK 4821. 5 wrong codes and it ignores everything for an hour.", code));
+    body.appendChild(row("Data stays on for", "After a CAMS text. Then it turns off by itself to save credit.", stepper(d.data_on_min, { step: 5, min: 5, max: 240, fmt: (v) => `${v} min`, onChange: (v) => put({ data_on_min: v }) })));
+    if (d.log && d.log.length) {
+      body.appendChild(el(`<h3 style="margin-top:16px">Last texts</h3>`));
+      d.log.slice().reverse().forEach((l) => body.appendChild(el(`<div class="muted small">${new Date(l.t * 1000).toLocaleString("en-NZ")}: ${l.word} from ${l.from}, ${l.done ? `did ${l.done}` : `ignored (${l.ignored})`}</div>`)));
+    }
+    if (d.simulated) {
+      body.appendChild(el(`<h3 style="margin-top:16px">Try it (simulator)</h3>`));
+      const go = el(`<button class="btn">Send a text…</button>`);
+      go.onclick = async () => {
+        const t = await keyboard({ title: "Text to the Teryx", value: "WHERE ", doneLabel: "Send" });
+        if (t == null) return;
+        try {
+          const r = await api("remote/sim-text", { method: "POST", body: { from: d.numbers[0] || "021 000 0000", text: t } });
+          toast(r.replies.length ? `Reply: ${r.replies.join(" / ")}` : "No reply (ignored).", r.replies.length ? "good" : "warn");
+          this.open("phone4g");
+        } catch (e) { toast(e.message, "bad"); }
+      };
+      body.appendChild(row("Pretend to be your phone", "Sends from the first allowed number.", go));
+    }
   }
 
   // ---------- Safety limits (control box) ----------

@@ -15,7 +15,7 @@ from ..regen import REGEN_LIMIT, REGEN_STATE
 
 # ---------------------------------------------------------------- enums
 PICO_STATE = {0: "boot", 1: "ok", 2: "degraded", 3: "failsafe"}
-DASH_STATE = {0: "boot", 1: "ok", 2: "shutting_down"}
+DASH_STATE = {0: "boot", 1: "ok", 2: "shutting_down", 3: "sentry"}   # sentry: docs/sentry.md
 FOURWD_STATE = {0: "2wd", 1: "4wd", 2: "to_4wd", 3: "to_2wd", 4: "fault", 5: "unknown"}  # unknown = after boot, before the first move
 TRAY_STATE = {0: "down", 1: "up", 2: "mid", 3: "raising", 4: "lowering", 5: "fault"}
 DIFF_STATE = {0: "idle", 1: "moving", 2: "fault"}
@@ -94,11 +94,12 @@ INPUT_BITS = {   # 0x710 byte 3, MCP23017 B0-B7
     7: "in.trailer",      # trailer plugged in: reed switch in the 7-pin socket (see docs/cameras.md)
 }
 # Vehicle lock (docs/vehicle-lock.md)
-LOCK_CMD = {1: "lock", 2: "unlock", 3: "verify", 4: "set_pin", 5: "set_puk", 6: "remove"}
+LOCK_CMD = {1: "lock", 2: "unlock", 3: "verify", 4: "set_pin", 5: "set_puk", 6: "remove",
+            7: "remote"}   # remote: text from the owner's phone, docs/remote-access.md
 LOCK_STATE = {0: "off", 1: "unlocked", 2: "locked"}
 LOCK_RESULT = {
     0: "none", 1: "ok", 2: "wrong", 3: "not_parked", 4: "no_pin", 5: "lockout",
-    6: "bad_digits", 7: "not_allowed", 8: "recovered",
+    6: "bad_digits", 7: "not_allowed", 8: "recovered", 9: "pending",
 }
 LOCK_RESULT_TEXT = {
     "wrong": "Wrong PIN",
@@ -108,6 +109,7 @@ LOCK_RESULT_TEXT = {
     "bad_digits": "PIN must be 4 to 6 digits",
     "not_allowed": "Not allowed right now",
     "recovered": "Unlocked with the recovery code. Set a new PIN",
+    "pending": "Remote lock: locks once it has been stopped for 10 s or the key is off",
 }
 LOCK_PIN_MIN, LOCK_PIN_MAX, LOCK_PUK_LEN = 4, 6, 8
 
@@ -205,6 +207,8 @@ PICO_STATUS = Message(
         S("reverse_active", 50, 1),
         S("shutdown_request", 51, 1, comment="Key off: Pi should shut down"),
         S("parked", 52, 1, comment="Stopped and safe for OTA updates"),
+        S("sentry_hold", 53, 1, comment="Key off, power kept on because the Pi asked for sentry"),
+        S("sentry_flat", 54, 1, comment="Sentry refused: 12V under setting 32 (until the key goes on)"),
         S("speed", 56, 8, unit="km/h", comment="Speed as the Pico sees it, 255 = unknown"),
     ),
 )
@@ -277,6 +281,7 @@ PICO_LOCK = Message(
         S("puk_set", 33, 1, comment="A recovery code is stored"),
         S("inhibit", 34, 1, comment="Drive inhibit asked for (how is TBC until the Shinegle is decoded)"),
         S("lockout", 35, 1),
+        S("pending", 36, 1, comment="Remote lock asked for, waiting until stopped 10 s or key off"),
         S("result", 40, 8, choices=LOCK_RESULT, comment="Result of the last 0x705"),
         S("result_count", 48, 8, comment="Goes up by one per 0x705"),
         S("fails", 56, 8, comment="Wrong tries in a row (kept over power cuts)"),
@@ -339,6 +344,8 @@ SETTINGS: dict[int, tuple[str, str, int, int, int]] = {
     # Safe drive changes (docs/drive-changes.md)
     30: ("shift_wait_ms", "ms", 10000, 0, 30000),
     31: ("shift_throttle_hold", "bool", 1, 0, 1),
+    # Sentry (docs/sentry.md)
+    32: ("sentry_min_12v_mv", "mV", 12200, 11000, 13500),
 }
 SETTING_SAVE = 0xF0
 SETTING_RESET = 0xF1

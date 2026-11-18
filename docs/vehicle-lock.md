@@ -18,6 +18,15 @@ parked at the beach. You need the PIN to drive again.
   (`in.park`) and nothing moving (4WD, diff, tray, winch). Otherwise it says why and stays
   unlocked.
 
+### Locking by text (4G)
+
+With the 4G stick fitted, a `LOCK <code>` text from your listed number asks for a **remote**
+lock (`0x705` command 7). The control box remembers it in flash ("lock waiting", `0x716` bit 36)
+and locks only once the winch isn't running and either the key is off or it's been stopped for
+10 s. It never locks while moving, and it doesn't need the park brake (a thief won't set it).
+The PIN on the dash unlocks it as normal, and also cancels a lock that's still waiting. See
+[`remote-access.md`](remote-access.md).
+
 ### While locked
 
 | Thing | What happens |
@@ -104,6 +113,7 @@ and the park brake on, so it can't cut power while moving.
 | Flash sector | `main_pico.c`: the sector before the settings sector |
 | Rules (simulator, same answers) | `teryx/vehicle_lock.py`, used by `teryx/sim/controlbox.py` |
 | CAN layouts | `teryx/canbus/messages.py` `PI_LOCK` 0x705, `PICO_LOCK` 0x716, `firmware/.../protocol.h` |
+| Remote (text) lock | `vlock_remote_check()` in `lock.c`, `remote_safe()` in `controller.c`, `dash/server/teryx_dash/remote.py` |
 | Dash | `dash/web/js/lock.js` (lock screen, PIN pad), Settings > Vehicle lock, demo copy in `demo.js` |
 | Art | `dash/web/img/dino/lock-sleep.webp`, `lock-awake.webp`, `padlock.webp` (Higgsfield, 2026-11-18) |
 | Tests | `firmware/control-box/tests/test_controller.c` (lock tests), `tests/test_bus.py`, `tests/test_vehicle_lock.py` |

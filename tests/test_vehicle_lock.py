@@ -165,3 +165,40 @@ def test_end_to_end_lock_stops_driving(bus_spec):
     finally:
         gw.stop()
         sim.stop()
+
+
+# ---- Remote lock (docs/remote-access.md): same rules as test_lock_remote in the firmware
+def test_rules_remote_lock_waits_until_stopped():
+    lk = VehicleLock()
+    assert lk.command("remote", None, False, 0) == "no_pin" and not lk.pending
+    lk.command("set_pin", "4821", True, 1)
+    assert lk.command("remote", None, False, 2) == "pending" and lk.pending and not lk.locked
+    assert lk.frame(2, False)["pending"] == 1
+    assert not lk.remote_check(False) and not lk.locked
+    # pending survives a power cut
+    lk = VehicleLock.restore(lk.stored(), 3)
+    assert lk.pending
+    assert lk.remote_check(True) and lk.locked and not lk.pending
+    assert lk.command("remote", None, True, 4) == "ok"
+    # the right PIN cancels a pending remote lock
+    assert lk.command("unlock", "4821", True, 5) == "ok" and not lk.locked
+    lk.command("remote", None, False, 6)
+    assert lk.command("unlock", "4821", True, 7) == "ok" and not lk.pending
+    assert not lk.remote_check(True) and not lk.locked
+
+
+def test_emulator_remote_lock_never_on_the_move(b):
+    cb = b.cb
+    cb.on_frame("PI_LOCK", lock_frame("set_pin", "4821"), b.t)
+    b.speed = 40
+    b.run(0.5)
+    cb.on_frame("PI_LOCK", lock_frame("remote"), b.t)
+    assert cb.lock.result == "pending" and not cb.locked
+    b.run(20)
+    assert not cb.locked and not cb.drive_inhibit
+    assert dict(cb.frames())["PICO_LOCK"]["pending"] == 1
+    b.speed = 0
+    b.run(5)
+    assert not cb.locked          # a short stop isn't enough
+    b.run(6)
+    assert cb.locked and cb.drive_inhibit and not cb.lock.pending

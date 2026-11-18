@@ -44,7 +44,9 @@ from ..canbus import messages as M
 from ..canbus import shinegle as SG
 from ..config import safety_defaults
 from ..regen import BrakeRegen
-from ..vehicle_lock import VehicleLock, decode_digits
+from ..vehicle_lock import REMOTE_STOP_S, VehicleLock, decode_digits
+
+SENTRY_LOW_S = 30   # 12V under setting 32 this long: sentry off until key on (SENTRY_LOW_MS in config.h)
 
 FW_VERSION = (0, 1)  # what the fake box reports as its firmware version
 
@@ -136,6 +138,10 @@ class ControlBox:
     forced: dict = field(default_factory=dict)
     bench_faults: set = field(default_factory=set)
     ignition_off_at: float | None = None
+    dash_state: str = "boot"
+    sentry_hold: bool = False                  # key off, power kept on for sentry (docs/sentry.md)
+    sentry_flat: bool = False                  # 12V too low: no sentry until key on
+    sentry_low_since: float | None = None
     aux_12v: float = 13.6
     bench_aux_mv: int = 0
     temp: float = 32.0
@@ -147,6 +153,7 @@ class ControlBox:
     # vehicle lock
     lock: VehicleLock = field(default_factory=VehicleLock)
     lock_replies: int = 0                      # 0x716 frames to send straight away
+    still_since: float | None = None           # remote lock: known stopped since
 
     def __post_init__(self):
         self.inputs["in.ignition"] = True
@@ -186,6 +193,7 @@ class ControlBox:
             self.throttle = mc.get("mc.throttle", self.throttle)
         elif name == "PI_HEARTBEAT":
             self.last_dash = now
+            self.dash_state = M.DASH_STATE.get(int(v.get("dash_state", 0)), "boot")
         elif name == "PI_LIGHTS":
             self.lights_req = {k: v[k] for k in self.lights_req}
         elif name == "PI_DRIVE":
@@ -222,10 +230,19 @@ class ControlBox:
             return False
         return self.stopped() or not self.inp("in.ignition")
 
+    def remote_safe(self, now: float) -> bool:
+        """Remote lock: key off, or known stopped for 10 s with the winch not pulling."""
+        if self.winch_dir != 0:
+            return False
+        if not self.inp("in.ignition"):
+            return True
+        return self.still_since is not None and now - self.still_since >= REMOTE_STOP_S
+
     def _lock_command(self, v: dict, now: float) -> None:
         cmd = M.LOCK_CMD.get(int(v["cmd"]), "?")
         was = self.lock.locked
         self.lock.command(cmd, decode_digits(v), self.can_lock(), now)
+        self.lock.remote_check(self.remote_safe(now))
         if self.lock.locked and not was:
             self._lock_down()
         self.lock_replies += 1
@@ -470,6 +487,13 @@ class ControlBox:
 
         # --- vehicle lock: nothing moves while locked
         self.lock.tick(now)
+        if self.stopped():
+            if self.still_since is None:
+                self.still_since = now
+        else:
+            self.still_since = None
+        if self.lock.remote_check(self.remote_safe(now)):
+            self._lock_down()
         if self.locked and (self.anything_moving() or self.winch_armed or self.fourwd_wait or self.diff_wait):
             self._lock_down()
 
@@ -575,8 +599,23 @@ class ControlBox:
             self.aux_12v = self.bench_aux_mv / 1000
         self.temp += ((32 + winch_a * 0.03) - self.temp) * dt * 0.02
 
-        # --- key-off and power hold
-        if not self.inp("in.ignition"):
+        # --- sentry: 12V must stay above setting 32, else no sentry until key on
+        ign = self.inp("in.ignition")
+        if ign:
+            self.sentry_flat, self.sentry_low_since = False, None
+        elif self.aux_12v * 1000 < self.s("sentry_min_12v_mv"):
+            if self.sentry_low_since is None:
+                self.sentry_low_since = now
+            elif now - self.sentry_low_since >= SENTRY_LOW_S:
+                self.sentry_flat = True
+        else:
+            self.sentry_low_since = None
+        self.sentry_hold = (not ign and self.dash_state == "sentry" and not self.sentry_flat
+                            and self.dash_ok() and (self.ignition_off_at is None
+                                                       or self.relays()["power.hold"]))
+
+        # --- key-off and power hold (sentry keeps it on; when sentry ends the wait starts again)
+        if not ign and not self.sentry_hold:
             if self.ignition_off_at is None:
                 self.ignition_off_at = now
         else:
@@ -628,7 +667,7 @@ class ControlBox:
         lo = self.lights_out
         any_front = any(lo.get(f"front_{n}", 0) for n in range(1, 5))
         ign = self.inp("in.ignition")
-        holding = ign or (self.ignition_off_at is not None
+        holding = ign or self.sentry_hold or (self.ignition_off_at is not None
                           and self.t - self.ignition_off_at < self.s("shutdown_wait_s"))
         return {
             "light.rear": bool(lo.get("rear")),
@@ -703,7 +742,9 @@ class ControlBox:
                 "winch_armed": int(self.winch_armed),
                 "speed_valid": int(self.speed_known()),
                 "reverse_active": int(self.inp("in.reverse")),
-                "shutdown_request": int(not self.inp("in.ignition")),
+                "shutdown_request": int(not self.inp("in.ignition") and not self.sentry_hold),
+                "sentry_hold": int(self.sentry_hold),
+                "sentry_flat": int(self.sentry_flat),
                 "parked": int(self.parked()),
                 "speed": min(254, round(self.speed)) if self.speed_known() else 255,
             }),

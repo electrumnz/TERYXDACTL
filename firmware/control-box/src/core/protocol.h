@@ -38,7 +38,9 @@ typedef struct {
 } can_frame_t;
 
 // ---- 0x700 dash state --------------------------------------------------------
-enum { DASH_BOOTING = 0, DASH_RUNNING = 1, DASH_SHUTTING_DOWN = 2 };
+// DASH_SENTRY: key off, but the Pi asks to stay on to watch the cameras (docs/sentry.md).
+// The Pico keeps power on while the 12V battery is above setting 32.
+enum { DASH_BOOTING = 0, DASH_RUNNING = 1, DASH_SHUTTING_DOWN = 2, DASH_SENTRY = 3 };
 
 // ---- 0x701 light effects -------------------------------------------------------
 enum {
@@ -103,6 +105,8 @@ enum {
     // Safe drive changes (docs/drive-changes.md)
     SET_SHIFT_WAIT_MS = 30,       // how long a 4WD / diff request waits for the right speed, 0 = refuse at once
     SET_SHIFT_THROTTLE_HOLD = 31, // 1 = ask the Shinegle to hold throttle while a shift runs from a standstill
+    // Sentry (docs/sentry.md)
+    SET_SENTRY_MIN_12V_MV = 32,   // key off: keep the Pi on for sentry only while the 12V is above this
     SET_COUNT,
     SET_CMD_SAVE = 0xF0,          // write current settings to flash
     SET_CMD_DEFAULTS = 0xF1,      // go back to defaults (not saved until 0xF0)
@@ -121,6 +125,8 @@ enum {
     LOCK_CMD_SET_PIN = 4,    // digits = new PIN (first PIN, or inside the window)
     LOCK_CMD_SET_PUK = 5,    // digits = new 8 digit recovery code (inside the window)
     LOCK_CMD_REMOVE = 6,     // turn the lock off, forget PIN and code (inside the window)
+    LOCK_CMD_REMOTE = 7,     // remote lock (text from the owner's phone): lock as soon as it's
+                             // safe, i.e. stopped for 10 s or key off. Never cuts drive on the move
 };
 // ---- 0x716 vehicle lock state --------------------------------------------------------
 // [0] state, [1] tries left before a lockout, [2-3] u16 lockout seconds left,
@@ -131,6 +137,7 @@ enum { LOCK_OFF = 0, LOCK_UNLOCKED = 1, LOCK_LOCKED = 2 };
 #define LOCK_FLAG_PUK_SET       0x02u  // a recovery code is stored
 #define LOCK_FLAG_INHIBIT       0x04u  // drive inhibit is being asked for
 #define LOCK_FLAG_LOCKOUT       0x08u  // too many wrong tries, waiting
+#define LOCK_FLAG_PENDING       0x10u  // remote lock asked for, waiting until it's stopped
 enum {
     LOCK_RES_NONE = 0,
     LOCK_RES_OK = 1,
@@ -141,6 +148,7 @@ enum {
     LOCK_RES_BAD_DIGITS = 6,  // wrong length or not digits
     LOCK_RES_NOT_ALLOWED = 7, // e.g. change PIN without the window, or while locked
     LOCK_RES_RECOVERED = 8,   // unlocked with the recovery code: PIN and code wiped
+    LOCK_RES_PENDING = 9,     // remote lock taken: it locks once stopped for 10 s or key off
 };
 
 // ---- 0x710 status --------------------------------------------------------------
@@ -157,6 +165,8 @@ enum { CB_STATE_BOOT = 0, CB_STATE_OK = 1, CB_STATE_DEGRADED = 2, CB_STATE_FAILS
 #define FLAG_REVERSE            0x04u
 #define FLAG_SHUTDOWN_REQUEST   0x08u   // key is off, Pi should shut down now
 #define FLAG_PARKED             0x10u   // stopped and nothing moving (OTA allowed)
+#define FLAG_SENTRY_HOLD        0x20u   // key off, power kept on for sentry
+#define FLAG_SENTRY_FLAT        0x40u   // sentry refused: 12V too low (until the key goes on)
 
 enum {
     FAULT_DASH_LINK = 0,

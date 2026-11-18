@@ -20,6 +20,10 @@ Rules:
     and within 60 s of entering the PIN (VERIFY). Setting a PIN also drops the
     old recovery code.
  7. Only a salted hash of the PIN and code is kept, never the digits.
+ 8. Remote lock (a text from the owner's phone, checked by the Pi): needs a PIN set,
+    but no PIN in the command. It never cuts drive on the move: it waits ("pending",
+    kept over power cuts) until known stopped for 10 s with the winch not pulling, or
+    key off. The right PIN cancels a pending remote lock. docs/remote-access.md
 """
 
 from __future__ import annotations
@@ -39,6 +43,7 @@ FIRST_WAIT_S = 30
 MAX_WAIT_S = 900
 WINDOW_S = 60
 HASH_ROUNDS = 512
+REMOTE_STOP_S = 10
 
 
 def lock_hash(salt: bytes, digits: str) -> bytes:
@@ -94,6 +99,7 @@ class VehicleLock:
     salt: bytes = b""
     locked: bool = False
     fails: int = 0
+    pending: bool = False             # remote lock waiting for the Teryx to stop
     # RAM only
     lockout_until: float | None = None
     window_until: float | None = None
@@ -124,7 +130,7 @@ class VehicleLock:
     def stored(self) -> dict:
         """What survives a power cut."""
         return {"pin_hash": self.pin_hash, "puk_hash": self.puk_hash, "salt": self.salt,
-                "locked": self.locked, "fails": self.fails}
+                "locked": self.locked, "fails": self.fails, "pending": self.pending}
 
     @classmethod
     def restore(cls, stored: dict, now: float) -> "VehicleLock":
@@ -151,8 +157,27 @@ class VehicleLock:
         self.result_count = (self.result_count + 1) & 0xFF
         return r
 
+    def remote_check(self, safe: bool) -> bool:
+        """Every tick. safe = key off, or stopped 10 s and the winch not pulling. True if it locked."""
+        if not self.pending or not safe:
+            return False
+        self.pending = False
+        self.locked = True
+        self.window_until = None
+        self._save()
+        return True
+
     def _handle(self, cmd: str, digits: str | None, can_lock: bool, now: float) -> str:
         window = self.window_until is not None
+        if cmd == "remote":
+            if not self.pin_set:
+                return "no_pin"
+            if self.locked:
+                return "ok"
+            if not self.pending:
+                self.pending = True
+                self._save()
+            return "pending"
         if cmd == "lock":
             if not self.pin_set:
                 return "no_pin"
@@ -176,7 +201,7 @@ class VehicleLock:
                     return self._wrong(now)
                 self.pin_hash = self.puk_hash = None
                 self.salt = b""
-                self.locked = False
+                self.locked = self.pending = False
                 self.fails = 0
                 self._save()
                 self._open_window(now)
@@ -189,8 +214,8 @@ class VehicleLock:
                 self.fails = 0
                 self._save()
             if cmd == "unlock":
-                if self.locked:
-                    self.locked = False
+                if self.locked or self.pending:
+                    self.locked = self.pending = False
                     self._save()
                 return "ok"
             if self.locked:
@@ -206,6 +231,7 @@ class VehicleLock:
             self.pin_hash = lock_hash(self.salt, digits)
             self.puk_hash = None
             self.fails = 0
+            self.pending = False
             self._save()
             self._open_window(now)
             return "ok"
@@ -222,6 +248,7 @@ class VehicleLock:
                 return "not_allowed"
             self.pin_hash = self.puk_hash = None
             self.salt = b""
+            self.pending = False
             self.window_until = None
             self._save()
             return "ok"
@@ -231,7 +258,7 @@ class VehicleLock:
         """Debug UART inside the control box: wipe and unlock."""
         self.pin_hash = self.puk_hash = None
         self.salt = b""
-        self.locked = False
+        self.locked = self.pending = False
         self.fails = 0
         self.lockout_until = self.window_until = None
         self._save()
@@ -246,7 +273,7 @@ class VehicleLock:
             "state": _STATE_CODE[self.state()],
             "tries_left": tries, "lockout_s": left,
             "window": int(self.window_until is not None), "puk_set": int(self.puk_hash is not None),
-            "inhibit": int(inhibit), "lockout": int(lockout),
+            "inhibit": int(inhibit), "lockout": int(lockout), "pending": int(self.pending),
             "result": _RESULT_CODE[self.result],
             "result_count": self.result_count, "fails": min(255, self.fails),
         }

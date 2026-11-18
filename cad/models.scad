@@ -220,8 +220,26 @@ module modem_mount() {
     }
 }
 
+// Cradle for the video SSD on the inside of the lid (z < 0 hangs into the box). Two rails
+// along the long sides, an end stop, the USB end open. Printed with the lid (rails up).
+ssd_rail = 2.4;
+ssd_depth = ssd_size[2] + 1.5;     // rails a bit deeper than the SSD so the tie goes under it
+module ssd_cradle() {
+    L = ssd_size[0]; W = ssd_size[1];
+    translate([ssd_pos[0], ssd_pos[1], 0]) difference() {
+        union() {
+            for (sy = [-1, 1]) translate([-L / 2 - ssd_rail, sy > 0 ? W / 2 : -W / 2 - ssd_rail, -ssd_depth])
+                cube([L + ssd_rail, ssd_rail, ssd_depth + e]);
+            translate([-L / 2 - ssd_rail, -W / 2 - ssd_rail, -6]) cube([ssd_rail, W + 2 * ssd_rail, 6 + e]);  // end stop
+        }
+        // two cable-tie slots through both rails, just under the SSD
+        for (x = [-L / 4, L / 4]) translate([x - 2.5, -W / 2 - ssd_rail - 1, -ssd_depth + 0.6]) cube([5, W + 2 * ssd_rail + 2, 2.2]);
+    }
+}
+
 module pi_lid_model() {
     in = pi_box_in;
+    if (ssd_on) ssd_cradle();
     difference() {
         box_lid(in);
         if (pi_fan > 0) translate([pi_pos[0], pi_pos[1], 0]) {

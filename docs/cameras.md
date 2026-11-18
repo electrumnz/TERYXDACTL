@@ -1,4 +1,4 @@
-# Cameras: rear, front and trailer
+# Cameras: rear, front, trailer and cabin
 
 Researched 18 November 2026 (NZ time). Prices incl GST unless it says otherwise. Each price
 says where it came from. Some came from search results because the shop page wouldn't open,
@@ -143,6 +143,17 @@ ribbon port.
   NO TRAILER when they can't be used.
 - A ribbon camera works by setting its device to `csi0` or `csi1` (served by `rpicam-vid`).
 - Try it: `?demo=reverse&trailer=1`, or switch on `in.trailer` in the simulator.
+
+## 7. Cabin camera, recording and Sentry
+
+- A fourth camera, **Cabin**, looks at the seats from near the screen: Camera Module 3 NoIR Wide
+  on the second ribbon port (`csi1`). It takes the face shot if someone tries the key while
+  it's locked. Ribbon, not USB or PCIe, so the AI HAT+ 2 can still go on later.
+- Every fitted camera records to a USB SSD in the Pi box: a dashcam loop with the key on, and
+  Sentry when locked. See [`sentry.md`](sentry.md) for sizes, battery use and CPU load.
+- A USB camera that sends **H.264** itself costs the Pi almost nothing to record (it's just
+  copied). MJPEG cameras are encoded on the CPU, since the Pi 5 has no H.264 encoder. Worth
+  favouring H.264 when buying the rear or trailer camera.
 
 ## Still to check
 
