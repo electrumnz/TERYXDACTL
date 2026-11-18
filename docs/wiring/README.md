@@ -135,7 +135,7 @@ Fuses not in the block (inline, at the battery or on a board):
 | P08 | 2 A | RAIL.BUS | PICO_BUCK.VIN |
 | P13 | 3 A | RAIL.BUS | SCREEN_PSU.VIN |
 | P20 | 3 A | RELAYS.NO7 | GLOVE_USB.VIN |
-| P16 | 30 A | BAT12.pos | AMP.B+ |
+| P16 | 40 A | BAT12.pos | AMP.B+ |
 | P17 | 2 A | RAIL.BUS | AMP.REM |
 | P19 | 60 A | BAT12.pos | EPS_ECU.B+ |
 | I01 | 7.5 A | KEY.IGN | OPTO.IN1 |
@@ -225,7 +225,7 @@ Fuses not in the block (inline, at the battery or on a board):
 | P14 | SCREEN_PSU.VOUT | SCREEN.DC_IN | 1 mm² |  |  | tbc |  |
 | P15 | FB.F7 | RELAYS.COM7 | 1.5 mm² | 10 A |  | planned | Accessory 12 V, on with ignition |
 | P20 | RELAYS.NO7 | GLOVE_USB.VIN | 0.75 mm² | 3 A |  | planned (optional) | 3 A inline fuse. Charges the RC phone with the key on; the control box may hold it on for a while after key-off (TBC) |
-| P16 | BAT12.pos | AMP.B+ | 4 mm² | 30 A |  | planned (optional) | Own fuse at the battery. 4 x 50 W can pull 20-30 A |
+| P16 | BAT12.pos | AMP.B+ | 6 mm² | 40 A |  | planned (optional) | Own 40 A fuse at the battery. The amp pulls up to 33 A flat out, so 6 mm² (good to 40 A on the table) |
 | P17 | RAIL.BUS | AMP.REM | 0.5 mm² | 2 A |  | planned (optional) | Remote turn-on, goes off with the rail |
 | P18 | DCDC.out_pos | BAT12.pos |  |  |  | tbc | DC-DC charge lead. Size and fuse depend on its rating |
 | P19 | BAT12.pos | EPS_ECU.B+ | 10 mm² | 60 A |  | planned (optional) | Own 60 A fuse and cable straight to the battery (Toyota fuses the Prius EPS at 60 A) |
@@ -243,7 +243,7 @@ Fuses not in the block (inline, at the battery or on a board):
 | G07 | PICO.GND | PICO_BUCK.GND | 0.5 mm² |  |  | planned | All control box boards share the Pico ground |
 | G08 | SCREEN_PSU.GND | GND_STAR.G | 1 mm² |  |  | tbc |  |
 | G09 | SCREEN.GND | SCREEN_PSU.GND | 1 mm² |  |  | tbc |  |
-| G10 | AMP.GND | GND_STAR.G | 4 mm² |  |  | planned (optional) |  |
+| G10 | AMP.GND | GND_STAR.G | 6 mm² |  |  | planned (optional) | Same size as the feed |
 | G24 | GLOVE_USB.GND | GND_STAR.G | 0.75 mm² |  |  | planned (optional) |  |
 | G11 | MOSFET.GND | GND_STAR.G | 2.5 mm² |  |  | planned | Carries all five lights' current |
 | G12 | BTS1.B- | GND_STAR.G | 1.5 mm² |  |  | planned |  |
@@ -558,6 +558,6 @@ Fuses not in the block (inline, at the battery or on a board):
 | SSD | USB SSD (recordings) | dash | placeholder (optional) | Only if we record footage. Shares the hub's bandwidth; never NVMe on the PCIe port |
 | CARPLAY | Carlinkit CPC200-CCPA | dash | planned (optional) |  |
 | USB_DAC | USB audio out | dash | planned (optional) |  |
-| AMP | 12 V marine amp | cab | planned (optional) | See [`docs/audio.md`](../../docs/audio.md). |
+| AMP | 4-ch class D amp (AliExpress, 4 x 63 W RMS at 4 ohm) | cab | confirmed (optional) | Sam's pick. 4 x 63 W RMS at 4 ohm, or 2 x 200 W RMS bridged at 4 ohm; built-in 90 Hz high and low pass; 8-16 V; up to 33 A flat out (16.5 A on music); 145 x 100 x 45 mm. Channels 1 and 2 drive the Kenwoods (set the HPF on). Channels 3 and 4 are kept for a sub later, bridged (e.g. a 4 ohm 150 W RMS one, LPF on) See [`docs/audio.md`](../../docs/audio.md). |
 | SPEAKERS | Kenwood KFC-2053MRB 8 in marine speakers (pair) | cab | confirmed (optional) | Sam has these. 8 in 2-way, 4 ohm, about 50 W RMS each (100 W the pair), 180 mm cut-out, about 86 mm mounting depth (retailer specs). One amp channel each; speaker cable 1.5 mm² is plenty |
 | IMU | IMU (roll / pitch) | dash | planned (optional) |  |

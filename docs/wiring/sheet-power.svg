@@ -29,10 +29,10 @@
 <g data-wire="P14" data-from="SCREEN_PSU.VOUT" data-to="SCREEN.DC_IN" data-status="tbc"><title>P14: SCREEN_PSU.VOUT -&gt; SCREEN.DC_IN</title><path d="M1630,621 C1715,621 1715,485 1800,485" fill="none" stroke="#bf8700" stroke-width="2.2" stroke-dasharray="7 4"/></g>
 <g data-wire="P15" data-from="FB.F7" data-to="RELAYS.COM7" data-status="planned"><title>P15: FB.F7 -&gt; RELAYS.COM7 - Accessory 12 V, on with ignition</title><path d="M750,217 C835,217 835,217 920,217" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="P20" data-from="RELAYS.NO7" data-to="GLOVE_USB.VIN" data-status="planned"><title>P20: RELAYS.NO7 -&gt; GLOVE_USB.VIN - 3 A inline fuse. Charges the RC phone with the key on; the control box may hold it on for a while after key-off (TBC)</title><path d="M1190,257 C1275,257 1275,197 1360,197" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="P16" data-from="BAT12.pos" data-to="AMP.B+" data-status="planned"><title>P16: BAT12.pos -&gt; AMP.B+ - Own fuse at the battery. 4 x 50 W can pull 20-30 A</title><path d="M310,197 C395,197 395,348 480,348" fill="none" stroke="#424a53" stroke-width="3.2" stroke-opacity="0.65"/></g>
-<g data-wire="P17" data-from="RAIL.BUS" data-to="AMP.REM" data-status="planned"><title>P17: RAIL.BUS -&gt; AMP.REM - Remote turn-on, goes off with the rail</title><path d="M920,479 C835,479 835,368 750,368" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="P18" data-from="DCDC.out_pos" data-to="BAT12.pos" data-status="tbc"><title>P18: DCDC.out_pos -&gt; BAT12.pos - DC-DC charge lead. Size and fuse depend on its rating</title><path d="M480,459 C395,459 395,197 310,197" fill="none" stroke="#bf8700" stroke-width="1.4" stroke-dasharray="7 4"/></g>
-<g data-wire="P19" data-from="BAT12.pos" data-to="EPS_ECU.B+" data-status="planned"><title>P19: BAT12.pos -&gt; EPS_ECU.B+ - Own 60 A fuse and cable straight to the battery (Toyota fuses the Prius EPS at 60 A)</title><path d="M310,197 C395,197 395,550 480,550" fill="none" stroke="#424a53" stroke-width="3.2" stroke-opacity="0.65"/></g>
+<g data-wire="P16" data-from="BAT12.pos" data-to="AMP.B+" data-status="planned"><title>P16: BAT12.pos -&gt; AMP.B+ - Own 40 A fuse at the battery. The amp pulls up to 33 A flat out, so 6 mm² (good to 40 A on the table)</title><path d="M310,197 C395,197 395,363 480,363" fill="none" stroke="#424a53" stroke-width="3.2" stroke-opacity="0.65"/></g>
+<g data-wire="P17" data-from="RAIL.BUS" data-to="AMP.REM" data-status="planned"><title>P17: RAIL.BUS -&gt; AMP.REM - Remote turn-on, goes off with the rail</title><path d="M920,479 C835,479 835,383 750,383" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="P18" data-from="DCDC.out_pos" data-to="BAT12.pos" data-status="tbc"><title>P18: DCDC.out_pos -&gt; BAT12.pos - DC-DC charge lead. Size and fuse depend on its rating</title><path d="M480,474 C395,474 395,197 310,197" fill="none" stroke="#bf8700" stroke-width="1.4" stroke-dasharray="7 4"/></g>
+<g data-wire="P19" data-from="BAT12.pos" data-to="EPS_ECU.B+" data-status="planned"><title>P19: BAT12.pos -&gt; EPS_ECU.B+ - Own 60 A fuse and cable straight to the battery (Toyota fuses the Prius EPS at 60 A)</title><path d="M310,197 C395,197 395,565 480,565" fill="none" stroke="#424a53" stroke-width="3.2" stroke-opacity="0.65"/></g>
 <g data-device="BAT12" data-status="confirmed"><title>BAT12: 12 V aux battery - Kept after the conversion. Charged by the DC-DC</title><rect x="40" y="150" width="270" height="69" rx="6" fill="#fff8e6" stroke="#0969da" stroke-width="1.5"/>
 <text x="50" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">12 V aux battery</text>
 <text x="50" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">BAT12 · confirmed</text>
@@ -51,25 +51,26 @@
 <line x1="480" y1="257" x2="750" y2="257" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="261" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">F12  key switch</text>
 </g>
-<g data-device="AMP" data-status="planned"><title>AMP: 12 V marine amp</title><rect x="480" y="301" width="270" height="89" rx="6" fill="#f0f6ff" stroke="#424a53" stroke-width="1.5"/>
-<text x="490" y="319" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">12 V marine amp</text>
-<text x="490" y="334" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">AMP · planned · optional</text>
-<line x1="480" y1="348" x2="750" y2="348" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="352" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">B+</text>
-<line x1="480" y1="368" x2="750" y2="368" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="372" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">REM</text>
+<g data-device="AMP" data-status="confirmed"><title>AMP: 4-ch class D amp (AliExpress, 4 x 63 W RMS at 4 ohm) - Sam&#x27;s pick. 4 x 63 W RMS at 4 ohm, or 2 x 200 W RMS bridged at 4 ohm; built-in 90 Hz high and low pass; 8-16 V; up to 33 A flat out (16.5 A on music); 145 x 100 x 45 mm. Channels 1 and 2 drive the Kenwoods (set the HPF on). Channels 3 and 4 are kept for a sub later, bridged (e.g. a 4 ohm 150 W RMS one, LPF on)</title><rect x="480" y="301" width="270" height="104" rx="6" fill="#f0f6ff" stroke="#0969da" stroke-width="1.5"/>
+<text x="490" y="319" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">4-ch class D amp (AliExpress, 4 x</text>
+<text x="490" y="334" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">63 W RMS at 4 ohm)</text>
+<text x="490" y="349" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">AMP · confirmed · optional</text>
+<line x1="480" y1="363" x2="750" y2="363" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="367" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">B+</text>
+<line x1="480" y1="383" x2="750" y2="383" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="387" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">REM</text>
 </g>
-<g data-device="DCDC" data-status="tbc"><title>DCDC: DC-DC converter 72 V to 12 V - Charges the 12 V battery. Rating TBC; it decides how long winch + steering can run</title><rect x="480" y="412" width="270" height="69" rx="6" fill="#fff1f0" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
-<text x="490" y="430" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">DC-DC converter 72 V to 12 V</text>
-<text x="490" y="445" font-size="10" text-anchor="start" font-weight="normal" fill="#bf8700">DCDC · tbc</text>
-<line x1="480" y1="459" x2="750" y2="459" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="463" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">out_pos</text>
+<g data-device="DCDC" data-status="tbc"><title>DCDC: DC-DC converter 72 V to 12 V - Charges the 12 V battery. Rating TBC; it decides how long winch + steering can run</title><rect x="480" y="427" width="270" height="69" rx="6" fill="#fff1f0" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
+<text x="490" y="445" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">DC-DC converter 72 V to 12 V</text>
+<text x="490" y="460" font-size="10" text-anchor="start" font-weight="normal" fill="#bf8700">DCDC · tbc</text>
+<line x1="480" y1="474" x2="750" y2="474" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="478" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">out_pos</text>
 </g>
-<g data-device="EPS_ECU" data-status="tbc"><title>EPS_ECU: Toyota Aqua EPS ECU (89650-52B51) - Wrecker column, bench test with the Prius CAN frames first. ECU plug pinout TBC</title><rect x="480" y="503" width="270" height="69" rx="6" fill="#f0f6ff" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
-<text x="490" y="521" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Toyota Aqua EPS ECU (89650-52B51)</text>
-<text x="490" y="536" font-size="10" text-anchor="start" font-weight="normal" fill="#bf8700">EPS_ECU · tbc · optional</text>
-<line x1="480" y1="550" x2="750" y2="550" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="554" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">B+</text>
+<g data-device="EPS_ECU" data-status="tbc"><title>EPS_ECU: Toyota Aqua EPS ECU (89650-52B51) - Wrecker column, bench test with the Prius CAN frames first. ECU plug pinout TBC</title><rect x="480" y="518" width="270" height="69" rx="6" fill="#f0f6ff" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
+<text x="490" y="536" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Toyota Aqua EPS ECU (89650-52B51)</text>
+<text x="490" y="551" font-size="10" text-anchor="start" font-weight="normal" fill="#bf8700">EPS_ECU · tbc · optional</text>
+<line x1="480" y1="565" x2="750" y2="565" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="569" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">B+</text>
 </g>
 <g data-device="RELAYS" data-status="planned"><title>RELAYS: 16-ch relay board, channels 1-8 - One 16-channel board of mechanical 5 V relays with opto and JD-VCC jumper (AliExpress cart), in an aux box next to the control box. RELAYS2 is channels 9-16 of the same board. The solid state G3MB-202P board Sam has is AC only and won&#x27;t turn off on 12 V DC. JD-VCC jumper off, coils on 5 V, inputs from 3.3 V</title><rect x="920" y="150" width="270" height="149" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
 <text x="930" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">16-ch relay board, channels 1-8</text>
@@ -176,8 +177,8 @@
 <text x="1638" y="618" font-size="9.5" text-anchor="start" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">P14  1 mm²</text>
 <text x="758" y="214" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P15  1.5 mm²</text>
 <text x="1198" y="254" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P20  0.75 mm²  3 A</text>
-<text x="472" y="345" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P16  4 mm²  30 A</text>
-<text x="758" y="365" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P17  0.5 mm²  2 A</text>
-<text x="472" y="456" font-size="9.5" text-anchor="end" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">P18</text>
-<text x="472" y="547" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P19  10 mm²  60 A</text>
+<text x="472" y="360" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P16  6 mm²  40 A</text>
+<text x="758" y="380" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P17  0.5 mm²  2 A</text>
+<text x="472" y="471" font-size="9.5" text-anchor="end" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">P18</text>
+<text x="472" y="562" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P19  10 mm²  60 A</text>
 </svg>
