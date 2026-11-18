@@ -61,8 +61,8 @@
 <line x1="40" y1="437" x2="310" y2="437" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="175" y="441" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">J3  6-pin programmer port</text>
 </g>
-<g data-device="RELAYS2" data-status="planned"><title>RELAYS2: 2-ch relay board - Relay 9 steering enable, relay 10 drive lock (uses the NC contact)</title><rect x="480" y="150" width="270" height="89" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
-<text x="490" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">2-ch relay board</text>
+<g data-device="RELAYS2" data-status="planned"><title>RELAYS2: 4-ch relay board (2 used, 2 spare) - Relay 9 steering enable, relay 10 drive lock (uses the NC contact)</title><rect x="480" y="150" width="270" height="89" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="490" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">4-ch relay board (2 used, 2 spare)</text>
 <text x="490" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">RELAYS2 · planned · optional</text>
 <line x1="480" y1="197" x2="750" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">COM2</text>

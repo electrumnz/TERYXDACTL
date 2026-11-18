@@ -213,9 +213,9 @@
 <line x1="480" y1="1574" x2="750" y2="1574" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="1578" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SCL</text>
 </g>
-<g data-device="RELAYS" data-status="confirmed"><title>RELAYS: 8-ch relay board - Owned. JD-VCC jumper off, coils on 5 V, inputs from 3.3 V</title><rect x="920" y="150" width="270" height="229" rx="6" fill="#f6f1ff" stroke="#0969da" stroke-width="1.5"/>
+<g data-device="RELAYS" data-status="planned"><title>RELAYS: 8-ch relay board - Mechanical 5 V relays with opto and JD-VCC jumper (AliExpress cart). The solid state G3MB-202P board Sam has is AC only and won&#x27;t turn off on 12 V DC. JD-VCC jumper off, coils on 5 V, inputs from 3.3 V</title><rect x="920" y="150" width="270" height="229" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
 <text x="930" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">8-ch relay board</text>
-<text x="930" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">RELAYS · confirmed</text>
+<text x="930" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">RELAYS · planned</text>
 <line x1="920" y1="197" x2="1190" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="1055" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VCC</text>
 <line x1="920" y1="217" x2="1190" y2="217" stroke="#d0d7de" stroke-width="0.5"/>
@@ -257,8 +257,8 @@
 <line x1="920" y1="608" x2="1190" y2="608" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="1055" y="612" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT8</text>
 </g>
-<g data-device="RELAYS2" data-status="planned"><title>RELAYS2: 2-ch relay board - Relay 9 steering enable, relay 10 drive lock (uses the NC contact)</title><rect x="920" y="652" width="270" height="109" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
-<text x="930" y="670" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">2-ch relay board</text>
+<g data-device="RELAYS2" data-status="planned"><title>RELAYS2: 4-ch relay board (2 used, 2 spare) - Relay 9 steering enable, relay 10 drive lock (uses the NC contact)</title><rect x="920" y="652" width="270" height="109" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="930" y="670" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">4-ch relay board (2 used, 2 spare)</text>
 <text x="930" y="685" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">RELAYS2 · planned · optional</text>
 <line x1="920" y1="699" x2="1190" y2="699" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="1055" y="703" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VCC</text>

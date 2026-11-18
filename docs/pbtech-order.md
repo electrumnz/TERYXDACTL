@@ -52,6 +52,8 @@ Pick listings marked "Choice" where you can: they usually ship free and faster.
 | **BTS7960 43A H-bridge** | "BTS7960" | 2 | ~US$6-7 each (~NZ$12). Not found on AliExpress itself; [Walmart](https://www.walmart.com/ip/BTS7960-43A-High-Power-Motor-Driver-Module-Smart-Car-Driver-Module-for-Current-Limit/8904873796) has 2 for US$11.56 | Actuators. You have one already (io-list), 3 needed |
 | **8-channel PC817 opto board, 12V in** | "8 channel optocoupler PC817 12V" | 1 | Not priced | See `shopping-list.md` section 6 |
 | **MOSFET PWM board, 5 channels** | "AOD4184 MOSFET module" | 1 (or 5 singles) | Not priced | Only once a light bar is shown to dim |
+| **8-channel 5V relay board, opto-isolated, JD-VCC jumper** (Songle SRD-05VDC type, 10 A contacts with NO and NC) | "8 channel 5V relay module optocoupler JD-VCC" | 1 | ~US$8.29 (~NZ$15). [Treedix 8-channel listing](https://reach.dog/shop/treedix-official/products/treedix-dc-5v-8-channel-relay-board-module-isolated-optocoupler-high-and-low-level-h-l-level-trigger-module-triggered-compatible-with-arduino-raspberry-pi-8-channel); a [similar board](https://sigmanortec.ro/en/5v-relay-module-8-channels-with-optocoupler-high-and-low-trigger-settable) lists 10 A at 30 V DC | Relays 1-8 in the wiring plan. **Must be mechanical relays** (the blue cubes), not the black solid state ones. Look for a **JD-VCC / VCC / GND header with a removable jumper**: that's what keeps the Pico side isolated. Board VCC goes to the Pico's 3.3 V and JD-VCC to the 5 V buck, so a 3.3 V output switches it cleanly. Most are active low, which the firmware already expects (setting 18). The MCP23017 starts up with its outputs floating, so the relays stay off at power-up. Keep loads under about 5 A for long life |
+| **4-channel 5V relay board**, same type | "4 channel 5V relay module optocoupler JD-VCC" | 1 | ~US$5 (~NZ$9), my estimate | Relays 9 and 10 (steering enable, drive lock on the NC contact) plus 2 spares. Same checks as the 8-channel |
 | **Blade fuse block, 20-way, with cover and negative bus** | "20 way blade fuse box negative bus cover" | 1 | ~US$15-25 (~NZ$27-46), my estimate. AliExpress search pages show bait prices like [US$1.09](https://www.aliexpress.com/w/wholesale-Modular%20Fuse%20Block.html); a similar 12-way Nilight is [US$22.99 at Walmart](https://www.walmart.com/c/kp/electrical-box-bus) | The wiring plan has **16 fused circuits** (`config/wiring.yaml`, F1-F16), so get a 20-way for spares. Look for: clip-on cover (ideally a seal), built-in negative bus, 30 A per way and 100 A total, studs or screw terminals for the feed (not a push-on spade), and blown-fuse LEDs are a bonus. A proper brand (Blue Sea, Narva) is better if it'll live where it gets wet |
 | **30 mm 5V fan, 2-pin (3007)** | "3007 5V fan 2 pin" | 1-2 | ~US$2-5 (~NZ$4-9), my estimate. A [reseller copy of an AliExpress listing](https://ubbthreads.com/store/item/4x-2-Pin-30MMx30MM-3007-5V-Cooling-Fan-radiating-For-Raspberry-Pi-2-3-Model-B-4B_285308377334.html) shows US$8.89 for 4 | Pi box lid. Must be 30 x 30 x 7 mm to fit the printed lid. Get a spare, they're cheap |
 | **4G module board, SIMCom A7670SA** (Sam's pick: a bare board to solder in, not a stick) | "A7670SA core board B28" | 1 | ~US$15.46 (~NZ$28). [Listing with B1/B2/B3/B4/B5/B7/B8/B28/B66](https://www.aliexpress.us/item/3256808314829525.html) | **Must be the A7670SA**, and the listing must show **B28** (700 MHz, the NZ country band). The A7670E and some "A7670SA" listings only have B1/B3/B5/B7/B8/B20, no B28 ([SIMCom table via manuals.plus](https://manuals.plus/ae/1005008976290540)). Cat-1 LTE, about 10 Mbps down: plenty for light data and SMS. SIM slot and TTL UART on the board. Talks plain AT commands, so SMS is easy on Linux. **Over UART only it does texts, WHERE and LOCK, but the data is far too slow for live cameras or RC over 4G.** Better buy if you can find one: an A7670SA board whose USB-C goes to the module's **own USB pins** (not a CH340-type USB-serial chip), so it plugs into the Pi over USB at full speed. **Pick the GPS option ("FASE" or "GNSS"; "LASE" has no GPS)**: it can track with the key off for anti-theft. Keep the TEL0138 puck for the dash until the module's GPS proves itself. Skip the flat FPC antenna option. Sam found a candidate at ~NZ$34, still to check against these points |
@@ -59,7 +61,9 @@ Pick listings marked "Choice" where you can: they usually ship free and faster.
 | 4-channel BSS138 level shifter | "BSS138 level shifter 4 channel" | 1 | ~NZ$2 (estimate) | Only if the board brings out the module's **1.8 V** UART directly. The Pi's pins are 3.3 V |
 | Active GPS antenna, IPEX/u.FL (only with the GPS version) | "active GPS antenna ipex" | 1 | ~NZ$8 (estimate) | Check the board powers an active antenna |
 | LTE antenna, wideband 698-2700 MHz, u.FL to SMA lead | "4G LTE antenna 698-2700 SMA" | 1 | ~NZ$12 (estimate) | The little PCB stick antennas are poor at 700 MHz (B28), which is what you'll be on out in the country. Mount it outside the metal, near the GPS puck |
-| | | | **about NZ$270** | Dongle NZ$65, amp NZ$82, 2 x BTS7960 NZ$24, fuse block ~NZ$40, fan ~NZ$6, 4G board, buck, level shifter, LTE and GPS antennas ~NZ$53. Opto and MOSFET boards on top |
+| | | | **about NZ$294** | Dongle NZ$65, amp NZ$82, 2 x BTS7960 NZ$24, fuse block ~NZ$40, relay boards ~NZ$24, fan ~NZ$6, 4G board, buck, level shifter, LTE and GPS antennas ~NZ$53. Opto and MOSFET boards on top |
+
+**The 8-channel solid state relay board you've got coming won't work here.** Those boards use Omron G3MB-202P relays, which are for AC only. On 12 V DC they switch on but never switch off again until the power is cut ([Omron FAQ](https://www.ia.omron.com/support/faq/answer/18/faq02101/index.html)). Keep it for a mains project, or send it back if you can.
 
 ### Better bought in NZ or from a proper shop, not AliExpress
 
@@ -86,7 +90,7 @@ Pick listings marked "Choice" where you can: they usually ship free and faster.
 | [Mini560 5V 5A buck](https://sparks.gogo.co.nz/catalog/DC-Power-260/Fixed-Output-Step-Down-Converter-Out-5v-up-to-5A-Continuous-In-7-20v-1009.html) | Gogo:Tronics | 2 | NZ$2.95 each | Pico control box power and a spare |
 | [1.5KE18A TVS diode](https://nz.element14.com/stmicroelectronics/1-5ke18a/diode-tvs-1-5kw-18v/dp/9884831) | element14 NZ | 2 | NZ$2.24 each | Spike clamp on the dash 12V |
 | [Narva 7-pin flat socket with reed switch 82043BL](https://narva.com.au/products/narva-7-pin-flat-quickfit-trailer-socket-with-reed-switch-for-use-with-normally-closed-circuits-1-pack) | Narva stockists | 1 | **Not priced** | Trailer detect |
-| | | | **about NZ$270** | Priced items |
+| | | | **about NZ$294** | Priced items |
 
 AUD to NZD at 1.234 (Wise, 17 Nov). USD to NZD at 1.822 (Wise, 18 Nov, no time shown on the page).
 
@@ -101,12 +105,12 @@ AUD to NZD at 1.234 (Wise, 17 Nov). USD to NZD at 1.822 (Wise, 18 Nov, no time s
 | | NZ$ |
 |---|---|
 | Buy tomorrow (all PB Tech) | ~597 |
-| AliExpress cart | ~270 |
+| AliExpress cart | ~294 |
 | Other online orders (Core, Gogo, element14) | ~270 |
 | Aqua column | ~115 |
-| **Everything priced** | **about NZ$1,251** |
+| **Everything priced** | **about NZ$1,275** |
 
-The amp (NZ$82) is new to the list today. Without it, it's about NZ$1,169. Not counted: blade fuses, the opto and MOSFET boards, Narva socket, trailer camera bits,
+The amp (NZ$82) is new to the list today. Without it, it's about NZ$1,193. Not counted: blade fuses, the opto and MOSFET boards, Narva socket, trailer camera bits,
 speakers and amp wiring, and everything under "Later".
 
 ## Wiring the 4G board
