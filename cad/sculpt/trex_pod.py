@@ -37,15 +37,17 @@ from scipy.spatial import cKDTree
 from skimage import measure
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+import sys; sys.path.insert(0, HERE)
+import kenwood_kfc2053mrb as spk
 
 # ---- where things are in the AI model (its own units, after turning it to face -Z)
 AI_AXIS_Y = 0.341        # speaker centre height (from the speaker ring in the sculpt)
 AI_BAFFLE_Z = -0.06      # the real speaker's mounting face goes here
 
 # ---- real parts (mm)
-SPK_CUTOUT = 180.0       # Kenwood KFC-2053MRB cut-out
-SPK_GRILLE = 230.0       # its square grille / flange
-SPK_PROUD = 25.0         # GUESS: grille stands this far out of the face. MEASURE
+SPK_CUTOUT = spk.CUTOUT_D      # the speaker itself is kenwood_kfc2053mrb.py
+SPK_GRILLE = spk.GRILLE
+SPK_PROUD = spk.GRILLE_PROUD
 BAFFLE_T = 12.0          # solid mounting face (the speaker's screws bite in)
 WALL = 4.5               # box wall
 TUBE_D = 47.6            # cage tube (measure yours)
@@ -59,6 +61,7 @@ VENT_D = 12.2            # M12 membrane vent
 LUG_W, LUG_D = 60.0, 30.0   # chin lug half-width, depth
 DOWEL = (6.3, 12.0)      # dowel hole d, depth each side of a cut
 VOX = 1.5                # voxel size for the air space
+THROAT_R = spk.CONE_D / 2 + 17        # the throat opens up to the whole cone (+ surround) at the grille
 
 COLOURS = ["body", "teeth", "eyes", "pupils"]
 HEX = {"body": "#6B5E4F", "teeth": "#EFE6CC", "eyes": "#E08A1E", "pupils": "#111111"}
@@ -197,6 +200,78 @@ def chin_bolts(mask_t, box_t):
     return best
 
 
+def open_throat(mask, head_t, labels, tree):
+    """Cut a 45 deg funnel from the whole cone forward to the mouth, so no part
+    of the cone fires into the back of the face. The funnel follows the
+    mouth's own outline (seen from the front, looking through the teeth) and
+    keeps 2 mm clear of every tooth so the teeth stay on."""
+    mt = to_trimesh(mask)
+    lab = paint(mt, head_t, labels, tree)
+    body = mt.submesh([np.where(lab != 1)[0]], append=True)
+    z0 = -(SPK_PROUD + 4)                       # face of the grille pocket
+    g = np.arange(-THROAT_R - 3, THROAT_R + 3.01, VOX)
+    X, Y = np.meshgrid(g, g, indexing="ij")
+    o = np.c_[X.ravel(), Y.ravel(), np.full(X.size, -600.0)]
+    t = ray_first(body, o, [0, 0, 1])
+    M = (np.isnan(t) | (t - 600 >= z0 - 0.5)).reshape(X.shape)   # clear view to the pocket
+    disk = np.hypot(X, Y) <= THROAT_R
+    dist = ndimage.distance_transform_edt(~M) * VOX
+    T = float(dist[disk].max())
+    zs = np.arange(z0 + 1, z0 - T - VOX, -VOX)
+    F = np.stack([disk & (dist <= T - (z0 - z)) for z in zs], -1)
+    # keep clear of the teeth
+    teeth = mt.submesh([np.where(lab == 1)[0]], append=True)
+    if len(teeth.faces):
+        pts, _ = trimesh.sample.sample_surface_even(teeth, 200000)
+        ijk = np.round(np.c_[(pts[:, 0] - g[0]) / VOX, (pts[:, 1] - g[0]) / VOX, (zs[0] - pts[:, 2]) / VOX]).astype(int)
+        ok = (ijk >= 0).all(1) & (ijk < F.shape).all(1)
+        P = np.zeros(F.shape, bool); P[tuple(ijk[ok].T)] = True
+        F &= ~ndimage.binary_dilation(P, iterations=2)
+    f = np.pad(ndimage.gaussian_filter(F.astype(float), 0.6), 1)
+    v, fc, _, _ = measure.marching_cubes(f, 0.5)
+    v = (v - 1) * VOX
+    v = np.c_[g[0] + v[:, 0], g[0] + v[:, 1], zs[0] - v[:, 2]]
+    cut = trimesh.Trimesh(v, fc, process=True)
+    if cut.volume < 0: cut.invert()
+    out = mask - to_manifold(cut)
+    keep = [p for p in out.decompose() if p.volume() > 1e5]      # drop crumbs, keep the jaw
+    return mf.Manifold.batch_boolean(keep, mf.OpType.Add) if len(keep) > 1 else keep[0], round(T, 1)
+
+
+def fit_check(parts, head_t, labels, tree):
+    """Put the real speaker model in and check it fits. Returns a dict; any
+    'ok': False is a problem."""
+    sp = spk.build()
+    out = {}
+    box, mask = parts["box"], parts["mask"]
+    hit = (sp ^ box).volume() / 1e3
+    out["speaker_vs_box_cm3"] = round(hit, 2)
+    hitm = sum((sp ^ parts[k]).volume() for k in parts if k not in ("box",)) / 1e3
+    out["speaker_vs_face_cm3"] = round(hitm, 2)
+    box_t = to_trimesh(box)
+    bt = to_trimesh(spk.behind())
+    pts, _ = trimesh.sample.sample_surface_even(bt, 3000)
+    pts = pts[pts[:, 2] > BAFFLE_T + 1]
+    d = np.abs(trimesh.proximity.signed_distance(box_t, pts))
+    out["basket_clearance_mm"] = round(float(d.min()), 1)
+    hole_ok = [bool(all(box_t.contains([[x + dx, y + dy, BAFFLE_T / 2]])[0] for dx, dy in [(4, 0), (-4, 0), (0, 4), (0, -4)]))
+               for x, y in spk.holes()]
+    out["screw_holes_in_plastic"] = hole_ok
+    # how much of the cone can see straight out of the mouth (teeth count as clear)
+    mt = to_trimesh(mask)
+    lab = paint(mt, head_t, labels, tree)
+    body = mt.submesh([np.where(lab != 1)[0]], append=True)
+    g = np.arange(-spk.CONE_D / 2, spk.CONE_D / 2 + 0.1, 3.0)
+    X, Y = np.meshgrid(g, g); sel = np.hypot(X, Y) <= spk.CONE_D / 2
+    o = np.c_[X[sel], Y[sel], np.full(sel.sum(), -SPK_PROUD - 1.0)]
+    t = ray_first(body, o, [0, 0, -1])
+    out["cone_open_pct"] = round(100 * float(np.isnan(t).mean()), 0)
+    tt = ray_first(mt, o, [0, 0, -1])
+    out["cone_open_pct_counting_teeth"] = round(100 * float(np.isnan(tt).mean()), 0)
+    out["ok"] = bool(hit < 0.05 and hitm < 0.05 and out["basket_clearance_mm"] >= 3 and all(hole_ok))
+    return out
+
+
 # ----------------------------------------------------------------- build
 def build(scale):
     head_t, labels = load_head(scale)
@@ -233,8 +308,16 @@ def build(scale):
     lug = mf.Manifold.cube([2 * LUG_W, 200, LUG_D + 0.5]).translate([-LUG_W, -SPK_GRILLE / 2 - 3 - 200 - 2, -LUG_D])
     box = box + (front ^ lug)
     mask = largest(mask - lug)
+    tree = cKDTree(head_t.triangles_center)
+    mask, info["throat_depth_mm"] = open_throat(mask, head_t, labels, tree)
 
+    # the head narrows at the bottom, so the speaker's lower screws would miss
+    # the box: a flat mounting plate the size of the grille closes that gap
+    plate = rounded_square(SPK_GRILLE + 12, spk.GRILLE_R + 6, 0, BAFFLE_T)
+    box = box + plate
     box = box - cav - cyl(SPK_CUTOUT / 2, 4 * BAFFLE_T, "z")
+    for x, y in spk.holes():                    # pilot holes for the speaker's screws
+        box = box - cyl(spk.PILOT_D / 2, 2 * (BAFFLE_T - 2), "z").translate([x, y, 0])
     seat = seat - bore
     cover = cover - bore
     # dowels to line the seat block up on the box (glue + seal this joint)
@@ -275,7 +358,12 @@ def build(scale):
                   - cyl(13, 50, "y", False).translate([x, yb_ - 49, z])
     info["under"] = "PG7 gland at x=+30, M12 vent at x=-30, both 60 mm behind the face"
 
-    parts = {"mask": largest(mask), "box": largest(box), "seat": largest(seat), "cover": largest(cover)}
+    # the open throat leaves the lower jaw as its own piece (it bolts to the chin lug)
+    mp = sorted(mask.decompose(), key=lambda p: -p.volume())
+    parts = {"mask": mp[0]}
+    if len(mp) > 1 and mp[1].volume() > 1e5: parts["jaw"] = mp[1]
+    parts.update(box=largest(box), seat=largest(seat), cover=largest(cover))
+    info["fit"] = fit_check(parts, head_t, labels, tree)
     return head_t, labels, parts, cav_t, info
 
 
@@ -411,7 +499,8 @@ def orient_for_print(m, name):
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--scale", type=float, default=480)
-    ap.add_argument("--bed", type=float, nargs=3, default=[256, 256, 256])
+    ap.add_argument("--bed", type=float, nargs=3, default=[300, 320, 320],
+                    help="default: Bambu H2C printing with both nozzles (300 x 320 x 325)")
     ap.add_argument("--out", default=os.path.join(HERE, "out"))
     ap.add_argument("--no-split", action="store_true")
     a = ap.parse_args(argv)
