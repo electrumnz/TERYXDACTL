@@ -4,9 +4,10 @@
 > and the brake pedal stays standard. No pedal sensor, no second ADS1115, no
 > control box regen rules. The dash just shows regen on or off: the battery
 > teeth glow green and pulse while the motor puts charge back
-> (`dash/web/js/regen.js`: the Shinegle's own regen flag if it sends one, else
-> current flowing back into the pack while moving, else moving + off the
-> throttle + in gear). How strong regen feels is set on the Shinegle itself
+> (`dash/web/js/regen.js`). Default (Sam, 2026-11-19): speed above 0 and the
+> throttle at rest (micro switch off if we get it, else within 3 % of zero).
+> The dash setting `regenFrom: "current"` switches to current flowing back
+> into the pack while moving. The Shinegle's own regen flag wins if it sends one. How strong regen feels is set on the Shinegle itself
 > with the SG1810 programmer (`B_Rat` / `DecRat`, see
 > [`shinegle-sg1810-tables.md`](shinegle-sg1810-tables.md)). Control box
 > settings 22-29, CAN ID 0x715 and fault bit 15 are kept reserved. The code is
