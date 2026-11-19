@@ -43,7 +43,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Waterproof micro limit switch, roller lever (NC) | 3 | 2.67 | 8.01 | Estimate | Tray up/down + 1 spare |
 | LTC3780 auto buck-boost board, 5-32V in, 80W (set to 12.0V) | 1 | 18.00 | 18.00 | Spec from sellers (5-32V in, 1-30V out, 80W cont); price estimate | Search AliExpress: LTC3780 buck boost module. Bare board, lives in the Pi box. Screen draws well under 80W. Skip if the screen board says 9-36V in |
 | 12V USB-C PD panel socket, 30W, waterproof cap | 1 | 15.00 | 15.00 | Estimate | Glove box phone (RC remote) |
-| PCA9685 16-channel 12-bit PWM board (I2C) | 2 | 8.00 | 16.00 | Estimate | Sam got 2 (19 Nov). One drives the dimmed lamps (all 16 channels used), the other is a spare / later dimming (set it to 0x41). Outputs only, so it can not replace the MCP23017 inputs. Solder wires to the pads, skip the header pins |
+| PCA9685 16-channel 12-bit PWM board (I2C) | 2 | 8.00 | 16.00 | Estimate | Sam got 2 in the 18 Nov order. One drives the dimmed lamps (all 16 channels used), the other is a spare / later dimming (set it to 0x41). Outputs only, so it can not replace the MCP23017 inputs. Solder wires to the pads, skip the header pins |
 | MPU-6050 IMU board (roll / pitch) | 1 | 5.00 | 5.00 | Estimate | I2C to the Pi |
 | 12V AHD reversing camera (trailer) | 1 | 30.00 | 30.00 | Estimate |  |
 | CVBS (PAL) to MIPI CSI-2 board, ADV7280-M, multi-input | 1 | 120.00 | 120.00 | Estimate. AliExpress search: ADV7282 MIPI CSI (or ADV7280 CSI Raspberry Pi). No official Pi product does this | Chip must be ADV7280-M, ADV7281-M or ADV7282-M (the -M is the ribbon output), 2+ CVBS inputs, Pi camera ribbon socket. Not TP28xx (no Pi driver) or HDMI-to-CSI. Bench test on the Pi 5 |
