@@ -157,9 +157,88 @@ ribbon port.
   copied). MJPEG cameras are encoded on the CPU, since the Pi 5 has no H.264 encoder. Worth
   favouring H.264 when buying the rear or trailer camera.
 
+## 8. Combined view (ALL)
+
+> Added 19 Nov (Sam: "combined screen option, dynamic to if trailer fitted/connected", front bar
+> controls on the front picture). Try it on the online sim: Cameras > ALL, then the
+> DEMO: PLUG IN TRAILER button top right.
+
+- **ALL** is the first button on the Cameras screen. With no trailer it shows **front and rear**
+  side by side. With a trailer on it shows **front down the left, trailer and rear on the right**.
+- **Rear and trailer can't both be live.** They share the analogue video board, and its chip
+  (ADV7280-M) has several inputs but one decoder, so it decodes one input at a time. Changing
+  input takes up to 250 ms to lock in fast switch mode, over 500 ms with autodetect
+  ([Analog Devices AN-1337](https://www.analog.com/en/resources/app-notes/an-1337.html)), so
+  flicking between them would give each about one picture a second at best. So one of the two
+  is live and the other keeps its last picture with **PAUSED, tap to show live**. With a trailer
+  on, the trailer camera starts live (the rear one mostly sees the drawbar). The front camera is
+  on its own ribbon port, so it's always live.
+- **Lights on the pictures:** front bars 1-4 and ALL on the front picture, rear lights on the
+  rear, trailer bar on the trailer, cab light on the cabin. In reverse, on a single rear or
+  trailer picture, the rear lights button goes big like before.
+- **Reverse:** if you're already on ALL it stays there and makes the camera behind you live.
+  Settings > Cameras > **Reverse shows** can make reverse always pop up the combined view.
+- **Leaving the Cameras screen stops the pictures.** A live video board camera on screen takes
+  the board off the dashcam (the dashcam can't use it at the same time), and gives it back when
+  you leave.
+
+### How the dash knows the trailer camera is there
+
+Two plugs go to the trailer: the flat 7-pin (lights, with the reed switch, `in.trailer`) and
+the round EU 7-pin (camera and light bar). A trailer can be on with no camera, so the dash
+also checks for a **picture**:
+
+- The dash server asks the video board if there's a picture on the trailer input
+  (`v4l2-ctl --get-detected-standard`; the adv7180 driver reports "unknown" when it hasn't
+  locked onto a signal). That needs no extra wire. Code: `dash/server/teryx_dash/trailercam.py`.
+- It only checks while nobody is using the board (switching input under the dashcam or a live
+  picture would glitch it): straight away when the trailer plug goes in or out, then every 10 s.
+  While it can't check, the dash goes by the reed switch.
+- Settings > Cameras > **Trailer detect**: Either (default), Picture only, or Plug only.
+- If the Pi 5 driver only answers on the decoder's own node, set `TERYX_VIDEO_SUBDEV=/dev/v4l-subdevN`.
+- Spare option if the picture check doesn't work on the bench: EU pin 7 is spare. Loop pin 7 to
+  pin 3 (camera earth) inside the trailer's plug and wire pin 7 to a spare input, and the dash
+  knows the camera plug is in. Not wired: it would need a spare input on the control box (MCP23017
+  port A has free pins) and firmware changes, so only do it if the bench test says so.
+
+## 9. Could it do a 360 (bird's eye) view?
+
+Researched 19 Nov 2026. Short answer: **not with the cameras we have, and not by stitching on
+the Pi without big changes. The easy way is a ready-made 360 box.** Nothing bought.
+
+What a 360 view needs: four wide (about 180 degree) cameras, one on each side, all live at the
+same time, and something that warps and joins them into a top-down picture, calibrated once
+with a mat on the ground.
+
+What we're missing:
+
+- **Cameras:** we have front (narrow, behind the screen), rear (200 degree) and trailer. A 360
+  needs a wide front camera low on the grille, and left and right cameras (mirrors or cage).
+- **Four live pictures at once:** the Pi 5 has two camera ribbon ports. One is the front Camera
+  Module 3, the other the analogue video board, which only decodes one camera at a time. I found
+  no 4-channel AHD/analogue to ribbon board with Pi 5 drivers (TP2855-type boards exist for
+  other boards, with their own drivers
+  ([TI forum](https://e2e.ti.com/support/processors-group/processors/f/processors-forum/1463131/sk-am62p-lp-enabling-4-ahd-cameras),
+  [Toradex forum](https://community.toradex.com/t/mipi-csi-2-camera-gstreamer-error-virtual-channels-with-tp2855/20391))).
+
+Three ways, best first:
+
+| | How | Pi load | Catch |
+|---|---|---|---|
+| **A. 360 box** (pick) | A universal 360 kit: 4 cameras + its own box that does the stitching and calibration, giving one video out. Its video out goes into a **spare input on our video board** (the ADV7280-M has 8 ([Analog Devices](https://www.analog.com/en/products/adv7280.html))). The dash shows it as a fifth camera, "360". | Same as one analogue camera. None of the stitching is on the Pi. | Its picture shares the board with rear and trailer, so in the combined view it's one more "tap to show live". Must have a CVBS/RCA (not just AHD) output, PAL. Prices seen: about AU$76-197 on eBay AU ([eBay AU](https://www.ebay.com.au/itm/353602594868), [eBay AU](https://www.ebay.com.au/itm/354622659506)), from listings only, outputs not confirmed. Cameras would need to be IP67 for the Teryx. |
+| B. GMSL board | Waveshare GMSL 4-channel board: 4 cameras on long coax, all live, made for the Pi 5, US$269.99 ([Waveshare](https://www.waveshare.com/product/ai/cameras/gmsl-module-board-4ch-a.htm)), plus 4 GMSL cameras. The Pi does the stitching on its GPU. | High: four camera streams plus warping, on top of CarPlay and recording. Would want the AI HAT+ 2 for any camera smarts. | It takes **both** ribbon ports, so the front Camera Module 3 and the analogue video board (rear, trailer) would have to go, all cameras become GMSL. A big rebuild and a lot of our own code. |
+| C. Fake it | No new cameras: show a drawn top-down Teryx with the front and rear pictures above and below it. | None | Not a real 360: nothing at the sides. |
+
+None of these use USB or the PCIe slot, so the AI HAT+ 2 can still go on later. **My pick: A**,
+when you want it: one more input on the board we're already fitting and no extra Pi work, apart
+from adding "360" as a camera on the dash. Before buying, check the box has an RCA video out and
+PAL, and that the cameras are waterproof.
+
 ## Still to check
 
 - Rear camera: USB or RCA/AHD?
 - Which way the Narva reed switch switches, and what triggers it.
 - Whether a wireless kit's receiver has an AV out (if you go wireless).
 - Any AHD-to-USB dongle on the real Pi before buying more than one.
+- Video board on the Pi 5: does `--get-detected-standard` say 0 with the trailer camera unplugged
+  and PAL with it in? Does switching rear/trailer in the combined view come up within a second?

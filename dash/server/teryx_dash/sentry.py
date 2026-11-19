@@ -334,6 +334,8 @@ class Recorder:
                 proc = await asyncio.create_subprocess_exec(*cmd, stdout=asyncio.subprocess.PIPE,
                                                             stderr=asyncio.subprocess.DEVNULL)
                 self.procs[cam] = proc
+                if videoboard.uses_board(cmd):
+                    videoboard.BOARD.recorder = proc   # so a live view can take the board over
                 self.readers[cam] = asyncio.ensure_future(self._read(cam, proc))
         return sorted(self.procs)
 
@@ -439,7 +441,8 @@ class SentryService:
             for cam in fitted_cams(self.dash_settings()):
                 dev, h264 = self._device(cam)
                 if dev.startswith("adv:"):
-                    if board_used or not Path(videoboard.node()).exists():
+                    # Someone watching a video board camera on the screen has the board.
+                    if board_used or videoboard.BOARD.watching() or not Path(videoboard.node()).exists():
                         continue
                     board_used = True
                     out = store.loop / cam

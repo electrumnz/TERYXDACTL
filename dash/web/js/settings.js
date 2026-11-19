@@ -40,7 +40,11 @@ export const DEFAULTS = {
     guideOffset: 0,        // nudge guide lines left/right (px)
     autoOnReverse: true,
     trailerInReverse: true, // in reverse, show the trailer camera if a trailer is plugged in
-    current: "rear",       // last camera picked on the Cameras screen
+    // Is a trailer camera there? "either": a picture on its video board input, or (until that's
+    // been checked) the trailer plug's reed switch. "plug": reed switch only. "picture": picture only.
+    trailerDetect: "either",
+    reverseView: "single",  // reverse pops up one big camera ("single") or the combined view ("combo")
+    current: "rear",       // last camera picked on the Cameras screen ("combo" = the combined view)
     // One entry per camera (see CAMS in screens/camera.js). No USB cameras (docs/cameras.md):
     // v4l2Device is "csi0" for the Pi Camera Module 3 on the first ribbon port, or "adv:N" for
     // input N of the analogue video board on the second ribbon port (rear 0, trailer 1, cabin 2).
