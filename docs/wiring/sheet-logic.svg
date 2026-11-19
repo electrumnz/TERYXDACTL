@@ -112,7 +112,7 @@
 <line x1="480" y1="408" x2="750" y2="408" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="412" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">INT</text>
 </g>
-<g data-device="EPS_CAN" data-status="planned"><title>EPS_CAN: MCP2515 CAN module (steering bus) - Own 500 kbit/s bus to the steering ECU. Transmit only, INT not wired</title><rect x="480" y="452" width="270" height="149" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<g data-device="EPS_CAN" data-status="planned"><title>EPS_CAN: MCP2515 CAN module (steering bus) - Own 500 kbit/s bus to the steering ECU. INT not wired, the Pico polls it for the ECU&#x27;s replies</title><rect x="480" y="452" width="270" height="149" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
 <text x="490" y="470" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">MCP2515 CAN module (steering bus)</text>
 <text x="490" y="485" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">EPS_CAN · planned · optional</text>
 <line x1="480" y1="499" x2="750" y2="499" stroke="#d0d7de" stroke-width="0.5"/>

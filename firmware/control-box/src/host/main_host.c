@@ -126,6 +126,12 @@ int main(int argc, char **argv) {
         cb_in_t in;
         plant_inputs(&plant, &in, t);
         ctl_tick(&ctl, &in, &out, send_cb, NULL);
+        if (out.eps_on) {
+            // Host only: play a quiet Aqua EPS ECU that answers while it gets its frames.
+            can_frame_t e = {.id = EPS_TORQUE_ID, .dlc = 8};
+            e.data[7] = eps_checksum(EPS_TORQUE_ID, e.data, 8);
+            ctl_on_eps_frame(&ctl, &e, t);
+        }
 
         if (out.save_settings) {
             save_settings(settings_path, &ctl.settings);

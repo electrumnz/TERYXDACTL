@@ -21,7 +21,7 @@ control box does the safety-critical switching, and they talk over CAN.
 | 4G anti-theft: text it to find it, lock it or see the cameras | `dash/server/teryx_dash/remote.py` | [`docs/remote-access.md`](docs/remote-access.md) |
 | Sentry, dashcam and saved clips on a USB SSD | `dash/server/teryx_dash/sentry.py` | [`docs/sentry.md`](docs/sentry.md) |
 | Power steering kit (AliExpress vs SuperATV) and remote control (RC) mode | `docs/` | [`power-steering-rc.md`](docs/power-steering-rc.md) |
-| Power steering from a wrecked car (Prius / Kia Soul / Yaris column, run by the Pico) | `docs/`, `teryx/eps_toyota.py` | [`power-steering-wrecker.md`](docs/power-steering-wrecker.md) |
+| Power steering: Toyota Aqua column run by the Pico (code, guesses, bench test), and why a wrecker column | `docs/`, `teryx/eps_toyota.py`, `firmware/control-box/src/core/eps.c` | [`power-steering-aqua.md`](docs/power-steering-aqua.md), [`power-steering-wrecker.md`](docs/power-steering-wrecker.md) |
 
 Everything runs on a laptop with no Teryx attached, using the simulator.
 

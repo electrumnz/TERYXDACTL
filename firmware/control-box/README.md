@@ -164,9 +164,12 @@ These are in the firmware and need adding to the test environment's
   (a new image must confirm itself or the Pico falls back). That would make a
   bad update recover on its own. Worth adding once the basics are proven.
 
-- Power steering (`docs/power-steering-wrecker.md`): relay 9 (`R2_STEER_ENABLE`) feeds the
-  Toyota EPS ignition with the key on and not locked, and the second MCP2515 (CS on GP22,
-  500 kbit/s, transmit only) sends the Toyota RPM (0x2C4) and speed (0x0B4) frames every
-  20 ms (`src/core/eps.c`, same bytes as `teryx/eps_toyota.py`). Below 16.3 km/h, or with no
-  speed, it reports 16.3 km/h for full assist. Stop sending and the column goes to limp mode.
+- Power steering (`docs/power-steering-aqua.md`): relay 9 (`R2_STEER_ENABLE`) feeds the
+  Toyota Aqua EPS ignition with the key on and not locked, and the second MCP2515 (CS on GP22,
+  500 kbit/s) sends the Toyota RPM (0x2C4) and speed (0x0B4) frames every 20 ms
+  (`src/core/eps.c`, same bytes as `teryx/eps_toyota.py`). Settings 33-40 pick the mode
+  (normal, limp, manual: changes wait until stopped) and the speed we tell the ECU (floor,
+  gain, cap). The Pico polls the same board for the ECU's replies (0x260 torque/angle, 0x262
+  status) and reports the steering state on 0x718. `EPS` on the UART console lists every ID
+  the ECU sent. The IDs are guesses until the bench test, all in `eps.h`.
   If the second MCP23017 or CAN board isn't fitted, the Pico just carries on without them.

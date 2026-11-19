@@ -84,6 +84,18 @@ RELAY_BITS = {   # 0x711 byte 0, relay 1 = bit 0
     6: "aux.accessory",
     7: "power.hold",
 }
+# Power steering (docs/power-steering-aqua.md, firmware eps.h)
+STEER_STATE = {
+    0: "off",        # key off or locked: column unpowered
+    1: "waking",     # just powered, ECU booting
+    2: "ok",
+    3: "limp",       # setting 33 = 1: assist on, no speed frames (on purpose)
+    4: "manual",     # setting 33 = 0: no assist (on purpose)
+    5: "no_reply",   # listening (setting 37) but the ECU has gone quiet
+    6: "ecu_fault",  # the ECU says it has a fault
+    7: "bus_error",  # the Pico's steering CAN board isn't working
+}
+STEER_MODE = {0: "manual", 1: "limp", 2: "normal"}
 RELAY2_BITS = {   # 0x711 byte 7, second relay board on MCP23017 0x21
     0: "steer.on",         # relay 9: power steering column powered and getting its speed frames
     1: "drive.lock_relay", # relay 10: Shinegle key line opened because the Teryx is locked
@@ -322,6 +334,28 @@ PICO_LIGHTS2 = Message(
     ),
 )
 
+PICO_STEER = Message(
+    "PICO_STEER", 0x718, "controlbox", 100,
+    comment="Power steering (docs/power-steering-aqua.md). Torque, angle and ECU status are "
+            "only real once the Aqua ECU has been heard (flag torque_valid).",
+    signals=(
+        S("state", 0, 4, choices=STEER_STATE),
+        S("counter", 4, 4),
+        S("frames_on", 8, 1, comment="Speed frames going to the ECU"),
+        S("heard", 9, 1, comment="Something heard from the ECU lately"),
+        S("torque_valid", 10, 1, comment="0x260 fresh: torque and angle are real"),
+        S("angle_init", 11, 1, comment="ECU says the angle is still initialising"),
+        S("override", 12, 1, comment="ECU says the driver is turning hard"),
+        S("listen", 13, 1, comment="Setting 37 on: a quiet ECU is a warning"),
+        S("mode_pending", 14, 1, comment="Steering mode change waiting for the Teryx to stop"),
+        S("bus_ok", 15, 1, comment="Steering CAN board working"),
+        S("torque", 16, 16, signed=True, comment="Driver torque, raw from the ECU (units unknown)"),
+        S("angle", 32, 16, signed=True, scale=0.1, unit="deg", comment="Steering angle from the ECU"),
+        S("told_kmh", 48, 8, unit="km/h", comment="Speed told to the ECU, 255 = no frames"),
+        S("ecu_status", 56, 8, comment="EPS_STATUS LKA_STATE byte, 255 = never heard"),
+    ),
+)
+
 # ---------------------------------------------------------------- bench only
 BENCH_INPUTS = Message(
     "BENCH_INPUTS", 0x7E0, "sim", 100,
@@ -339,7 +373,7 @@ BENCH_FAULTS = {0: "jam_diff", 1: "jam_tray", 2: "fourwd_overcurrent", 3: "pot_d
 TERYX_MESSAGES: tuple[Message, ...] = (
     PI_HEARTBEAT, PI_LIGHTS, PI_DRIVE, PI_HOLD, PI_SETTINGS, PI_LOCK, PI_LIGHTS2, PI_FW_UPDATE,
     PICO_STATUS, PICO_OUTPUTS, PICO_ACTUATORS, PICO_POWER, PICO_SETTINGS_ACK, PICO_REGEN, PICO_LOCK,
-    PICO_LIGHTS2,
+    PICO_LIGHTS2, PICO_STEER,
     BENCH_INPUTS,
 )
 
@@ -381,6 +415,15 @@ SETTINGS: dict[int, tuple[str, str, int, int, int]] = {
     31: ("shift_throttle_hold", "bool", 1, 0, 1),
     # Sentry (docs/sentry.md)
     32: ("sentry_min_12v_mv", "mV", 12200, 11000, 13500),
+    # Power steering, Aqua column (docs/power-steering-aqua.md). Guesses until the bench test.
+    33: ("eps_mode", "enum", 2, 0, 2),            # STEER_MODE: 0 manual, 1 limp, 2 normal
+    34: ("eps_floor_kmh_x10", "0.1km/h", 163, 0, 600),
+    35: ("eps_speed_gain_pct", "%", 100, 50, 300),
+    36: ("eps_max_kmh", "km/h", 120, 20, 200),
+    37: ("eps_listen", "bool", 0, 0, 1),
+    38: ("eps_silent_ms", "ms", 1000, 200, 5000),
+    39: ("eps_rpm", "rpm", 1674, 0, 8000),
+    40: ("eps_wake_ms", "ms", 3000, 500, 15000),
 }
 SETTING_SAVE = 0xF0
 SETTING_RESET = 0xF1

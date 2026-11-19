@@ -1,5 +1,8 @@
 # Power steering from a wrecked car
 
+> **Sam bought the Aqua column (19 Nov 2026).** The code, the guesses it makes and the
+> bench test are in [`power-steering-aqua.md`](power-steering-aqua.md).
+
 New UTV kits are NZ$1,000+ (see [`power-steering-rc.md`](power-steering-rc.md)).
 The cheap way is the electric power steering (EPS) column out of a small car
 from a wrecker. This doc covers which cars, what each column needs to switch on,

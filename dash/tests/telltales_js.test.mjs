@@ -85,4 +85,17 @@ assert.ok(!keys({ "mc.ready": true, "an.aux_12v": 13.9 }, {}, 30000, new Map()).
 const bp = evaluate(st({ ...base, "pico.faults": ["brake_pedal"] }), settings(), new Set(), 0).find((a) => a.key === "p:brake_pedal");
 assert.match(bp.text, /brakes still work/);
 
+// power steering states from 0x718 (docs/power-steering-aqua.md)
+assert.ok(!lamps({ "steer.state": "ok" }).steer);
+assert.ok(lamps({ "steer.state": "no_reply" }).steer);
+assert.equal(lamps({ "steer.state": "ecu_fault" }).steer.col, "bad");
+assert.ok(!lamps({ "steer.state": "ecu_fault", "lock.state": "locked" }).steer);
+assert.ok(keys({ "steer.state": "ecu_fault" }).includes("a:steer_fault"));
+assert.ok(keys({ "steer.state": "no_reply" }).includes("a:steer_quiet"));
+assert.ok(keys({ "steer.state": "bus_error" }).includes("a:steer_bus"));
+assert.ok(keys({ "steer.state": "manual", "steer.on": false }).includes("a:steer_off"));
+assert.ok(keys({ "steer.state": "limp" }).includes("a:steer_limp"));
+assert.ok(keys({ "steer.state": "ok", "steer.mode_pending": true }).includes("a:steer_pending"));
+assert.ok(!keys({ "steer.state": "ok" }).some((k) => k.startsWith("a:steer")));
+
 console.log("telltales ok");

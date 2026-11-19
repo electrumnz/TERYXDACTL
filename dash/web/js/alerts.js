@@ -81,9 +81,24 @@ export function evaluate(st, settings, prev = new Set(), now = Date.now(), linkL
   const tray = st.get("act.tray", "down");
   if (tray !== "down" && (st.get("mc.speed") || 0) > 3) add("a:tray_moving", "bad", "Tray isn't down and you're moving. Stop and lower it.");
 
-  // Power steering: the control box powers the column with the key on. If it says it's off, steering is heavy.
-  if (st.get("in.ignition") !== false && st.get("pico.online") !== false && st.get("steer.on") === false && st.get("lock.state") !== "locked")
+  // Power steering (docs/power-steering-aqua.md): the control box powers the column with the key on.
+  // steer.state comes from 0x718; older firmware only sends steer.on.
+  const steerKey = st.get("in.ignition") !== false && st.get("pico.online") !== false && st.get("lock.state") !== "locked";
+  const steer = st.get("steer.state");
+  if (steerKey && steer === "manual")
+    add("a:steer_off", "warn", "Power steering is turned off in settings, so steering is heavy.");
+  else if (steerKey && steer === "ecu_fault")
+    add("a:steer_fault", "bad", "Power steering has a fault and may be heavy. Stop, turn the key off and on. If it stays, check the column.");
+  else if (steerKey && steer === "no_reply")
+    add("a:steer_quiet", "warn", "Power steering isn't answering. Expect heavier steering. Check the steering fuse and its CAN plug.");
+  else if (steerKey && steer === "bus_error")
+    add("a:steer_bus", "warn", "Control box can't reach the power steering. Steering may be heavier. Check the steering CAN board.");
+  else if (steerKey && steer === "limp")
+    add("a:steer_limp", "info", "Power steering in limp mode (set in settings): assist on, not speed sensitive.");
+  else if (steerKey && st.get("steer.on") === false)
     add("a:steer_off", "warn", "Power steering is off, so steering will be heavy. Check relay 9 and the steering fuse.");
+  if (steerKey && st.get("steer.mode_pending"))
+    add("a:steer_pending", "info", "Power steering change waits until you stop.");
 
   // Service reminder from the odometer (Settings > Display). 0 = off.
   const due = settings.get("service.dueKm") || 0, odo = st.get("mc.odometer");

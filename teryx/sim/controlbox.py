@@ -42,6 +42,7 @@ from dataclasses import dataclass, field
 
 from ..canbus import messages as M
 from ..canbus import shinegle as SG
+from .. import eps_toyota as EPS
 from ..config import safety_defaults
 from ..lights import LAMPS, Lights, LightsReq, LightsState
 from ..regen import BrakeRegen
@@ -158,6 +159,9 @@ class ControlBox:
     lock: VehicleLock = field(default_factory=VehicleLock)
     lock_replies: int = 0                      # 0x716 frames to send straight away
     still_since: float | None = None           # remote lock: known stopped since
+    # power steering (docs/power-steering-aqua.md, firmware eps.c)
+    eps_mode: int = 2                          # mode in use; setting 33 applies when stopped or key off
+    eps_powered_at: float | None = None
 
     def __post_init__(self):
         self.inputs["in.ignition"] = True
@@ -464,8 +468,44 @@ class ControlBox:
         self.hold_tray, self.hold_winch = tray, winch
 
     # ------------------------------------------------------------ tick
+    def eps_powered(self) -> bool:
+        return self.inp("in.ignition") and not self.locked and self.eps_mode != EPS.MODE_MANUAL
+
+    def _step_steering(self) -> None:
+        want = self.s("eps_mode")
+        if want != self.eps_mode and (not self.inp("in.ignition") or self.stopped()):
+            self.eps_mode = want
+        if self.eps_powered():
+            if self.eps_powered_at is None:
+                self.eps_powered_at = self.t
+        else:
+            self.eps_powered_at = None
+
+    def steer_frame(self) -> dict:
+        """0x718, same rules as eps_update() in the firmware. The sim plays an Aqua ECU
+        that answers while it gets its frames (like the host build)."""
+        powered = self.eps_powered()
+        sending = powered and self.eps_mode == EPS.MODE_NORMAL
+        waking = powered and self.t - (self.eps_powered_at or self.t) < self.s("eps_wake_ms") / 1000
+        if not powered:
+            state = "manual" if self.eps_mode == EPS.MODE_MANUAL else "off"
+        elif waking:
+            state = "waking"
+        elif self.eps_mode == EPS.MODE_LIMP:
+            state = "limp"
+        else:
+            state = "ok"
+        told = EPS.AssistCurve.from_settings(self.settings).told_kmh(self.speed if self.speed_known() else None)
+        return {
+            "state": M.enum_value(M.STEER_STATE, state), "frames_on": int(sending),
+            "heard": int(sending), "torque_valid": int(sending), "listen": int(bool(self.s("eps_listen"))),
+            "mode_pending": int(self.s("eps_mode") != self.eps_mode), "bus_ok": 1,
+            "torque": 0, "angle": 0, "told_kmh": min(254, round(told)) if sending else 255, "ecu_status": 255,
+        }
+
     def step(self, dt: float, now: float) -> None:
         self.t = now
+        self._step_steering()
         dash_ok = self.dash_ok()
         hold_ok = dash_ok and now - self.last_hold < self.s("hold_to_run_timeout_ms") / 1000
         if not hold_ok:
@@ -775,7 +815,7 @@ class ControlBox:
                 # Same rule as the firmware: steering powered with the key on and not locked,
                 # drive lock relay open while locked.
                 "relays2": M.names_to_bits(
-                    (["steer.on"] if self.inp("in.ignition") and not self.locked else [])
+                    (["steer.on"] if self.eps_powered() else [])
                     + (["drive.lock_relay"] if self.locked else []), M.RELAY2_BITS),
             }),
             ("PICO_ACTUATORS", {
@@ -808,4 +848,5 @@ class ControlBox:
             out.append(("PICO_LIGHTS2", {**{k: o2.level[k] >> 4 for k in LAMPS},
                                          "show_running": int(o2.show_running),
                                          "show_blocked": int(o2.show_blocked), "pwm_ok": 1}))
+        out.append(("PICO_STEER", self.steer_frame()))
         return out

@@ -39,6 +39,14 @@ static const range_t k_ranges[SET_COUNT] = {
     [SET_SHIFT_WAIT_MS]        = {10000, 0, 30000},
     [SET_SHIFT_THROTTLE_HOLD]  = {1, 0, 1},
     [SET_SENTRY_MIN_12V_MV]    = {12200, 11000, 13500},
+    [SET_EPS_MODE]             = {2, 0, 2},
+    [SET_EPS_FLOOR_KMH_X10]    = {163, 0, 600},   // 16.3 km/h: the Prius retrofit's "max assist" speed
+    [SET_EPS_SPEED_GAIN_PCT]   = {100, 50, 300},
+    [SET_EPS_MAX_KMH]          = {120, 20, 200},
+    [SET_EPS_LISTEN]           = {0, 0, 1},       // off until the bench shows what the Aqua sends
+    [SET_EPS_SILENT_MS]        = {1000, 200, 5000},
+    [SET_EPS_RPM]              = {1674, 0, 8000},
+    [SET_EPS_WAKE_MS]          = {3000, 500, 15000},
 };
 
 void settings_defaults(settings_t *s) {

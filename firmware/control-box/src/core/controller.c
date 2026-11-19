@@ -95,6 +95,22 @@ void ctl_init(controller_t *c, const settings_t *saved, bool watchdog_reset,
     c->winch.off_since_ms = now;
     c->in.io_ok = true;
     vlock_init(&c->lock, NULL, now);
+    eps_init(&c->eps, (uint8_t)S(c, SET_EPS_MODE));
+}
+
+void ctl_on_eps_frame(controller_t *c, const can_frame_t *f, uint32_t now) {
+    eps_on_frame(&c->eps, f, now);
+}
+
+static eps_cfg_t eps_cfg(const controller_t *c) {
+    return (eps_cfg_t){
+        .floor_x10 = S(c, SET_EPS_FLOOR_KMH_X10),
+        .gain_pct = S(c, SET_EPS_SPEED_GAIN_PCT),
+        .max_kmh = S(c, SET_EPS_MAX_KMH),
+        .listen = S(c, SET_EPS_LISTEN) != 0,
+        .silent_ms = S(c, SET_EPS_SILENT_MS),
+        .wake_ms = S(c, SET_EPS_WAKE_MS),
+    };
 }
 
 void ctl_load_lock(controller_t *c, const lock_blob_t *saved, uint32_t now) {
@@ -838,6 +854,10 @@ static void send_status(controller_t *c, uint32_t now, cb_send_fn send, void *u)
     if (c->in.pwm_ok) l2.data[7] |= LIGHTS2_FLAG_PWM_OK;
     send(&l2, u);
 
+    can_frame_t st;
+    eps_status_frame(&c->eps, (uint8_t)(c->tx_counter & 0x0F), &st);
+    send(&st, u);
+
     can_frame_t a = {.id = CAN_ID_PICO_ACT, .dlc = 8};
     a.data[0] = c->diff.pct;
     a.data[1] = c->fwd.state;
@@ -968,11 +988,21 @@ void ctl_tick(controller_t *c, const cb_in_t *in, cb_out_t *out, cb_send_fn send
     // locked Teryx can't drive even if the dash is hacked or gone. Relay 9 feeds the
     // power steering ignition, and the Pico sends it the Toyota speed frames.
     if (locked) out->relays2 |= BIT(R2_DRIVE_LOCK);
-    if (ign && !locked) {
-        out->relays2 |= BIT(R2_STEER_ENABLE);
-        out->eps_on = true;
-        out->eps_speed_known = ctl_speed_valid(c, now);
-        out->eps_speed_x10 = c->speed_x10;
+    {
+        // A steering mode change (setting 33) never lands on the move: it waits
+        // until the Teryx is stopped or the key is off. Losing assist mid-corner
+        // is worse than either mode.
+        uint8_t want = (uint8_t)S(c, SET_EPS_MODE);
+        if (want != c->eps.mode && (!ign || stopped(c, now))) c->eps.mode = want;
+        c->eps.mode_pending = want != c->eps.mode;
+        eps_cfg_t cfg = eps_cfg(c);
+        bool powered = ign && !locked && c->eps.mode != EPS_MODE_MANUAL;
+        if (powered) out->relays2 |= BIT(R2_STEER_ENABLE);
+        out->eps_on = powered && c->eps.mode == EPS_MODE_NORMAL;
+        c->eps.told_x10 = eps_told_speed_x10(&cfg, c->speed_x10, ctl_speed_valid(c, now));
+        out->eps_speed_x10 = c->eps.told_x10;
+        out->eps_rpm = S(c, SET_EPS_RPM);
+        eps_update(&c->eps, &cfg, powered, out->eps_on, !in->eps_bus_down, now);
     }
     if (c->lock.dirty) {
         out->save_lock = true;
