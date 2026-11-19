@@ -22,7 +22,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | [Raspberry Pi 5 8GB](https://www.pbtech.co.nz/product/SEVRBP0502) (SEVRBP0502) | 1 | 371.39 | 371.39 | Checked 17 Nov | On order, ships about 30 Nov; ask in store |
 | [Raspberry Pi Camera Module 3 Wide (front)](https://www.pbtech.co.nz/product/SEVRBP0398) (SEVRBP0398) | 1 | 80.71 | 80.71 | Search result 18 Nov | Out of stock when indexed; alt element14 SC0874 ~NZ$69 |
 | [Pi 5 camera cable 200mm](https://www.pbtech.com/pacific/product/SEVRBP0541) (SEVRBP0541) | 2 | 2.12 | 4.24 | Search result 18 Nov | Front camera + video board |
-| [Raspberry Pi Pico 2 5-pack](https://www.pbtech.co.nz/product/SEVRBP0628) (SEVRBP0628) | 1 | 47.20 | 47.20 | Checked 17 Nov | Control box, CAN sniffer, steering bench test, 2 spare |
+| [Raspberry Pi Pico 2 5-pack](https://www.pbtech.co.nz/product/SEVRBP0628) (SEVRBP0628) | 1 | 47.20 | 47.20 | Checked 17 Nov | Control box, RC box, CAN sniffer, steering bench test, 1 spare |
 | [Raspberry Pi 27W USB-C power supply (bench)](https://www.pbtech.co.nz/product/SEVRBP0512) (SEVRBP0512) | 1 | 24.90 | 24.90 | Search result 18 Nov | Bench only |
 | [Raspberry Pi micro HDMI to HDMI cable 1m](https://www.pbtech.co.nz/product/SEVRBP0207) (SEVRBP0207) | 1 | 11.80 | 11.80 | Search result 18 Nov | Alt black SEVRBP0262 ~11.10 |
 | [Raspberry Pi A2 SD card 128GB (OS)](https://www.pbtech.co.nz/product/SEVRBP0538) (SEVRBP0538) | 1 | 47.32 | 47.32 | Search result 18 Nov | Official card, in the Pi's own slot. Not made for non-stop writes, so dashcam/Sentry recording stays off or minimal until extra storage is added |
@@ -69,12 +69,16 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 
 | Part | Qty | Each NZ$ | Total NZ$ | Price from | Notes |
 |---|---|---|---|---|---|
-| MCP2515 + TJA1050 CAN board (the common blue one, 8 MHz crystal) | 4 | 5.00 | 20.00 | Estimate, ~US$2-3 each | Pi, control box, steering bus + 1 spare. Before use, swap the 8-pin TJA1050 (5 V) for an SN65HVD230 (3.3 V, same pins) and power the board from 3.3 V. Never wire one to the Pico or Pi with the TJA1050 still on |
+| MCP2515 + TJA1050 CAN board (the common blue one, 8 MHz crystal) | 5 | 5.00 | 25.00 | Estimate, ~US$2-3 each | Pi, control box, steering bus, RC box + 1 spare. Before use, swap the 8-pin TJA1050 (5 V) for an SN65HVD230 (3.3 V, same pins) and power the board from 3.3 V. Never wire one to the Pico or Pi with the TJA1050 still on |
 | SN65HVD230 CAN chip, SOIC-8 (VP230), 10 pack | 1 | 6.00 | 6.00 | Estimate | For the chip swap above; spares for mistakes. Pin 8 stays tied to ground on the board (full speed) |
 | MCP23017 I2C 16-pin I/O board (CJMCU-2317 type) | 2 | 4.00 | 8.00 | Estimate, ~US$1.5-2.5 each | Runs fine on 3.3 V. Set the second one to address 0x21 (A0 high). GPA7/GPB7 used as outputs or not at all |
 | Potted waterproof DC-DC buck, 12V/24V in to 5V 10A (50W) out | 1 | 22.00 | 22.00 | Estimate, ~US$10-14 | Pi 5 + 4G board. Listing must say input 8-35V (or wider) and 10A. Bare-wire leads, no USB plug. Replaces the NZ$111 Pololu and the Mini560 |
+| MCP4728 4-channel 12-bit I2C DAC board | 1 | 8.00 | 8.00 | Estimate, ~US$3-5 | RC steering: fakes the torque sensor (2 of its 4 outputs). Runs on 5 V. Solder the leads, no header plugs |
+| AS5600 magnetic angle sensor board, with its diametric magnet | 1 | 5.00 | 5.00 | Estimate, ~US$2-3 | RC steering angle. Check the listing includes the magnet. May not be needed if the Aqua ECU sends the angle (bench test) |
+| DPDT signal relay module, 5 V coil, transistor driver (HK19F / HFD2 / G5V-2 type, gold contacts) | 2 | 6.00 | 12.00 | Estimate, ~US$2-4 | RC steering changeover for the two torque sensor wires. Needs a driver that switches from a 3.3 V input. 1 spare |
+| 4-channel I2C logic level shifter (BSS138), 5 pack | 1 | 4.00 | 4.00 | Estimate, ~US$1-2 | 3.3 V Pico I2C to the 5 V DAC and ADC in the RC box |
 | 1.5KE18A TVS diode, 10 pack | 1 | 4.00 | 4.00 | Estimate | Uni-directional (no C on the end). One on the dash rail, rest spare |
-| **Total** | | | **60.00** | | |
+| **Total** | | | **94.00** | | |
 
 ### Local: Jaycar, Narva stockist, Repco, auto electrical
 
@@ -100,7 +104,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Polyester fibre fill (speaker wadding or pillow stuffing), 200 g | 1 | 12.00 | 12.00 | Estimate | About 70 g per speaker pod, loose. Not foam (it holds water) |
 | PETG filament 1.75mm 1kg (boxes, liner) | 1 | 35.00 | 35.00 | Estimate |  |
 | 3mm aluminium cut from DXF: back plate + Pi lid plate | 1 | 80.00 | 80.00 | Estimate | Laser or waterjet shop; cad/stl/*.dxf |
-| Auto cable 0.5 mm² (metres) | 95 | 0.90 | 85.50 | Estimate; counted from config/wiring.yaml | About 75 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
+| Auto cable 0.5 mm² (metres) | 105 | 0.90 | 94.50 | Estimate; counted from config/wiring.yaml | About 83 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
 | Auto cable 0.75 mm² (metres) | 15 | 1.10 | 16.50 | Estimate; counted from config/wiring.yaml | About 12 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
 | Auto cable 1 mm² (metres) | 65 | 1.40 | 91.00 | Estimate; counted from config/wiring.yaml | About 52 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
 | Auto cable 1.5 mm² (metres) | 105 | 1.90 | 199.50 | Estimate; counted from config/wiring.yaml | About 82 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
@@ -109,7 +113,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Auto cable 6 mm² (metres) | 5 | 6.50 | 32.50 | Estimate; counted from config/wiring.yaml | About 3 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
 | Auto cable 10 mm² (metres) | 7 | 11.00 | 77.00 | Estimate; counted from config/wiring.yaml | About 5 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
 | Auto cable 35 mm² (metres) | 2 | 30.00 | 60.00 | Estimate; counted from config/wiring.yaml | About 2 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
-| CAN cable, 2-core twisted + screen (metres) | 10 | 2.50 | 25.00 | Estimate; counted from config/wiring.yaml |  |
+| CAN cable, 2-core twisted + screen (metres) | 15 | 2.50 | 37.50 | Estimate; counted from config/wiring.yaml |  |
 | Speaker cable (metres) | 10 | 1.50 | 15.00 | Estimate; counted from config/wiring.yaml |  |
 | Standard blade fuses, Narva or Jaycar (not AliExpress) | 34 | 1.50 | 51.00 | Estimate; counted from config/wiring.yaml | 1 A x3, 2 A x6, 3 A x5, 5 A x4, 7.5 A x5, 10 A x5, 15 A x6 (2 spare of each) |
 | Waterproof inline blade fuse holder | 8 | 6.00 | 48.00 | Estimate; counted from config/wiring.yaml | Feeds that don't come off the fuse block (bucks, screen, amp, 12V sense, accessories) |
@@ -119,7 +123,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Tinned lugs for 6 mm², M8 hole | 6 | 2.00 | 12.00 | Estimate; counted from config/wiring.yaml | 2 spare |
 | Tinned lugs for 10 mm², M8 hole | 10 | 2.00 | 20.00 | Estimate; counted from config/wiring.yaml | 2 spare |
 | Tinned lugs for 35 mm², M8 hole | 4 | 2.00 | 8.00 | Estimate; counted from config/wiring.yaml | 2 spare |
-| **Total** | | | **1,803.00** | | |
+| **Total** | | | **1,824.50** | | |
 
 ### Separate pickup
 
@@ -134,14 +138,14 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 |---|---|
 | PB Tech (buy Thursday) | 623.21 |
 | AliExpress (one order, 2 to 4 weeks) | 730.01 |
-| AliExpress top-up (small second order, 19 Nov) | 60.00 |
-| Local: Jaycar, Narva stockist, Repco, auto electrical | 1,803.00 |
+| AliExpress top-up (small second order, 19 Nov) | 94.00 |
+| Local: Jaycar, Narva stockist, Repco, auto electrical | 1,824.50 |
 | Separate pickup | 20.00 |
-| **Everything** | **3,236.22** |
+| **Everything** | **3,291.72** |
 
 ### Already got (not in the totals)
 
-10.1 in touch screen, 12 V battery, 12 in light bar, 12-way fuse box (in the post; 12 fuses planned, so it is full), 200 degree rear camera (in the post), 250 A manual reset breaker (winch kill switch), 4 in pod, 5 A step-down buck (in the post; input must take 20 V+), 7 in light bar, ADS1115 (3 in the post), Amber + white LED roof beacon, BTS7960 (3 in the post), EU 7-pin round trailer plug (check the socket half and cap came too), Kenwood KFC-2053MRB 8 in marine speakers (pair), Kicker KM104 10 in marine sub (bought 18 Nov), Toyota Aqua EPS ECU 89650-52B51 on the column, with its power plug (Dodson's, 19 Nov), Toyota Aqua EPS column (Dodson's, 19 Nov), XBull 5000 lb winch (and its 35 mm² cables), XBull remote, XBull solenoid box, short actuator (in the post), smart actuator with position feedback (in the post), spare light bar (trailer), tray actuator (in the post). Cable glands and M12 breather vents, 10 packs (boxes + speaker pods) (NZ$24), Heat-set insert kit (M2 to M6) and stainless bolt kit (M2 to M6) (NZ$45), Samsung Galaxy XCover 5 (RC remote) (NZ$187).
+10.1 in touch screen, 12 V battery, 12 in light bar, 12-way fuse box (in the post; 12 fuses planned, so it is full), 200 degree rear camera (in the post), 250 A manual reset breaker (winch kill switch), 4 in pod, 5 A step-down buck (in the post; input must take 20 V+), 7 in light bar, ADS1115 (3 in the post), ADS1115 (third of the 3 in the post, for the RC box), Amber + white LED roof beacon, BTS7960 (3 in the post), EU 7-pin round trailer plug (check the socket half and cap came too), Kenwood KFC-2053MRB 8 in marine speakers (pair), Kicker KM104 10 in marine sub (bought 18 Nov), Toyota Aqua EPS ECU 89650-52B51 on the column, with its power plug (Dodson's, 19 Nov), Toyota Aqua EPS column (Dodson's, 19 Nov), XBull 5000 lb winch (and its 35 mm² cables), XBull remote, XBull solenoid box, short actuator (in the post), smart actuator with position feedback (in the post), spare light bar (trailer), tray actuator (in the post). Cable glands and M12 breather vents, 10 packs (boxes + speaker pods) (NZ$24), Heat-set insert kit (M2 to M6) and stainless bolt kit (M2 to M6) (NZ$45), Samsung Galaxy XCover 5 (RC remote) (NZ$187).
 
 ### Comes with the Shinegle kit or the stock Teryx
 

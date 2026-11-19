@@ -1,0 +1,227 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 915" width="1760" height="915" font-family="Arial, Helvetica, sans-serif" data-sheet="rc">
+<rect width="1760" height="915" fill="#ffffff"/>
+<text x="40" y="40" font-size="22" text-anchor="start" font-weight="bold" fill="#1f2328">RC box: steering by remote (fake torque sensor)</text>
+<text x="40" y="62" font-size="12" text-anchor="start" font-weight="normal" fill="#57606a">Teryx OS wiring, sheet &#x27;rc&#x27;. Made from config/wiring.yaml by `python -m teryx wiring`. Don&#x27;t edit this file.</text>
+<line x1="40" y1="92" x2="74" y2="92" stroke="#1a7f37" stroke-width="2.5"/>
+<text x="80" y="96" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">Measured on the Teryx</text>
+<line x1="250" y1="92" x2="284" y2="92" stroke="#0969da" stroke-width="2.5"/>
+<text x="290" y="96" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">Manual / confirmed</text>
+<line x1="460" y1="92" x2="494" y2="92" stroke="#424a53" stroke-width="2.5"/>
+<text x="500" y="96" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">Our design, not built yet</text>
+<line x1="670" y1="92" x2="704" y2="92" stroke="#bf8700" stroke-width="2.5" stroke-dasharray="7 4"/>
+<text x="710" y="96" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">TBC: needs checking</text>
+<line x1="880" y1="92" x2="914" y2="92" stroke="#8250df" stroke-width="2.5" stroke-dasharray="2 4"/>
+<text x="920" y="96" font-size="12" text-anchor="start" font-weight="normal" fill="#1f2328">Placeholder / later</text>
+<text x="40" y="120" font-size="11" text-anchor="start" font-weight="normal" fill="#57606a">Labels: wire id, size, fuse (if the wire has its own), and anything in between. Faded = optional. Hover for notes. Full table: docs/wiring/README.md</text>
+<g data-wire="RC01" data-from="PICO_BUCK.VOUT" data-to="RC_PICO.VSYS" data-status="planned"><title>RC01: PICO_BUCK.VOUT -&gt; RC_PICO.VSYS</title><path d="M920,217 C615,217 615,212 310,212" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="RC02" data-from="RC_PICO.GND" data-to="PICO_BUCK.GND" data-status="planned"><title>RC02: RC_PICO.GND -&gt; PICO_BUCK.GND - Same ground as the control box Pico</title><path d="M310,232 C615,232 615,197 920,197" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="RC05" data-from="RC_PICO.GP2" data-to="RC_CAN.SCK" data-status="planned"><title>RC05: RC_PICO.GP2 -&gt; RC_CAN.SCK</title><path d="M310,272 C395,272 395,232 480,232" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="RC06" data-from="RC_PICO.GP3" data-to="RC_CAN.SI" data-status="planned"><title>RC06: RC_PICO.GP3 -&gt; RC_CAN.SI</title><path d="M310,292 C395,292 395,252 480,252" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="RC07" data-from="RC_PICO.GP4" data-to="RC_CAN.SO" data-status="planned"><title>RC07: RC_PICO.GP4 -&gt; RC_CAN.SO</title><path d="M310,312 C395,312 395,272 480,272" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="RC08" data-from="RC_PICO.GP5" data-to="RC_CAN.CS" data-status="planned"><title>RC08: RC_PICO.GP5 -&gt; RC_CAN.CS</title><path d="M310,332 C395,332 395,292 480,292" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="RC09" data-from="RC_CAN.INT" data-to="RC_PICO.GP6" data-status="planned"><title>RC09: RC_CAN.INT -&gt; RC_PICO.GP6</title><path d="M480,312 C395,312 395,352 310,352" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="RC10" data-from="RC_PICO.3V3" data-to="RC_CAN.VCC" data-status="planned"><title>RC10: RC_PICO.3V3 -&gt; RC_CAN.VCC</title><path d="M310,252 C395,252 395,212 480,212" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="RC11" data-from="RC_PICO.3V3" data-to="RC_LVL.LV" data-status="planned"><title>RC11: RC_PICO.3V3 -&gt; RC_LVL.LV</title><path d="M310,252 C395,252 395,418 480,418" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="RC12" data-from="PICO_BUCK.VOUT" data-to="RC_LVL.HV" data-status="planned"><title>RC12: PICO_BUCK.VOUT -&gt; RC_LVL.HV</title><path d="M920,217 C835,217 835,438 750,438" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="RC13" data-from="RC_PICO.GP8" data-to="RC_LVL.LV1" data-status="planned"><title>RC13: RC_PICO.GP8 -&gt; RC_LVL.LV1 - SDA</title><path d="M310,372 C395,372 395,458 480,458" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="RC14" data-from="RC_PICO.GP9" data-to="RC_LVL.LV2" data-status="planned"><title>RC14: RC_PICO.GP9 -&gt; RC_LVL.LV2 - SCL</title><path d="M310,392 C395,392 395,478 480,478" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="RC15" data-from="RC_LVL.HV1" data-to="RC_DAC.SDA" data-status="planned"><title>RC15: RC_LVL.HV1 -&gt; RC_DAC.SDA</title><path d="M750,498 C835,498 835,534 920,534" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="RC16" data-from="RC_LVL.HV2" data-to="RC_DAC.SCL" data-status="planned"><title>RC16: RC_LVL.HV2 -&gt; RC_DAC.SCL</title><path d="M750,518 C835,518 835,554 920,554" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="RC17" data-from="RC_LVL.HV1" data-to="RC_ADC.SDA" data-status="planned"><title>RC17: RC_LVL.HV1 -&gt; RC_ADC.SDA</title><path d="M750,498 C835,498 835,343 920,343" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="RC18" data-from="RC_LVL.HV2" data-to="RC_ADC.SCL" data-status="planned"><title>RC18: RC_LVL.HV2 -&gt; RC_ADC.SCL</title><path d="M750,518 C835,518 835,363 920,363" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="RC19" data-from="PICO_BUCK.VOUT" data-to="RC_DAC.VDD" data-status="planned"><title>RC19: PICO_BUCK.VOUT -&gt; RC_DAC.VDD</title><path d="M1190,217 C1250,217 1250,514 1190,514" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="RC20" data-from="PICO_BUCK.VOUT" data-to="RC_ADC.VDD" data-status="planned"><title>RC20: PICO_BUCK.VOUT -&gt; RC_ADC.VDD</title><path d="M1190,217 C1250,217 1250,323 1190,323" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="RC21" data-from="PICO_BUCK.VOUT" data-to="RC_REL.VCC" data-status="planned"><title>RC21: PICO_BUCK.VOUT -&gt; RC_REL.VCC</title><path d="M920,217 C835,217 835,624 750,624" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="RC22" data-from="RC_PICO.GP10" data-to="RC_REL.IN" data-status="planned"><title>RC22: RC_PICO.GP10 -&gt; RC_REL.IN - High = RC steering. Pico reset or unpowered = relay off = real sensor</title><path d="M310,412 C395,412 395,644 480,644" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="RC23" data-from="EPS_COL.TRQ1" data-to="RC_REL.NC1" data-status="tbc"><title>RC23: EPS_COL.TRQ1 -&gt; RC_REL.NC1 - Cut into Toyota&#x27;s torque sensor lead; twisted with TRQ2</title><path d="M920,811 C835,811 835,684 750,684" fill="none" stroke="#bf8700" stroke-width="1.4" stroke-dasharray="7 4" stroke-opacity="0.65"/></g>
+<g data-wire="RC24" data-from="EPS_COL.TRQ2" data-to="RC_REL.NC2" data-status="tbc"><title>RC24: EPS_COL.TRQ2 -&gt; RC_REL.NC2</title><path d="M920,831 C835,831 835,744 750,744" fill="none" stroke="#bf8700" stroke-width="1.4" stroke-dasharray="7 4" stroke-opacity="0.65"/></g>
+<g data-wire="RC25" data-from="RC_DAC.VOUTA" data-to="RC_REL.NO1" data-status="planned"><title>RC25: RC_DAC.VOUTA -&gt; RC_REL.NO1</title><path d="M920,574 C835,574 835,704 750,704" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="RC26" data-from="RC_DAC.VOUTB" data-to="RC_REL.NO2" data-status="planned"><title>RC26: RC_DAC.VOUTB -&gt; RC_REL.NO2</title><path d="M920,594 C835,594 835,764 750,764" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="RC27" data-from="RC_REL.COM1" data-to="EPS_ECU.TRQ1" data-status="tbc"><title>RC27: RC_REL.COM1 -&gt; EPS_ECU.TRQ1</title><path d="M750,664 C835,664 835,685 920,685" fill="none" stroke="#bf8700" stroke-width="1.4" stroke-dasharray="7 4" stroke-opacity="0.65"/></g>
+<g data-wire="RC28" data-from="RC_REL.COM2" data-to="EPS_ECU.TRQ2" data-status="tbc"><title>RC28: RC_REL.COM2 -&gt; EPS_ECU.TRQ2</title><path d="M750,724 C835,724 835,705 920,705" fill="none" stroke="#bf8700" stroke-width="1.4" stroke-dasharray="7 4" stroke-opacity="0.65"/></g>
+<g data-wire="RC29" data-from="RC_REL.COM1" data-to="RC_ADC.A0" data-status="planned"><title>RC29: RC_REL.COM1 -&gt; RC_ADC.A0 - Read back what the ECU actually sees</title><path d="M750,664 C835,664 835,383 920,383" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="RC30" data-from="RC_REL.COM2" data-to="RC_ADC.A1" data-status="planned"><title>RC30: RC_REL.COM2 -&gt; RC_ADC.A1</title><path d="M750,724 C835,724 835,403 920,403" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="RC31" data-from="PICO_BUCK.VOUT" data-to="RC_ANGLE.VCC" data-status="tbc"><title>RC31: PICO_BUCK.VOUT -&gt; RC_ANGLE.VCC</title><path d="M1190,217 C1275,217 1275,212 1360,212" fill="none" stroke="#bf8700" stroke-width="1.4" stroke-dasharray="7 4" stroke-opacity="0.65"/></g>
+<g data-wire="RC32" data-from="RC_ANGLE.OUT" data-to="RC_ADC.A2" data-status="tbc"><title>RC32: RC_ANGLE.OUT -&gt; RC_ADC.A2 - Screened lead from the column</title><path d="M1360,252 C1275,252 1275,423 1190,423" fill="none" stroke="#bf8700" stroke-width="1.4" stroke-dasharray="7 4" stroke-opacity="0.65"/></g>
+<g data-wire="RC33" data-from="RC_ANGLE.GND" data-to="PICO_BUCK.GND" data-status="tbc"><title>RC33: RC_ANGLE.GND -&gt; PICO_BUCK.GND</title><path d="M1360,232 C1275,232 1275,197 1190,197" fill="none" stroke="#bf8700" stroke-width="1.4" stroke-dasharray="7 4" stroke-opacity="0.65"/></g>
+<g data-device="RC_PICO" data-status="planned"><title>RC_PICO: RC box Raspberry Pi Pico 2 (spare from the 5-pack) - Second Pico, only for RC. Drives the steering by faking the torque sensor. If it stops or loses power the changeover relay drops and the real torque sensor is back. Pins TBC in the RC firmware; these are a starting point</title><rect x="40" y="150" width="270" height="284" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="50" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">RC box Raspberry Pi Pico 2 (spare</text>
+<text x="50" y="183" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">from the 5-pack)</text>
+<text x="50" y="198" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">RC_PICO · planned · optional</text>
+<line x1="40" y1="212" x2="310" y2="212" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="216" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VSYS</text>
+<line x1="40" y1="232" x2="310" y2="232" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="236" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GND</text>
+<line x1="40" y1="252" x2="310" y2="252" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="256" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">3V3</text>
+<line x1="40" y1="272" x2="310" y2="272" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="276" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP2  SPI0 SCK</text>
+<line x1="40" y1="292" x2="310" y2="292" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="296" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP3  SPI0 MOSI</text>
+<line x1="40" y1="312" x2="310" y2="312" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="316" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP4  SPI0 MISO</text>
+<line x1="40" y1="332" x2="310" y2="332" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="336" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP5  CAN CS</text>
+<line x1="40" y1="352" x2="310" y2="352" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="356" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP6  CAN INT</text>
+<line x1="40" y1="372" x2="310" y2="372" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="376" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP8  I2C0 SDA</text>
+<line x1="40" y1="392" x2="310" y2="392" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="396" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP9  I2C0 SCL</text>
+<line x1="40" y1="412" x2="310" y2="412" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="175" y="416" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GP10  steering changeover relay</text>
+</g>
+<g data-device="RC_CAN" data-status="planned"><title>RC_CAN: MCP2515 CAN module (RC box, main bus) - Same 3.3 V-converted board as the control box (TJA1050 swapped for SN65HVD230). A short stub off the main bus inside the control box, no terminator</title><rect x="480" y="150" width="270" height="184" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="490" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">MCP2515 CAN module (RC box, main</text>
+<text x="490" y="183" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">bus)</text>
+<text x="490" y="198" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">RC_CAN · planned · optional</text>
+<line x1="480" y1="212" x2="750" y2="212" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="216" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VCC</text>
+<line x1="480" y1="232" x2="750" y2="232" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="236" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SCK</text>
+<line x1="480" y1="252" x2="750" y2="252" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="256" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SI</text>
+<line x1="480" y1="272" x2="750" y2="272" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="276" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SO</text>
+<line x1="480" y1="292" x2="750" y2="292" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="296" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">CS</text>
+<line x1="480" y1="312" x2="750" y2="312" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="316" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">INT</text>
+</g>
+<g data-device="RC_LVL" data-status="planned"><title>RC_LVL: I2C level shifter, 4-ch BSS138 (3.3 V to 5 V) - The DAC and ADC run on 5 V so they can reach the torque sensor&#x27;s range (up to about 3.5 V). The Pico&#x27;s I2C is 3.3 V, so it goes through this</title><rect x="480" y="356" width="270" height="184" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="490" y="374" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">I2C level shifter, 4-ch BSS138</text>
+<text x="490" y="389" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">(3.3 V to 5 V)</text>
+<text x="490" y="404" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">RC_LVL · planned · optional</text>
+<line x1="480" y1="418" x2="750" y2="418" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="422" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">LV</text>
+<line x1="480" y1="438" x2="750" y2="438" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="442" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">HV</text>
+<line x1="480" y1="458" x2="750" y2="458" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="462" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">LV1</text>
+<line x1="480" y1="478" x2="750" y2="478" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="482" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">LV2</text>
+<line x1="480" y1="498" x2="750" y2="498" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="502" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">HV1</text>
+<line x1="480" y1="518" x2="750" y2="518" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="522" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">HV2</text>
+</g>
+<g data-device="RC_REL" data-status="planned"><title>RC_REL: DPDT signal relay module, 5 V coil, gold contacts - Off (NC) = the real torque sensor goes to the ECU. On (NO) = the DAC does. Not the 16-ch board: its 10 A silver contacts aren&#x27;t made for tiny sensor currents. The coil only gets power from the RC box, so anything that stops the RC box hands the steering back</title><rect x="480" y="562" width="270" height="224" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="490" y="580" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">DPDT signal relay module, 5 V</text>
+<text x="490" y="595" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">coil, gold contacts</text>
+<text x="490" y="610" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">RC_REL · planned · optional</text>
+<line x1="480" y1="624" x2="750" y2="624" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="628" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VCC</text>
+<line x1="480" y1="644" x2="750" y2="644" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="648" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">IN</text>
+<line x1="480" y1="664" x2="750" y2="664" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="668" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">COM1</text>
+<line x1="480" y1="684" x2="750" y2="684" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="688" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">NC1</text>
+<line x1="480" y1="704" x2="750" y2="704" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="708" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">NO1</text>
+<line x1="480" y1="724" x2="750" y2="724" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="728" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">COM2</text>
+<line x1="480" y1="744" x2="750" y2="744" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="748" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">NC2</text>
+<line x1="480" y1="764" x2="750" y2="764" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="615" y="768" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">NO2</text>
+</g>
+<g data-device="PICO_BUCK" data-status="planned"><title>PICO_BUCK: 5 V 5 A buck (Sam&#x27;s, control box)</title><rect x="920" y="150" width="270" height="89" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="930" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">5 V 5 A buck (Sam&#x27;s, control box)</text>
+<text x="930" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">PICO_BUCK · planned</text>
+<line x1="920" y1="197" x2="1190" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GND</text>
+<line x1="920" y1="217" x2="1190" y2="217" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="221" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VOUT</text>
+</g>
+<g data-device="RC_ADC" data-status="planned"><title>RC_ADC: ADS1115 ADC (third one, 0x48 on the RC box&#x27;s own I2C) - Reads back what actually reaches the ECU (A0 TRQ1, A1 TRQ2) and the steering angle (A2). If TRQ1/TRQ2 stop mirroring, the RC box drops the relay. VDD 5 V so it can read up to 5 V</title><rect x="920" y="261" width="270" height="184" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="930" y="279" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">ADS1115 ADC (third one, 0x48 on</text>
+<text x="930" y="294" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">the RC box&#x27;s own I2C)</text>
+<text x="930" y="309" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">RC_ADC · planned · optional</text>
+<line x1="920" y1="323" x2="1190" y2="323" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="327" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VDD</text>
+<line x1="920" y1="343" x2="1190" y2="343" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="347" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SDA</text>
+<line x1="920" y1="363" x2="1190" y2="363" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="367" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SCL</text>
+<line x1="920" y1="383" x2="1190" y2="383" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="387" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">A0</text>
+<line x1="920" y1="403" x2="1190" y2="403" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="407" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">A1</text>
+<line x1="920" y1="423" x2="1190" y2="423" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="427" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">A2</text>
+</g>
+<g data-device="RC_DAC" data-status="planned"><title>RC_DAC: MCP4728 4-ch 12-bit DAC (0x60) - VOUTA = fake TRQ1, VOUTB = fake TRQ2 (a mirrored pair about the centre, trq_volts() in teryx/rc_mode.py). C and D spare (throttle wiper later). VDD 5 V, so 0-5 V out</title><rect x="920" y="467" width="270" height="149" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="930" y="485" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">MCP4728 4-ch 12-bit DAC (0x60)</text>
+<text x="930" y="500" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">RC_DAC · planned · optional</text>
+<line x1="920" y1="514" x2="1190" y2="514" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="518" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VDD</text>
+<line x1="920" y1="534" x2="1190" y2="534" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="538" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SDA</text>
+<line x1="920" y1="554" x2="1190" y2="554" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="558" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SCL</text>
+<line x1="920" y1="574" x2="1190" y2="574" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="578" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VOUTA</text>
+<line x1="920" y1="594" x2="1190" y2="594" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="598" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VOUTB</text>
+</g>
+<g data-device="EPS_ECU" data-status="tbc"><title>EPS_ECU: Toyota Aqua EPS ECU (89650-52B51) - Owned with its power plug (B+, GND). Still need the signal plug (IG, CANH, CANL). Pin numbers TBC: Toyota&#x27;s RAV4 EPS ECU has IG, CANH, CANL on one plug and PIG, PGND on the other</title><rect x="920" y="638" width="270" height="89" rx="6" fill="#f0f6ff" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
+<text x="930" y="656" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Toyota Aqua EPS ECU (89650-52B51)</text>
+<text x="930" y="671" font-size="10" text-anchor="start" font-weight="normal" fill="#bf8700">EPS_ECU · tbc · optional</text>
+<line x1="920" y1="685" x2="1190" y2="685" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="689" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">TRQ1</text>
+<line x1="920" y1="705" x2="1190" y2="705" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="709" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">TRQ2</text>
+</g>
+<g data-device="EPS_COL" data-status="tbc"><title>EPS_COL: Aqua steering column (motor + torque sensor) - Motor and torque sensor plugs go to the ECU on Toyota&#x27;s own loom. For RC, the two torque sensor signal wires (TRQ1, TRQ2) are cut and go through the RC changeover relay; the sensor&#x27;s own 5 V and ground stay as Toyota wired them</title><rect x="920" y="749" width="270" height="104" rx="6" fill="#f0f6ff" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
+<text x="930" y="767" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Aqua steering column (motor +</text>
+<text x="930" y="782" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">torque sensor)</text>
+<text x="930" y="797" font-size="10" text-anchor="start" font-weight="normal" fill="#bf8700">EPS_COL · tbc · optional</text>
+<line x1="920" y1="811" x2="1190" y2="811" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="815" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">TRQ1</text>
+<line x1="920" y1="831" x2="1190" y2="831" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1055" y="835" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">TRQ2</text>
+</g>
+<g data-device="RC_ANGLE" data-status="tbc"><title>RC_ANGLE: AS5600 magnetic angle sensor + magnet - Steering shaft angle for the RC steering loop. Analogue OUT (not I2C) because it&#x27;s a long run from the cab. May not be needed if the Aqua ECU sends the angle on 0x260 (bench test step 4, docs/power-steering-aqua.md)</title><rect x="1360" y="150" width="270" height="124" rx="6" fill="#f0f6ff" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
+<text x="1370" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">AS5600 magnetic angle sensor +</text>
+<text x="1370" y="183" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">magnet</text>
+<text x="1370" y="198" font-size="10" text-anchor="start" font-weight="normal" fill="#bf8700">RC_ANGLE · tbc · optional</text>
+<line x1="1360" y1="212" x2="1630" y2="212" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="216" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VCC</text>
+<line x1="1360" y1="232" x2="1630" y2="232" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="236" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GND</text>
+<line x1="1360" y1="252" x2="1630" y2="252" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1495" y="256" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT</text>
+</g>
+<text x="318" y="209" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">RC01  0.5 mm²</text>
+<text x="318" y="229" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">RC02  0.5 mm²</text>
+<text x="318" y="269" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">RC05</text>
+<text x="318" y="289" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">RC06</text>
+<text x="318" y="309" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">RC07</text>
+<text x="318" y="329" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">RC08</text>
+<text x="472" y="309" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">RC09</text>
+<text x="472" y="209" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">RC10</text>
+<text x="472" y="415" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">RC11</text>
+<text x="758" y="435" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">RC12</text>
+<text x="318" y="369" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">RC13</text>
+<text x="318" y="389" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">RC14</text>
+<text x="912" y="531" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">RC15</text>
+<text x="912" y="551" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">RC16</text>
+<text x="912" y="340" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">RC17</text>
+<text x="912" y="360" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">RC18</text>
+<text x="1198" y="511" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">RC19</text>
+<text x="1198" y="320" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">RC20</text>
+<text x="758" y="621" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">RC21</text>
+<text x="318" y="409" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">RC22</text>
+<text x="912" y="808" font-size="9.5" text-anchor="end" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">RC23  0.5 mm²</text>
+<text x="912" y="828" font-size="9.5" text-anchor="end" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">RC24  0.5 mm²</text>
+<text x="912" y="571" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">RC25</text>
+<text x="912" y="591" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">RC26</text>
+<text x="912" y="682" font-size="9.5" text-anchor="end" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">RC27  0.5 mm²</text>
+<text x="912" y="702" font-size="9.5" text-anchor="end" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">RC28  0.5 mm²</text>
+<text x="912" y="380" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">RC29</text>
+<text x="912" y="400" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">RC30</text>
+<text x="1352" y="209" font-size="9.5" text-anchor="end" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">RC31  0.5 mm²</text>
+<text x="1352" y="249" font-size="9.5" text-anchor="end" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">RC32  0.5 mm²</text>
+<text x="1352" y="229" font-size="9.5" text-anchor="end" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">RC33  0.5 mm²</text>
+</svg>

@@ -10,7 +10,7 @@ Why things are wired this way (power hold, diodes, CAN rules): [`docs/wiring.md`
 Viewer with search: [`index.html`](index.html), also online at
 <https://electrumnz.github.io/TERYXDACTL/wiring/>.
 
-**90 devices, 316 wires.** By status: 19 from_manual, 3 confirmed, 252 planned, 38 tbc, 4 placeholder.
+**97 devices, 349 wires.** By status: 19 from_manual, 3 confirmed, 278 planned, 45 tbc, 4 placeholder.
 Nothing has been checked on the real Teryx yet.
 
 Wire sizes follow the conservative table in the YAML (from
@@ -67,6 +67,10 @@ runs up to about 5 m). Go one size up for bundled or hot runs.
 
 ![dash](sheet-dash.svg)
 
+### RC box: steering by remote (fake torque sensor)
+
+![rc](sheet-rc.svg)
+
 ## Things to check or photograph on the Teryx
 
 - [ ] **Traction battery pack** (PACK): Battery pack make, size (kWh), and where its main fuse is. Photo the label
@@ -89,7 +93,8 @@ runs up to about 5 m). Go one size up for bundled or hot runs.
 - [ ] **Brake light switch (stock)** (BRAKE_SW): Find the brake light switch's two wires and meter them. Feed one from the 6-way (way 6), the other is OUT. If the stock loom still feeds the switch, cut that feed so it's only on our fuse. The switch now carries both brake filaments plus the trailer stop lamps (about 8 A with bulbs): if its contacts look small, put a 12 V automotive relay after it
 - [ ] **Parking brake switch (stock)** (PARK_SW): Find the parking brake switch wire at the meter plug. Does it switch ground or 12 V?
 - [ ] **Toyota Aqua EPS ECU (89650-52B51)** (EPS_ECU): Photo both EPS ECU sockets (pin numbers) and the power plug's wire colours
-- [ ] **Aqua steering column (motor + torque sensor)** (EPS_COL): Measure the space from the steering wheel to where the Teryx shaft goes to the rack
+- [ ] **Aqua steering column (motor + torque sensor)** (EPS_COL): Measure the space from the steering wheel to where the Teryx shaft goes to the rack. Meter TRQ1/TRQ2 at centre, hard left and hard right effort (Toyota: about 2.5 V centre, the two moving in opposite directions)
+- [ ] **AS5600 magnetic angle sensor + magnet** (RC_ANGLE): Where to put it: it reads a magnet on the end of a shaft, so it needs a spot on the column or a small geared stub
 - [ ] **7-pin flat trailer socket (Narva 82043BL, reed switch)** (TRAILER): Which way does the Narva reed switch switch, and what triggers it?
 - [ ] **Analogue video to camera-ribbon (CSI) board, ADV7280-M (rear + trailer)** (TCAM_DONGLE): Confirm the board works on the Pi 5 (dtoverlay=adv728x-m,adv7280m=1); set each AHD camera to CVBS/PAL (OSD menu or mode wire)
 - [ ] **Glove box USB-C charger (RC phone)** (GLOVE_USB): Pick a 12 V USB-C PD panel socket (waterproof cap, about 20-30 W)
@@ -110,6 +115,8 @@ Wires marked TBC, with what's unknown:
 - LT63 FB2.F6 to BRAKE_SW.IN: Brake switch feed, always live
 - WN19 WINCH_SOL.COIL_IN to WINCH_SOL.GND: Across the coil, at the solenoid box, unless the box already has one. Stops the coil's kick arcing the relay contacts and spiking the 12 V
 - D33 EPS_ECU.MOTOR to EPS_COL.MOTOR: Toyota's own plug, keep it from the wrecker
+- RC23 EPS_COL.TRQ1 to RC_REL.NC1: Cut into Toyota's torque sensor lead; twisted with TRQ2
+- RC32 RC_ANGLE.OUT to RC_ADC.A2: Screened lead from the column
 - T05 BRAKE_SW.OUT to TRAILER.P6_STOP: Trailer brake lights still work with the control box off
 - T06 RELAYS.NO1 to TRAILER.P2_REV: Reversing pin. Relay 1 follows the rear floods, so trailer reverse lights come on with them
 - X03 CAM_REAR.VID to TCAM_DONGLE.VID_R: Shielded video lead, soldered
@@ -287,6 +294,8 @@ Fuses not in the block (inline, at the battery or on a board):
 | C04 | PICO_CAN.CANL | PI_CAN.CANL | 0.5 mm² |  |  | planned |  |
 | C05 | EPS_CAN.CANH | EPS_ECU.CANH | 0.5 mm² |  |  | planned (optional) | Own bus, 500 kbit/s, Toyota frames 0x0B4 and 0x2C4 |
 | C06 | EPS_CAN.CANL | EPS_ECU.CANL | 0.5 mm² |  |  | planned (optional) |  |
+| RC03 | PICO_CAN.CANH | RC_CAN.CANH | 0.5 mm² |  |  | planned (optional) | Short stub inside the control box, under 30 cm |
+| RC04 | PICO_CAN.CANL | RC_CAN.CANL | 0.5 mm² |  |  | planned (optional) |  |
 
 ### Control box inside: Pico 2 and its boards
 
@@ -549,6 +558,42 @@ Fuses not in the block (inline, at the battery or on a board):
 | X36 | IMU.GND | PI5.GND |  |  |  | planned (optional) |  |
 | X24 | PI5.P5_SCL | IMU.SCL |  |  |  | planned (optional) |  |
 
+### RC box: steering by remote (fake torque sensor)
+
+| Wire | From | To | Size | Fuse | Via | Status | Note |
+|---|---|---|---|---|---|---|---|
+| RC01 | PICO_BUCK.VOUT | RC_PICO.VSYS | 0.5 mm² |  |  | planned (optional) |  |
+| RC02 | RC_PICO.GND | PICO_BUCK.GND | 0.5 mm² |  |  | planned (optional) | Same ground as the control box Pico |
+| RC05 | RC_PICO.GP2 | RC_CAN.SCK |  |  |  | planned (optional) |  |
+| RC06 | RC_PICO.GP3 | RC_CAN.SI |  |  |  | planned (optional) |  |
+| RC07 | RC_PICO.GP4 | RC_CAN.SO |  |  |  | planned (optional) |  |
+| RC08 | RC_PICO.GP5 | RC_CAN.CS |  |  |  | planned (optional) |  |
+| RC09 | RC_CAN.INT | RC_PICO.GP6 |  |  |  | planned (optional) |  |
+| RC10 | RC_PICO.3V3 | RC_CAN.VCC |  |  |  | planned (optional) |  |
+| RC11 | RC_PICO.3V3 | RC_LVL.LV |  |  |  | planned (optional) |  |
+| RC12 | PICO_BUCK.VOUT | RC_LVL.HV |  |  |  | planned (optional) |  |
+| RC13 | RC_PICO.GP8 | RC_LVL.LV1 |  |  |  | planned (optional) | SDA |
+| RC14 | RC_PICO.GP9 | RC_LVL.LV2 |  |  |  | planned (optional) | SCL |
+| RC15 | RC_LVL.HV1 | RC_DAC.SDA |  |  |  | planned (optional) |  |
+| RC16 | RC_LVL.HV2 | RC_DAC.SCL |  |  |  | planned (optional) |  |
+| RC17 | RC_LVL.HV1 | RC_ADC.SDA |  |  |  | planned (optional) |  |
+| RC18 | RC_LVL.HV2 | RC_ADC.SCL |  |  |  | planned (optional) |  |
+| RC19 | PICO_BUCK.VOUT | RC_DAC.VDD |  |  |  | planned (optional) |  |
+| RC20 | PICO_BUCK.VOUT | RC_ADC.VDD |  |  |  | planned (optional) |  |
+| RC21 | PICO_BUCK.VOUT | RC_REL.VCC |  |  |  | planned (optional) |  |
+| RC22 | RC_PICO.GP10 | RC_REL.IN |  |  |  | planned (optional) | High = RC steering. Pico reset or unpowered = relay off = real sensor |
+| RC23 | EPS_COL.TRQ1 | RC_REL.NC1 | 0.5 mm² |  |  | tbc (optional) | Cut into Toyota's torque sensor lead; twisted with TRQ2 |
+| RC24 | EPS_COL.TRQ2 | RC_REL.NC2 | 0.5 mm² |  |  | tbc (optional) |  |
+| RC25 | RC_DAC.VOUTA | RC_REL.NO1 |  |  |  | planned (optional) |  |
+| RC26 | RC_DAC.VOUTB | RC_REL.NO2 |  |  |  | planned (optional) |  |
+| RC27 | RC_REL.COM1 | EPS_ECU.TRQ1 | 0.5 mm² |  |  | tbc (optional) |  |
+| RC28 | RC_REL.COM2 | EPS_ECU.TRQ2 | 0.5 mm² |  |  | tbc (optional) |  |
+| RC29 | RC_REL.COM1 | RC_ADC.A0 |  |  |  | planned (optional) | Read back what the ECU actually sees |
+| RC30 | RC_REL.COM2 | RC_ADC.A1 |  |  |  | planned (optional) |  |
+| RC31 | PICO_BUCK.VOUT | RC_ANGLE.VCC | 0.5 mm² |  |  | tbc (optional) |  |
+| RC32 | RC_ANGLE.OUT | RC_ADC.A2 | 0.5 mm² |  |  | tbc (optional) | Screened lead from the column |
+| RC33 | RC_ANGLE.GND | PICO_BUCK.GND | 0.5 mm² |  |  | tbc (optional) |  |
+
 ## Devices
 
 | ID | Device | Where | Status | Notes |
@@ -624,7 +669,14 @@ Fuses not in the block (inline, at the battery or on a board):
 | BRAKE_SW | Brake light switch (stock) | cab | tbc | Also feeds both brake filaments and the trailer stop pin through diodes, so the brake lights work at full even with the control box off |
 | PARK_SW | Parking brake switch (stock) | cab | tbc | Lights the red parking brake light in the meter |
 | EPS_ECU | Toyota Aqua EPS ECU (89650-52B51) | cab | tbc (optional) | Owned with its power plug (B+, GND). Still need the signal plug (IG, CANH, CANL). Pin numbers TBC: Toyota's RAV4 EPS ECU has IG, CANH, CANL on one plug and PIG, PGND on the other See [`docs/power-steering-aqua.md`](../../docs/power-steering-aqua.md). |
-| EPS_COL | Aqua steering column (motor + torque sensor) | cab | tbc (optional) | Motor and torque sensor plugs go to the ECU on Toyota's own loom |
+| EPS_COL | Aqua steering column (motor + torque sensor) | cab | tbc (optional) | Motor and torque sensor plugs go to the ECU on Toyota's own loom. For RC, the two torque sensor signal wires (TRQ1, TRQ2) are cut and go through the RC changeover relay; the sensor's own 5 V and ground stay as Toyota wired them |
+| RC_PICO | RC box Raspberry Pi Pico 2 (spare from the 5-pack) | control_box | planned (optional) | Second Pico, only for RC. Drives the steering by faking the torque sensor. If it stops or loses power the changeover relay drops and the real torque sensor is back. Pins TBC in the RC firmware; these are a starting point See [`docs/rc-beach-launch.md`](../../docs/rc-beach-launch.md). |
+| RC_CAN | MCP2515 CAN module (RC box, main bus) | control_box | planned (optional) | Same 3.3 V-converted board as the control box (TJA1050 swapped for SN65HVD230). A short stub off the main bus inside the control box, no terminator |
+| RC_LVL | I2C level shifter, 4-ch BSS138 (3.3 V to 5 V) | control_box | planned (optional) | The DAC and ADC run on 5 V so they can reach the torque sensor's range (up to about 3.5 V). The Pico's I2C is 3.3 V, so it goes through this |
+| RC_DAC | MCP4728 4-ch 12-bit DAC (0x60) | control_box | planned (optional) | VOUTA = fake TRQ1, VOUTB = fake TRQ2 (a mirrored pair about the centre, trq_volts() in teryx/rc_mode.py). C and D spare (throttle wiper later). VDD 5 V, so 0-5 V out |
+| RC_ADC | ADS1115 ADC (third one, 0x48 on the RC box's own I2C) | control_box | planned (optional) | Reads back what actually reaches the ECU (A0 TRQ1, A1 TRQ2) and the steering angle (A2). If TRQ1/TRQ2 stop mirroring, the RC box drops the relay. VDD 5 V so it can read up to 5 V |
+| RC_REL | DPDT signal relay module, 5 V coil, gold contacts | control_box | planned (optional) | Off (NC) = the real torque sensor goes to the ECU. On (NO) = the DAC does. Not the 16-ch board: its 10 A silver contacts aren't made for tiny sensor currents. The coil only gets power from the RC box, so anything that stops the RC box hands the steering back |
+| RC_ANGLE | AS5600 magnetic angle sensor + magnet | cab | tbc (optional) | Steering shaft angle for the RC steering loop. Analogue OUT (not I2C) because it's a long run from the cab. May not be needed if the Aqua ECU sends the angle on 0x260 (bench test step 4, docs/power-steering-aqua.md) |
 | TRAILER | 7-pin flat trailer socket (Narva 82043BL, reed switch) | rear | planned | See [`docs/cameras.md`](../../docs/cameras.md). |
 | TCAM_PLUG | Trailer EU 7-pin round plug (camera + light bar, Sam's) | rear | planned (optional) | Sam's EU round 7-pin, next to the flat NZ/AU 7-pin for the main trailer lights, so they can't be mixed up. NOT wired to the EU light standard. 1 cam +12 V, 2 video, 3 cam ground, 4 video shield, 5 light bar +12 V, 6 light bar - (switched), 7 spare. Light bar on 1.5 mm² (pins are good for 10 A+). Spring cap on the socket and dielectric grease on the pins |
 | CAM_TRAILER | Trailer camera (12 V AHD) | trailer | planned (optional) |  |
