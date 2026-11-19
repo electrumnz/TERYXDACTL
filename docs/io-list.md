@@ -157,7 +157,7 @@ shifter. **TBC** on the bench.
 | `in.tray_up` | Tray up limit | B4 | Normally closed |
 | `in.winch_remote` | Winch being run by hand: handheld remote, or either hidden hand switch | B5 | All of them diode-OR'd into this one input. The dash shows "by hand", counts it towards winch motor heat, and the Pico won't let the dash drive the winch while it's on |
 | `in.park` | Parking brake pedal switch | B6 | The stock Teryx has one (it lights the red parking brake light in the meter). Tap that wire. Ground or 12V switching **TBC** |
-| `in.trailer` | Trailer plugged in | B7 | Reed switch in the 7-pin socket (Narva 82043BL type, see [`cameras.md`](cameras.md)). Shows the trailer camera. Was the spare input |
+| `in.trailer` | Trailer plugged in | 2nd MCP23017 (0x21) B0 | Reed switch in the 7-pin socket (Narva 82043BL type, see [`cameras.md`](cameras.md)). Shows the trailer camera. Moved off MCP1 B7 on 19 Nov: newer MCP23017 datasheets (rev D on) say GPA7/GPB7 are output only. The firmware still reports it as bit 7 |
 
 ### Analogue
 | ID | Input | Where | Scaling |
@@ -308,7 +308,7 @@ Wiring detail: [`docs/wiring.md`](wiring.md).
 - [ ] Shinegle reverse signal: CAN or a wire?
 - [x] 12V battery: yes, kept after the conversion
 - [ ] DC-DC converter rating
-- [x] 5V buck converter rating: Pi on the Pololu D36V50F5 (5.5 A), owned 5 A buck for the rest
+- [x] 5V buck converter rating: Pi + 4G board on a potted 12/24 V to 5 V 10 A buck (19 Nov, replaced the Pololu D36V50F5), owned 5 A buck for the control box
 - [ ] Relay board works off 3.3V logic? (Pico drives it through the MCP23017; check on the bench)
 - [ ] Trailer indicators wanted? (Teryx has none stock; would need 2 more outputs)
 - [ ] Brake pedal regen: does the Shinegle take a brake/regen input (analogue, switch or CAN)? Checklist in [`brake-regen.md`](brake-regen.md)

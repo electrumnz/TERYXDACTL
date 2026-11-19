@@ -63,7 +63,7 @@ inputs:
     in.tray_up:      {expander_pin: B4, normally_closed: true, label: "Tray up limit"}
     in.winch_remote: {expander_pin: B5, label: "Winch remote in use"}
     in.park:         {expander_pin: B6, label: "Parking brake pedal (stock switch)"}
-    in.trailer:      {expander_pin: B7, label: "Trailer plugged in (reed switch in the 7-pin socket)"}
+    in.trailer:      {expander: 2, expander_pin: B0, opto: 8, label: "Trailer plugged in (reed switch in the 7-pin socket). On the 2nd MCP23017: GPB7 is output only on newer chips"}
   analogue:
     an.diff_pos:       {adc: ads1115, channel: 0, units: "%", calibrate: true}
     an.aux_12v:        {adc: ads1115, channel: 1, units: V, divider: [10000, 2200]}
