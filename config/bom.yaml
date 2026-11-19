@@ -83,7 +83,7 @@ lines:
   - {id: pi5, shop: pbtech, part: Raspberry Pi 5 8GB, sku: SEVRBP0502, qty: 1, each: 371.39, source: Checked 17 Nov, covers: [PI5], notes: "On order, ships about 30 Nov; ask in store", link: "https://www.pbtech.co.nz/product/SEVRBP0502"}
   - {id: cam_front, shop: pbtech, part: Raspberry Pi Camera Module 3 Wide (front), sku: SEVRBP0398, qty: 1, each: 80.71, source: Search result 18 Nov, covers: [CAM_FRONT], notes: "Out of stock when indexed; alt element14 SC0874 ~NZ$69", link: "https://www.pbtech.co.nz/product/SEVRBP0398"}
   - {id: cam_cable, shop: pbtech, part: Pi 5 camera cable 200mm, sku: SEVRBP0541, qty: 2, each: 2.12, source: Search result 18 Nov, notes: Front camera + video board, link: "https://www.pbtech.com/pacific/product/SEVRBP0541"}
-  - {id: pico, shop: pbtech, part: Raspberry Pi Pico 2 5-pack, sku: SEVRBP0628, qty: 1, each: 47.20, source: Checked 17 Nov, covers: [PICO], notes: "Control box, CAN sniffer, steering bench test, 2 spare", link: "https://www.pbtech.co.nz/product/SEVRBP0628"}
+  - {id: pico, shop: pbtech, part: Raspberry Pi Pico 2 5-pack, sku: SEVRBP0628, qty: 1, each: 47.20, source: Checked 17 Nov, covers: [PICO, RC_PICO], notes: "Control box, RC box, CAN sniffer, steering bench test, 1 spare", link: "https://www.pbtech.co.nz/product/SEVRBP0628"}
   - {id: psu27, shop: pbtech, part: Raspberry Pi 27W USB-C power supply (bench), sku: SEVRBP0512, qty: 1, each: 24.90, source: Search result 18 Nov, notes: Bench only, link: "https://www.pbtech.co.nz/product/SEVRBP0512"}
   - {id: hdmi, shop: pbtech, part: Raspberry Pi micro HDMI to HDMI cable 1m, sku: SEVRBP0207, qty: 1, each: 11.80, source: Search result 18 Nov, notes: "Alt black SEVRBP0262 ~11.10", link: "https://www.pbtech.co.nz/product/SEVRBP0207"}
   - {id: sd, shop: pbtech, part: "Raspberry Pi A2 SD card 128GB (OS)", sku: SEVRBP0538, qty: 1, each: 47.32, source: "Search result 18 Nov", notes: "Official card, in the Pi's own slot. Not made for non-stop writes, so dashcam/Sentry recording stays off or minimal until extra storage is added", link: "https://www.pbtech.co.nz/product/SEVRBP0538"}
@@ -120,10 +120,14 @@ lines:
   # ------------------------------------------------------------- AliExpress top-up
   # 19 Nov: replaces the Core Electronics order (CAN, MCP23017, Pololu) and the
   # Gogo:Tronics / element14 bits, since the main AliExpress order had already gone.
-  - {id: can, shop: ali_topup, part: "MCP2515 + TJA1050 CAN board (the common blue one, 8 MHz crystal)", qty: 4, each: 5.00, source: "Estimate, ~US$2-3 each", covers: [PI_CAN, PICO_CAN, EPS_CAN], notes: "Pi, control box, steering bus + 1 spare. Before use, swap the 8-pin TJA1050 (5 V) for an SN65HVD230 (3.3 V, same pins) and power the board from 3.3 V. Never wire one to the Pico or Pi with the TJA1050 still on"}
+  - {id: can, shop: ali_topup, part: "MCP2515 + TJA1050 CAN board (the common blue one, 8 MHz crystal)", qty: 5, each: 5.00, source: "Estimate, ~US$2-3 each", covers: [PI_CAN, PICO_CAN, EPS_CAN, RC_CAN], notes: "Pi, control box, steering bus, RC box + 1 spare. Before use, swap the 8-pin TJA1050 (5 V) for an SN65HVD230 (3.3 V, same pins) and power the board from 3.3 V. Never wire one to the Pico or Pi with the TJA1050 still on"}
   - {id: sn65, shop: ali_topup, part: "SN65HVD230 CAN chip, SOIC-8 (VP230), 10 pack", qty: 1, each: 6.00, source: "Estimate", notes: "For the chip swap above; spares for mistakes. Pin 8 stays tied to ground on the board (full speed)"}
   - {id: mcp23017, shop: ali_topup, part: "MCP23017 I2C 16-pin I/O board (CJMCU-2317 type)", qty: 2, each: 4.00, source: "Estimate, ~US$1.5-2.5 each", covers: [MCP1, MCP2], notes: "Runs fine on 3.3 V. Set the second one to address 0x21 (A0 high). GPA7/GPB7 used as outputs or not at all"}
   - {id: pi_buck, shop: ali_topup, part: "Potted waterproof DC-DC buck, 12V/24V in to 5V 10A (50W) out", qty: 1, each: 22.00, source: "Estimate, ~US$10-14", covers: [PI_BUCK], notes: "Pi 5 + 4G board. Listing must say input 8-35V (or wider) and 10A. Bare-wire leads, no USB plug. Replaces the NZ$111 Pololu and the Mini560"}
+  - {id: mcp4728, shop: ali_topup, part: "MCP4728 4-channel 12-bit I2C DAC board", qty: 1, each: 8.00, source: "Estimate, ~US$3-5", covers: [RC_DAC], notes: "RC steering: fakes the torque sensor (2 of its 4 outputs). Runs on 5 V. Solder the leads, no header plugs"}
+  - {id: as5600, shop: ali_topup, part: "AS5600 magnetic angle sensor board, with its diametric magnet", qty: 1, each: 5.00, source: "Estimate, ~US$2-3", covers: [RC_ANGLE], notes: "RC steering angle. Check the listing includes the magnet. May not be needed if the Aqua ECU sends the angle (bench test)"}
+  - {id: dpdt_signal, shop: ali_topup, part: "DPDT signal relay module, 5 V coil, transistor driver (HK19F / HFD2 / G5V-2 type, gold contacts)", qty: 2, each: 6.00, source: "Estimate, ~US$2-4", covers: [RC_REL], notes: "RC steering changeover for the two torque sensor wires. Needs a driver that switches from a 3.3 V input. 1 spare"}
+  - {id: lvl_shift, shop: ali_topup, part: "4-channel I2C logic level shifter (BSS138), 5 pack", qty: 1, each: 4.00, source: "Estimate, ~US$1-2", covers: [RC_LVL], notes: "3.3 V Pico I2C to the 5 V DAC and ADC in the RC box"}
   - {id: tvs, shop: ali_topup, part: "1.5KE18A TVS diode, 10 pack", qty: 1, each: 4.00, source: "Estimate", covers: [TVS], notes: "Uni-directional (no C on the end). One on the dash rail, rest spare"}
 
   # ------------------------------------------------------------- local
@@ -156,6 +160,7 @@ owned:
   SCREEN: 10.1 in touch screen
   EPS_ECU: Toyota Aqua EPS ECU 89650-52B51 on the column, with its power plug (Dodson's, 19 Nov)
   EPS_COL: Toyota Aqua EPS column (Dodson's, 19 Nov)
+  RC_ADC: ADS1115 (third of the 3 in the post, for the RC box)
   BEACON: Amber + white LED roof beacon
   BRK_WINCH: 250 A manual reset breaker (winch kill switch)
   CAM_REAR: 200 degree rear camera (in the post)

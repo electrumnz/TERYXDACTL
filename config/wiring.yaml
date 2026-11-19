@@ -64,6 +64,7 @@ sheets:
   drive:   {title: "Drive: 4WD, diff lock, tray, power steering", root: PICO}
   trailer: {title: "Trailer plug and trailer camera", root: TRAILER}
   dash:    {title: "Dash computer: Pi 5, screen, cameras, USB, audio", root: PI5}
+  rc:      {title: "RC box: steering by remote (fake torque sensor)", root: RC_PICO}
 
 devices:
   # ---------------------------------------------------------------- traction
@@ -561,15 +562,80 @@ devices:
     note: "Owned with its power plug (B+, GND). Still need the signal plug (IG, CANH, CANL). Pin numbers TBC: Toyota's RAV4 EPS ECU has IG, CANH, CANL on one plug and PIG, PGND on the other"
     check: Photo both EPS ECU sockets (pin numbers) and the power plug's wire colours
     doc: docs/power-steering-aqua.md
-    pins: {B+: 12v, GND: gnd, IG: 12v, CANH: {v: can, term: true}, CANL: can, MOTOR: 12v}
+    pins: {B+: 12v, GND: gnd, IG: 12v, CANH: {v: can, term: true}, CANL: can, MOTOR: 12v, TRQ1: 5v, TRQ2: 5v}
   EPS_COL:
     name: Aqua steering column (motor + torque sensor)
     zone: cab
     status: tbc
     optional: true
-    note: Motor and torque sensor plugs go to the ECU on Toyota's own loom
-    check: Measure the space from the steering wheel to where the Teryx shaft goes to the rack
-    pins: {MOTOR: 12v}
+    note: "Motor and torque sensor plugs go to the ECU on Toyota's own loom. For RC, the two torque sensor signal wires (TRQ1, TRQ2) are cut and go through the RC changeover relay; the sensor's own 5 V and ground stay as Toyota wired them"
+    check: "Measure the space from the steering wheel to where the Teryx shaft goes to the rack. Meter TRQ1/TRQ2 at centre, hard left and hard right effort (Toyota: about 2.5 V centre, the two moving in opposite directions)"
+    pins: {MOTOR: 12v, TRQ1: 5v, TRQ2: 5v}
+
+  # ---------------------------------------------------------- RC box (docs/rc-beach-launch.md)
+  # Steering only for now. Lives inside the control box, powered from its 5 V buck.
+  RC_PICO:
+    name: RC box Raspberry Pi Pico 2 (spare from the 5-pack)
+    zone: control_box
+    status: planned
+    optional: true
+    note: "Second Pico, only for RC. Drives the steering by faking the torque sensor. If it stops or loses power the changeover relay drops and the real torque sensor is back. Pins TBC in the RC firmware; these are a starting point"
+    doc: docs/rc-beach-launch.md
+    pins:
+      VSYS: 5v
+      GND: gnd
+      3V3: {v: 3v3, multi: true}
+      GP2: {v: 3v3, desc: SPI0 SCK}
+      GP3: {v: 3v3, desc: SPI0 MOSI}
+      GP4: {v: 3v3, desc: SPI0 MISO}
+      GP5: {v: 3v3, desc: CAN CS}
+      GP6: {v: 3v3, desc: CAN INT}
+      GP8: {v: 3v3, desc: I2C0 SDA}
+      GP9: {v: 3v3, desc: I2C0 SCL}
+      GP10: {v: 3v3, desc: steering changeover relay}
+  RC_CAN:
+    name: MCP2515 CAN module (RC box, main bus)
+    zone: control_box
+    status: planned
+    optional: true
+    note: "Same 3.3 V-converted board as the control box (TJA1050 swapped for SN65HVD230). A short stub off the main bus inside the control box, no terminator"
+    pins: {VCC: 3v3, GND: gnd, SCK: 3v3, SI: 3v3, SO: 3v3, CS: 3v3, INT: 3v3, CANH: can, CANL: can}
+  RC_LVL:
+    name: I2C level shifter, 4-ch BSS138 (3.3 V to 5 V)
+    zone: control_box
+    status: planned
+    optional: true
+    note: "The DAC and ADC run on 5 V so they can reach the torque sensor's range (up to about 3.5 V). The Pico's I2C is 3.3 V, so it goes through this"
+    pins: {LV: 3v3, HV: 5v, GND: gnd, LV1: 3v3, LV2: 3v3, HV1: {v: 5v, multi: true}, HV2: {v: 5v, multi: true}}
+  RC_DAC:
+    name: MCP4728 4-ch 12-bit DAC (0x60)
+    zone: control_box
+    status: planned
+    optional: true
+    note: "VOUTA = fake TRQ1, VOUTB = fake TRQ2 (a mirrored pair about the centre, trq_volts() in teryx/rc_mode.py). C and D spare (throttle wiper later). VDD 5 V, so 0-5 V out"
+    pins: {VDD: 5v, GND: gnd, SDA: 5v, SCL: 5v, VOUTA: 5v, VOUTB: 5v}
+  RC_ADC:
+    name: ADS1115 ADC (third one, 0x48 on the RC box's own I2C)
+    zone: control_box
+    status: planned
+    optional: true
+    note: "Reads back what actually reaches the ECU (A0 TRQ1, A1 TRQ2) and the steering angle (A2). If TRQ1/TRQ2 stop mirroring, the RC box drops the relay. VDD 5 V so it can read up to 5 V"
+    pins: {VDD: 5v, GND: gnd, SDA: 5v, SCL: 5v, A0: 5v, A1: 5v, A2: 5v}
+  RC_REL:
+    name: DPDT signal relay module, 5 V coil, gold contacts
+    zone: control_box
+    status: planned
+    optional: true
+    note: "Off (NC) = the real torque sensor goes to the ECU. On (NO) = the DAC does. Not the 16-ch board: its 10 A silver contacts aren't made for tiny sensor currents. The coil only gets power from the RC box, so anything that stops the RC box hands the steering back"
+    pins: {VCC: 5v, GND: gnd, IN: 3v3, COM1: {v: 5v, multi: true}, NC1: 5v, NO1: 5v, COM2: {v: 5v, multi: true}, NC2: 5v, NO2: 5v}
+  RC_ANGLE:
+    name: AS5600 magnetic angle sensor + magnet
+    zone: cab
+    status: tbc
+    optional: true
+    note: "Steering shaft angle for the RC steering loop. Analogue OUT (not I2C) because it's a long run from the cab. May not be needed if the Aqua ECU sends the angle on 0x260 (bench test step 4, docs/power-steering-aqua.md)"
+    check: "Where to put it: it reads a magnet on the end of a shaft, so it needs a spot on the column or a small geared stub"
+    pins: {VCC: 5v, GND: gnd, OUT: 5v}
 
   # ---------------------------------------------------------- trailer
   TRAILER:
@@ -1021,6 +1087,40 @@ wires:
   - {id: D31, from: RAIL.BUS, to: RELAYS2.COM1, sys: drive, mm2: 0.5, fuse: 3, status: planned, optional: true, note: "Steering ignition feed through relay 9, so the lock and RC kill can turn assist off"}
   - {id: D32, from: RELAYS2.NO1, to: EPS_ECU.IG, sys: drive, mm2: 0.5, fuse: 3, status: tbc, optional: true}
   - {id: D33, from: EPS_ECU.MOTOR, to: EPS_COL.MOTOR, sys: drive, status: tbc, optional: true, note: "Toyota's own plug, keep it from the wrecker"}
+  # RC box (docs/rc-beach-launch.md, steering only)
+  - {id: RC01, from: PICO_BUCK.VOUT, to: RC_PICO.VSYS, sys: rc, mm2: 0.5, status: planned, optional: true}
+  - {id: RC02, from: RC_PICO.GND, to: PICO_BUCK.GND, sys: rc, mm2: 0.5, status: planned, optional: true, note: "Same ground as the control box Pico"}
+  - {id: RC03, from: PICO_CAN.CANH, to: RC_CAN.CANH, sys: can, bus: main, mm2: 0.5, status: planned, optional: true, note: "Short stub inside the control box, under 30 cm"}
+  - {id: RC04, from: PICO_CAN.CANL, to: RC_CAN.CANL, sys: can, bus: main, mm2: 0.5, status: planned, optional: true}
+  - {id: RC05, from: RC_PICO.GP2, to: RC_CAN.SCK, sys: rc, status: planned, optional: true}
+  - {id: RC06, from: RC_PICO.GP3, to: RC_CAN.SI, sys: rc, status: planned, optional: true}
+  - {id: RC07, from: RC_PICO.GP4, to: RC_CAN.SO, sys: rc, status: planned, optional: true}
+  - {id: RC08, from: RC_PICO.GP5, to: RC_CAN.CS, sys: rc, status: planned, optional: true}
+  - {id: RC09, from: RC_CAN.INT, to: RC_PICO.GP6, sys: rc, status: planned, optional: true}
+  - {id: RC10, from: RC_PICO.3V3, to: RC_CAN.VCC, sys: rc, status: planned, optional: true}
+  - {id: RC11, from: RC_PICO.3V3, to: RC_LVL.LV, sys: rc, status: planned, optional: true}
+  - {id: RC12, from: PICO_BUCK.VOUT, to: RC_LVL.HV, sys: rc, status: planned, optional: true}
+  - {id: RC13, from: RC_PICO.GP8, to: RC_LVL.LV1, sys: rc, status: planned, optional: true, note: SDA}
+  - {id: RC14, from: RC_PICO.GP9, to: RC_LVL.LV2, sys: rc, status: planned, optional: true, note: SCL}
+  - {id: RC15, from: RC_LVL.HV1, to: RC_DAC.SDA, sys: rc, status: planned, optional: true}
+  - {id: RC16, from: RC_LVL.HV2, to: RC_DAC.SCL, sys: rc, status: planned, optional: true}
+  - {id: RC17, from: RC_LVL.HV1, to: RC_ADC.SDA, sys: rc, status: planned, optional: true}
+  - {id: RC18, from: RC_LVL.HV2, to: RC_ADC.SCL, sys: rc, status: planned, optional: true}
+  - {id: RC19, from: PICO_BUCK.VOUT, to: RC_DAC.VDD, sys: rc, status: planned, optional: true}
+  - {id: RC20, from: PICO_BUCK.VOUT, to: RC_ADC.VDD, sys: rc, status: planned, optional: true}
+  - {id: RC21, from: PICO_BUCK.VOUT, to: RC_REL.VCC, sys: rc, status: planned, optional: true}
+  - {id: RC22, from: RC_PICO.GP10, to: RC_REL.IN, sys: rc, status: planned, optional: true, note: "High = RC steering. Pico reset or unpowered = relay off = real sensor"}
+  - {id: RC23, from: EPS_COL.TRQ1, to: RC_REL.NC1, sys: rc, mm2: 0.5, status: tbc, optional: true, note: "Cut into Toyota's torque sensor lead; twisted with TRQ2"}
+  - {id: RC24, from: EPS_COL.TRQ2, to: RC_REL.NC2, sys: rc, mm2: 0.5, status: tbc, optional: true}
+  - {id: RC25, from: RC_DAC.VOUTA, to: RC_REL.NO1, sys: rc, status: planned, optional: true}
+  - {id: RC26, from: RC_DAC.VOUTB, to: RC_REL.NO2, sys: rc, status: planned, optional: true}
+  - {id: RC27, from: RC_REL.COM1, to: EPS_ECU.TRQ1, sys: rc, mm2: 0.5, status: tbc, optional: true}
+  - {id: RC28, from: RC_REL.COM2, to: EPS_ECU.TRQ2, sys: rc, mm2: 0.5, status: tbc, optional: true}
+  - {id: RC29, from: RC_REL.COM1, to: RC_ADC.A0, sys: rc, status: planned, optional: true, note: "Read back what the ECU actually sees"}
+  - {id: RC30, from: RC_REL.COM2, to: RC_ADC.A1, sys: rc, status: planned, optional: true}
+  - {id: RC31, from: PICO_BUCK.VOUT, to: RC_ANGLE.VCC, sys: rc, mm2: 0.5, status: tbc, optional: true}
+  - {id: RC32, from: RC_ANGLE.OUT, to: RC_ADC.A2, sys: rc, mm2: 0.5, status: tbc, optional: true, note: "Screened lead from the column"}
+  - {id: RC33, from: RC_ANGLE.GND, to: PICO_BUCK.GND, sys: rc, mm2: 0.5, status: tbc, optional: true}
 
   # --- trailer
   - {id: T01, from: FB.F4, to: BTS8.B+, sys: trailer, mm2: 1.0, status: planned}
