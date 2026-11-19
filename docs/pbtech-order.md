@@ -102,8 +102,8 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | UV-black cable ties + adhesive P-clips | 1 | 20.00 | 20.00 | Estimate |  |
 | Dielectric grease, small tube | 1 | 12.00 | 12.00 | Estimate | Trailer plugs and outdoor connectors |
 | 2mm closed-cell foam tape, 1m+ | 1 | 10.00 | 10.00 | Estimate | Bezel to panel |
-| ASA filament 1.75mm 1kg (dash panel, hood, back plate, speaker pods and their T. rex heads) | 7 | 45.00 | 315.00 | Estimate | Stone grey or olive. The two heads and jaws take about 1.6 kg at 10-15% infill. Leave out what you already have |
-| ASA filament 1.75mm, small spools: bone/off-white, amber/orange, black (T. rex teeth, eyes, pupils) | 3 | 45.00 | 135.00 | Estimate | Only about 60 g of each is used. Leave out what you already have |
+| ASA filament 1.75mm 1kg (dash panel, hood, back plate, speaker pods and their T. rex heads) | 11 | 45.00 | 495.00 | Estimate | Stone grey or olive. The two sculpted T. rex heads take about 3.4 kg each at 3 walls and 15% infill (cad/sculpt/README.md). Leave out what you already have |
+| ASA filament 1.75mm, small spools: bone/off-white, amber/orange, black (T. rex teeth, eyes, pupils) | 3 | 45.00 | 135.00 | Estimate | Under 100 g of each ends up in the heads, the AMS purges the rest. Leave out what you already have |
 | Polyester fibre fill (speaker wadding or pillow stuffing), 200 g | 1 | 12.00 | 12.00 | Estimate | About 70 g per speaker pod, loose. Not foam (it holds water) |
 | PETG filament 1.75mm 1kg (boxes, liner) | 1 | 35.00 | 35.00 | Estimate |  |
 | 3mm aluminium cut from DXF: back plate + Pi lid plate | 1 | 80.00 | 80.00 | Estimate | Laser or waterjet shop; cad/stl/*.dxf |
@@ -126,7 +126,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Tinned lugs for 6 mm², M8 hole | 6 | 2.00 | 12.00 | Estimate; counted from config/wiring.yaml | 2 spare |
 | Tinned lugs for 10 mm², M8 hole | 10 | 2.00 | 20.00 | Estimate; counted from config/wiring.yaml | 2 spare |
 | Tinned lugs for 35 mm², M8 hole | 4 | 2.00 | 8.00 | Estimate; counted from config/wiring.yaml | 2 spare |
-| **Total** | | | **1,810.50** | | |
+| **Total** | | | **1,990.50** | | |
 
 ### Separate pickup
 
@@ -143,9 +143,9 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | AliExpress (one order, 2 to 4 weeks) | 722.01 |
 | Core Electronics (AU, online) | 246.68 |
 | Gogo:Tronics and element14 (NZ, online) | 7.43 |
-| Local: Jaycar, Narva stockist, Repco, auto electrical | 1,810.50 |
+| Local: Jaycar, Narva stockist, Repco, auto electrical | 1,990.50 |
 | Separate pickup | 115.00 |
-| **Everything** | **3,524.83** |
+| **Everything** | **3,704.83** |
 
 ### Already got (not in the totals)
 
