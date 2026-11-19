@@ -310,6 +310,21 @@ class Gateway:
                 st["light.show_running"] = bool(v["show_running"])
                 st["light.show_blocked"] = bool(v["show_blocked"])
                 st["light.pwm_ok"] = bool(v["pwm_ok"])
+            elif msg.name == "PICO_STEER":
+                # Power steering (docs/power-steering-aqua.md)
+                st["steer.state"] = M.STEER_STATE.get(v["state"], "off")
+                st["steer.frames"] = bool(v["frames_on"])
+                st["steer.heard"] = bool(v["heard"])
+                st["steer.listen"] = bool(v["listen"])
+                st["steer.mode_pending"] = bool(v["mode_pending"])
+                st["steer.bus_ok"] = bool(v["bus_ok"])
+                st["steer.angle_init"] = bool(v["angle_init"])
+                st["steer.override"] = bool(v["override"])
+                valid = bool(v["torque_valid"])
+                st["steer.torque"] = v["torque"] if valid else None
+                st["steer.angle"] = round(v["angle"], 1) if valid else None
+                st["steer.told_kmh"] = None if v["told_kmh"] == 255 else v["told_kmh"]
+                st["steer.ecu_status"] = None if v["ecu_status"] == 255 else v["ecu_status"]
             elif msg.name == "PICO_ACTUATORS":
                 st["an.diff_pos"] = v["diff_pct"]
                 st["act.diff_target"] = v["diff_target"]

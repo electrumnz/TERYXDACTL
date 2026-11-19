@@ -105,7 +105,11 @@ export function lampStates(st, settings, alertKeys = new Set(), now = Date.now()
   if (has("a:soc_crit")) lit("lowbatt", "bad", true);
   else if (has("a:soc_low")) lit("lowbatt", "warn");
   if (st.get("mc.limp")) lit("turtle");
-  if (keyOn && picoOn && st.get("steer.on") === false && st.get("lock.state") !== "locked") lit("steer");
+  if (keyOn && picoOn && st.get("lock.state") !== "locked") {
+    const steer = st.get("steer.state");
+    if (steer === "ecu_fault") lit("steer", "bad", true);
+    else if (st.get("steer.on") === false || ["no_reply", "bus_error"].includes(steer)) lit("steer");
+  }
   if (!picoOn || st.get("pico.state") === "failsafe") lit("system", "bad", true);
   else if (pf.some((f) => !["low_12v", "brake_pedal"].includes(f))) lit("system", "warn");   // own lamps for those two
   if (has("a:roll_bad") || has("a:pitch_bad")) lit("tilt", "bad", true);

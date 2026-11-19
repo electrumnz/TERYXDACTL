@@ -67,7 +67,7 @@
 <line x1="480" y1="474" x2="750" y2="474" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="478" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">out_pos</text>
 </g>
-<g data-device="EPS_ECU" data-status="tbc"><title>EPS_ECU: Toyota Aqua EPS ECU (89650-52B51) - Wrecker column, bench test with the Prius CAN frames first. ECU plug pinout TBC</title><rect x="480" y="518" width="270" height="69" rx="6" fill="#f0f6ff" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
+<g data-device="EPS_ECU" data-status="tbc"><title>EPS_ECU: Toyota Aqua EPS ECU (89650-52B51) - Owned with its power plug (B+, GND). Still need the signal plug (IG, CANH, CANL). Pin numbers TBC: Toyota&#x27;s RAV4 EPS ECU has IG, CANH, CANL on one plug and PIG, PGND on the other</title><rect x="480" y="518" width="270" height="69" rx="6" fill="#f0f6ff" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
 <text x="490" y="536" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Toyota Aqua EPS ECU (89650-52B51)</text>
 <text x="490" y="551" font-size="10" text-anchor="start" font-weight="normal" fill="#bf8700">EPS_ECU · tbc · optional</text>
 <line x1="480" y1="565" x2="750" y2="565" stroke="#d0d7de" stroke-width="0.5"/>

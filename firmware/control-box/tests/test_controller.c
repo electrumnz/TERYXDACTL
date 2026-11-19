@@ -29,7 +29,7 @@ typedef struct {
     bool armed;
     bool holding;           // send 0x703
     bool sentry;            // heartbeat says DASH_SENTRY instead of DASH_RUNNING
-    can_frame_t sent[64];
+    can_frame_t sent[96];
     int nsent;
     uint8_t max_relays_both_winch;  // set if in and out were ever on together
 } rig_t;
@@ -38,8 +38,8 @@ static rig_t R;
 
 static void on_send(const can_frame_t *f, void *u) {
     (void)u;
-    if (R.nsent < 64) R.sent[R.nsent++] = *f;
-    else { memmove(R.sent, R.sent + 1, sizeof(R.sent[0]) * 63); R.sent[63] = *f; }
+    if (R.nsent < 96) R.sent[R.nsent++] = *f;
+    else { memmove(R.sent, R.sent + 1, sizeof(R.sent[0]) * 95); R.sent[95] = *f; }
 }
 
 static void frame(uint32_t id, uint8_t dlc, const uint8_t *d) {
@@ -1048,26 +1048,122 @@ static void test_lock_set_and_lock_rules(void) {
     CHECK(!(R.out.relays2 & BIT(R2_STEER_ENABLE)) && !R.out.eps_on);
 }
 
-// ---- Power steering (docs/power-steering-wrecker.md) ------------------------------
+// ---- Power steering (docs/power-steering-aqua.md) ------------------------------------
 #include "eps.h"
+
+static void eps_hear(int16_t torque, int16_t angle_raw, uint8_t b0) {
+    can_frame_t f = {.id = EPS_TORQUE_ID, .dlc = 8};
+    f.data[0] = b0;
+    f.data[1] = (uint8_t)((uint16_t)torque >> 8); f.data[2] = (uint8_t)torque;
+    f.data[3] = (uint8_t)((uint16_t)angle_raw >> 8); f.data[4] = (uint8_t)angle_raw;
+    f.data[7] = eps_checksum(EPS_TORQUE_ID, f.data, 8);
+    ctl_on_eps_frame(&R.c, &f, R.t);
+}
+
+static const uint8_t *steer_frame(void) {
+    const can_frame_t *f = last_sent(CAN_ID_PICO_STEER);
+    static const uint8_t none[8];
+    return f ? f->data : none;
+}
 
 static void test_eps(void) {
     // Same bytes as teryx/eps_toyota.py (checked against the retrofit thread).
     can_frame_t f[2];
-    CHECK(eps_frames(0, false, f) == 2);
+    CHECK(eps_frames(163, 1674, f) == 2);
     const uint8_t rpm[8] = {0x06, 0x8A, 0x00, 0x19, 0x00, 0x00, 0x92, 0x09};
     CHECK(f[0].id == 0x2C4 && memcmp(f[0].data, rpm, 8) == 0);
-    CHECK(f[1].id == 0x0B4 && f[1].data[5] == 0x06 && f[1].data[6] == 0x5E);   // floor 16.3 km/h
+    CHECK(f[1].id == 0x0B4 && f[1].data[5] == 0x06 && f[1].data[6] == 0x5E);   // 16.3 km/h
     CHECK(f[1].data[4] == 0x8D && f[1].data[7] == 0xAD);
-    eps_frames(300, true, f);                                                     // 30 km/h
+    eps_frames(300, 1674, f);                                                     // 30 km/h
     CHECK(((f[1].data[5] << 8) | f[1].data[6]) == 3000);
-    eps_frames(50, true, f);                                                      // 5 km/h: floor
-    CHECK(((f[1].data[5] << 8) | f[1].data[6]) == 1630);
+
+    // Assist curve: floor, gain, cap. Unknown speed = floor.
+    eps_cfg_t cfg = {.floor_x10 = 163, .gain_pct = 100, .max_kmh = 120};
+    CHECK(eps_told_speed_x10(&cfg, 50, true) == 163);
+    CHECK(eps_told_speed_x10(&cfg, 300, true) == 300);
+    CHECK(eps_told_speed_x10(&cfg, 300, false) == 163);
+    cfg.gain_pct = 200;
+    CHECK(eps_told_speed_x10(&cfg, 300, true) == 600);
+    CHECK(eps_told_speed_x10(&cfg, 900, true) == 1200);   // capped at 120 km/h
 
     rig_init();
     run(300);   // key on, not locked
     CHECK(R.out.relays2 & BIT(R2_STEER_ENABLE));
     CHECK(R.out.eps_on && !(R.out.relays2 & BIT(R2_DRIVE_LOCK)));
+    CHECK(R.out.eps_speed_x10 == 163 && R.out.eps_rpm == 1674);
+    CHECK((steer_frame()[0] & 0x0F) == STEER_WAKING);   // ECU gets 3 s to boot
+    run(3000);
+    CHECK((steer_frame()[0] & 0x0F) == STEER_OK);        // not listening by default: OK
+    CHECK(steer_frame()[1] & STEER_F_FRAMES);
+    CHECK(steer_frame()[6] == 16 && steer_frame()[7] == 0xFF);
+    R.speed_x10 = 300;
+    run(200);
+    CHECK(R.out.eps_speed_x10 == 300 && steer_frame()[6] == 30);
+}
+
+static void test_eps_listen(void) {
+    rig_init();
+    setting(SET_EPS_LISTEN, 1);
+    run(3500);
+    CHECK((steer_frame()[0] & 0x0F) == STEER_NO_REPLY);   // ECU silent
+    CHECK(R.out.relays2 & BIT(R2_STEER_ENABLE));           // ...but assist stays on
+    eps_hear(-120, 175, 0x01);   // 175 x 0.0573 = 10.0 deg, driver override bit
+    run(200);
+    const uint8_t *d = steer_frame();
+    CHECK((d[0] & 0x0F) == STEER_OK);
+    CHECK((d[1] & (STEER_F_HEARD | STEER_F_TORQUE | STEER_F_OVERRIDE | STEER_F_LISTEN)) ==
+          (STEER_F_HEARD | STEER_F_TORQUE | STEER_F_OVERRIDE | STEER_F_LISTEN));
+    CHECK((int16_t)(d[2] | (d[3] << 8)) == -120);
+    CHECK((int16_t)(d[4] | (d[5] << 8)) == 100);
+    // Bad checksum: counted as "heard" but the numbers aren't used.
+    can_frame_t bad = {.id = EPS_TORQUE_ID, .dlc = 8, .data = {0, 0x7F, 0xFF, 0, 0, 0, 0, 0x00}};
+    ctl_on_eps_frame(&R.c, &bad, R.t);
+    CHECK(R.c.eps.bad_checksum == 1 && R.c.eps.torque_raw == -120);
+    run(1200);
+    CHECK((steer_frame()[0] & 0x0F) == STEER_NO_REPLY);   // quiet for more than 1 s
+    // ECU says permanent fault (EPS_STATUS LKA_STATE 17)
+    can_frame_t st = {.id = EPS_STATUS_ID, .dlc = 8};
+    st.data[3] = (uint8_t)(17u << 1);
+    st.data[7] = eps_checksum(EPS_STATUS_ID, st.data, 8);
+    ctl_on_eps_frame(&R.c, &st, R.t);
+    run(100);
+    CHECK((steer_frame()[0] & 0x0F) == STEER_ECU_FAULT && steer_frame()[7] == 17);
+    CHECK(R.out.relays2 & BIT(R2_STEER_ENABLE));   // the Toyota ECU runs its own fail-safe
+    // Steering CAN board dies: says so, but only while it should be sending
+    eps_t e;
+    eps_init(&e, EPS_MODE_NORMAL);
+    eps_cfg_t cfg = {.floor_x10 = 163, .gain_pct = 100, .max_kmh = 120, .silent_ms = 1000, .wake_ms = 3000};
+    eps_update(&e, &cfg, true, true, false, 0);
+    CHECK(e.state == STEER_BUS_ERROR && !(e.flags & STEER_F_BUS_OK));
+    e.mode = EPS_MODE_LIMP;
+    eps_update(&e, &cfg, true, false, false, 5000);
+    CHECK(e.state == STEER_LIMP);
+    eps_update(&e, &cfg, false, false, true, 6000);
+    CHECK(e.state == STEER_OFF);
+}
+
+static void test_eps_modes(void) {
+    rig_init();
+    R.speed_x10 = 200;   // 20 km/h
+    run(300);
+    setting(SET_EPS_MODE, EPS_MODE_MANUAL);
+    run(300);
+    // Never on the move: still powered, change waiting
+    CHECK((R.out.relays2 & BIT(R2_STEER_ENABLE)) && R.out.eps_on);
+    CHECK(steer_frame()[1] & STEER_F_PENDING);
+    R.speed_x10 = 0;
+    run(300);
+    CHECK(!(R.out.relays2 & BIT(R2_STEER_ENABLE)) && !R.out.eps_on);
+    CHECK((steer_frame()[0] & 0x0F) == STEER_MANUAL && !(steer_frame()[1] & STEER_F_PENDING));
+    setting(SET_EPS_MODE, EPS_MODE_LIMP);
+    run(3500);
+    CHECK((R.out.relays2 & BIT(R2_STEER_ENABLE)) && !R.out.eps_on);
+    CHECK((steer_frame()[0] & 0x0F) == STEER_LIMP && steer_frame()[6] == 0xFF);
+    setting(SET_EPS_MODE, EPS_MODE_NORMAL);
+    run(3500);
+    CHECK(R.out.eps_on && (steer_frame()[0] & 0x0F) == STEER_OK);
+    setting(SET_EPS_MODE, 3);   // out of range
+    CHECK(last_sent(CAN_ID_PICO_SET_ACK)->data[1] == SET_ACK_RANGE);
 }
 
 static void lock_up(void) {
@@ -1329,6 +1425,8 @@ int main(void) {
         {"lock: remote lock waits until stopped", test_lock_remote},
         {"lock: change PIN, recovery code, workshop reset", test_lock_change_pin_and_recovery},
         {"power steering: relay 9 and Toyota frames", test_eps},
+        {"power steering: listening to the ECU", test_eps_listen},
+        {"power steering: modes wait until stopped", test_eps_modes},
     };
     for (size_t i = 0; i < sizeof(tests) / sizeof(tests[0]); i++) {
         int before = failures;

@@ -572,3 +572,33 @@ def test_sentry_keeps_power_while_12v_ok(b):
     cb.forced["in.ignition"] = True
     b.run(0.5)
     assert not cb.sentry_flat
+
+
+# ---- Power steering (docs/power-steering-aqua.md), same rules as firmware eps.c
+
+def _steer(b):
+    return dict(b.cb.frames())["PICO_STEER"]
+
+
+def test_steering_wakes_then_ok(b):
+    assert M.STEER_STATE[_steer(b)["state"]] == "waking"
+    b.run(3.0)
+    s = _steer(b)
+    assert M.STEER_STATE[s["state"]] == "ok" and s["frames_on"] and s["told_kmh"] == 16
+    b.speed = 30
+    b.run(0.5)
+    assert _steer(b)["told_kmh"] == 30
+
+
+def test_steering_mode_waits_until_stopped(b):
+    b.speed = 20
+    b.run(0.5)
+    b.cb.on_frame("PI_SETTINGS", {"key": M.SETTING_KEYS["eps_mode"], "value": 0}, b.t)
+    b.run(0.5)
+    assert b.cb.eps_powered() and _steer(b)["mode_pending"]
+    b.speed = 0
+    b.run(0.5)
+    s = _steer(b)
+    assert not b.cb.eps_powered() and M.STEER_STATE[s["state"]] == "manual" and not s["mode_pending"]
+    outputs = dict(b.cb.frames())["PICO_OUTPUTS"]
+    assert not outputs["relays2"] & 1

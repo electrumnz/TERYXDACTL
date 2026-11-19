@@ -13,6 +13,7 @@
 #include "settings.h"
 #include "lock.h"
 #include "lights.h"
+#include "eps.h"
 
 // Digital inputs (MCP23017 port B), as logical bits: 1 = active.
 // The two tray limits are normally closed, so 1 = "at limit or wire broken".
@@ -47,6 +48,7 @@ typedef struct {
     uint16_t i_da[ACT_COUNT]; // actuator currents, 0.1 A
     int8_t temp_c;          // Pico die temperature
     bool pwm_ok;            // PCA9685 answering (stock lamps, floods, beacon, trailer)
+    bool eps_bus_down;      // steering MCP2515 not answering or bus-off
 } cb_in_t;
 
 typedef struct {
@@ -63,8 +65,8 @@ typedef struct {
     bool save_lock;            // hardware layer: write c->lock.saved to its flash sector, then clear
     uint8_t relays2;           // R2_* bits on the second MCP23017 (0x21), logical
     bool eps_on;               // send the Toyota EPS frames (eps.h) every 20 ms
-    bool eps_speed_known;
-    uint16_t eps_speed_x10;    // 0.1 km/h, for the EPS speed frame
+    uint16_t eps_speed_x10;    // 0.1 km/h to put in the EPS speed frame (floor and gain already done)
+    uint16_t eps_rpm;          // RPM to put in the EPS RPM frame
 } cb_out_t;
 
 typedef void (*cb_send_fn)(const can_frame_t *f, void *user);
@@ -186,6 +188,9 @@ typedef struct {
     uint32_t last_tx_fast_ms;
     uint32_t last_tx_slow_ms;
 
+    // Power steering (eps.h, docs/power-steering-aqua.md)
+    eps_t eps;
+
     cb_in_t in;             // last inputs seen
     cb_out_t out;           // last outputs given
 } controller_t;
@@ -197,6 +202,8 @@ void ctl_init(controller_t *c, const settings_t *saved, bool watchdog_reset,
               bool power_hold_on, uint32_t now_ms);
 // lock_saved: the lock sector read from flash, or NULL. Call right after ctl_init.
 void ctl_load_lock(controller_t *c, const lock_blob_t *lock_saved, uint32_t now_ms);
+// A frame heard on the steering bus (second MCP2515), not the main bus.
+void ctl_on_eps_frame(controller_t *c, const can_frame_t *f, uint32_t now_ms);
 void ctl_on_frame(controller_t *c, const can_frame_t *f, uint32_t now_ms,
                   cb_send_fn send, void *user);
 void ctl_tick(controller_t *c, const cb_in_t *in, cb_out_t *out,

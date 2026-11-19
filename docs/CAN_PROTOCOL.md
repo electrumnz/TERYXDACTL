@@ -263,6 +263,29 @@ What the PCA9685 lamps are actually doing, after every safety rule (docs/lights.
 | `show_blocked` | byte 7 bit 5 | u1 |  | A show was asked for but the Teryx isn't parked (key on, park brake, stopped) |
 | `pwm_ok` | byte 7 bit 6 | u1 |  | PCA9685 answering |
 
+### 0x718 PICO_STEER
+
+From **controlbox**, every 100 ms.
+
+Power steering (docs/power-steering-aqua.md). Torque, angle and ECU status are only real once the Aqua ECU has been heard (flag torque_valid).
+
+| Signal | Where | Type | Unit | Notes |
+|---|---|---|---|---|
+| `state` | byte 0 bit 0 (+4 bits) | u4 |  | 0=off, 1=waking, 2=ok, 3=limp, 4=manual, 5=no_reply, 6=ecu_fault, 7=bus_error |
+| `counter` | byte 0 bit 4 (+4 bits) | u4 |  |  |
+| `frames_on` | byte 1 bit 0 | u1 |  | Speed frames going to the ECU |
+| `heard` | byte 1 bit 1 | u1 |  | Something heard from the ECU lately |
+| `torque_valid` | byte 1 bit 2 | u1 |  | 0x260 fresh: torque and angle are real |
+| `angle_init` | byte 1 bit 3 | u1 |  | ECU says the angle is still initialising |
+| `override` | byte 1 bit 4 | u1 |  | ECU says the driver is turning hard |
+| `listen` | byte 1 bit 5 | u1 |  | Setting 37 on: a quiet ECU is a warning |
+| `mode_pending` | byte 1 bit 6 | u1 |  | Steering mode change waiting for the Teryx to stop |
+| `bus_ok` | byte 1 bit 7 | u1 |  | Steering CAN board working |
+| `torque` | bytes 2-3 | i16 |  | Driver torque, raw from the ECU (units unknown) |
+| `angle` | bytes 4-5 | i16 x0.1 | deg | Steering angle from the ECU |
+| `told_kmh` | byte 6 | u8 | km/h | Speed told to the ECU, 255 = no frames |
+| `ecu_status` | byte 7 | u8 |  | EPS_STATUS LKA_STATE byte, 255 = never heard |
+
 ## Bench only
 
 ### 0x7E0 BENCH_INPUTS
@@ -394,6 +417,14 @@ HOST/BENCH BUILD ONLY. Lets the simulator drive the Pico's wired inputs and inje
 | 30 (0x1E) | `shift_wait_ms` | ms | 10000 | 0-30000 |
 | 31 (0x1F) | `shift_throttle_hold` | bool | 1 | 0-1 |
 | 32 (0x20) | `sentry_min_12v_mv` | mV | 12200 | 11000-13500 |
+| 33 (0x21) | `eps_mode` | enum | 2 | 0-2 |
+| 34 (0x22) | `eps_floor_kmh_x10` | 0.1km/h | 163 | 0-600 |
+| 35 (0x23) | `eps_speed_gain_pct` | % | 100 | 50-300 |
+| 36 (0x24) | `eps_max_kmh` | km/h | 120 | 20-200 |
+| 37 (0x25) | `eps_listen` | bool | 0 | 0-1 |
+| 38 (0x26) | `eps_silent_ms` | ms | 1000 | 200-5000 |
+| 39 (0x27) | `eps_rpm` | rpm | 1674 | 0-8000 |
+| 40 (0x28) | `eps_wake_ms` | ms | 3000 | 500-15000 |
 | 240 (0xF0) | save to flash | | | |
 | 241 (0xF1) | reset to defaults | | | |
 | 242 (0xF2) | clear latched faults | | | |

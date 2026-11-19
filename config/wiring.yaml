@@ -310,7 +310,7 @@ devices:
     zone: control_box
     status: planned
     optional: true
-    note: Own 500 kbit/s bus to the steering ECU. Transmit only, INT not wired
+    note: Own 500 kbit/s bus to the steering ECU. INT not wired, the Pico polls it for the ECU's replies
     doc: docs/power-steering-wrecker.md
     pins: {VCC: 3v3, GND: gnd, SCK: 3v3, SI: 3v3, SO: 3v3, CS: 3v3, CANH: {v: can, term: true}, CANL: can}
   MCP1:
@@ -558,9 +558,9 @@ devices:
     zone: cab
     status: tbc
     optional: true
-    note: Wrecker column, bench test with the Prius CAN frames first. ECU plug pinout TBC
-    check: Photo both EPS ECU plugs (pin numbers and wire colours) when the column is picked up
-    doc: docs/power-steering-wrecker.md
+    note: "Owned with its power plug (B+, GND). Still need the signal plug (IG, CANH, CANL). Pin numbers TBC: Toyota's RAV4 EPS ECU has IG, CANH, CANL on one plug and PIG, PGND on the other"
+    check: Photo both EPS ECU sockets (pin numbers) and the power plug's wire colours
+    doc: docs/power-steering-aqua.md
     pins: {B+: 12v, GND: gnd, IG: 12v, CANH: {v: can, term: true}, CANL: can, MOTOR: 12v}
   EPS_COL:
     name: Aqua steering column (motor + torque sensor)

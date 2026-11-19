@@ -1,4 +1,5 @@
 // Teryx control box: Pico 2 main loop and hardware layer.
+#include <stdio.h>
 #include <string.h>
 
 #include "hardware/adc.h"
@@ -28,7 +29,9 @@
 
 static controller_t ctl;
 static mcp2515_t can = {.spi = spi0, .cs_pin = PIN_CAN_CS, .int_pin = PIN_CAN_INT};
-// Steering bus: second MCP2515 on the same SPI, own chip select, transmit only.
+// Steering bus: second MCP2515 on the same SPI, own chip select. Its INT pin isn't
+// wired: we poll its receive flags over SPI (mcp2515_recv reads CANINTF), so the
+// int_pin below is never used for it.
 static mcp2515_t eps_can = {.spi = spi0, .cs_pin = PIN_EPS_CAN_CS, .int_pin = PIN_CAN_INT};
 static bool eps_up;
 static uint32_t eps_last_ms;
@@ -99,6 +102,49 @@ uint32_t vlock_random32(void) { return get_rand_32(); }
 // Workshop recovery: on the debug UART (GP0/GP1, inside the control box, not
 // the Pi's USB) type "LOCK RESET" then Enter, with the key on and the park
 // brake on. Wipes the PIN and recovery code and unlocks.
+// Bench helper: every ID heard on the steering bus, so "EPS" on the console shows
+// what the Aqua ECU actually sends (docs/power-steering-aqua.md, bench test step 4).
+#define EPS_SEEN_MAX 24
+static struct { uint16_t id; uint32_t count; uint8_t last[8]; uint8_t dlc; } eps_seen[EPS_SEEN_MAX];
+static uint8_t eps_seen_n;
+
+static void eps_note(const can_frame_t *f) {
+    for (uint8_t i = 0; i < eps_seen_n; i++) {
+        if (eps_seen[i].id == f->id) {
+            eps_seen[i].count++;
+            memcpy(eps_seen[i].last, f->data, 8);
+            eps_seen[i].dlc = f->dlc;
+            return;
+        }
+    }
+    if (eps_seen_n < EPS_SEEN_MAX) {
+        eps_seen[eps_seen_n].id = (uint16_t)f->id;
+        eps_seen[eps_seen_n].count = 1;
+        memcpy(eps_seen[eps_seen_n].last, f->data, 8);
+        eps_seen[eps_seen_n].dlc = f->dlc;
+        eps_seen_n++;
+    }
+}
+
+static void eps_report(const controller_t *c) {
+    char b[96];
+    const eps_t *e = &c->eps;
+    snprintf(b, sizeof b, "eps: mode %u state %u flags %02X told %u.%u km/h rx %lu badsum %lu\r\n",
+             e->mode, e->state, e->flags, e->told_x10 / 10u, e->told_x10 % 10u,
+             (unsigned long)e->rx_count, (unsigned long)e->bad_checksum);
+    uart_puts(uart0, b);
+    snprintf(b, sizeof b, "eps: torque %d angle %d.%d deg status %u\r\n", e->torque_raw,
+             e->angle_x10 / 10, (e->angle_x10 < 0 ? -e->angle_x10 : e->angle_x10) % 10, e->status_raw);
+    uart_puts(uart0, b);
+    for (uint8_t i = 0; i < eps_seen_n; i++) {
+        int k = snprintf(b, sizeof b, "  %03X x%lu:", eps_seen[i].id, (unsigned long)eps_seen[i].count);
+        for (uint8_t j = 0; j < eps_seen[i].dlc && k < (int)sizeof b - 4; j++)
+            k += snprintf(b + k, sizeof b - k, " %02X", eps_seen[i].last[j]);
+        snprintf(b + k, sizeof b - k, "\r\n");
+        uart_puts(uart0, b);
+    }
+}
+
 static void uart_console(controller_t *c) {
     static char line[24];
     static uint8_t n;
@@ -110,6 +156,8 @@ static void uart_console(controller_t *c) {
                 bool ok = (c->in.din & BIT(IN_IGNITION)) && (c->in.din & BIT(IN_PARK));
                 if (ok) vlock_workshop_reset(&c->lock);
                 uart_puts(uart0, ok ? "lock: wiped and unlocked\r\n" : "lock: key on and park brake on first\r\n");
+            } else if (!strcmp(line, "EPS")) {
+                eps_report(c);
             } else if (n) {
                 uart_puts(uart0, "?\r\n");
             }
@@ -363,10 +411,15 @@ int main(void) {
         can_frame_t f;
         int n = 0;
         while (can_up && n++ < 16 && mcp2515_recv(&can, &f)) ctl_on_frame(&ctl, &f, now, can_send_cb, NULL);
+        n = 0;
+        while (eps_up && n++ < 8 && mcp2515_recv(&eps_can, &f)) {
+            eps_note(&f);
+            ctl_on_eps_frame(&ctl, &f, now);
+        }
 
         if (absolute_time_diff_us(next, get_absolute_time()) >= 0) {
             next = delayed_by_ms(next, TICK_MS);
-            cb_in_t in = {.now_ms = now};
+            cb_in_t in = {.now_ms = now, .eps_bus_down = !eps_up};
             io_poll(&in, now);
             pico_adc(&in);
             cb_out_t out;
@@ -387,7 +440,7 @@ int main(void) {
             if (out.eps_on && eps_up && now - eps_last_ms >= EPS_PERIOD_MS) {
                 eps_last_ms = now;
                 can_frame_t ef[2];
-                int nf = eps_frames(out.eps_speed_x10, out.eps_speed_known, ef);
+                int nf = eps_frames(out.eps_speed_x10, out.eps_rpm, ef);
                 for (int i = 0; i < nf; i++) mcp2515_send(&eps_can, &ef[i]);
             }
 

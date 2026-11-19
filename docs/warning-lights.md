@@ -28,7 +28,7 @@ banner text and thresholds behind them). Checked 19 Nov 2026.
 | Temperature | amber / red flashing | Motor (105 / 120 °C), controller (75 / 85 °C) or traction battery (47 / 55 °C) | Shinegle CAN |
 | Traction battery low | amber at 20 %, red flashing at 10 % | State of charge | Shinegle CAN |
 | Reduced power (turtle) | amber | Controller has cut power back (limp) | Shinegle CAN |
-| Power steering | amber | Key on, not locked, but the control box isn't powering the steering column | Pico relay 9, 0x711 byte 7 |
+| Power steering | amber (red, flashing, on an ECU fault) | Key on, not locked, and the column is unpowered, not answering, or its CAN board is down. Red when the ECU says it has a fault | Pico relay 9 (0x711 byte 7) and 0x718 steering state |
 | Control box | amber / red flashing | Any control box fault (amber), or the box is offline or in failsafe (red) | 0x710 |
 | Slope | amber / red flashing | Side slope or pitch past the Settings limits | IMU |
 | Tray | amber, red flashing on the move | Tray isn't fully down. Moving over 3 km/h with it up is the "door open" warning | 0x712 |
@@ -70,10 +70,11 @@ build. Each one needs a decision from Sam before parts get added to the list.
 2. **Seat belt buckles.** The stock light is a reminder only, and so is ours.
    Buckle switches would make it a real "belt off" warning, using 2 spare
    inputs.
-3. **Power steering column health.** We know if we're powering it, not if the
-   column itself has a fault. The column talks back on its own CAN bus, but
-   the second CAN board's interrupt wire isn't connected. Worth a bench check
-   once the column's on the bench.
+3. **Power steering column health.** Now coded: the Pico polls the steering
+   CAN board for the ECU's replies and the dash warns on "no reply", "ECU
+   fault" and "CAN board down" (`docs/power-steering-aqua.md`). The frames it
+   listens for are guesses until the bench test, so "no reply" is off
+   (setting 37) until then.
 4. **Tyre pressures.** Cars have TPMS. Bluetooth valve-cap sensors can be read
    by the Pi's built-in Bluetooth (no USB). Optional.
 5. **High voltage isolation.** Road EVs watch for the traction pack leaking to

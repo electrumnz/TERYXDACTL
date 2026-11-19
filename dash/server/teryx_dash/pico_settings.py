@@ -58,6 +58,14 @@ FALLBACK: list[Setting] = [
     Setting(30, "shift_wait_ms", "Wait for the right speed", 10000, "ms", None, 1000, 0, 30000, "How long a 4WD or diff lock change waits for you to stop or slow down before giving up. 0 = refuse straight away."),
     Setting(31, "shift_throttle_hold", "Hold throttle while shifting", 1, "", None, 1, 0, 1, "Holds the throttle while 4WD or diff lock changes from a standstill. Never while moving."),
     Setting(32, "sentry_min_12v_mv", "Sentry stops below", 12200, "mV", None, 100, 11000, 13500, "With the key off, sentry keeps the Pi on only while the 12V battery is above this. Under it for 30 s and everything turns off until the key goes on."),
+    Setting(33, "eps_mode", "Power steering mode", 2, "", None, 1, 0, 2, "2 = normal, 1 = limp (no speed frames, the column's own fail-safe), 0 = off (manual). Changes only when stopped."),
+    Setting(34, "eps_floor_kmh_x10", "Lightest steering below", 163, "km/h", 0.1, 5, 0, 600, "Below this speed the column is told this speed, so crawling gets full assist."),
+    Setting(35, "eps_speed_gain_pct", "Steering firms up", 100, "%", None, 10, 50, 300, "Above that speed the column is told real speed times this. Higher = heavier sooner."),
+    Setting(36, "eps_max_kmh", "Steering speed cap", 120, "km/h", None, 5, 20, 200, "Never tell the column more than this."),
+    Setting(37, "eps_listen", "Warn if steering goes quiet", 0, "", None, 1, 0, 1, "Turn on once the bench test shows the Aqua ECU talks back."),
+    Setting(38, "eps_silent_ms", "Steering quiet after", 1000, "ms", None, 100, 200, 5000, editable=False),
+    Setting(39, "eps_rpm", "Fake engine RPM", 1674, "rpm", None, 1, 0, 8000, "What the column is told the engine is doing. Bench setting.", editable=False),
+    Setting(40, "eps_wake_ms", "Steering wake time", 3000, "ms", None, 500, 500, 15000, "Time the column gets to boot before it's judged.", editable=False),
     Setting(17, "hold_to_run_timeout_ms", "Hold-to-run stop after", 300, "ms", None, 50, 100, 2000, "Stop the tray or winch if the dash's repeats stop this long."),
 ]
 
@@ -76,11 +84,11 @@ def _from_teryx() -> list[Setting] | None:
     out: list[Setting] = []
     for key, (name, unit, default, lo, hi) in sorted(SETTINGS.items()):
         base = fb.get(key)
-        scale = 0.1 if unit == "0.1A" else 0.001 if unit == "mV" else None
+        scale = 0.1 if unit in ("0.1A", "0.1km/h") else 0.001 if unit == "mV" else None
         out.append(Setting(
             key=key, name=name,
             label=base.label if base else name.replace("_", " "),
-            default=default, units={"0.1A": "A", "mV": "V"}.get(unit, unit), scale=scale,
+            default=default, units={"0.1A": "A", "mV": "V", "0.1km/h": "km/h", "enum": ""}.get(unit, unit), scale=scale,
             step=base.step if base else 1, min=lo, max=hi,
             help=base.help if base else "", editable=base.editable if base else True,
         ))

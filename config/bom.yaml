@@ -149,11 +149,13 @@ lines:
   - {id: alu_cut, shop: local, part: "3mm aluminium cut from DXF: back plate + Pi lid plate", qty: 1, each: 80.00, source: Estimate, notes: "Laser or waterjet shop; cad/stl/*.dxf"}
 
   # ------------------------------------------------------------- pickup
-  - {id: aqua, shop: pickup, part: Toyota Aqua EPS column (ECU 89650-52B51), qty: 1, each: 115.00, source: About NZ$115, covers: [EPS_ECU, EPS_COL], notes: "Dodson's, picking up 19 Nov"}
+  - {id: aqua_plug, shop: pickup, part: "Toyota Aqua EPS ECU signal plug (ignition + CAN H/L), cut from an Aqua / Prius C loom with 300 mm of wire", qty: 1, each: 20.00, source: Estimate, notes: "Sam has the column and its power plug (19 Nov). This is the other plug on the ECU. Ask Dodson's, or any wrecker with an NHP10 Aqua or Prius C. docs/power-steering-aqua.md"}
 
 # Already got (not in the totals).
 owned:
   SCREEN: 10.1 in touch screen
+  EPS_ECU: Toyota Aqua EPS ECU 89650-52B51 on the column, with its power plug (Dodson's, 19 Nov)
+  EPS_COL: Toyota Aqua EPS column (Dodson's, 19 Nov)
   BEACON: Amber + white LED roof beacon
   BRK_WINCH: 250 A manual reset breaker (winch kill switch)
   CAM_REAR: 200 degree rear camera (in the post)

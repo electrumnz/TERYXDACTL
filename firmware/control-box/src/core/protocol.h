@@ -24,6 +24,7 @@
 #define CAN_ID_PICO_REGEN     0x715u  // Pico -> Pi, 10 Hz, brake pedal regen (not sent yet)
 #define CAN_ID_PICO_LOCK      0x716u  // Pico -> Pi, 10 Hz, vehicle lock state
 #define CAN_ID_PICO_LIGHTS2   0x717u  // Pico -> Pi, 10 Hz, PCA9685 lamp levels (4 bits each)
+#define CAN_ID_PICO_STEER     0x718u  // Pico -> Pi, 10 Hz, power steering state (eps.h, docs/power-steering-aqua.md)
 #define CAN_ID_PI_FW_UPDATE   0x71Fu  // Pi -> Pico, on demand (magic 0x5445)
 #define CAN_ID_BENCH          0x7E0u  // Simulator -> host build only
 
@@ -118,6 +119,15 @@ enum {
     SET_SHIFT_THROTTLE_HOLD = 31, // 1 = ask the Shinegle to hold throttle while a shift runs from a standstill
     // Sentry (docs/sentry.md)
     SET_SENTRY_MIN_12V_MV = 32,   // key off: keep the Pi on for sentry only while the 12V is above this
+    // Power steering, Aqua column (docs/power-steering-aqua.md). Defaults are guesses until the bench test.
+    SET_EPS_MODE = 33,            // 0 manual (relay off), 1 limp (no frames), 2 normal. Applies when stopped or key off
+    SET_EPS_FLOOR_KMH_X10 = 34,   // below this speed tell the ECU this one (lightest steering when crawling)
+    SET_EPS_SPEED_GAIN_PCT = 35,  // above the floor tell the ECU real speed x this %. Higher = firms up sooner
+    SET_EPS_MAX_KMH = 36,         // never tell the ECU more than this
+    SET_EPS_LISTEN = 37,          // 1 = expect the ECU to talk back, warn if it goes quiet
+    SET_EPS_SILENT_MS = 38,       // how long quiet counts as "no reply"
+    SET_EPS_RPM = 39,             // engine RPM we pretend to have
+    SET_EPS_WAKE_MS = 40,         // grace after power-on before judging the ECU
     SET_COUNT,
     SET_CMD_SAVE = 0xF0,          // write current settings to flash
     SET_CMD_DEFAULTS = 0xF1,      // go back to defaults (not saved until 0xF0)
@@ -196,6 +206,12 @@ enum {
     FAULT_DIFF_OVERCURRENT = 13,
     FAULT_IO_BUS = 14,            // I2C expander or ADC not answering
 };
+
+// ---- 0x718 power steering ----------------------------------------------------------
+// [0] state (STEER_* in eps.h) low nibble, counter high nibble, [1] flags (STEER_F_*),
+// [2-3] i16 driver torque (raw from the ECU, 0 if not heard), [4-5] i16 steering angle
+// 0.1 deg (0 if not heard), [6] speed told to the ECU km/h (0xFF = no frames),
+// [7] ECU status byte (EPS_STATUS LKA_STATE, 0xFF = never heard).
 
 // Reject reasons, b5 low nibble. High nibble counts rejects (wraps at 16).
 // 0-7 match teryx/canbus/messages.py REJECT_REASON, 8+ added by the firmware.
