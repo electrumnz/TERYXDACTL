@@ -2,7 +2,9 @@
 
 Works for a Raspberry Pi camera on the ribbon port ("csi0", read with rpicam-vid), for an
 analogue camera on the video board on the second ribbon port ("adv:N", see videoboard.py), and
-for a /dev/videoN device (read with ffmpeg). Both tools are on Raspberry Pi OS. One ffmpeg per viewer; the dash shows one camera at a time (?cam=rear|front|trailer).
+for a /dev/videoN device (read with ffmpeg). Both tools are on Raspberry Pi OS. One ffmpeg per viewer (?cam=rear|front|trailer|cabin). The combined view opens two at once:
+the front ribbon camera and one camera from the video board (it can only decode one input at a
+time, so a newer video board stream stops the older one).
 """
 
 from __future__ import annotations
@@ -34,7 +36,9 @@ async def mjpeg_response(req: web.Request, device: str) -> web.StreamResponse:
         cmd = ["rpicam-vid", "-n", "-t", "0", "--camera", csi.group(1), "--width", "1280", "--height", "720",
                "--framerate", "25", "--codec", "mjpeg", "-o", "-"]
     elif adv is not None:
-        # Analogue camera on the video board: pick its input, then raw PAL -> MJPEG.
+        # Analogue camera on the video board: one decoder, so take the board off whoever had it
+        # (an older live view, or the dashcam), pick its input, then raw PAL -> MJPEG.
+        await videoboard.BOARD.take_for_viewer()
         if shutil.which("v4l2-ctl"):
             sel = await asyncio.create_subprocess_exec(*videoboard.select_cmd(adv), stdout=asyncio.subprocess.DEVNULL,
                                                        stderr=asyncio.subprocess.DEVNULL)
@@ -45,6 +49,8 @@ async def mjpeg_response(req: web.Request, device: str) -> web.StreamResponse:
         cmd = ["ffmpeg", "-loglevel", "error", "-f", "v4l2", "-input_format", "mjpeg", "-video_size", "1280x720",
                "-i", device, "-f", "mjpeg", "-q:v", "5", "-r", "25", "pipe:1"]
     proc = await asyncio.create_subprocess_exec(*cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.DEVNULL)
+    if adv is not None:
+        videoboard.BOARD.viewer = proc
     resp = web.StreamResponse(headers={"Content-Type": f"multipart/x-mixed-replace; boundary={BOUNDARY}",
                                        "Cache-Control": "no-store"})
     await resp.prepare(req)

@@ -303,3 +303,11 @@ async def test_wifi_scan_parses_and_dedupes(client, nmcli):
     d = await (await client.get("/api/wifi/scan")).json()
     assert d["networks"] == [{"ssid": "Shed", "signal": 70, "secure": True},
                              {"ssid": "Cafe:Free", "signal": 55, "secure": False}]
+
+
+async def test_camera_status(client):
+    """The dash asks whether the trailer camera is giving a picture. No board here: not known."""
+    r = await client.get("/api/camera/status")
+    assert r.status == 200
+    j = await r.json()
+    assert j["trailer"]["signal"] is None and j["board_watching"] is False

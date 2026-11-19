@@ -14,13 +14,14 @@ from typing import Any
 
 from aiohttp import web
 
-from . import pico_settings
+from . import pico_settings, videoboard
 from .fun import setup_fun_routes
 from .imu import setup_imu_routes
 from .media import setup_media_routes
 from .remote import setup_remote_routes
 from .sentry import setup_sentry_routes
 from .ota import Ota, OtaConfig
+from .trailercam import TrailerWatch
 from .trips import DEFAULT_PACK_KWH, TripLog
 
 CONFIG_DIR = Path(os.environ.get("TERYX_CONFIG_DIR", Path.home() / ".config" / "teryx"))
@@ -32,6 +33,7 @@ CONFIRM_KEY = web.AppKey("teryx_dash_confirm", asyncio.Future)
 KEYOFF_KEY = web.AppKey("teryx_dash_keyoff", asyncio.Future)
 TRIPS_KEY = web.AppKey("teryx_dash_trips", TripLog)
 TRIPS_TASK_KEY = web.AppKey("teryx_dash_trips_task", asyncio.Future)
+TRAILER_TASK_KEY = web.AppKey("teryx_dash_trailer_task", asyncio.Future)
 
 
 async def maybe_await(v):
@@ -373,6 +375,32 @@ def setup_routes(app: web.Application, gateway: Any) -> None:
     r.add_post("/api/system/shutdown", sys_shutdown)
     r.add_get("/api/camera.mjpg", camera)
 
+    # ---------- is the trailer camera plugged in? (trailercam.py) ----------
+    def _trailer_fitted() -> bool:
+        try:
+            c = json.loads(SETTINGS_FILE.read_text()).get("camera", {})
+        except Exception:
+            return False
+        return bool((c.get("cams", {}).get("trailer") or {}).get("fitted"))
+
+    watch = TrailerWatch(lambda: _camera_device("trailer") if _trailer_fitted() else "",
+                         lambda: bool(snapshot(gateway).get("in.trailer")))
+
+    async def camera_status(_):
+        return web.json_response({"trailer": watch.status(), "board_watching": videoboard.BOARD.watching()})
+
+    async def watch_trailer():
+        while True:
+            try:
+                await watch.step()
+            except asyncio.CancelledError:
+                raise
+            except Exception:
+                pass
+            await asyncio.sleep(1)
+
+    r.add_get("/api/camera/status", camera_status)
+
     async def watch_key_off():
         """Key off: the control box asks the Pi to shut down, then cuts power after its wait."""
         while True:
@@ -386,9 +414,11 @@ def setup_routes(app: web.Application, gateway: Any) -> None:
             ota.confirm_when_healthy(lambda: bool(snapshot(gateway))))
         _app[KEYOFF_KEY] = asyncio.ensure_future(watch_key_off())
         _app[TRIPS_TASK_KEY] = asyncio.ensure_future(log_trips())
+        _app[TRAILER_TASK_KEY] = asyncio.ensure_future(watch_trailer())
 
     async def on_stop(_app):
         _app[TRIPS_TASK_KEY].cancel()
+        _app[TRAILER_TASK_KEY].cancel()
         try:
             trips.save()
         except OSError:

@@ -471,9 +471,38 @@ select.big { min-height: var(--touch); font-size: 18px; }
 .veh .taillamp.on { fill: var(--tail-on); }
 .veh .taillamp.brake { fill: var(--bad); filter: drop-shadow(0 0 6px var(--bad)); }
 
-/* ---------- reverse camera: rear light bar button ---------- */
+/* ---------- camera panes: one picture, or the combined view ---------- */
+.cam .cam-grid { position: absolute; inset: 0; display: grid; gap: 4px; background: #000; }
+.cam .cam-grid.n1 { grid-template: 1fr / 1fr; }
+.cam .cam-grid.n2 { grid-template: 1fr / 1fr 1fr; }
+.cam .cam-grid.n3 { grid-template: 1fr 1fr / 1fr 1fr; }
+.cam .cam-grid.n3 .cam-pane[data-slot="0"] { grid-row: 1 / span 2; }
+.cam .cam-pane { position: relative; overflow: hidden; background: #000; min-width: 0; min-height: 0; }
+.cam .cam-pane.paused { cursor: pointer; }
+.cam .cam-pane.paused canvas.still { filter: grayscale(.6) brightness(.7); }
+.cam .pane-name { position: absolute; right: 12px; bottom: 12px; background: rgba(0,0,0,.6); color: #fff; padding: 6px 12px; border-radius: 8px; font-weight: 800; font-size: 16px; letter-spacing: .08em; pointer-events: none; }
+.cam:not(.combo) .pane-name { display: none; }
+.cam .pane-paused { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 4px;
+  background: rgba(0,0,0,.7); color: #fff; padding: 14px 22px; border-radius: 12px; border: 2px solid rgba(255,255,255,.35); pointer-events: none; text-align: center; }
+.cam .pane-paused b { font-size: 22px; letter-spacing: .1em; }
+.cam .pane-paused span { font-size: 15px; opacity: .85; }
+.cam .pane-lights { position: absolute; left: 12px; bottom: 12px; display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end; max-width: calc(100% - 140px); }
+.cam:not(.combo) .pane-lights { left: 16px; bottom: 16px; max-width: calc(100% - 32px); }
+.cam .cam-bars { display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,.6); border-radius: var(--radius); padding: 4px 4px 4px 12px; }
+.cam .cam-bars .cb-name { color: #fff; font-weight: 800; font-size: 13px; letter-spacing: .08em; opacity: .85; margin-right: 2px; }
+.cam .cam-light { min-width: 64px; min-height: 64px; border-radius: calc(var(--radius) - 2px); border: 2px solid rgba(255,255,255,.35);
+  background: rgba(0,0,0,.55); color: #fff; font: inherit; font-weight: 800; font-size: 20px; cursor: pointer; }
+.cam .cam-light.all { min-width: 76px; font-size: 16px; letter-spacing: .06em; }
+.cam .cam-light.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.cam .cam-demo { position: absolute; right: 16px; top: 96px; min-height: 64px; background: rgba(0,0,0,.6); border-color: rgba(255,255,255,.25); color: #fff; font-size: 14px; }
+.cam.combo .cam-demo { top: 16px; }
+/* Combined view with the rear camera showing: its rear lights button is enough, the trailer
+   picture only needs the trailer bar. */
+.cam .cam-grid.has-rear .cam-pane[data-cam="trailer"] [data-light="light.rear"] { display: none; }
+
+/* ---------- camera lights buttons (rear floods, trailer bar, cab light) ---------- */
 .cam .cam-rear {
-  position: absolute; left: 16px; bottom: 16px; display: flex; align-items: center; gap: 12px;
+  display: flex; align-items: center; gap: 12px;
   min-height: 64px; padding: 0 18px; border-radius: var(--radius); border: 2px solid rgba(255,255,255,.35);
   background: rgba(0,0,0,.6); color: #fff; font: inherit; font-weight: 800; cursor: pointer;
 }
