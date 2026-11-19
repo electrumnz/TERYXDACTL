@@ -238,13 +238,14 @@ function nowPlayingChip() {
 }
 
 // Splash: shows from the first paint (it's in index.html) until the first live state arrives.
+// The boot guard in index.html keeps it up for at least 5 s so it can be seen.
 function hideSplash() {
-  const sp = document.getElementById("splash"); if (!sp || sp.classList.contains("gone")) return;
-  sp.classList.add("gone");
-  setTimeout(() => sp.remove(), 400);
+  if (window.TeryxBoot) { window.TeryxBoot.hide(); return; }
+  const sp = document.getElementById("splash"); if (sp) sp.remove();
 }
 
 async function main() {
+  if (window.TeryxBoot) window.TeryxBoot.started = true;   // app code loaded: the boot guard stands down
   fitToScreen();
   const splashMsg = document.getElementById("splash-msg");
   if (splashMsg) splashMsg.textContent = "Loading settings";

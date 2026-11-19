@@ -177,6 +177,11 @@ laptop is needed. Add `?demo=park`, `?demo=reverse` or `?demo=faults` for the ot
 to in portrait), and "Add to Home Screen" opens it full screen. Search engines are told not to
 list it. One-off setup: repo Settings > Pages > Source: GitHub Actions.
 
+The phone remote (Pocket OS, `remote.html`) goes up with it at
+https://electrumnz.github.io/TERYXDACTL/remote/ (a short link to `remote.html`). Online it drives a
+pretend Teryx on a beach using the same RC rules as `teryx/rc_mode.py`, so every button works with
+no Pi. The dash links to it from Settings > Remote control > Open remote.
+
 ### On the Pi
 
 ```bash

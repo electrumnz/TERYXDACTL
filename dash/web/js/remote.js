@@ -447,4 +447,6 @@
     requestAnimationFrame(loop);
   }
   requestAnimationFrame(loop);
+  // Loaded fine: the boot guard in remote.html stands down and lifts the splash (after 5 s).
+  if (window.TeryxBoot) { window.TeryxBoot.started = true; window.TeryxBoot.hide(); }
 })();
