@@ -41,7 +41,7 @@ first and then for mud, water and bumps.
 ## Where the numbers come from
 
 **Kenwood's spec page** ([kenwood.com](https://www.kenwood.com/usa/car/marine/kfc-2053mrb/spec.html)):
-180 mm (7-1/16") cut-out, 86 mm (3-3/8") mounting depth, 230 mm (9-1/16") square grille,
+180 mm (7-1/16") cut-out, 86 mm (3-3/8") mounting depth, round frame 230 mm (9-1/16") across and 113 mm deep with the grille,
 4 ohm, 86 dB, 55 Hz to 20 kHz, 90 mm ferrite magnet. These set the hole, the face size and the
 depth (100 mm clear behind the face).
 

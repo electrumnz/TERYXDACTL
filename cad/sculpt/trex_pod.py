@@ -46,7 +46,7 @@ AI_BAFFLE_Z = -0.06      # the real speaker's mounting face goes here
 
 # ---- real parts (mm)
 SPK_CUTOUT = spk.CUTOUT_D      # the speaker itself is kenwood_kfc2053mrb.py
-SPK_GRILLE = spk.GRILLE
+SPK_GRILLE = spk.FRAME_D        # round frame, across
 SPK_PROUD = spk.GRILLE_PROUD
 BAFFLE_T = 12.0          # solid mounting face (the speaker's screws bite in)
 WALL = 4.5               # box wall
@@ -150,7 +150,7 @@ def mask_bolts(mask_t, box_t, n=4):
     cand = []
     for x in np.arange(-200, 201, 2.0):
         for y in np.arange(-250, 251, 2.0):
-            if max(abs(x), abs(y)) < half or max(abs(x), abs(y)) > half + 45: continue
+            if np.hypot(x, y) < half or np.hypot(x, y) > half + 45: continue
             cand.append((x, y))
     cand = np.array(cand)
     o = np.c_[cand, np.full(len(cand), -400.0)]
@@ -239,36 +239,43 @@ def open_throat(mask, head_t, labels, tree):
 
 
 def fit_check(parts, head_t, labels, tree):
-    """Put the real speaker model in and check it fits. Returns a dict; any
-    'ok': False is a problem."""
-    sp = spk.build()
-    out = {}
-    box, mask = parts["box"], parts["mask"]
-    hit = (sp ^ box).volume() / 1e3
-    out["speaker_vs_box_cm3"] = round(hit, 2)
-    hitm = sum((sp ^ parts[k]).volume() for k in parts if k not in ("box",)) / 1e3
-    out["speaker_vs_face_cm3"] = round(hitm, 2)
-    box_t = to_trimesh(box)
-    bt = to_trimesh(spk.behind())
-    pts, _ = trimesh.sample.sample_surface_even(bt, 3000)
-    pts = pts[pts[:, 2] > BAFFLE_T + 1]
-    d = np.abs(trimesh.proximity.signed_distance(box_t, pts))
-    out["basket_clearance_mm"] = round(float(d.min()), 1)
+    """Clash check: put the speaker's outline (kenwood_kfc2053mrb.envelope(),
+    built from Kenwood's published sizes) in and measure the gaps. Returns a
+    dict; 'ok': False is a problem."""
+    env = spk.envelope()
+    out = {"clash_cm3": {k: round((env ^ p).volume() / 1e3, 2) for k, p in parts.items()}}
+    et = to_trimesh(env)
+    pts, _ = trimesh.sample.sample_surface_even(et, 6000)
+    pts = pts[pts[:, 2] > BAFFLE_T + 6]              # through the cut-out (and just behind it) the gap is Kenwood's own 2 mm
+    gap = {}
+    for k, p in parts.items():
+        pt = to_trimesh(p)
+        near = pts[np.linalg.norm(pts - pt.bounding_box.centroid, axis=1) < np.linalg.norm(pt.extents) / 2 + 20]
+        if len(near):
+            gap[k] = round(float(np.abs(trimesh.proximity.signed_distance(pt, near)).min()), 1)
+    out["gap_behind_face_mm"] = gap
+    ft = to_trimesh(spk._front_envelope())
+    fpts, _ = trimesh.sample.sample_surface_even(ft, 4000)
+    fpts = fpts[fpts[:, 2] < -0.5]
+    out["gap_grille_to_face_mm"] = {k: round(float(np.abs(trimesh.proximity.signed_distance(to_trimesh(parts[k]), fpts)).min()), 1)
+                                    for k in ("mask", "jaw") if k in parts}
+    box_t = to_trimesh(parts["box"])
     hole_ok = [bool(all(box_t.contains([[x + dx, y + dy, BAFFLE_T / 2]])[0] for dx, dy in [(4, 0), (-4, 0), (0, 4), (0, -4)]))
                for x, y in spk.holes()]
     out["screw_holes_in_plastic"] = hole_ok
     # how much of the cone can see straight out of the mouth (teeth count as clear)
-    mt = to_trimesh(mask)
+    mt = to_trimesh(parts["mask"])
+    if "jaw" in parts: mt = trimesh.util.concatenate([mt, to_trimesh(parts["jaw"])])
     lab = paint(mt, head_t, labels, tree)
     body = mt.submesh([np.where(lab != 1)[0]], append=True)
     g = np.arange(-spk.CONE_D / 2, spk.CONE_D / 2 + 0.1, 3.0)
     X, Y = np.meshgrid(g, g); sel = np.hypot(X, Y) <= spk.CONE_D / 2
     o = np.c_[X[sel], Y[sel], np.full(sel.sum(), -SPK_PROUD - 1.0)]
-    t = ray_first(body, o, [0, 0, -1])
-    out["cone_open_pct"] = round(100 * float(np.isnan(t).mean()), 0)
-    tt = ray_first(mt, o, [0, 0, -1])
-    out["cone_open_pct_counting_teeth"] = round(100 * float(np.isnan(tt).mean()), 0)
-    out["ok"] = bool(hit < 0.05 and hitm < 0.05 and out["basket_clearance_mm"] >= 3 and all(hole_ok))
+    out["cone_open_pct"] = round(100 * float(np.isnan(ray_first(body, o, [0, 0, -1])).mean()), 0)
+    out["cone_open_pct_counting_teeth"] = round(100 * float(np.isnan(ray_first(mt, o, [0, 0, -1])).mean()), 0)
+    out["ok"] = bool(all(v < 0.05 for v in out["clash_cm3"].values())
+                     and min(gap.get("box", 99), gap.get("seat", 99)) >= 3
+                     and min(out["gap_grille_to_face_mm"].values(), default=99) >= 1.5 and all(hole_ok))
     return out
 
 
@@ -301,7 +308,7 @@ def build(scale):
     box = box.trim_by_plane([0, 0, -1], -zc1)
 
     # mask: pocket for the speaker's grille; drops the AI speaker left in the mouth
-    pocket = rounded_square(SPK_GRILLE + 6, 20, -(SPK_PROUD + 4), 0.5)
+    pocket = cyl(SPK_GRILLE / 2 + 3, SPK_PROUD + 4.5, "z", False).translate([0, 0, -(SPK_PROUD + 4)])
     mask = largest(front - pocket)
     # chin lug: below the speaker the joint face is only a few mm tall, so the
     # box takes the back 30 mm of the lower jaw; the mask bolts to its front
@@ -313,7 +320,7 @@ def build(scale):
 
     # the head narrows at the bottom, so the speaker's lower screws would miss
     # the box: a flat mounting plate the size of the grille closes that gap
-    plate = rounded_square(SPK_GRILLE + 12, spk.GRILLE_R + 6, 0, BAFFLE_T)
+    plate = cyl(SPK_GRILLE / 2 + 6, BAFFLE_T, "z", False)
     box = box + plate
     box = box - cav - cyl(SPK_CUTOUT / 2, 4 * BAFFLE_T, "z")
     for x, y in spk.holes():                    # pilot holes for the speaker's screws
@@ -364,6 +371,8 @@ def build(scale):
     if len(mp) > 1 and mp[1].volume() > 1e5: parts["jaw"] = mp[1]
     parts.update(box=largest(box), seat=largest(seat), cover=largest(cover))
     info["fit"] = fit_check(parts, head_t, labels, tree)
+    if not info["fit"]["ok"]:
+        print("WARNING: the speaker does not fit, see info.json 'fit'", file=sys.stderr)
     return head_t, labels, parts, cav_t, info
 
 
