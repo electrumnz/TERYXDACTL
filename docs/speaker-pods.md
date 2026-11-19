@@ -107,6 +107,17 @@ updates the EQ file; `scripts/audio-setup.sh` copies it onto the Pi.
 pick **Teryx speaker pods** as the output. It only touches the bass under about 300 Hz.
 If you swap speakers or change the pod size, update the YAML and rerun `--write`.
 
+## The T. rex head (what you print)
+
+The pod you print is the sculpted T. rex head in `cad/sculpt/` (concept 4).
+The speaker sits in its open mouth, the head's back skull clamps the cage
+tube, and the sealed box inside holds 10.8 L of air. The real speaker is modelled in `cad/sculpt/kenwood_kfc2053mrb.py` and every build checks it fits. How to print it, the
+parts, colours and bolts: [cad/sculpt/README.md](../cad/sculpt/README.md).
+
+The plain OpenSCAD pod below (and its faceted head) still builds, if you
+ever want a smaller, simpler pod. If you print that one instead, set
+`pod.gross_l` back to `plain_gross_l` and rerun `--write`.
+
 ## How the pod is built (and why)
 
 **Shape.** Square face to fit the speaker's square grille, tapering to round, then a 45° cone

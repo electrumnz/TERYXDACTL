@@ -53,7 +53,7 @@ if [[ -z "$only" || "speaker_pod" == "$only"* ]]; then
   # The pod's air volume must match config/speaker_pods.yaml (the bass maths uses it)
   echo "-> speaker pod air volume"
   "$OPENSCAD" --quiet --hardwarnings -o /tmp/teryx_pod_cavity.stl -D 'part="cavity"' parts/speaker_pod.scad
-  want=$(sed -n 's/^ *gross_l: *\([0-9.]*\).*/\1/p' ../config/speaker_pods.yaml)
+  want=$(sed -n 's/^ *plain_gross_l: *\([0-9.]*\).*/\1/p' ../config/speaker_pods.yaml)
   python3 stl_volume.py /tmp/teryx_pod_cavity.stl "$want"
 fi
 echo "Done."
