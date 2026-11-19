@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1320 1638" width="1320" height="1638" font-family="Arial, Helvetica, sans-serif" data-sheet="logic">
-<rect width="1320" height="1638" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1320 1507" width="1320" height="1507" font-family="Arial, Helvetica, sans-serif" data-sheet="logic">
+<rect width="1320" height="1507" fill="#ffffff"/>
 <text x="40" y="40" font-size="22" text-anchor="start" font-weight="bold" fill="#1f2328">Control box inside: Pico 2 and its boards</text>
 <text x="40" y="62" font-size="12" text-anchor="start" font-weight="normal" fill="#57606a">Teryx OS wiring, sheet &#x27;logic&#x27;. Made from config/wiring.yaml by `python -m teryx wiring`. Don&#x27;t edit this file.</text>
 <line x1="40" y1="92" x2="74" y2="92" stroke="#1a7f37" stroke-width="2.5"/>
@@ -28,8 +28,6 @@
 <g data-wire="L13" data-from="PICO.GP27" data-to="ADS1.SCL" data-status="planned"><title>L13: PICO.GP27 -&gt; ADS1.SCL</title><path d="M310,417 C395,417 395,1101 480,1101" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
 <g data-wire="L14" data-from="PICO.GP26" data-to="MCP2.SDA" data-status="planned"><title>L14: PICO.GP26 -&gt; MCP2.SDA</title><path d="M310,397 C395,397 395,1212 480,1212" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
 <g data-wire="L15" data-from="PICO.GP27" data-to="MCP2.SCL" data-status="planned"><title>L15: PICO.GP27 -&gt; MCP2.SCL</title><path d="M310,417 C395,417 395,1232 480,1232" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L16" data-from="PICO.GP26" data-to="ADS2.SDA" data-status="planned"><title>L16: PICO.GP26 -&gt; ADS2.SDA</title><path d="M310,397 C395,397 395,1403 480,1403" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="L17" data-from="PICO.GP27" data-to="ADS2.SCL" data-status="planned"><title>L17: PICO.GP27 -&gt; ADS2.SCL</title><path d="M310,417 C395,417 395,1423 480,1423" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
 <g data-wire="L18" data-from="MCP1.INTB" data-to="PICO.GP21" data-status="planned"><title>L18: MCP1.INTB -&gt; PICO.GP21</title><path d="M480,730 C395,730 395,357 310,357" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
 <g data-wire="L19" data-from="MCP1.A0" data-to="RELAYS.IN1" data-status="planned"><title>L19: MCP1.A0 -&gt; RELAYS.IN1 - light.rear (relay 1 now only feeds the trailer reverse pin)</title><path d="M750,750 C835,750 835,217 920,217" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
 <g data-wire="L22" data-from="MCP1.A3" data-to="RELAYS.IN4" data-status="planned"><title>L22: MCP1.A3 -&gt; RELAYS.IN4 - winch.in</title><path d="M750,770 C835,770 835,237 920,237" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
@@ -52,14 +50,13 @@
 <g data-wire="L40" data-from="PICO.3V3" data-to="RELAYS.VCC" data-status="planned"><title>L40: PICO.3V3 -&gt; RELAYS.VCC</title><path d="M310,197 C615,197 615,197 920,197" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
 <g data-wire="L41" data-from="PICO.3V3" data-to="OPTO.VCC" data-status="planned"><title>L41: PICO.3V3 -&gt; OPTO.VCC</title><path d="M310,197 C615,197 615,388 920,388" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
 <g data-wire="L42" data-from="PICO.3V3" data-to="MCP2.VDD" data-status="planned"><title>L42: PICO.3V3 -&gt; MCP2.VDD</title><path d="M310,197 C395,197 395,1192 480,1192" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L43" data-from="PICO.3V3" data-to="ADS2.VDD" data-status="planned"><title>L43: PICO.3V3 -&gt; ADS2.VDD</title><path d="M310,197 C395,197 395,1383 480,1383" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
 <g data-wire="L44" data-from="PICO.3V3" data-to="EPS_CAN.VCC" data-status="planned"><title>L44: PICO.3V3 -&gt; EPS_CAN.VCC</title><path d="M310,197 C395,197 395,499 480,499" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
 <g data-wire="L45" data-from="PICO.3V3" data-to="RELAYS2.VCC" data-status="planned"><title>L45: PICO.3V3 -&gt; RELAYS2.VCC</title><path d="M310,197 C615,197 615,654 920,654" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
 <g data-wire="L46" data-from="PICO.GP0" data-to="DEBUG.RX" data-status="planned"><title>L46: PICO.GP0 -&gt; DEBUG.RX - UART0 TX</title><path d="M310,217 C395,217 395,197 480,197" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
 <g data-wire="L47" data-from="DEBUG.TX" data-to="PICO.GP1" data-status="planned"><title>L47: DEBUG.TX -&gt; PICO.GP1</title><path d="M480,217 C395,217 395,237 310,237" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="L60" data-from="PICO.GP26" data-to="PCA.SDA" data-status="planned"><title>L60: PICO.GP26 -&gt; PCA.SDA - soldered</title><path d="M310,397 C395,397 395,1534 480,1534" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="L61" data-from="PICO.GP27" data-to="PCA.SCL" data-status="planned"><title>L61: PICO.GP27 -&gt; PCA.SCL - soldered</title><path d="M310,417 C395,417 395,1554 480,1554" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="L62" data-from="PICO.3V3" data-to="PCA.VCC" data-status="planned"><title>L62: PICO.3V3 -&gt; PCA.VCC - soldered</title><path d="M310,197 C395,197 395,1514 480,1514" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="L60" data-from="PICO.GP26" data-to="PCA.SDA" data-status="planned"><title>L60: PICO.GP26 -&gt; PCA.SDA - soldered</title><path d="M310,397 C395,397 395,1403 480,1403" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="L61" data-from="PICO.GP27" data-to="PCA.SCL" data-status="planned"><title>L61: PICO.GP27 -&gt; PCA.SCL - soldered</title><path d="M310,417 C395,417 395,1423 480,1423" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="L62" data-from="PICO.3V3" data-to="PCA.VCC" data-status="planned"><title>L62: PICO.3V3 -&gt; PCA.VCC - soldered</title><path d="M310,197 C395,197 395,1383 480,1383" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
 <g data-device="PICO" data-status="planned"><title>PICO: Raspberry Pi Pico 2 - Talks to the Pi over CAN only. No USB lead to the Pi; reflash with a laptop on its own USB port in the workshop</title><rect x="40" y="150" width="270" height="289" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
 <text x="50" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Raspberry Pi Pico 2</text>
 <text x="50" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">PICO · planned</text>
@@ -188,25 +185,15 @@
 <line x1="480" y1="1292" x2="750" y2="1292" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="1296" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">B0</text>
 </g>
-<g data-device="ADS2" data-status="planned"><title>ADS2: Second ADS1115 (0x49) - Brake pedal regen only</title><rect x="480" y="1336" width="270" height="109" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
-<text x="490" y="1354" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Second ADS1115 (0x49)</text>
-<text x="490" y="1369" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">ADS2 · planned · optional</text>
+<g data-device="PCA" data-status="planned"><title>PCA: PCA9685 16-ch PWM board (0x40) - Every light that isn&#x27;t a front bar or the cabin bar dims through this (docs/lights.md). Wires soldered straight to the pads, no header pins. VCC 3.3 V so the outputs are 3.3 V, which the MOSFET boards (3-20 V input) and the BTS7960s (3.3 V logic like BTS1-3) take. Leave V+ (servo power) empty. OE tied low on the board. PWM0 trailer bar, 1-10 stock lights on BTS7960 4-8, 11-12 rear floods, 13-14 beacon amber / white on BTS7960 9, 15 BTS7960 enable. All outputs are off at power-up</title><rect x="480" y="1336" width="270" height="109" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="490" y="1354" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">PCA9685 16-ch PWM board (0x40)</text>
+<text x="490" y="1369" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">PCA · planned · optional</text>
 <line x1="480" y1="1383" x2="750" y2="1383" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1387" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VDD</text>
+<text x="615" y="1387" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VCC</text>
 <line x1="480" y1="1403" x2="750" y2="1403" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="1407" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SDA</text>
 <line x1="480" y1="1423" x2="750" y2="1423" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="1427" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SCL</text>
-</g>
-<g data-device="PCA" data-status="planned"><title>PCA: PCA9685 16-ch PWM board (0x40) - Every light that isn&#x27;t a front bar or the cabin bar dims through this (docs/lights.md). Wires soldered straight to the pads, no header pins. VCC 3.3 V so the outputs are 3.3 V, which the MOSFET boards (3-20 V input) and the BTS7960s (3.3 V logic like BTS1-3) take. Leave V+ (servo power) empty. OE tied low on the board. PWM0 trailer bar, 1-10 stock lights on BTS7960 4-8, 11-12 rear floods, 13-14 beacon amber / white on BTS7960 9, 15 BTS7960 enable. All outputs are off at power-up</title><rect x="480" y="1467" width="270" height="109" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
-<text x="490" y="1485" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">PCA9685 16-ch PWM board (0x40)</text>
-<text x="490" y="1500" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">PCA · planned · optional</text>
-<line x1="480" y1="1514" x2="750" y2="1514" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1518" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VCC</text>
-<line x1="480" y1="1534" x2="750" y2="1534" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1538" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SDA</text>
-<line x1="480" y1="1554" x2="750" y2="1554" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="615" y="1558" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">SCL</text>
 </g>
 <g data-device="RELAYS" data-status="planned"><title>RELAYS: 16-ch relay board, channels 1-8 - One 16-channel board of mechanical 5 V relays with opto and JD-VCC jumper (AliExpress cart), in an aux box next to the control box. RELAYS2 is channels 9-16 of the same board. The solid state G3MB-202P board Sam has is AC only and won&#x27;t turn off on 12 V DC. JD-VCC jumper off, coils on 5 V, inputs from 3.3 V</title><rect x="920" y="150" width="270" height="169" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
 <text x="930" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">16-ch relay board, channels 1-8</text>
@@ -272,8 +259,6 @@
 <text x="472" y="1098" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L13</text>
 <text x="472" y="1209" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L14</text>
 <text x="472" y="1229" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L15</text>
-<text x="472" y="1400" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L16</text>
-<text x="472" y="1420" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L17</text>
 <text x="472" y="727" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L18</text>
 <text x="758" y="747" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L19</text>
 <text x="758" y="767" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L22</text>
@@ -296,12 +281,11 @@
 <text x="912" y="194" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L40</text>
 <text x="912" y="385" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L41</text>
 <text x="472" y="1189" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L42</text>
-<text x="472" y="1380" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L43</text>
 <text x="472" y="496" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L44</text>
 <text x="912" y="651" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L45</text>
 <text x="318" y="214" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L46</text>
 <text x="472" y="214" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L47</text>
-<text x="472" y="1531" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L60</text>
-<text x="472" y="1551" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L61</text>
-<text x="472" y="1511" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L62</text>
+<text x="472" y="1400" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L60</text>
+<text x="472" y="1420" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L61</text>
+<text x="472" y="1380" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">L62</text>
 </svg>

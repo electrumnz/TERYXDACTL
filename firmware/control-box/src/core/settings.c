@@ -28,14 +28,6 @@ static const range_t k_ranges[SET_COUNT] = {
     [SET_TRAY_FULL_TRAVEL_MS]  = {18000, 1000, 60000},
     [SET_LOW_12V_MV]           = {11500, 9000, 13500},
     [SET_WINCH_TIMED_MAX_S]    = {30, 1, 120},
-    [SET_BRAKE_REGEN_ON]       = {0, 0, 1},
-    [SET_BRAKE_REGEN_PCT]      = {50, 0, 100},
-    [SET_BRAKE_REGEN_START]    = {5, 0, 50},
-    [SET_BRAKE_REGEN_FULL]     = {30, 5, 100},
-    [SET_BRAKE_REGEN_FADE_KMH] = {5, 0, 20},
-    [SET_BRAKE_REGEN_2WD_PCT]  = {60, 0, 100},
-    [SET_BRAKE_PEDAL_MIN]      = {2000, 0, 32767},
-    [SET_BRAKE_PEDAL_MAX]      = {22000, 0, 32767},
     [SET_SHIFT_WAIT_MS]        = {10000, 0, 30000},
     [SET_SHIFT_THROTTLE_HOLD]  = {1, 0, 1},
     [SET_SENTRY_MIN_12V_MV]    = {12200, 11000, 13500},
@@ -56,6 +48,7 @@ void settings_defaults(settings_t *s) {
 
 int settings_set(settings_t *s, uint8_t key, uint16_t value) {
     if (key == 0 || key >= SET_COUNT) return SET_ACK_UNKNOWN;
+    if (k_ranges[key].max == 0) return SET_ACK_UNKNOWN;   // reserved slot (22-29)
     if (value < k_ranges[key].min || value > k_ranges[key].max) return SET_ACK_RANGE;
     s->v[key] = value;
     return SET_ACK_OK;

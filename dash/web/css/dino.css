@@ -217,13 +217,12 @@ select.big { background: var(--key); border-color: var(--key-edge); }
 .d-speed .gear-row span.on.d { color: var(--accent); text-shadow: var(--glow); }
 .d-speed .gear-row span.on.r { color: var(--bad); }
 
-/* power: three claw gouges that fill with power (orange) or regen (teal) */
+/* power: three claw gouges that fill with power (orange). Regen shows on the battery teeth. */
 .d-power { height: 84px; display: grid; grid-template-columns: 96px 1fr 120px; align-items: center; padding: 0 16px 0 22px; flex: none; }
 .d-power .lbl, .d-batt .lbl { font: italic 700 18px/1 var(--display); letter-spacing: .2em; color: var(--muted); }
 .d-power .claws { height: 64px; width: 100%; overflow: visible; }
 .claws .gouge { fill: rgba(0,0,0,.6); stroke: var(--key-edge); stroke-width: 1.2; }
 .claws .lava { fill: url(#lava); filter: drop-shadow(0 0 5px rgba(255,110,20,.8)); transition: opacity .25s; }
-.claws.regen .lava { fill: url(#cool); filter: drop-shadow(0 0 5px rgba(60,220,170,.7)); }
 .d-power .power-kw { margin: 0; text-align: right; font: italic 800 34px/1 var(--display); color: var(--text); }
 .d-power .power-kw.ok { color: var(--regen); }
 
@@ -234,6 +233,15 @@ select.big { background: var(--key); border-color: var(--key-edge); }
 .d-batt .fangs .dead { filter: grayscale(1) brightness(.35); }
 .d-batt .fangs .lit { clip-path: inset(0 calc(100% - var(--soc, 0%)) 0 0); filter: sepia(.55) saturate(1.8) brightness(1.08) drop-shadow(0 0 7px rgba(255,120,20,.75)); transition: clip-path .6s; }
 .d-batt.low .fangs .lit { filter: sepia(1) saturate(4) hue-rotate(-30deg) brightness(.9) drop-shadow(0 0 7px rgba(255,40,20,.8)); }
+/* regen: the lit teeth turn green and pulse while the motor puts charge back */
+.d-batt.regen .fangs .lit { animation: regen-pulse 1.4s ease-in-out infinite; }
+@keyframes regen-pulse {
+  0%, 100% { filter: sepia(1) saturate(3.2) hue-rotate(65deg) brightness(.95) drop-shadow(0 0 4px rgba(60,230,120,.45)); }
+  50%      { filter: sepia(1) saturate(3.8) hue-rotate(65deg) brightness(1.25) drop-shadow(0 0 14px rgba(80,255,140,.95)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .d-batt.regen .fangs .lit { animation: none; filter: sepia(1) saturate(3.5) hue-rotate(65deg) brightness(1.1) drop-shadow(0 0 9px rgba(70,240,130,.8)); }
+}
 .d-batt .bnum { text-align: right; }
 .d-batt .bmain { font: italic 800 46px/1 var(--display); color: var(--text); white-space: nowrap; }
 .d-batt .bsub { font: 700 19px/1.2 var(--display); color: var(--muted); letter-spacing: .04em; white-space: nowrap; }

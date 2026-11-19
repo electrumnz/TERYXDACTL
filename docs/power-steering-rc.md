@@ -156,7 +156,7 @@ private land, low speed, nobody in the seat or nearby feature.
   600N and 4 mm/s at 1500N ([item 1005009338057759](https://www.aliexpress.com/item/1005009338057759.html)).
   You want at least about 50 mm/s with a position output. The fast 160 mm/s HAKIWO is 48V only. Not
   chosen yet.
-- **Regen** through the Shinegle, if the brake input in `brake-regen.md` works
+- **Regen** is whatever the Shinegle does by itself off the throttle
   out, could do most of the slowing, with the pedal actuator as the backup.
 - A powered actuator **doesn't brake when the power is cut**. So with full power
   loss the Teryx coasts with drive cut. A spring-applied brake (spring pulls the

@@ -6,6 +6,7 @@ import { fmtKm } from "../tripdata.js";
 import { featureOn } from "../features.js";
 import { icon } from "../ui/icons.js";
 import { TellTales } from "../telltales.js";
+import { regenOn } from "../regen.js";
 
 export function socFromVolts(v, cells) {
   // Rough lithium curve per cell. Only used if the Shinegle doesn't send a state of charge.
@@ -44,7 +45,6 @@ export class DriveScreen {
             <svg class="claws" id="d-claws" viewBox="0 0 300 64" preserveAspectRatio="none">
               <defs>
                 <linearGradient id="lava" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#b8260a"/><stop offset=".5" stop-color="#ff7a1a"/><stop offset="1" stop-color="#ffd27a"/></linearGradient>
-                <linearGradient id="cool" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#0f6b58"/><stop offset="1" stop-color="#7ff0cf"/></linearGradient>
                 <clipPath id="d-pclip"><rect id="d-prect" x="0" y="0" width="0" height="64"/></clipPath>
               </defs>
               <path class="gouge" d="${GOUGES}"/>
@@ -116,15 +116,16 @@ export class DriveScreen {
     const dir = st.get("mc.direction", "neutral");
     r.querySelectorAll("#d-gears span").forEach((e) => e.classList.toggle("on", e.dataset.g === dir));
 
-    // Power: the claws fill with power, or turn teal and fill with regen.
+    // Power: the claws fill with power. Regen is just on or off (the Shinegle decides how
+    // much): the battery teeth glow green and pulse while it's putting charge back.
     const v = st.get("mc.batt_v", 0), a = st.get("mc.batt_a", 0);
     const kw = st.get("mc.power_kw") ?? (v * a) / 1000;
-    const pmax = set.get("powerMaxKw"), rmax = set.get("regenMaxKw");
-    const frac = kw >= 0 ? Math.min(kw / pmax, 1) : Math.min(-kw / rmax, 1);
-    q("#d-prect").setAttribute("width", (frac * 300).toFixed(1));
-    q("#d-claws").classList.toggle("regen", kw < -0.05);
-    q("#d-kw").textContent = `${kw >= 0 ? "" : "−"}${Math.abs(kw).toFixed(1)} kW`;
-    q("#d-kw").className = `power-kw num ${kw < -0.05 ? "ok" : ""}`;
+    const pmax = set.get("powerMaxKw");
+    const regen = regenOn(st);
+    q("#d-prect").setAttribute("width", (regen ? 0 : Math.max(0, Math.min(kw / pmax, 1)) * 300).toFixed(1));
+    q("#d-kw").textContent = regen ? "REGEN" : `${Math.max(0, kw).toFixed(1)} kW`;
+    q("#d-kw").className = `power-kw num ${regen ? "ok" : ""}`;
+    q("#d-batt").classList.toggle("regen", regen);
 
     // The T. rex opens its jaw as you put the power down.
     const p = kw > 0 ? Math.min(kw / pmax, 1) : 0;

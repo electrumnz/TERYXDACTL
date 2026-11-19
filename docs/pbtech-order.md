@@ -156,12 +156,11 @@ Traction battery pack, 150 A air-break switch, Main contactor, Shinegle SG1202 c
 | Raspberry Pi AI HAT+ 2 | PB Tech | 423.43 | Not now |
 | Raspberry Pi Active Cooler | PB Tech | 11.21 | Only with the AI HAT |
 | Noctua NF-A4x10 5V fan | Newegg NZ | 21.85 | Only if the Pi box runs hot |
-| Brake pedal Hall sensor (+ pressure sensor) | AliExpress | 30.00 | Brake regen; the second ADS1115 is already owned |
 | GameSir G8 Galileo phone gamepad | AliExpress | 78.00 | RC mode, Sam: not now |
 | EasyCAP DC60 USB capture | PB Tech | 28.75 | Only if the rear camera turns out to be RCA |
 | Carlinkit CCPA from Audio City (NZ stock) | Audio City | 180.00 | Backup if the AliExpress one is slow |
 
-Wiring parts waiting on that: AIHAT: AI HAT+ 2, ~NZ$423 (Sam: not now). Box, power and cooling stay sized for it; BRAKE_PEDAL: Brake regen only, after the Shinegle regen check passes; BRAKE_PRESS: Brake regen cross-check only.
+Wiring parts waiting on that: AIHAT: AI HAT+ 2, ~NZ$423 (Sam: not now). Box, power and cooling stay sized for it.
 
 Tools aren't listed (crimpers, soldering iron, heat gun, multimeter, 3D printer).
 

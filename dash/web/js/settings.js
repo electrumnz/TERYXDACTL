@@ -25,7 +25,6 @@ export const DEFAULTS = {
   tilt: { rollWarn: 25, rollBad: 32, pitchWarn: 28, pitchBad: 35 },   // degrees, for the tilt alerts
   service: { dueKm: 0 },    // service reminder light at this odometer reading, 0 = off
   powerMaxKw: 10,          // scale of the power bar (7.5 kW motor, peaks above)
-  regenMaxKw: 4,
   cells: 24,               // for a voltage-based battery % if the Shinegle doesn't send one (72V pack, TBC)
   lights: Object.fromEntries(LIGHTS.map((l) => [l.id, { name: l.name, dimmable: l.dimmable }])),
   nightCabin: { ...NIGHT_CABIN_DEFAULTS },   // Night mode fades the cabin light to this % (nightcabin.js)

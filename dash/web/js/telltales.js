@@ -17,7 +17,6 @@ export const BELT_REMINDER_MS = 10000;   // the stock Teryx belt light: about 10
 const S = {
   ready: '<text x="12" y="16" text-anchor="middle" font-size="9" font-weight="800" fill="currentColor" stroke="none" font-family="Barlow Condensed, sans-serif">READY</text>',
   park: '<circle cx="12" cy="12" r="7"/><path d="M4.5 5.5a10 10 0 0 0 0 13M19.5 5.5a10 10 0 0 1 0 13"/><path d="M10 16V8h2.6a2.2 2.2 0 0 1 0 4.4H10"/>',
-  brake: '<circle cx="12" cy="12" r="7"/><path d="M4.5 5.5a10 10 0 0 0 0 13M19.5 5.5a10 10 0 0 1 0 13"/><path d="M12 8.2v4.6"/><path d="M12 15.6v.2"/>',
   belt: '<circle cx="11" cy="4.5" r="1.9"/><path d="M7.5 21v-7.5a3.5 3.5 0 0 1 7 0V21"/><path d="M8 9l8.5 9"/><path d="M15 20.5h4"/>',
   charge12: '<rect x="3" y="7" width="18" height="12" rx="1.5"/><path d="M7 7V5h3v2M14 7V5h3v2"/><path d="M6.5 13h3M16.5 11.5v3M15 13h3"/>',
   evfault: '<path d="M3 15l2-5.5A2 2 0 0 1 6.9 8h10.2a2 2 0 0 1 1.9 1.5L21 15v3H3z"/><path d="M6 18v2M18 18v2"/><path d="M12 9.6v3.2"/><path d="M12 15.2v.2"/>',
@@ -46,7 +45,6 @@ const S = {
 export const LAMPS = [
   { id: "ready",    col: "ok",   name: "Ready to drive" },
   { id: "park",     col: "bad",  name: "Park brake on" },
-  { id: "brake",    col: "bad",  name: "Brake system fault" },
   { id: "belt",     col: "bad",  name: "Seat belts" },
   { id: "charge12", col: "bad",  name: "12V battery not charging or low" },
   { id: "evfault",  col: "bad",  name: "Motor controller fault" },
@@ -95,7 +93,6 @@ export function lampStates(st, settings, alertKeys = new Set(), now = Date.now()
 
   if (st.get("mc.ready")) lit("ready");
   if (st.get("in.park")) lit("park", "bad", has("a:handbrake"));
-  if (pf.includes("brake_pedal") || st.get("regen.state") === "sensor_fault") lit("brake");
   if (keyOnAt != null && now - keyOnAt < BELT_REMINDER_MS) lit("belt");
   if (has("a:12v") || has("a:dcdc") || pf.includes("low_12v")) lit("charge12");
   const mcf = asList(st.get("mc.faults"));
@@ -111,7 +108,7 @@ export function lampStates(st, settings, alertKeys = new Set(), now = Date.now()
     else if (st.get("steer.on") === false || ["no_reply", "bus_error"].includes(steer)) lit("steer");
   }
   if (!picoOn || st.get("pico.state") === "failsafe") lit("system", "bad", true);
-  else if (pf.some((f) => !["low_12v", "brake_pedal"].includes(f))) lit("system", "warn");   // own lamps for those two
+  else if (pf.some((f) => f !== "low_12v")) lit("system", "warn");   // low 12V has its own lamp
   if (has("a:roll_bad") || has("a:pitch_bad")) lit("tilt", "bad", true);
   else if (has("a:roll_warn") || has("a:pitch_warn")) lit("tilt", "warn");
   const tray = st.get("act.tray", "down");

@@ -25,8 +25,7 @@ Safety rules (IO list section 7, values from SETTINGS):
     Refused while the handheld remote is in use.
  7. Reverse -> rear pods on (if auto). Camera is handled on the Pi.
  8. Key-off -> hold power for shutdown_wait_s, then drop power.hold.
- 9. Brake pedal regen (off by default, setting brake_regen_on): see teryx/regen.py.
-    Regen strong enough also lights the trailer brake lights.
+ 9. (Was brake pedal regen. Dropped 2026-11-19: regen is left to the Shinegle.)
 10. Vehicle lock (PIN): see teryx/vehicle_lock.py and docs/vehicle-lock.md. Locked =
     drive inhibit, nothing moves, lights off, no settings or firmware updates.
 
@@ -45,7 +44,6 @@ from ..canbus import shinegle as SG
 from .. import eps_toyota as EPS
 from ..config import safety_defaults
 from ..lights import LAMPS, Lights, LightsReq, LightsState
-from ..regen import BrakeRegen
 from ..vehicle_lock import REMOTE_STOP_S, VehicleLock, decode_digits
 
 SENTRY_LOW_S = 30   # 12V under setting 32 this long: sentry off until key on (SENTRY_LOW_MS in config.h)
@@ -135,9 +133,6 @@ class ControlBox:
     brake: bool = False
     soc: float | None = None
     throttle: float = 0.0
-    # brake pedal regen: pedal sensor raw reading (wired to the second ADS1115), None = no sensor
-    pedal_raw: int | None = None
-    regen: BrakeRegen = field(default_factory=BrakeRegen)
     # inputs
     inputs: dict = field(default_factory=lambda: {n: False for n in M.INPUT_BITS.values()})
     forced: dict = field(default_factory=dict)
@@ -283,7 +278,6 @@ class ControlBox:
             self.fourwd_fault = False
             for act in (self.fourwd, self.diff, self.tray):
                 act.faulted = False
-            self.regen.clear_fault()
         elif key in M.SETTINGS:
             name, _u, _d, lo, hi = M.SETTINGS[key]
             if not lo <= value <= hi:
@@ -527,12 +521,6 @@ class ControlBox:
         self.inputs["in.tray_down"] = self.tray.pos <= 0.001
         self.inputs["in.tray_up"] = self.tray.pos >= 0.999
 
-        # --- brake pedal regen (rule 9)
-        self.regen.step(dt, self.settings, pedal_raw=self.pedal_raw, brake_switch=self.inp("in.brake"),
-                        speed_kmh=self.speed if self.speed_known() else None,
-                        direction=self.direction, soc=self.soc, fourwd=self.fourwd_state(),
-                        throttle_pct=self.throttle)
-
         # --- vehicle lock: nothing moves while locked
         self.lock.tick(now)
         if self.stopped():
@@ -709,7 +697,7 @@ class ControlBox:
         req = self.lights2_req
         req.rear_on, req.rear_auto = bool(r["rear_on"]), bool(r["rear_auto"])
         st = LightsState(
-            brake=self.inp("in.brake") or self.regen.out.brake_light, reverse=self.inp("in.reverse"),
+            brake=self.inp("in.brake"), reverse=self.inp("in.reverse"),
             trailer=self.inp("in.trailer"), stopped=self.stopped(), park=self.inp("in.park"),
             ignition=self.inp("in.ignition"), locked=self.locked, dash_ok=self.dash_ok(),
             front_on=any(int(r[f"front_{n}"]) for n in range(1, 5)), now_ms=int(t * 1000))
@@ -752,8 +740,6 @@ class ControlBox:
             f.add("io_bus")
         if self.temp > 70:
             f.add("pico_hot")
-        if self.regen.fault and self.s("brake_regen_on"):
-            f.add("brake_pedal")
         return f
 
     def state(self) -> str:
@@ -787,7 +773,6 @@ class ControlBox:
     def frames(self) -> list[tuple[str, dict]]:
         inputs = {**self.inputs, **self.forced}
         lo = self.lights_out
-        rg = self.regen.out
         out = [
             ("PICO_STATUS", {
                 "fault_bits": M.names_to_bits(self.faults(), M.FAULT_BITS),
@@ -834,12 +819,6 @@ class ControlBox:
                 + self.diff.pos * (self.s("diff_pot_max_raw") - self.s("diff_pot_min_raw")),
                 "fw_major": FW_VERSION[0], "fw_minor": FW_VERSION[1],
                 "winch_idle_s": min(255, self.winch_idle) if self.winch_armed else 0,
-            }),
-            ("PICO_REGEN", {
-                "pedal_pct": rg.pedal_pct, "request_pct": rg.request_pct,
-                "state": M.enum_value(M.REGEN_STATE, rg.state),
-                "limit": M.enum_value(M.REGEN_LIMIT, rg.limit),
-                "pedal_raw": self.pedal_raw or 0, "brake_light": int(rg.brake_light),
             }),
             ("PICO_LOCK", self.lock.frame(self.t, self.drive_inhibit)),
         ]

@@ -10,7 +10,6 @@ it (or not), and reports what the outputs are actually doing.
 from __future__ import annotations
 
 from .codec import Message, Signal as S
-from ..regen import REGEN_LIMIT, REGEN_STATE
 from ..lights import LAMPS, LIGHT_SHOW
 
 
@@ -72,7 +71,7 @@ FAULT_BITS = {   # 0x710 bytes 1-2
     12: "watchdog_reset",
     13: "diff_overcurrent",
     14: "io_bus",          # MCP23017 or ADS1115 not answering
-    15: "brake_pedal",     # brake pedal sensor out of range or disagrees with the brake switch
+    # 15: reserved (was brake_pedal, brake pedal regen dropped 2026-11-19)
 }
 RELAY_BITS = {   # 0x711 byte 0, relay 1 = bit 0
     0: "light.rear",       # relay 1: trailer reverse pin; the bit says the rear floods are on
@@ -292,18 +291,7 @@ PICO_SETTINGS_ACK = Message(
     ),
 )
 
-PICO_REGEN = Message(
-    "PICO_REGEN", 0x715, "controlbox", 100,
-    comment="Brake pedal regen (docs/brake-regen.md). All zero with state off while the feature is off.",
-    signals=(
-        S("pedal_pct", 0, 8, unit="%", comment="Brake pedal travel from the pedal sensor"),
-        S("request_pct", 8, 8, unit="%", comment="Regen asked of the Shinegle, after every limit"),
-        S("state", 16, 4, choices=REGEN_STATE),
-        S("limit", 20, 4, choices=REGEN_LIMIT, comment="What is holding regen back, if anything"),
-        S("pedal_raw", 24, 16, comment="Raw ADS1115 reading, for calibrating keys 28/29"),
-        S("brake_light", 40, 1, comment="Regen is strong enough to light the brake lights"),
-    ),
-)
+# 0x715 reserved: was PICO_REGEN (brake pedal regen, dropped 2026-11-19).
 
 PICO_LOCK = Message(
     "PICO_LOCK", 0x716, "controlbox", 100,
@@ -372,7 +360,7 @@ BENCH_FAULTS = {0: "jam_diff", 1: "jam_tray", 2: "fourwd_overcurrent", 3: "pot_d
 
 TERYX_MESSAGES: tuple[Message, ...] = (
     PI_HEARTBEAT, PI_LIGHTS, PI_DRIVE, PI_HOLD, PI_SETTINGS, PI_LOCK, PI_LIGHTS2, PI_FW_UPDATE,
-    PICO_STATUS, PICO_OUTPUTS, PICO_ACTUATORS, PICO_POWER, PICO_SETTINGS_ACK, PICO_REGEN, PICO_LOCK,
+    PICO_STATUS, PICO_OUTPUTS, PICO_ACTUATORS, PICO_POWER, PICO_SETTINGS_ACK, PICO_LOCK,
     PICO_LIGHTS2, PICO_STEER,
     BENCH_INPUTS,
 )
@@ -401,15 +389,8 @@ SETTINGS: dict[int, tuple[str, str, int, int, int]] = {
     19: ("tray_full_travel_ms", "ms", 16000, 1000, 60000),
     20: ("low_12v_mv", "mV", 11000, 9000, 13000),
     21: ("winch_timed_max_s", "s", 30, 1, 120),
-    # Brake pedal regen (docs/brake-regen.md). Off until the Shinegle is checked.
-    22: ("brake_regen_on", "bool", 0, 0, 1),
-    23: ("brake_regen_pct", "%", 50, 0, 100),
-    24: ("brake_regen_start_pct", "%", 5, 0, 50),
-    25: ("brake_regen_full_pct", "%", 30, 5, 100),
-    26: ("brake_regen_fade_kmh", "km/h", 5, 0, 20),
-    27: ("brake_regen_2wd_pct", "%", 60, 0, 100),
-    28: ("brake_pedal_min_raw", "raw", 2000, 0, 32767),
-    29: ("brake_pedal_max_raw", "raw", 22000, 0, 32767),
+    # 22-29 reserved: were the brake pedal regen settings, dropped 2026-11-19 (regen is
+    # left to the Shinegle). Don't reuse them.
     # Safe drive changes (docs/drive-changes.md)
     30: ("shift_wait_ms", "ms", 10000, 0, 30000),
     31: ("shift_throttle_hold", "bool", 1, 0, 1),

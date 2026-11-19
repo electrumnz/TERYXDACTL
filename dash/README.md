@@ -12,7 +12,7 @@ not stopped, not armed), the dash says why in plain words.
 
 | Screen | What it does |
 |---|---|
-| Drive | Speed, gear (R/N/D), claw mark power and regen meter, fang battery meter with % and range left (tap it to swap which is big), pack volts/amps/temp, 12V, motor and controller temps, throttle, mode, odometer, a top-down view showing 2WD/4WD, diff lock and lights, and the tilt and GPS widget |
+| Drive | Speed, gear (R/N/D), claw mark power meter, fang battery meter (the teeth glow green and pulse during regen) with % and range left (tap it to swap which is big), pack volts/amps/temp, 12V, motor and controller temps, throttle, mode, odometer, a top-down view showing 2WD/4WD, diff lock and lights, and the tilt and GPS widget |
 | Trips | This trip (key on to key off), trip A (reset with two taps), range left, energy used and put back, Wh/km, and past trips |
 | 4WD | 2WD/4WD switch and diff lock 0-100% (slider plus Open/25/50/75/Lock). Shows the target and where the actuator actually is, and locks out above the speed limits |
 | Lights | 4 front bars, interior bar, rear pods (Off / Auto in reverse / On), trailer status. Each bar is dimmable or on/off only (set in Settings). Presets (All on/off, Trail, Work, Spot) and effects (Steady, Breathe, Strobe, Chase, Outside pair, Inside pair) |

@@ -190,11 +190,8 @@ class Simulator:
                 for msg, values, _raw in self.cb_node.poll():
                     if msg is not None:
                         self.cb.on_frame(msg.name, values, cb_now)
-                self.cb.pedal_raw = self.vehicle.pedal_raw()   # the pedal sensor is wired to the Pico
                 self.cb.step(dt, cb_now)
-                # ...and the Pico's regen request goes to the Shinegle (how is still TBC)
-                self.vehicle.regen_request = self.cb.regen.out.request_pct / 100
-                # ...and so does its throttle hold during a shift from a standstill (also TBC)
+                # ...and the Pico's throttle hold during a shift from a standstill (also TBC)
                 self.vehicle.throttle_hold = self.cb.throttle_hold
                 # ...and the vehicle lock's drive inhibit (also TBC, docs/vehicle-lock.md)
                 self.vehicle.drive_inhibit = self.cb.drive_inhibit

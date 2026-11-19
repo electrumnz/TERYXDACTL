@@ -26,6 +26,7 @@ Keys follow the io-map ids in `config/io-map.yaml`.
 | `mc.throttle` | % | |
 | `mc.brake`, `mc.ready`, `mc.limp` | bool | Limp = power cut back |
 | `mc.batt_v`, `mc.batt_a` | V, A | Amps: plus = draw, minus = regen |
+| `mc.regen` | bool, optional | Only if the Shinegle sends its own regen flag. The dash works regen out itself otherwise (`dash/web/js/regen.js`) |
 | `mc.power_kw` | kW | |
 | `mc.soc` | % | |
 | `mc.motor_temp`, `mc.ctrl_temp`, `mc.batt_temp` | °C | |
@@ -43,7 +44,7 @@ Keys follow the io-map ids in `config/io-map.yaml`.
 | `pico.speed`, `pico.speed_valid` | km/h, bool | Speed as the Pico sees it (`null` when unknown) |
 | `pico.parked` | bool | Stopped and safe for an OTA update |
 | `pico.shutdown_request` | bool | Key is off: the Pi should shut down cleanly |
-| `pico.faults` | list of strings | `dash_link`, `speed_unknown`, `fourwd_timeout`, `fourwd_overcurrent`, `diff_timeout`, `diff_pot_stuck`, `tray_timeout`, `tray_overcurrent`, `tray_limit_switch`, `winch_interlock`, `low_12v`, `pico_hot`, `watchdog_reset`, `diff_overcurrent`, `io_bus`, `brake_pedal` |
+| `pico.faults` | list of strings | `dash_link`, `speed_unknown`, `fourwd_timeout`, `fourwd_overcurrent`, `diff_timeout`, `diff_pot_stuck`, `tray_timeout`, `tray_overcurrent`, `tray_limit_switch`, `winch_interlock`, `low_12v`, `pico_hot`, `watchdog_reset`, `diff_overcurrent`, `io_bus` |
 | `pico.reject` | string | Why the last request was refused: `none`, `too_fast`, `not_stopped`, `speed_unknown`, `not_armed`, `interlock`, `actuator_fault`, `low_12v`, `dash_link`, `ignition_off`, `at_limit`, `not_parked`, `winch_remote`, `bad_frame` |
 | `pico.reject_text` | string | Plain-English version |
 | `pico.reject_count` | 0-15 | Goes up by one per refusal, so you can tell a new one from an old one |
@@ -51,11 +52,6 @@ Keys follow the io-map ids in `config/io-map.yaml`.
 | `pico.version` | string | Pico firmware version, e.g. `0.1` (1 Hz) |
 | `an.diff_pos_raw` | 0-32767 | Raw diff pot reading, for calibrating settings 14/15 (1 Hz) |
 | `winch.idle_s` | s | Seconds since the winch last ran while armed, for the auto-disarm countdown (1 Hz) |
-| `regen.pedal_pct` | % | Brake pedal travel from the pedal sensor (brake regen, 10 Hz) |
-| `regen.request_pct` | % | Regen the control box is asking the Shinegle for |
-| `regen.state` | off / ready / active / limited / sensor_fault | Brake regen state |
-| `regen.limit` | none / low_speed / speed_unknown / not_forward / battery_full / two_wd / sensor / throttle | What is holding regen back |
-| `an.brake_pedal_raw` | 0-32767 | Raw pedal sensor reading, for calibrating settings 28/29 |
 | `in.ignition`, `in.brake`, `in.reverse`, `in.tray_down`, `in.tray_up`, `in.winch_remote`, `in.park`, `in.trailer` | bool | Wired inputs (`in.trailer` = trailer plugged in) |
 | `steer.on` | bool | Power steering column powered (relay 9, 0x711 byte 7). Missing on old firmware |
 | `drive.lock_relay` | bool | Shinegle key line opened because the Teryx is locked (relay 10) |

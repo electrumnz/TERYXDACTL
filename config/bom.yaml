@@ -160,7 +160,6 @@ owned:
   BRK_WINCH: 250 A manual reset breaker (winch kill switch)
   CAM_REAR: 200 degree rear camera (in the post)
   ADS1: ADS1115 (3 in the post)
-  ADS2: ADS1115 (3 in the post)
   BTS1: BTS7960 (3 in the post)
   BTS2: BTS7960 (3 in the post)
   BTS3: BTS7960 (3 in the post)
@@ -208,8 +207,6 @@ kit:
 # Not part of this build (Sam's call, or waiting on a check).
 later:
   AIHAT: "AI HAT+ 2, ~NZ$423 (Sam: not now). Box, power and cooling stay sized for it"
-  BRAKE_PEDAL: "Brake regen only, after the Shinegle regen check passes"
-  BRAKE_PRESS: "Brake regen cross-check only"
 
 # Not in the totals; shown so nothing is forgotten.
 later_lines:
@@ -218,7 +215,6 @@ later_lines:
   - {part: Raspberry Pi AI HAT+ 2, shop: PB Tech, each: 423.43, notes: Not now}
   - {part: Raspberry Pi Active Cooler, shop: PB Tech, each: 11.21, notes: Only with the AI HAT}
   - {part: Noctua NF-A4x10 5V fan, shop: Newegg NZ, each: 21.85, notes: Only if the Pi box runs hot}
-  - {part: "Brake pedal Hall sensor (+ pressure sensor)", shop: AliExpress, each: 30.00, notes: "Brake regen; the second ADS1115 is already owned"}
   - {part: GameSir G8 Galileo phone gamepad, shop: AliExpress, each: 78.00, notes: "RC mode, Sam: not now"}
   - {part: EasyCAP DC60 USB capture, shop: PB Tech, each: 28.75, notes: Only if the rear camera turns out to be RCA}
   - {part: Carlinkit CCPA from Audio City (NZ stock), shop: Audio City, each: 180.00, notes: Backup if the AliExpress one is slow}

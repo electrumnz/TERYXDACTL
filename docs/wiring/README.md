@@ -10,7 +10,7 @@ Why things are wired this way (power hold, diodes, CAN rules): [`docs/wiring.md`
 Viewer with search: [`index.html`](index.html), also online at
 <https://electrumnz.github.io/TERYXDACTL/wiring/>.
 
-**93 devices, 325 wires.** By status: 19 from_manual, 3 confirmed, 261 planned, 38 tbc, 4 placeholder.
+**90 devices, 316 wires.** By status: 19 from_manual, 3 confirmed, 252 planned, 38 tbc, 4 placeholder.
 Nothing has been checked on the real Teryx yet.
 
 Wire sizes follow the conservative table in the YAML (from
@@ -307,8 +307,6 @@ Fuses not in the block (inline, at the battery or on a board):
 | L13 | PICO.GP27 | ADS1.SCL |  |  |  | planned |  |
 | L14 | PICO.GP26 | MCP2.SDA |  |  |  | planned |  |
 | L15 | PICO.GP27 | MCP2.SCL |  |  |  | planned |  |
-| L16 | PICO.GP26 | ADS2.SDA |  |  |  | planned (optional) |  |
-| L17 | PICO.GP27 | ADS2.SCL |  |  |  | planned (optional) |  |
 | L18 | MCP1.INTB | PICO.GP21 |  |  |  | planned |  |
 | L19 | MCP1.A0 | RELAYS.IN1 |  |  |  | planned | light.rear (relay 1 now only feeds the trailer reverse pin) |
 | L22 | MCP1.A3 | RELAYS.IN4 |  |  |  | planned | winch.in |
@@ -331,7 +329,6 @@ Fuses not in the block (inline, at the battery or on a board):
 | L40 | PICO.3V3 | RELAYS.VCC |  |  |  | planned |  |
 | L41 | PICO.3V3 | OPTO.VCC |  |  |  | planned |  |
 | L42 | PICO.3V3 | MCP2.VDD |  |  |  | planned |  |
-| L43 | PICO.3V3 | ADS2.VDD |  |  |  | planned (optional) |  |
 | L44 | PICO.3V3 | EPS_CAN.VCC |  |  |  | planned (optional) |  |
 | L45 | PICO.3V3 | RELAYS2.VCC |  |  |  | planned (optional) |  |
 | L46 | PICO.GP0 | DEBUG.RX |  |  |  | planned | UART0 TX |
@@ -487,12 +484,6 @@ Fuses not in the block (inline, at the battery or on a board):
 | D26 | PICO.3V3 | BTS2.VCC |  |  |  | planned |  |
 | D27 | PICO.3V3 | BTS3.VCC |  |  |  | planned |  |
 | D28 | BAT12.pos | ADS1.A1 | 0.5 mm² | 1 A | divider 10k / 2.2k + 3.3 V zener | planned | an.aux_12v. Fuse the sense lead |
-| D29 | PICO_BUCK.VOUT | BRAKE_PEDAL.V5 |  |  |  | planned (optional) | 5 V sensor, fed from the control box so it shares the ADC's ground |
-| D36 | BRAKE_PEDAL.GND | ADS2.GND |  |  |  | planned (optional) |  |
-| D37 | BRAKE_PRESS.GND | ADS2.GND |  |  |  | planned (optional) |  |
-| D30 | BRAKE_PEDAL.SIG | ADS2.A0 |  |  | divider 10k / 20k | planned (optional) | an.brake_pedal, 4.5 V reads 3.0 V |
-| D34 | BRAKE_PRESS.SIG | ADS2.A1 |  |  | divider 10k / 20k | planned (optional) | an.brake_pressure |
-| D35 | PICO_BUCK.VOUT | BRAKE_PRESS.V5 |  |  |  | planned (optional) |  |
 | D31 | RAIL.BUS | RELAYS2.COM1 | 0.5 mm² | 3 A |  | planned (optional) | Steering ignition feed through relay 9, so the lock and RC kill can turn assist off |
 | D32 | RELAYS2.NO1 | EPS_ECU.IG | 0.5 mm² | 3 A |  | tbc (optional) |  |
 | D33 | EPS_ECU.MOTOR | EPS_COL.MOTOR |  |  |  | tbc (optional) | Toyota's own plug, keep it from the wrecker |
@@ -592,7 +583,6 @@ Fuses not in the block (inline, at the battery or on a board):
 | MCP2 | Second MCP23017 (0x21) | control_box | planned | Steering enable and drive lock relays, and the trailer input on B0. Newer MCP23017 chips say GPA7/GPB7 are outputs only (Microchip datasheet rev D on), so the trailer input moved here off MCP1 B7 See [`docs/vehicle-lock.md`](../../docs/vehicle-lock.md). |
 | PCA | PCA9685 16-ch PWM board (0x40) | control_box | planned (optional) | Every light that isn't a front bar or the cabin bar dims through this (docs/lights.md). Wires soldered straight to the pads, no header pins. VCC 3.3 V so the outputs are 3.3 V, which the MOSFET boards (3-20 V input) and the BTS7960s (3.3 V logic like BTS1-3) take. Leave V+ (servo power) empty. OE tied low on the board. PWM0 trailer bar, 1-10 stock lights on BTS7960 4-8, 11-12 rear floods, 13-14 beacon amber / white on BTS7960 9, 15 BTS7960 enable. All outputs are off at power-up |
 | ADS1 | ADS1115 ADC (0x48) | control_box | planned | ALERT pin left free so GP22 can be the steering CAN chip select (read "ready" over I2C) |
-| ADS2 | Second ADS1115 (0x49) | control_box | planned (optional) | Brake pedal regen only See [`docs/brake-regen.md`](../../docs/brake-regen.md). |
 | OPTO | 8-ch opto board (PC817, 12 V in) | control_box | planned | All 8 channels used. OUT8 (trailer) goes to MCP2 B0. A second 8-ch board (AliExpress cart) gives spare inputs on MCP2 B1-B6 (B7 is output only) |
 | RELAYS | 16-ch relay board, channels 1-8 | control_box | planned | One 16-channel board of mechanical 5 V relays with opto and JD-VCC jumper (AliExpress cart), in an aux box next to the control box. RELAYS2 is channels 9-16 of the same board. The solid state G3MB-202P board Sam has is AC only and won't turn off on 12 V DC. JD-VCC jumper off, coils on 5 V, inputs from 3.3 V |
 | RELAYS2 | 16-ch relay board, channels 9-16 (2 used, 6 spare) | control_box | planned (optional) | Same board as RELAYS. Relay 9 steering enable, relay 10 drive lock (uses the NC contact) |
@@ -633,8 +623,6 @@ Fuses not in the block (inline, at the battery or on a board):
 | LIM_UP | Tray up limit (NC) | rear | planned |  |
 | BRAKE_SW | Brake light switch (stock) | cab | tbc | Also feeds both brake filaments and the trailer stop pin through diodes, so the brake lights work at full even with the control box off |
 | PARK_SW | Parking brake switch (stock) | cab | tbc | Lights the red parking brake light in the meter |
-| BRAKE_PEDAL | Brake pedal Hall sensor | cab | planned (optional) | Brake regen only, once the Shinegle check passes See [`docs/brake-regen.md`](../../docs/brake-regen.md). |
-| BRAKE_PRESS | Brake line pressure sensor | front | planned (optional) | Optional cross-check for the pedal sensor, 0.5-4.5 V See [`docs/brake-regen.md`](../../docs/brake-regen.md). |
 | EPS_ECU | Toyota Aqua EPS ECU (89650-52B51) | cab | tbc (optional) | Owned with its power plug (B+, GND). Still need the signal plug (IG, CANH, CANL). Pin numbers TBC: Toyota's RAV4 EPS ECU has IG, CANH, CANL on one plug and PIG, PGND on the other See [`docs/power-steering-aqua.md`](../../docs/power-steering-aqua.md). |
 | EPS_COL | Aqua steering column (motor + torque sensor) | cab | tbc (optional) | Motor and torque sensor plugs go to the ECU on Toyota's own loom |
 | TRAILER | 7-pin flat trailer socket (Narva 82043BL, reed switch) | rear | planned | See [`docs/cameras.md`](../../docs/cameras.md). |
