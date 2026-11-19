@@ -21,7 +21,6 @@ banner text and thresholds behind them). Checked 19 Nov 2026.
 |---|---|---|---|
 | READY | green | Motor controller says ready to drive | Shinegle CAN (`mc.ready`) |
 | Park brake (P) | red, flashes if you drive with it on | Park brake pedal switch | `in.park` |
-| Brake system (!) | red | Brake pedal sensor disagrees with the brake switch, or the regen pedal sensor failed | Pico fault `brake_pedal`, `regen.state` |
 | Seat belt | red | 10 s after key-on, same as the stock Teryx (it has no buckle switches) | timer |
 | 12V battery | red | 12V under 11.8 V, or READY but the 12V sits under 12.9 V for 20 s (DC-DC not charging). Ignored while winching | `an.aux_12v` |
 | Motor controller fault | red | Any controller fault bit, or a controller ErrorCode above 1. The banner shows the SG1810 manual's words and fix for that code | Shinegle CAN, `config/shinegle-faults.yaml` |

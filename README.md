@@ -15,7 +15,7 @@ control box does the safety-critical switching, and they talk over CAN.
 | Decoding the Shinegle CAN bus (sniffer + tools) | `firmware/can-sniffer/`, `teryx/decode/` | [`docs/shinegle-decode.md`](docs/shinegle-decode.md) |
 | Shinegle SG1202 controller: manual summary and J1 pinout | `docs/` | [`docs/shinegle-controller.md`](docs/shinegle-controller.md) |
 | Shinegle SG1810 programmer: manual copy (EN + CN), parameters, fault codes | `config/shinegle-*.yaml`, `teryx/shinegle_manual.py` | [`docs/shinegle-sg1810-programmer.md`](docs/shinegle-sg1810-programmer.md) |
-| Brake pedal regen (test feature, off by default) | `teryx/regen.py` | [`docs/brake-regen.md`](docs/brake-regen.md) |
+| Regen: left to the Shinegle, dash shows it on/off (brake pedal regen dropped) | `dash/web/js/regen.js` | [`docs/brake-regen.md`](docs/brake-regen.md) |
 | Ideas and open-source projects to learn from | `docs/` | [`inspiration.md`](docs/inspiration.md) |
 | What the AI HAT+ 2 could do, and is it worth it | `docs/` | [`ai-hat-ideas.md`](docs/ai-hat-ideas.md) |
 | 4G anti-theft: text it to find it, lock it or see the cameras | `dash/server/teryx_dash/remote.py` | [`docs/remote-access.md`](docs/remote-access.md) |

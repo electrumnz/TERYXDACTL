@@ -21,7 +21,7 @@
 #define CAN_ID_PICO_ACT       0x712u  // Pico -> Pi, 10 Hz
 #define CAN_ID_PICO_POWER     0x713u  // Pico -> Pi, 1 Hz
 #define CAN_ID_PICO_SET_ACK   0x714u  // Pico -> Pi, reply to every 0x704
-#define CAN_ID_PICO_REGEN     0x715u  // Pico -> Pi, 10 Hz, brake pedal regen (not sent yet)
+// 0x715 reserved: was PICO_REGEN (brake pedal regen, dropped 2026-11-19)
 #define CAN_ID_PICO_LOCK      0x716u  // Pico -> Pi, 10 Hz, vehicle lock state
 #define CAN_ID_PICO_LIGHTS2   0x717u  // Pico -> Pi, 10 Hz, PCA9685 lamp levels (4 bits each)
 #define CAN_ID_PICO_STEER     0x718u  // Pico -> Pi, 10 Hz, power steering state (eps.h, docs/power-steering-aqua.md)
@@ -104,16 +104,8 @@ enum {
     SET_TRAY_FULL_TRAVEL_MS = 19, // used for the tray % estimate
     SET_LOW_12V_MV = 20,
     SET_WINCH_TIMED_MAX_S = 21,   // longest timed pull the Pico will run
-    // Brake pedal regen (docs/brake-regen.md). Stored and acked only for now:
-    // the rules live in teryx/regen.py and get ported once the Shinegle is checked.
-    SET_BRAKE_REGEN_ON = 22,      // feature flag, 0 = off (default)
-    SET_BRAKE_REGEN_PCT = 23,     // strength, % of the Shinegle's max regen
-    SET_BRAKE_REGEN_START = 24,   // pedal travel % where regen starts
-    SET_BRAKE_REGEN_FULL = 25,    // pedal travel % where regen is full
-    SET_BRAKE_REGEN_FADE_KMH = 26,// fades to 0 below this speed
-    SET_BRAKE_REGEN_2WD_PCT = 27, // share allowed when not in 4WD
-    SET_BRAKE_PEDAL_MIN = 28,     // raw ADS1115 counts, pedal up
-    SET_BRAKE_PEDAL_MAX = 29,     // raw ADS1115 counts, pedal on the floor
+    // 22-29 reserved: were the brake pedal regen settings, dropped 2026-11-19
+    // (regen is left to the Shinegle). Don't reuse them: old saved settings may hold values there.
     // Safe drive changes (docs/drive-changes.md)
     SET_SHIFT_WAIT_MS = 30,       // how long a 4WD / diff request waits for the right speed, 0 = refuse at once
     SET_SHIFT_THROTTLE_HOLD = 31, // 1 = ask the Shinegle to hold throttle while a shift runs from a standstill

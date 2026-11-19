@@ -83,10 +83,9 @@ signals, but that's **TBC**. Details and how to check:
 
 ## What this means for Teryx OS
 
-* **Brake pedal regen:** regen is built in, but this manual shows no brake
-  input. The SG1810 menus have the regen coefficient `B_Cur` (locked) and the
-  brake and decel rates `B_Rat`/`DecRat` (allowed to change). See
-  [`brake-regen.md`](brake-regen.md) and
+* **Regen:** built in, and left to the controller (Sam, 2026-11-19). The SG1810
+  menus have the regen coefficient `B_Cur` (locked) and the brake and decel
+  rates `B_Rat`/`DecRat` (allowed to change), which set how it feels. See
   [`shinegle-sg1810-tables.md`](shinegle-sg1810-tables.md).
 * **Fault codes:** codes 1-46 with fixes, in English and Chinese, are in
   [`config/shinegle-faults.yaml`](../config/shinegle-faults.yaml).

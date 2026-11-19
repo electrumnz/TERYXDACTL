@@ -26,7 +26,6 @@ assert.ok(!lamps({}, [], BELT_REMINDER_MS + 1, 0).belt);
 assert.equal(lamps({ "mc.ready": true }).ready.col, "ok");
 assert.equal(lamps({ "in.park": true }).park.flash, false);
 assert.equal(lamps({ "in.park": true }, ["a:handbrake"]).park.flash, true);
-assert.ok(lamps({ "pico.faults": ["brake_pedal"] }).brake);
 assert.ok(lamps({}, ["a:dcdc"]).charge12);
 assert.ok(lamps({ "mc.error_code": 7 }).evfault);
 assert.ok(!lamps({ "mc.error_code": 1 }).evfault);
@@ -81,9 +80,6 @@ const t2 = new Map();
 keys({ ...low, "winch.in": true }, {}, 0, t2);
 assert.ok(!keys({ ...low, "winch.in": true }, {}, 30000, t2).includes("a:dcdc"));
 assert.ok(!keys({ "mc.ready": true, "an.aux_12v": 13.9 }, {}, 30000, new Map()).includes("a:dcdc"));
-// brake pedal fault has proper words now
-const bp = evaluate(st({ ...base, "pico.faults": ["brake_pedal"] }), settings(), new Set(), 0).find((a) => a.key === "p:brake_pedal");
-assert.match(bp.text, /brakes still work/);
 
 // power steering states from 0x718 (docs/power-steering-aqua.md)
 assert.ok(!lamps({ "steer.state": "ok" }).steer);

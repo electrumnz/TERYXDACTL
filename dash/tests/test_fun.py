@@ -168,3 +168,11 @@ def test_dash_camera_js():
     t = Path(__file__).with_name("camera_js.test.mjs")
     r = subprocess.run(["node", str(t)], capture_output=True, text=True, timeout=60)
     assert r.returncode == 0, r.stdout + r.stderr
+
+
+@pytest.mark.skipif(not shutil.which("node"), reason="needs node")
+def test_dash_regen_js():
+    """Regen on/off for the T. rex teeth glow (plain node, no browser)."""
+    t = Path(__file__).with_name("regen_js.test.mjs")
+    r = subprocess.run(["node", str(t)], capture_output=True, text=True, timeout=60)
+    assert r.returncode == 0, r.stdout + r.stderr

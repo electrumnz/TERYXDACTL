@@ -1,5 +1,18 @@
 # Brake pedal regen
 
+> **Dropped 2026-11-19 (Sam's call).** Regen is left to the Shinegle controller
+> and the brake pedal stays standard. No pedal sensor, no second ADS1115, no
+> control box regen rules. The dash just shows regen on or off: the battery
+> teeth glow green and pulse while the motor puts charge back
+> (`dash/web/js/regen.js`: the Shinegle's own regen flag if it sends one, else
+> current flowing back into the pack while moving, else moving + off the
+> throttle + in gear). How strong regen feels is set on the Shinegle itself
+> with the SG1810 programmer (`B_Rat` / `DecRat`, see
+> [`shinegle-sg1810-tables.md`](shinegle-sg1810-tables.md)). Control box
+> settings 22-29, CAN ID 0x715 and fault bit 15 are kept reserved. The code is
+> in git history (PR #23) if we ever come back to it. The rest of this page is
+> the old research, kept for reference.
+
 Idea: the first part of the brake pedal makes the motor brake (regen, puts
 charge back in the battery), and the normal hydraulic brakes come in on top as
 you push further. The more pedal, the more regen, up to a strength you set on

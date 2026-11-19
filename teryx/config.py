@@ -32,12 +32,6 @@ _SAFETY = {
     "shutdown_wait_s": ("shutdown_wait_s", 1),
     "hold_to_run_timeout_ms": ("hold_to_run_timeout_ms", 1),
     "winch_timed_max_s": ("winch_timed_max_s", 1),
-    "brake_regen_on": ("brake_regen_on", 1),
-    "brake_regen_pct": ("brake_regen_pct", 1),
-    "brake_regen_start_pct": ("brake_regen_start_pct", 1),
-    "brake_regen_full_pct": ("brake_regen_full_pct", 1),
-    "brake_regen_fade_kmh": ("brake_regen_fade_kmh", 1),
-    "brake_regen_2wd_pct": ("brake_regen_2wd_pct", 1),
     "shift_wait_s": ("shift_wait_ms", 1000),
     "shift_throttle_hold": ("shift_throttle_hold", 1),
     "sentry_min_12v": ("sentry_min_12v_mv", 1000),
@@ -55,7 +49,7 @@ def safety_defaults(path: Path = IO_MAP) -> dict[str, int]:
         return settings
     data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     for key, value in (data.get("safety") or {}).items():
-        if isinstance(value, bool) and key in ("brake_regen_on", "shift_throttle_hold"):
+        if isinstance(value, bool) and key in ("shift_throttle_hold",):
             value = int(value)
         if key in _SAFETY and isinstance(value, (int, float)) and not isinstance(value, bool):
             name, mult = _SAFETY[key]

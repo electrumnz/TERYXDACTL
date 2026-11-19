@@ -343,14 +343,6 @@ devices:
     status: planned
     note: ALERT pin left free so GP22 can be the steering CAN chip select (read "ready" over I2C)
     pins: {VDD: {v: 3v3, multi: true}, GND: gnd, SDA: 3v3, SCL: 3v3, A0: 3v3, A1: 3v3, A2: 3v3, A3: 3v3}
-  ADS2:
-    name: Second ADS1115 (0x49)
-    zone: control_box
-    status: planned
-    optional: true
-    note: Brake pedal regen only
-    doc: docs/brake-regen.md
-    pins: {VDD: 3v3, GND: gnd, SDA: 3v3, SCL: 3v3, A0: 3v3, A1: 3v3}
   OPTO:
     name: 8-ch opto board (PC817, 12 V in)
     zone: control_box
@@ -538,22 +530,6 @@ devices:
     note: Lights the red parking brake light in the meter
     check: Find the parking brake switch wire at the meter plug. Does it switch ground or 12 V?
     pins: {OUT: 12v}
-  BRAKE_PEDAL:
-    name: Brake pedal Hall sensor
-    zone: cab
-    status: planned
-    optional: true
-    note: Brake regen only, once the Shinegle check passes
-    doc: docs/brake-regen.md
-    pins: {V5: 5v, SIG: 5v, GND: gnd}
-  BRAKE_PRESS:
-    name: Brake line pressure sensor
-    zone: front
-    status: planned
-    optional: true
-    note: Optional cross-check for the pedal sensor, 0.5-4.5 V
-    doc: docs/brake-regen.md
-    pins: {V5: 5v, SIG: 5v, GND: gnd}
   EPS_ECU:
     name: Toyota Aqua EPS ECU (89650-52B51)
     zone: cab
@@ -910,8 +886,6 @@ wires:
   - {id: L13, from: PICO.GP27, to: ADS1.SCL, sys: logic, status: planned}
   - {id: L14, from: PICO.GP26, to: MCP2.SDA, sys: logic, status: planned}
   - {id: L15, from: PICO.GP27, to: MCP2.SCL, sys: logic, status: planned}
-  - {id: L16, from: PICO.GP26, to: ADS2.SDA, sys: logic, status: planned, optional: true}
-  - {id: L17, from: PICO.GP27, to: ADS2.SCL, sys: logic, status: planned, optional: true}
   - {id: L18, from: MCP1.INTB, to: PICO.GP21, sys: logic, status: planned}
   - {id: L19, from: MCP1.A0, to: RELAYS.IN1, sys: logic, status: planned, note: "light.rear (relay 1 now only feeds the trailer reverse pin)"}
   - {id: L22, from: MCP1.A3, to: RELAYS.IN4, sys: logic, status: planned, note: "winch.in"}
@@ -934,7 +908,6 @@ wires:
   - {id: L40, from: PICO.3V3, to: RELAYS.VCC, sys: logic, status: planned}
   - {id: L41, from: PICO.3V3, to: OPTO.VCC, sys: logic, status: planned}
   - {id: L42, from: PICO.3V3, to: MCP2.VDD, sys: logic, status: planned}
-  - {id: L43, from: PICO.3V3, to: ADS2.VDD, sys: logic, status: planned, optional: true}
   - {id: L44, from: PICO.3V3, to: EPS_CAN.VCC, sys: logic, status: planned, optional: true}
   - {id: L45, from: PICO.3V3, to: RELAYS2.VCC, sys: logic, status: planned, optional: true}
   - {id: L46, from: PICO.GP0, to: DEBUG.RX, sys: logic, status: planned, note: "UART0 TX"}
@@ -1078,12 +1051,6 @@ wires:
   - {id: D26, from: PICO.3V3, to: BTS2.VCC, sys: drive, status: planned}
   - {id: D27, from: PICO.3V3, to: BTS3.VCC, sys: drive, status: planned}
   - {id: D28, from: BAT12.pos, to: ADS1.A1, sys: drive, via: "divider 10k / 2.2k + 3.3 V zener", fuse: 1, mm2: 0.5, status: planned, note: "an.aux_12v. Fuse the sense lead"}
-  - {id: D29, from: PICO_BUCK.VOUT, to: BRAKE_PEDAL.V5, sys: drive, status: planned, optional: true, note: "5 V sensor, fed from the control box so it shares the ADC's ground"}
-  - {id: D36, from: BRAKE_PEDAL.GND, to: ADS2.GND, sys: drive, status: planned, optional: true}
-  - {id: D37, from: BRAKE_PRESS.GND, to: ADS2.GND, sys: drive, status: planned, optional: true}
-  - {id: D30, from: BRAKE_PEDAL.SIG, to: ADS2.A0, sys: drive, via: "divider 10k / 20k", status: planned, optional: true, note: "an.brake_pedal, 4.5 V reads 3.0 V"}
-  - {id: D34, from: BRAKE_PRESS.SIG, to: ADS2.A1, sys: drive, via: "divider 10k / 20k", status: planned, optional: true, note: "an.brake_pressure"}
-  - {id: D35, from: PICO_BUCK.VOUT, to: BRAKE_PRESS.V5, sys: drive, status: planned, optional: true}
   - {id: D31, from: RAIL.BUS, to: RELAYS2.COM1, sys: drive, mm2: 0.5, fuse: 3, status: planned, optional: true, note: "Steering ignition feed through relay 9, so the lock and RC kill can turn assist off"}
   - {id: D32, from: RELAYS2.NO1, to: EPS_ECU.IG, sys: drive, mm2: 0.5, fuse: 3, status: tbc, optional: true}
   - {id: D33, from: EPS_ECU.MOTOR, to: EPS_COL.MOTOR, sys: drive, status: tbc, optional: true, note: "Toyota's own plug, keep it from the wrecker"}
