@@ -108,6 +108,9 @@ export class SettingsScreen {
       toast(v ? "4G driving allowed. 2 km/h, cameras must be live, stops if the lag gets over 0.3 s." : "4G driving off.", v ? "warn" : "good");
     });
     body.appendChild(row("Allow driving over 4G", "Off unless you turn it on. Meant for getting it back if it's ever pinched, not for everyday use. Over 4G it's capped at 2 km/h, won't move unless the cameras are live, and stops on the brake if the lag gets over 0.3 s or the link drops. Police say don't go after a stolen vehicle yourself: call 111. Needs your PIN to change.", sw));
+    // Opens the phone remote (remote.html) from the same address: the Pi on the Teryx, or the online demo.
+    const open = el(`<a class="btn sm" href="remote.html" target="_blank" rel="noopener">Open remote</a>`);
+    body.appendChild(row("Phone remote", st.get("link.demo") ? "Try the phone remote with a pretend Teryx on a beach. Best on a phone, turned sideways." : "Opens the remote on this screen. On a phone, join the Teryx's Wi-Fi and open remote.html on the dash's address.", open));
     body.appendChild(row("Remote speed limits", "Reverse 3 km/h, forward 5 km/h on Wi-Fi or the handheld's own radio. 2 km/h over 4G. Set in the RC box.", null));
   }
 
@@ -297,6 +300,8 @@ export class SettingsScreen {
     body.appendChild(row("Source", "Auto tries the camera directly, then the server stream.", seg([["auto", "Auto"], ["usb", "Camera"], ["stream", "Server stream"]], s.get("camera.source"), (v) => s.set("camera.source", v))));
     body.appendChild(row("Pop up in reverse", "Shows a camera when you select reverse, and goes back after.", toggle(s.get("camera.autoOnReverse"), (v) => s.set("camera.autoOnReverse", v))));
     body.appendChild(row("Trailer camera in reverse", "With a trailer plugged in, reverse shows the trailer camera instead of the rear one. You can still swap on the Cameras screen.", toggle(s.get("camera.trailerInReverse") !== false, (v) => s.set("camera.trailerInReverse", v))));
+    body.appendChild(row("Reverse shows", "One big camera, or the combined view (front and rear, plus the trailer when it's on). If you're already on the combined view, reverse keeps it.", seg([["single", "One camera"], ["combo", "Combined"]], s.get("camera.reverseView") || "single", (v) => s.set("camera.reverseView", v))));
+    body.appendChild(row("Trailer detect", "How the dash knows the trailer camera is there. Picture: the video board sees a picture from it. Plug: the reed switch in the 7-pin socket. Either is best: a trailer with no camera stays off the combined view.", seg([["either", "Either"], ["picture", "Picture"], ["plug", "Plug"]], s.get("camera.trailerDetect") || "either", (v) => s.set("camera.trailerDetect", v))));
     body.appendChild(row("Guide line offset", "Nudge if the camera isn't mounted in the middle.", stepper(s.get("camera.guideOffset"), { step: 10, min: -200, max: 200, fmt: (v) => `${v > 0 ? "+" : ""}${v}`, onChange: (v) => s.set("camera.guideOffset", v) })));
     const devices = await listCameras();
     const esc = (t) => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");

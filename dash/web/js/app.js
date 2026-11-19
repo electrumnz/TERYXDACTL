@@ -31,6 +31,7 @@ import { volumeControl } from "./ui/volume.js";
 import { WinchHeat } from "./winchheat.js";
 import { ShiftWatch } from "./ui/shift.js";
 import { LockScreen } from "./lock.js";
+import { lookRail } from "./ui/lookrail.js";
 
 // Fallback limits if the control box settings can't be read (match config/io-map.yaml safety defaults).
 const LIMIT_DEFAULTS = { fourwd_max_kmh: 1, diff_max_kmh: 15, tray_overcurrent_da: 10, winch_auto_disarm_s: 120, shift_wait_ms: 10000 };
@@ -238,13 +239,14 @@ function nowPlayingChip() {
 }
 
 // Splash: shows from the first paint (it's in index.html) until the first live state arrives.
+// The boot guard in index.html keeps it up for at least 5 s so it can be seen.
 function hideSplash() {
-  const sp = document.getElementById("splash"); if (!sp || sp.classList.contains("gone")) return;
-  sp.classList.add("gone");
-  setTimeout(() => sp.remove(), 400);
+  if (window.TeryxBoot) { window.TeryxBoot.hide(); return; }
+  const sp = document.getElementById("splash"); if (sp) sp.remove();
 }
 
 async function main() {
+  if (window.TeryxBoot) window.TeryxBoot.started = true;   // app code loaded: the boot guard stands down
   fitToScreen();
   const splashMsg = document.getElementById("splash-msg");
   if (splashMsg) splashMsg.textContent = "Loading settings";
@@ -259,6 +261,7 @@ async function main() {
   soundButton();
   wireEggs(ctx);
   volumeControl(ctx, document.getElementById("tb-vol"));
+  const rail = lookRail(ctx);   // online demo only: look buttons beside the screen
   const player = demoPlayer();
   document.getElementById("app").appendChild(player.root);
   let first = "drive";
@@ -281,7 +284,7 @@ async function main() {
     st.s["dash.winch_heat"] = { pct: wh.pct, state: wh.state, restS: wh.restLeftS() };  // read by the alerts
     ctx.applyTheme();
     ctx.shift.update(st);
-    topbar(st); alertBanner(st); reverseCamera(st); player.update(st);
+    topbar(st); alertBanner(st); reverseCamera(st); player.update(st); rail.update(st);
     ctx.lock.update(st);
     byId.fun.background(st);   // camp mode and games stop by themselves if the Teryx moves
     // Only the screen on show is redrawn, to keep the Pi cool.

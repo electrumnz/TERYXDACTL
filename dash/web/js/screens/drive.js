@@ -130,8 +130,10 @@ export class DriveScreen {
     const p = kw > 0 ? Math.min(kw / pmax, 1) : 0;
     const clamp = (x) => Math.max(0, Math.min(1, x));
     const snarl = clamp((p - 0.2) / 0.25), roar = clamp((p - 0.6) / 0.25);
-    if (this.jaws[1]._o !== snarl) { this.jaws[1].style.opacity = snarl; this.jaws[1]._o = snarl; }
-    if (this.jaws[2]._o !== roar) { this.jaws[2].style.opacity = roar; this.jaws[2]._o = roar; }
+    // Cross-fade so only one head shows once a change is done. The head pictures are
+    // see-through round the jaw, so a head left at full strength underneath shows through the open mouth.
+    const want = [1 - snarl, snarl * (1 - roar), roar];
+    this.jaws.forEach((j, i) => { const o = +want[i].toFixed(3); if (j._o !== o) { j.style.opacity = o; j._o = o; } });
 
     // Battery: fangs lit to the charge level. % and km, tap to swap which is big.
     let soc = st.get("mc.soc");

@@ -58,6 +58,11 @@ jobs:
           mkdir -p _site/wiring
           cp docs/wiring/index.html docs/wiring/*.svg _site/wiring/
           cp android/app/build/outputs/apk/release/app-release.apk _site/teryx-remote.apk
+      - name: Stamp the code with this build so phones never mix old and new files
+        # A phone can keep some old .js files cached after a deploy. Old and new modules then don't
+        # fit together and the dash sits on "Starting". Adding ?v=<commit> to every script and
+        # module link makes each deploy load as one matching set.
+        run: python3 tools/stamp_site.py _site "${GITHUB_SHA::8}"
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
