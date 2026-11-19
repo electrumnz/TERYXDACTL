@@ -35,7 +35,7 @@
 <line x1="40" y1="328" x2="310" y2="328" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="175" y="332" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">CANL</text>
 </g>
-<g data-device="PICO_CAN" data-status="planned"><title>PICO_CAN: MCP2515 CAN module (control box) - Seeed MCP2515 + SN65HVD230 (3.3 V). Crystal TBC on the bench</title><rect x="480" y="150" width="270" height="89" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<g data-device="PICO_CAN" data-status="planned"><title>PICO_CAN: MCP2515 CAN module (control box) - Blue AliExpress MCP2515 board (8 MHz crystal) with its 5 V TJA1050 swapped for a 3.3 V SN65HVD230 (same pins), so the whole board runs on 3.3 V. Never fit one with the TJA1050 still on: it puts 5 V on the Pico pins</title><rect x="480" y="150" width="270" height="89" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
 <text x="490" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">MCP2515 CAN module (control box)</text>
 <text x="490" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">PICO_CAN · planned</text>
 <line x1="480" y1="197" x2="750" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
@@ -51,7 +51,7 @@
 <line x1="480" y1="328" x2="750" y2="328" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="332" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">CANL</text>
 </g>
-<g data-device="PI_CAN" data-status="planned"><title>PI_CAN: MCP2515 CAN module (Pi) - Seeed MCP2515 + SN65HVD230 on the Pi box wall</title><rect x="920" y="150" width="270" height="89" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
+<g data-device="PI_CAN" data-status="planned"><title>PI_CAN: MCP2515 CAN module (Pi) - Blue MCP2515 board with the SN65HVD230 swap (as the control box one), on the Pi box wall. 8 MHz crystal: pi-setup.sh default</title><rect x="920" y="150" width="270" height="89" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
 <text x="930" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">MCP2515 CAN module (Pi)</text>
 <text x="930" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">PI_CAN · planned</text>
 <line x1="920" y1="197" x2="1190" y2="197" stroke="#d0d7de" stroke-width="0.5"/>

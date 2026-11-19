@@ -214,8 +214,11 @@ def check_io_map(d: dict, io_map: Path = IO_MAP) -> list[str]:
                 need(f"PICO.{pin}", f"BTS{o['unit']}.{k.upper()}", oid)
     for iid, i in io["inputs"]["digital"].items():
         pin = i["expander_pin"]
-        ch = int(pin[1:]) + 1
-        need(f"OPTO.OUT{ch}", f"MCP1.{pin}", iid)
+        ch = i.get("opto", int(pin[1:]) + 1)
+        mcp = f"MCP{i.get('expander', 1)}"
+        if pin in ("A7", "B7"):
+            errs.append(f"io-map: {iid} is on {mcp} {pin}, which is output only on newer MCP23017 chips")
+        need(f"OPTO.OUT{ch}", f"{mcp}.{pin}", iid)
     adc = {"ads1115": "ADS1", "ads1115_2": "ADS2"}
     for aid, a in io["inputs"]["analogue"].items():
         target = f"PICO.{a['pin']}" if a["adc"] == "pico" else f"{adc[a['adc']]}.A{a['channel']}"

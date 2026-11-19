@@ -164,7 +164,7 @@ ground (0x48). RESET on the MCP23017 to 3.3V through 10kΩ.
 | 5 | Tray up limit (NC to ground) | B4 `in.tray_up` |
 | 6 | Winch remote or either hand switch, "in" or "out" pressed (each through its own diode) | B5 `in.winch_remote` |
 | 7 | Parking brake pedal switch (stock, feeds the meter's parking brake light) | B6 `in.park` |
-| 8 | Trailer plug reed switch in the 7-pin socket (check on the bench which way it switches, see `cameras.md`) | B7 `in.trailer` |
+| 8 | Trailer plug reed switch in the 7-pin socket (check on the bench which way it switches, see `cameras.md`) | 2nd MCP23017 B0 `in.trailer` (GPB7 is output only on newer chips) |
 
 The limit switches are normally closed, so a broken wire reads as "at the
 limit" and stops the tray instead of letting it run.

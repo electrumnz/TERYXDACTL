@@ -42,7 +42,7 @@ Sources for the power figures:
 - AI HAT+ 2 (later): about 2.5-4.5 W depending on the job ([Heise](https://heise.de/-11136612), [Jeff Geerling](https://jeffgeerling.com/blog/2026/raspberry-pi-ai-hat-2)).
   Rated for 0-50°C air around it ([Waveshare](https://www.waveshare.com/product/raspberry-pi/boards-kits/raspberry-pi-ai-hat-plus-2.htm), [CNX Software](https://www.cnx-software.com/2026/01/15/raspberry-pi-ai-hat-2-targets-generative-ai-llm-vlm-with-hailo-10h-accelerator/)).
 - Kingston XS1000 SSD: Kingston don't publish a power figure. **My estimate: 1.5-2 W while writing.**
-- Pololu 5V regulator: 80-95% efficient ([Pololu](https://www.pololu.com/product/4091)), so I've
+- 5V regulator (was the Pololu, now a potted 10 A buck, 19 Nov; similar 85-90% class): 80-95% efficient ([Pololu](https://www.pololu.com/product/4091)), so I've
   allowed 10% of what it feeds as heat.
 - Heatsink: Fischer SK 92/100 SA, 100 x 100 x 40 mm, **1.4 K/W** in still air
   ([element14 listing](https://nz.element14.com/fischer-elektronik/sk-92-100-sa/heat-sink-100mm-1-4-c-w/dp/4621580)).
@@ -115,7 +115,7 @@ Still fits, nothing in this change blocks it. When it goes in:
    The liner's window is big enough.
 4. Fit the quiet fan on the outside of the heatsink (above), because of the HAT's 50°C limit.
 
-The power budget is unchanged: the Pololu regulator was already sized for the HAT.
+The power budget is unchanged: the 5 V buck was already sized for the HAT (now a 10 A potted buck).
 
 ## Putting it together
 

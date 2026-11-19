@@ -293,6 +293,11 @@ static void io_poll(cb_in_t *in, uint32_t now) {
     } else {
         io_fail++;
     }
+    // The trailer input lives on the second expander's B0: newer MCP23017s say
+    // GPB7 is output only, so MCP1 B7 is not used. Opto pulls low = plugged in.
+    uint8_t raw2;
+    bool trailer = exp2_ok && mcp23017_read_b(I2C_PORT, MCP23017_2_ADDR, &raw2) && !(raw2 & 0x01u);
+    din_last = (uint8_t)((din_last & ~BIT(IN_TRAILER)) | (trailer ? BIT(IN_TRAILER) : 0));
     bool ready = false;
     if (ads_ok && ads1115_ready(I2C_PORT, ADS1115_ADDR, &ready)) {
         if (ready) {

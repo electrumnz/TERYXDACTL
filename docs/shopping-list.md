@@ -1,5 +1,11 @@
 # Shopping list and which dash computer to buy
 
+> **Changed 19 Nov:** the Core Electronics order is gone. The Pololu regulator and the Mini560s are
+> replaced by one potted 12/24 V to 5 V 10 A buck (Pi + 4G board), and the CAN and MCP23017 boards
+> come from a small AliExpress top-up (blue MCP2515 boards with the TJA1050 swapped for an
+> SN65HVD230). The generated list in [`pbtech-order.md`](pbtech-order.md) is the one to buy from;
+> older notes below are kept for the reasons behind each part.
+
 > **Don't buy from this page.** It's the research and the reasons. The one list to buy from is
 > [`pbtech-order.md`](pbtech-order.md) (and `.csv`), made by `python -m teryx bom` from the wiring
 > plan, with a test that fails if any wired part isn't on it. Where this page and that list

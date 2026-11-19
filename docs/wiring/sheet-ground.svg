@@ -48,7 +48,6 @@
 <g data-wire="G22" data-from="EPS_ECU.GND" data-to="BAT12.neg" data-status="planned"><title>G22: EPS_ECU.GND -&gt; BAT12.neg</title><path d="M920,288 C835,288 835,197 750,197" fill="none" stroke="#424a53" stroke-width="3.2" stroke-opacity="0.65"/></g>
 <g data-wire="G23" data-from="CAM_TRAILER.GND" data-to="TCAM_PLUG.GND" data-status="planned"><title>G23: CAM_TRAILER.GND -&gt; TCAM_PLUG.GND - Earth the camera at the hitch, not through the 7-pin earth</title><path d="M920,849 C835,849 835,2652 750,2652" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
 <g data-wire="G34" data-from="CAM_REAR.GND" data-to="GND_STAR.G" data-status="tbc"><title>G34: CAM_REAR.GND -&gt; GND_STAR.G - Or a good chassis earth near the camera</title><path d="M480,2743 C395,2743 395,197 310,197" fill="none" stroke="#bf8700" stroke-width="1.4" stroke-dasharray="7 4"/></g>
-<g data-wire="G35" data-from="MODEM_BUCK.GND" data-to="PI_BUCK.GND" data-status="planned"><title>G35: MODEM_BUCK.GND -&gt; PI_BUCK.GND</title><path d="M920,940 C835,940 835,470 750,470" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
 <g data-wire="G36" data-from="MODEM_4G.G" data-to="PI5.GND" data-status="planned"><title>G36: MODEM_4G.G -&gt; PI5.GND - Ground with the UART leads</title><path d="M1360,197 C1275,197 1275,379 1190,379" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
 <g data-device="GND_STAR" data-status="planned"><title>GND_STAR: Ground point (star) - One solid chassis ground near the fuse block. Every 12 V ground goes here</title><rect x="40" y="150" width="270" height="69" rx="6" fill="#fff8e6" stroke="#424a53" stroke-width="1.5"/>
 <text x="50" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Ground point (star)</text>
@@ -74,8 +73,8 @@
 <line x1="480" y1="379" x2="750" y2="379" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="383" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">A</text>
 </g>
-<g data-device="PI_BUCK" data-status="planned"><title>PI_BUCK: Pololu D36V50F5 5 V 5.5 A - Pi 5 power. About 16 W of its 27 W with the AI HAT+ 2 fitted</title><rect x="480" y="423" width="270" height="69" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
-<text x="490" y="441" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Pololu D36V50F5 5 V 5.5 A</text>
+<g data-device="PI_BUCK" data-status="planned"><title>PI_BUCK: Potted 5 V 10 A buck (12/24 V in) - Sealed car-type 12/24 V to 5 V 10 A (50 W) buck, input 8-35 V or wider. Feeds the Pi 5 (about 16 W with the AI HAT+ 2) and the 4G board (2 A peaks), so about 30 W worst case of its 50 W. Wide input rides out spikes the Mini560 (20 V max) couldn&#x27;t</title><rect x="480" y="423" width="270" height="69" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
+<text x="490" y="441" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Potted 5 V 10 A buck (12/24 V in)</text>
 <text x="490" y="456" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">PI_BUCK · planned</text>
 <line x1="480" y1="470" x2="750" y2="470" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="474" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GND</text>
@@ -204,7 +203,7 @@
 <line x1="480" y1="2349" x2="750" y2="2349" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="2353" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">B-</text>
 </g>
-<g data-device="OPTO" data-status="planned"><title>OPTO: 8-ch opto board (PC817, 12 V in) - All 8 channels used. A second 8-ch board (AliExpress cart) gives 8 spare inputs, read on MCP2 port B</title><rect x="480" y="2393" width="270" height="69" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<g data-device="OPTO" data-status="planned"><title>OPTO: 8-ch opto board (PC817, 12 V in) - All 8 channels used. OUT8 (trailer) goes to MCP2 B0. A second 8-ch board (AliExpress cart) gives spare inputs on MCP2 B1-B6 (B7 is output only)</title><rect x="480" y="2393" width="270" height="69" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
 <text x="490" y="2411" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">8-ch opto board (PC817, 12 V in)</text>
 <text x="490" y="2426" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">OPTO · planned</text>
 <line x1="480" y1="2440" x2="750" y2="2440" stroke="#d0d7de" stroke-width="0.5"/>
@@ -279,13 +278,7 @@
 <line x1="920" y1="849" x2="1190" y2="849" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="1055" y="853" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GND</text>
 </g>
-<g data-device="MODEM_BUCK" data-status="planned"><title>MODEM_BUCK: Mini560 5 V buck (4G board) - Feeds the 4G board&#x27;s V pin (5 V, 2 A peaks when it transmits). In the Pi box, on the dash rail, so the 4G board is on when the Pi is</title><rect x="920" y="893" width="270" height="69" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
-<text x="930" y="911" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Mini560 5 V buck (4G board)</text>
-<text x="930" y="926" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">MODEM_BUCK · planned · optional</text>
-<line x1="920" y1="940" x2="1190" y2="940" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1055" y="944" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">GND</text>
-</g>
-<g data-device="MODEM_4G" data-status="placeholder"><title>MODEM_4G: SIMCom A7670SA 4G board - 6-pin header S G V K T R G. V takes 5-10 V from the spare Mini560 5 V buck. NEVER raw 12 V (10 V max, and the car runs 14.4 V with spikes). K is tied to ground on the board, so it starts by itself. T/R are 115200 baud TTL to the Pi&#x27;s GPIO 15/14; measure T before connecting (3.3 V ok, else BSS138). Micro USB also on board. Its GNSS (FASE version, u.FL GPS socket on Sam&#x27;s board) is the dash GPS too, so there is no separate USB GPS. Check on arrival that it gets a fix with the SIM out / 4G off. No USB: it&#x27;s on the header pins (soldered leads), so texts, GPS and slow data only, no live video over 4G</title><rect x="1360" y="150" width="270" height="69" rx="6" fill="#eef9f1" stroke="#8250df" stroke-width="1.5" stroke-dasharray="2 4"/>
+<g data-device="MODEM_4G" data-status="placeholder"><title>MODEM_4G: SIMCom A7670SA 4G board - 6-pin header S G V K T R G. V takes 5-10 V: a soldered lead from the Pi buck (5 V). NEVER raw 12 V (10 V max, and the car runs 14.4 V with spikes). K is tied to ground on the board, so it starts by itself. T/R are 115200 baud TTL to the Pi&#x27;s GPIO 15/14; measure T before connecting (3.3 V ok, else BSS138). Micro USB also on board. Its GNSS (FASE version, u.FL GPS socket on Sam&#x27;s board) is the dash GPS too, so there is no separate USB GPS. Check on arrival that it gets a fix with the SIM out / 4G off. No USB: it&#x27;s on the header pins (soldered leads), so texts, GPS and slow data only, no live video over 4G</title><rect x="1360" y="150" width="270" height="69" rx="6" fill="#eef9f1" stroke="#8250df" stroke-width="1.5" stroke-dasharray="2 4"/>
 <text x="1370" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">SIMCom A7670SA 4G board</text>
 <text x="1370" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#8250df">MODEM_4G · placeholder · optional</text>
 <line x1="1360" y1="197" x2="1630" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
@@ -326,6 +319,5 @@
 <text x="912" y="285" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">G22  10 mm²</text>
 <text x="912" y="846" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">G23  0.5 mm²</text>
 <text x="472" y="2740" font-size="9.5" text-anchor="end" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">G34  0.5 mm²</text>
-<text x="912" y="937" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">G35  0.5 mm²</text>
 <text x="1352" y="194" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">G36</text>
 </svg>
