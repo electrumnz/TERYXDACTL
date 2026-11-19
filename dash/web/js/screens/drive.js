@@ -6,6 +6,7 @@ import { fmtKm } from "../tripdata.js";
 import { featureOn } from "../features.js";
 import { icon } from "../ui/icons.js";
 import { TellTales } from "../telltales.js";
+import { RexChase } from "../ui/rexchase.js";
 
 export function socFromVolts(v, cells) {
   // Rough lithium curve per cell. Only used if the Shinegle doesn't send a state of charge.
@@ -64,7 +65,7 @@ export class DriveScreen {
             <img data-j="closed" src="img/dino/head-closed.webp" alt="">
             <img data-j="snarl" src="img/dino/head-snarl.webp" alt="" style="opacity:0">
             <img data-j="roar" src="img/dino/head-roar.webp" alt="" style="opacity:0">
-          </div></div>
+          </div><div class="rex-play"></div></div>
           <div class="art fossil"><img src="img/dino/fossil.webp" alt=""></div>
           <div class="d-chips" id="d-chips"></div>
         </div>
@@ -97,12 +98,21 @@ export class DriveScreen {
     this.sens = sensorWidget(this.ctx.settings);
     $(root, "#d-sens").appendChild(this.sens.root);
     this.jaws = [...root.querySelectorAll(".rex img")];
+    // The T. rex as video (idle, roar, chase by speed). The stills stay until the first clip plays.
+    const rex = $(root, ".art.rex");
+    this.chase = new RexChase($(root, ".rex-play"), {
+      onReady: () => rex.classList.add("vid"), onFail: () => rex.classList.remove("vid"),
+    });
+    this.chase.load();
     $(root, "#d-batt").onclick = () => {
       const set = this.ctx.settings;
       set.set("batteryShow", set.get("batteryShow") === "km" ? "pct" : "km");
       this.update(this.ctx.store);
     };
   }
+
+  show() { this.chase && this.chase.resume(); }
+  hide() { this.chase && this.chase.pause(); }
 
   update(st) {
     const r = this.root, set = this.ctx.settings;
@@ -132,6 +142,12 @@ export class DriveScreen {
     const snarl = clamp((p - 0.2) / 0.25), roar = clamp((p - 0.6) / 0.25);
     if (this.jaws[1]._o !== snarl) { this.jaws[1].style.opacity = snarl; this.jaws[1]._o = snarl; }
     if (this.jaws[2]._o !== roar) { this.jaws[2].style.opacity = roar; this.jaws[2]._o = roar; }
+    if (this.chase) {
+      this.chase.set(mcOn ? st.get("mc.speed", 0) : 0, p);
+      // Off-road shows the fossil instead: don't decode video nobody can see.
+      const off = document.body.classList.contains("look-offroad");
+      if (off !== this._rexOff) { this._rexOff = off; off ? this.chase.pause() : this.chase.resume(); }
+    }
 
     // Battery: fangs lit to the charge level. % and km, tap to swap which is big.
     let soc = st.get("mc.soc");

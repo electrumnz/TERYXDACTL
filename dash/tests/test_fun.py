@@ -160,3 +160,11 @@ def test_dash_telltales_js():
     t = Path(__file__).with_name("telltales_js.test.mjs")
     r = subprocess.run(["node", str(t)], capture_output=True, text=True, timeout=60)
     assert r.returncode == 0, r.stdout + r.stderr
+
+
+@pytest.mark.skipif(not shutil.which("node"), reason="needs node")
+def test_dash_rexchase_js():
+    """The T. rex chase: which clip plays next for speed, power and stopping, and that they join up."""
+    t = Path(__file__).with_name("rexchase_js.test.mjs")
+    r = subprocess.run(["node", str(t)], capture_output=True, text=True, timeout=60)
+    assert r.returncode == 0, r.stdout + r.stderr
