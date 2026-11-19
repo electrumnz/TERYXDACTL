@@ -108,6 +108,9 @@ export class SettingsScreen {
       toast(v ? "4G driving allowed. 2 km/h, cameras must be live, stops if the lag gets over 0.3 s." : "4G driving off.", v ? "warn" : "good");
     });
     body.appendChild(row("Allow driving over 4G", "Off unless you turn it on. Meant for getting it back if it's ever pinched, not for everyday use. Over 4G it's capped at 2 km/h, won't move unless the cameras are live, and stops on the brake if the lag gets over 0.3 s or the link drops. Police say don't go after a stolen vehicle yourself: call 111. Needs your PIN to change.", sw));
+    // Opens the phone remote (remote.html) from the same address: the Pi on the Teryx, or the online demo.
+    const open = el(`<a class="btn sm" href="remote.html" target="_blank" rel="noopener">Open remote</a>`);
+    body.appendChild(row("Phone remote", st.get("link.demo") ? "Try the phone remote with a pretend Teryx on a beach. Best on a phone, turned sideways." : "Opens the remote on this screen. On a phone, join the Teryx's Wi-Fi and open remote.html on the dash's address.", open));
     body.appendChild(row("Remote speed limits", "Reverse 3 km/h, forward 5 km/h on Wi-Fi or the handheld's own radio. 2 km/h over 4G. Set in the RC box.", null));
   }
 
