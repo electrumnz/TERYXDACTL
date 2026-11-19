@@ -168,7 +168,7 @@
 <line x1="480" y1="1068" x2="750" y2="1068" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="1072" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">OUT</text>
 </g>
-<g data-device="MODEM_4G" data-status="placeholder"><title>MODEM_4G: SIMCom A7670SA 4G board - 6-pin header S G V K T R G. V takes 5-10 V from the spare Mini560 5 V buck. NEVER raw 12 V (10 V max, and the car runs 14.4 V with spikes). K is tied to ground on the board, so it starts by itself. T/R are 115200 baud TTL to the Pi&#x27;s GPIO 15/14; measure T before connecting (3.3 V ok, else BSS138). Micro USB also on board. Its GNSS (FASE version, u.FL GPS socket on Sam&#x27;s board) is the dash GPS too, so there is no separate USB GPS. Check on arrival that it gets a fix with the SIM out / 4G off. No USB: it&#x27;s on the header pins (soldered leads), so texts, GPS and slow data only, no live video over 4G</title><rect x="480" y="1112" width="270" height="89" rx="6" fill="#eef9f1" stroke="#8250df" stroke-width="1.5" stroke-dasharray="2 4"/>
+<g data-device="MODEM_4G" data-status="placeholder"><title>MODEM_4G: SIMCom A7670SA 4G board - 6-pin header S G V K T R G. V takes 5-10 V: a soldered lead from the Pi buck (5 V). NEVER raw 12 V (10 V max, and the car runs 14.4 V with spikes). K is tied to ground on the board, so it starts by itself. T/R are 115200 baud TTL to the Pi&#x27;s GPIO 15/14; measure T before connecting (3.3 V ok, else BSS138). Micro USB also on board. Its GNSS (FASE version, u.FL GPS socket on Sam&#x27;s board) is the dash GPS too, so there is no separate USB GPS. Check on arrival that it gets a fix with the SIM out / 4G off. No USB: it&#x27;s on the header pins (soldered leads), so texts, GPS and slow data only, no live video over 4G</title><rect x="480" y="1112" width="270" height="89" rx="6" fill="#eef9f1" stroke="#8250df" stroke-width="1.5" stroke-dasharray="2 4"/>
 <text x="490" y="1130" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">SIMCom A7670SA 4G board</text>
 <text x="490" y="1145" font-size="10" text-anchor="start" font-weight="normal" fill="#8250df">MODEM_4G · placeholder · optional</text>
 <line x1="480" y1="1159" x2="750" y2="1159" stroke="#d0d7de" stroke-width="0.5"/>
@@ -176,7 +176,7 @@
 <line x1="480" y1="1179" x2="750" y2="1179" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="615" y="1183" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">R</text>
 </g>
-<g data-device="PI_CAN" data-status="planned"><title>PI_CAN: MCP2515 CAN module (Pi) - Seeed MCP2515 + SN65HVD230 on the Pi box wall</title><rect x="480" y="1223" width="270" height="169" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
+<g data-device="PI_CAN" data-status="planned"><title>PI_CAN: MCP2515 CAN module (Pi) - Blue MCP2515 board with the SN65HVD230 swap (as the control box one), on the Pi box wall. 8 MHz crystal: pi-setup.sh default</title><rect x="480" y="1223" width="270" height="169" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
 <text x="490" y="1241" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">MCP2515 CAN module (Pi)</text>
 <text x="490" y="1256" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">PI_CAN · planned</text>
 <line x1="480" y1="1270" x2="750" y2="1270" stroke="#d0d7de" stroke-width="0.5"/>

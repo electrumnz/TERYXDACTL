@@ -71,7 +71,7 @@ Narva sell a 7-pin flat socket with a **reed switch** built in (part **82043BL**
 turn reversing sensors off when a trailer is plugged in
 ([Narva](https://narva.com.au/products/narva-7-pin-flat-quickfit-trailer-socket-with-reed-switch-for-use-with-normally-closed-circuits-1-pack)).
 We use that switch as an input instead: it's wired to the control box's last spare input
-(MCP23017 B7), now called **`in.trailer`**. Narva's page doesn't say how the switch is
+(was MCP23017 B7, moved to the second MCP23017 B0 on 19 Nov because newer chips say GPB7 is output only), now called **`in.trailer`**. Narva's page doesn't say how the switch is
 triggered or which way it switches, so **check it on the bench** before wiring.
 
 With that, the dash:

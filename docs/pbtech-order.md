@@ -43,11 +43,11 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Waterproof micro limit switch, roller lever (NC) | 3 | 2.67 | 8.01 | Estimate | Tray up/down + 1 spare |
 | LTC3780 auto buck-boost board, 5-32V in, 80W (set to 12.0V) | 1 | 18.00 | 18.00 | Spec from sellers (5-32V in, 1-30V out, 80W cont); price estimate | Search AliExpress: LTC3780 buck boost module. Bare board, lives in the Pi box. Screen draws well under 80W. Skip if the screen board says 9-36V in |
 | 12V USB-C PD panel socket, 30W, waterproof cap | 1 | 15.00 | 15.00 | Estimate | Glove box phone (RC remote) |
-| PCA9685 16-channel 12-bit PWM board (I2C) | 1 | 8.00 | 8.00 | Estimate | Trailer light bar dimming + 15 spare. Solder wires to the pads, skip the header pins |
+| PCA9685 16-channel 12-bit PWM board (I2C) | 2 | 8.00 | 16.00 | Estimate | Sam got 2 in the 18 Nov order. One drives the dimmed lamps (all 16 channels used), the other is a spare / later dimming (set it to 0x41). Outputs only, so it can not replace the MCP23017 inputs. Solder wires to the pads, skip the header pins |
 | MPU-6050 IMU board (roll / pitch) | 1 | 5.00 | 5.00 | Estimate | I2C to the Pi |
 | 12V AHD reversing camera (trailer) | 1 | 30.00 | 30.00 | Estimate |  |
 | CVBS (PAL) to MIPI CSI-2 board, ADV7280-M, multi-input | 1 | 120.00 | 120.00 | Estimate. AliExpress search: ADV7282 MIPI CSI (or ADV7280 CSI Raspberry Pi). No official Pi product does this | Chip must be ADV7280-M, ADV7281-M or ADV7282-M (the -M is the ribbon output), 2+ CVBS inputs, Pi camera ribbon socket. Not TP28xx (no Pi driver) or HDMI-to-CSI. Bench test on the Pi 5 |
-| SIMCom A7670SA 4G board (B28, GPS 'FASE' option) | 1 | 28.00 | 28.00 | US$15.46 x 1.822 | Must list B28; V pin from the 2nd Mini560, never raw 12V |
+| SIMCom A7670SA 4G board (B28, GPS 'FASE' option) | 1 | 28.00 | 28.00 | US$15.46 x 1.822 | Must list B28; V pin from the Pi buck (5 V), never raw 12V |
 | 4-channel BSS138 level shifter | 1 | 2.00 | 2.00 | Estimate | Probably not needed; measure the T pin first |
 | Active GPS antenna, SMA male | 1 | 8.00 | 8.00 | Estimate |  |
 | LTE antenna 698-2700MHz, SMA male | 1 | 12.00 | 12.00 | Estimate | Must cover 700MHz B28 |
@@ -63,25 +63,18 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Waterproof 3-pin plug pair (DT style) | 3 | 3.00 | 9.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
 | Waterproof 4-pin plug pair (DT style) | 4 | 3.50 | 14.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
 | Waterproof 6-pin plug pair (DT style) | 2 | 5.00 | 10.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
-| **Total** | | | **722.01** | | |
+| **Total** | | | **730.01** | | |
 
-### Core Electronics (AU, online)
-
-| Part | Qty | Each NZ$ | Total NZ$ | Price from | Notes |
-|---|---|---|---|---|---|
-| [Seeed MCP2515 + SN65HVD230 CAN board](https://core-electronics.com.au) | 4 | 22.77 | 91.08 | AU$18.45 x 1.234 | Pi, control box, steering bus, sniffer |
-| [MCP23017 board](https://core-electronics.com.au/catalog/product/view/sku/WS-15391) (WS-15391) | 2 | 13.45 | 26.90 | AU$10.90 x 1.234 |  |
-| [Pololu D36V50F5 5V 5.5A regulator](https://core-electronics.com.au/catalog/product/view/sku/POLOLU-4091) (POLOLU-4091) | 1 | 111.20 | 111.20 | AU$90.11 x 1.234 |  |
-| Shipping to NZ (estimate) | 1 | 17.50 | 17.50 | AU$12-16 |  |
-| **Total** | | | **246.68** | | |
-
-### Gogo:Tronics and element14 (NZ, online)
+### AliExpress top-up (small second order, 19 Nov)
 
 | Part | Qty | Each NZ$ | Total NZ$ | Price from | Notes |
 |---|---|---|---|---|---|
-| [Mini560 5V 5A buck (Gogo:Tronics)](https://sparks.gogo.co.nz/catalog/DC-Power-260/Fixed-Output-Step-Down-Converter-Out-5v-up-to-5A-Continuous-In-7-20v-1009.html) | 1 | 2.95 | 2.95 | Checked 17 Nov | 4G board only; the control box uses Sam's own 5A buck |
-| [1.5KE18A TVS diode (element14)](https://nz.element14.com/stmicroelectronics/1-5ke18a/diode-tvs-1-5kw-18v/dp/9884831) (9884831) | 2 | 2.24 | 4.48 | Checked 17 Nov |  |
-| **Total** | | | **7.43** | | |
+| MCP2515 + TJA1050 CAN board (the common blue one, 8 MHz crystal) | 4 | 5.00 | 20.00 | Estimate, ~US$2-3 each | Pi, control box, steering bus + 1 spare. Before use, swap the 8-pin TJA1050 (5 V) for an SN65HVD230 (3.3 V, same pins) and power the board from 3.3 V. Never wire one to the Pico or Pi with the TJA1050 still on |
+| SN65HVD230 CAN chip, SOIC-8 (VP230), 10 pack | 1 | 6.00 | 6.00 | Estimate | For the chip swap above; spares for mistakes. Pin 8 stays tied to ground on the board (full speed) |
+| MCP23017 I2C 16-pin I/O board (CJMCU-2317 type) | 2 | 4.00 | 8.00 | Estimate, ~US$1.5-2.5 each | Runs fine on 3.3 V. Set the second one to address 0x21 (A0 high). GPA7/GPB7 used as outputs or not at all |
+| Potted waterproof DC-DC buck, 12V/24V in to 5V 10A (50W) out | 1 | 22.00 | 22.00 | Estimate, ~US$10-14 | Pi 5 + 4G board. Listing must say input 8-35V (or wider) and 10A. Bare-wire leads, no USB plug. Replaces the NZ$111 Pololu and the Mini560 |
+| 1.5KE18A TVS diode, 10 pack | 1 | 4.00 | 4.00 | Estimate | Uni-directional (no C on the end). One on the dash rail, rest spare |
+| **Total** | | | **60.00** | | |
 
 ### Local: Jaycar, Narva stockist, Repco, auto electrical
 
@@ -107,7 +100,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Polyester fibre fill (speaker wadding or pillow stuffing), 200 g | 1 | 12.00 | 12.00 | Estimate | About 70 g per speaker pod, loose. Not foam (it holds water) |
 | PETG filament 1.75mm 1kg (boxes, liner) | 1 | 35.00 | 35.00 | Estimate |  |
 | 3mm aluminium cut from DXF: back plate + Pi lid plate | 1 | 80.00 | 80.00 | Estimate | Laser or waterjet shop; cad/stl/*.dxf |
-| Auto cable 0.5 mm² (metres) | 95 | 0.90 | 85.50 | Estimate; counted from config/wiring.yaml | About 76 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
+| Auto cable 0.5 mm² (metres) | 95 | 0.90 | 85.50 | Estimate; counted from config/wiring.yaml | About 75 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
 | Auto cable 0.75 mm² (metres) | 15 | 1.10 | 16.50 | Estimate; counted from config/wiring.yaml | About 12 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
 | Auto cable 1 mm² (metres) | 65 | 1.40 | 91.00 | Estimate; counted from config/wiring.yaml | About 52 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
 | Auto cable 1.5 mm² (metres) | 105 | 1.90 | 199.50 | Estimate; counted from config/wiring.yaml | About 82 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
@@ -118,15 +111,15 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Auto cable 35 mm² (metres) | 2 | 30.00 | 60.00 | Estimate; counted from config/wiring.yaml | About 2 m in the plan + 25%. Split red (+) / black (-) / a signal colour |
 | CAN cable, 2-core twisted + screen (metres) | 10 | 2.50 | 25.00 | Estimate; counted from config/wiring.yaml |  |
 | Speaker cable (metres) | 10 | 1.50 | 15.00 | Estimate; counted from config/wiring.yaml |  |
-| Standard blade fuses, Narva or Jaycar (not AliExpress) | 35 | 1.50 | 52.50 | Estimate; counted from config/wiring.yaml | 1 A x3, 2 A x7, 3 A x5, 5 A x4, 7.5 A x5, 10 A x5, 15 A x6 (2 spare of each) |
-| Waterproof inline blade fuse holder | 9 | 6.00 | 54.00 | Estimate; counted from config/wiring.yaml | Feeds that don't come off the fuse block (bucks, screen, amp, 12V sense, accessories) |
+| Standard blade fuses, Narva or Jaycar (not AliExpress) | 34 | 1.50 | 51.00 | Estimate; counted from config/wiring.yaml | 1 A x3, 2 A x6, 3 A x5, 5 A x4, 7.5 A x5, 10 A x5, 15 A x6 (2 spare of each) |
+| Waterproof inline blade fuse holder | 8 | 6.00 | 48.00 | Estimate; counted from config/wiring.yaml | Feeds that don't come off the fuse block (bucks, screen, amp, 12V sense, accessories) |
 | 40 A MIDI fuse + bolt-down holder | 1 | 31.00 | 31.00 | Estimate; counted from config/wiring.yaml | At the battery, one per big feed (fuse block, power steering, amp) |
 | 60 A MIDI fuse + bolt-down holder | 2 | 31.00 | 62.00 | Estimate; counted from config/wiring.yaml | At the battery, one per big feed (fuse block, power steering, amp) |
 | Tinned lugs for 4 mm², M8 hole | 6 | 2.00 | 12.00 | Estimate; counted from config/wiring.yaml | 2 spare |
 | Tinned lugs for 6 mm², M8 hole | 6 | 2.00 | 12.00 | Estimate; counted from config/wiring.yaml | 2 spare |
 | Tinned lugs for 10 mm², M8 hole | 10 | 2.00 | 20.00 | Estimate; counted from config/wiring.yaml | 2 spare |
 | Tinned lugs for 35 mm², M8 hole | 4 | 2.00 | 8.00 | Estimate; counted from config/wiring.yaml | 2 spare |
-| **Total** | | | **1,810.50** | | |
+| **Total** | | | **1,803.00** | | |
 
 ### Separate pickup
 
@@ -140,12 +133,11 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Shop | NZ$ |
 |---|---|
 | PB Tech (buy Thursday) | 623.21 |
-| AliExpress (one order, 2 to 4 weeks) | 722.01 |
-| Core Electronics (AU, online) | 246.68 |
-| Gogo:Tronics and element14 (NZ, online) | 7.43 |
-| Local: Jaycar, Narva stockist, Repco, auto electrical | 1,810.50 |
+| AliExpress (one order, 2 to 4 weeks) | 730.01 |
+| AliExpress top-up (small second order, 19 Nov) | 60.00 |
+| Local: Jaycar, Narva stockist, Repco, auto electrical | 1,803.00 |
 | Separate pickup | 115.00 |
-| **Everything** | **3,524.83** |
+| **Everything** | **3,331.22** |
 
 ### Already got (not in the totals)
 

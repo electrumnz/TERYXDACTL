@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2200 816" width="2200" height="816" font-family="Arial, Helvetica, sans-serif" data-sheet="power">
-<rect width="2200" height="816" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2200 705" width="2200" height="705" font-family="Arial, Helvetica, sans-serif" data-sheet="power">
+<rect width="2200" height="705" fill="#ffffff"/>
 <text x="40" y="40" font-size="22" text-anchor="start" font-weight="bold" fill="#1f2328">12 V power: battery, fuses, key, dash rail, bucks</text>
 <text x="40" y="62" font-size="12" text-anchor="start" font-weight="normal" fill="#57606a">Teryx OS wiring, sheet &#x27;power&#x27;. Made from config/wiring.yaml by `python -m teryx wiring`. Don&#x27;t edit this file.</text>
 <line x1="40" y1="92" x2="74" y2="92" stroke="#1a7f37" stroke-width="2.5"/>
@@ -22,19 +22,18 @@
 <g data-wire="P07" data-from="RAIL.BUS" data-to="PI_BUCK.VIN" data-status="planned"><title>P07: RAIL.BUS -&gt; PI_BUCK.VIN</title><path d="M1190,479 C1275,479 1275,379 1360,379" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="P08" data-from="RAIL.BUS" data-to="PICO_BUCK.VIN" data-status="planned"><title>P08: RAIL.BUS -&gt; PICO_BUCK.VIN - 2 A inline fuse</title><path d="M1190,479 C1275,479 1275,490 1360,490" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
 <g data-wire="P09" data-from="PI_BUCK.VOUT" data-to="PI5.5V" data-status="planned"><title>P09: PI_BUCK.VOUT -&gt; PI5.5V - Short and thick, under 30 cm. Set usb_max_current_enable=1</title><path d="M1630,399 C1715,399 1715,197 1800,197" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
-<g data-wire="P10" data-from="PICO_BUCK.VOUT" data-to="PICO.VSYS" data-status="planned"><title>P10: PICO_BUCK.VOUT -&gt; PICO.VSYS</title><path d="M1630,510 C1715,510 1715,288 1800,288" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
+<g data-wire="P10" data-from="PICO_BUCK.VOUT" data-to="PICO.VSYS" data-status="planned"><title>P10: PICO_BUCK.VOUT -&gt; PICO.VSYS</title><path d="M1630,510 C1715,510 1715,379 1800,379" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
 <g data-wire="P11" data-from="PICO_BUCK.VOUT" data-to="RELAYS.JDVCC" data-status="planned"><title>P11: PICO_BUCK.VOUT -&gt; RELAYS.JDVCC - Relay coils, about 0.6 A for 8</title><path d="M1360,510 C1275,510 1275,197 1190,197" fill="none" stroke="#424a53" stroke-width="1.4"/></g>
-<g data-wire="P12" data-from="PICO_BUCK.VOUT" data-to="RELAYS2.JDVCC" data-status="planned"><title>P12: PICO_BUCK.VOUT -&gt; RELAYS2.JDVCC</title><path d="M1630,510 C1715,510 1715,394 1800,394" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="P12" data-from="PICO_BUCK.VOUT" data-to="RELAYS2.JDVCC" data-status="planned"><title>P12: PICO_BUCK.VOUT -&gt; RELAYS2.JDVCC</title><path d="M1630,510 C1715,510 1715,485 1800,485" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
 <g data-wire="P13" data-from="RAIL.BUS" data-to="SCREEN_PSU.VIN" data-status="tbc"><title>P13: RAIL.BUS -&gt; SCREEN_PSU.VIN - Fuse size depends on the screen&#x27;s draw</title><path d="M1190,479 C1275,479 1275,601 1360,601" fill="none" stroke="#bf8700" stroke-width="2.2" stroke-dasharray="7 4"/></g>
-<g data-wire="P14" data-from="SCREEN_PSU.VOUT" data-to="SCREEN.DC_IN" data-status="tbc"><title>P14: SCREEN_PSU.VOUT -&gt; SCREEN.DC_IN</title><path d="M1630,621 C1715,621 1715,485 1800,485" fill="none" stroke="#bf8700" stroke-width="2.2" stroke-dasharray="7 4"/></g>
+<g data-wire="P14" data-from="SCREEN_PSU.VOUT" data-to="SCREEN.DC_IN" data-status="tbc"><title>P14: SCREEN_PSU.VOUT -&gt; SCREEN.DC_IN</title><path d="M1630,621 C1715,621 1715,576 1800,576" fill="none" stroke="#bf8700" stroke-width="2.2" stroke-dasharray="7 4"/></g>
 <g data-wire="P15" data-from="FB.F7" data-to="RELAYS.COM7" data-status="planned"><title>P15: FB.F7 -&gt; RELAYS.COM7 - Accessory 12 V, on with ignition</title><path d="M750,217 C835,217 835,217 920,217" fill="none" stroke="#424a53" stroke-width="2.2"/></g>
 <g data-wire="P20" data-from="RELAYS.NO7" data-to="GLOVE_USB.VIN" data-status="planned"><title>P20: RELAYS.NO7 -&gt; GLOVE_USB.VIN - 3 A inline fuse. Charges the RC phone with the key on; the control box may hold it on for a while after key-off (TBC)</title><path d="M1190,257 C1275,257 1275,197 1360,197" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
 <g data-wire="P16" data-from="BAT12.pos" data-to="AMP.B+" data-status="planned"><title>P16: BAT12.pos -&gt; AMP.B+ - Own 40 A fuse at the battery. The amp pulls up to 33 A flat out, so 6 mm² (good to 40 A on the table)</title><path d="M310,197 C395,197 395,363 480,363" fill="none" stroke="#424a53" stroke-width="3.2" stroke-opacity="0.65"/></g>
 <g data-wire="P17" data-from="RAIL.BUS" data-to="AMP.REM" data-status="planned"><title>P17: RAIL.BUS -&gt; AMP.REM - Remote turn-on, goes off with the rail</title><path d="M920,479 C835,479 835,383 750,383" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
 <g data-wire="P18" data-from="DCDC.out_pos" data-to="BAT12.pos" data-status="tbc"><title>P18: DCDC.out_pos -&gt; BAT12.pos - DC-DC charge lead. Size and fuse depend on its rating</title><path d="M480,474 C395,474 395,197 310,197" fill="none" stroke="#bf8700" stroke-width="1.4" stroke-dasharray="7 4"/></g>
 <g data-wire="P19" data-from="BAT12.pos" data-to="EPS_ECU.B+" data-status="planned"><title>P19: BAT12.pos -&gt; EPS_ECU.B+ - Own 60 A fuse and cable straight to the battery (Toyota fuses the Prius EPS at 60 A)</title><path d="M310,197 C395,197 395,565 480,565" fill="none" stroke="#424a53" stroke-width="3.2" stroke-opacity="0.65"/></g>
-<g data-wire="P21" data-from="RAIL.BUS" data-to="MODEM_BUCK.VIN" data-status="planned"><title>P21: RAIL.BUS -&gt; MODEM_BUCK.VIN - 2 A inline fuse</title><path d="M1190,479 C1275,479 1275,712 1360,712" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
-<g data-wire="P22" data-from="MODEM_BUCK.VOUT" data-to="MODEM_4G.V" data-status="planned"><title>P22: MODEM_BUCK.VOUT -&gt; MODEM_4G.V - Soldered lead to the V pin</title><path d="M1630,732 C1715,732 1715,576 1800,576" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
+<g data-wire="P22" data-from="PI_BUCK.VOUT" data-to="MODEM_4G.V" data-status="planned"><title>P22: PI_BUCK.VOUT -&gt; MODEM_4G.V - Soldered lead to the V pin, from the Pi buck</title><path d="M1630,399 C1715,399 1715,288 1800,288" fill="none" stroke="#424a53" stroke-width="1.4" stroke-opacity="0.65"/></g>
 <g data-device="BAT12" data-status="confirmed"><title>BAT12: 12 V aux battery - Kept after the conversion. Charged by the DC-DC</title><rect x="40" y="150" width="270" height="69" rx="6" fill="#fff8e6" stroke="#0969da" stroke-width="1.5"/>
 <text x="50" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">12 V aux battery</text>
 <text x="50" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">BAT12 · confirmed</text>
@@ -114,8 +113,8 @@
 <line x1="1360" y1="288" x2="1630" y2="288" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="1495" y="292" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">K</text>
 </g>
-<g data-device="PI_BUCK" data-status="planned"><title>PI_BUCK: Pololu D36V50F5 5 V 5.5 A - Pi 5 power. About 16 W of its 27 W with the AI HAT+ 2 fitted</title><rect x="1360" y="332" width="270" height="89" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
-<text x="1370" y="350" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Pololu D36V50F5 5 V 5.5 A</text>
+<g data-device="PI_BUCK" data-status="planned"><title>PI_BUCK: Potted 5 V 10 A buck (12/24 V in) - Sealed car-type 12/24 V to 5 V 10 A (50 W) buck, input 8-35 V or wider. Feeds the Pi 5 (about 16 W with the AI HAT+ 2) and the 4G board (2 A peaks), so about 30 W worst case of its 50 W. Wide input rides out spikes the Mini560 (20 V max) couldn&#x27;t</title><rect x="1360" y="332" width="270" height="89" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
+<text x="1370" y="350" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Potted 5 V 10 A buck (12/24 V in)</text>
 <text x="1370" y="365" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">PI_BUCK · planned</text>
 <line x1="1360" y1="379" x2="1630" y2="379" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="1495" y="383" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VIN</text>
@@ -138,44 +137,36 @@
 <line x1="1360" y1="621" x2="1630" y2="621" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="1495" y="625" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VOUT</text>
 </g>
-<g data-device="MODEM_BUCK" data-status="planned"><title>MODEM_BUCK: Mini560 5 V buck (4G board) - Feeds the 4G board&#x27;s V pin (5 V, 2 A peaks when it transmits). In the Pi box, on the dash rail, so the 4G board is on when the Pi is</title><rect x="1360" y="665" width="270" height="89" rx="6" fill="#eef9f1" stroke="#424a53" stroke-width="1.5"/>
-<text x="1370" y="683" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Mini560 5 V buck (4G board)</text>
-<text x="1370" y="698" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">MODEM_BUCK · planned · optional</text>
-<line x1="1360" y1="712" x2="1630" y2="712" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1495" y="716" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VIN</text>
-<line x1="1360" y1="732" x2="1630" y2="732" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1495" y="736" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VOUT</text>
-</g>
 <g data-device="PI5" data-status="confirmed"><title>PI5: Raspberry Pi 5 8GB - The 40-pin header and the PCIe port are kept for the AI HAT+ 2. CAN module wires go to header pins that come up through the HAT</title><rect x="1800" y="150" width="270" height="69" rx="6" fill="#eef9f1" stroke="#0969da" stroke-width="1.5"/>
 <text x="1810" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Raspberry Pi 5 8GB</text>
 <text x="1810" y="183" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">PI5 · confirmed</text>
 <line x1="1800" y1="197" x2="2070" y2="197" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="1935" y="201" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">5V</text>
 </g>
-<g data-device="PICO" data-status="planned"><title>PICO: Raspberry Pi Pico 2 - Talks to the Pi over CAN only. No USB lead to the Pi; reflash with a laptop on its own USB port in the workshop</title><rect x="1800" y="241" width="270" height="69" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
-<text x="1810" y="259" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Raspberry Pi Pico 2</text>
-<text x="1810" y="274" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">PICO · planned</text>
+<g data-device="MODEM_4G" data-status="placeholder"><title>MODEM_4G: SIMCom A7670SA 4G board - 6-pin header S G V K T R G. V takes 5-10 V: a soldered lead from the Pi buck (5 V). NEVER raw 12 V (10 V max, and the car runs 14.4 V with spikes). K is tied to ground on the board, so it starts by itself. T/R are 115200 baud TTL to the Pi&#x27;s GPIO 15/14; measure T before connecting (3.3 V ok, else BSS138). Micro USB also on board. Its GNSS (FASE version, u.FL GPS socket on Sam&#x27;s board) is the dash GPS too, so there is no separate USB GPS. Check on arrival that it gets a fix with the SIM out / 4G off. No USB: it&#x27;s on the header pins (soldered leads), so texts, GPS and slow data only, no live video over 4G</title><rect x="1800" y="241" width="270" height="69" rx="6" fill="#eef9f1" stroke="#8250df" stroke-width="1.5" stroke-dasharray="2 4"/>
+<text x="1810" y="259" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">SIMCom A7670SA 4G board</text>
+<text x="1810" y="274" font-size="10" text-anchor="start" font-weight="normal" fill="#8250df">MODEM_4G · placeholder · optional</text>
 <line x1="1800" y1="288" x2="2070" y2="288" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1935" y="292" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VSYS</text>
+<text x="1935" y="292" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">V</text>
 </g>
-<g data-device="RELAYS2" data-status="planned"><title>RELAYS2: 16-ch relay board, channels 9-16 (2 used, 6 spare) - Same board as RELAYS. Relay 9 steering enable, relay 10 drive lock (uses the NC contact)</title><rect x="1800" y="332" width="270" height="84" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
-<text x="1810" y="350" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">16-ch relay board, channels 9-16</text>
-<text x="1810" y="365" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">(2 used, 6 spare)</text>
-<text x="1810" y="380" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">RELAYS2 · planned · optional</text>
-<line x1="1800" y1="394" x2="2070" y2="394" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1935" y="398" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">JDVCC</text>
+<g data-device="PICO" data-status="planned"><title>PICO: Raspberry Pi Pico 2 - Talks to the Pi over CAN only. No USB lead to the Pi; reflash with a laptop on its own USB port in the workshop</title><rect x="1800" y="332" width="270" height="69" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="1810" y="350" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">Raspberry Pi Pico 2</text>
+<text x="1810" y="365" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">PICO · planned</text>
+<line x1="1800" y1="379" x2="2070" y2="379" stroke="#d0d7de" stroke-width="0.5"/>
+<text x="1935" y="383" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VSYS</text>
 </g>
-<g data-device="SCREEN" data-status="confirmed"><title>SCREEN: 10.1 in touch screen - 1280x800, HDMI + USB touch, 3.5 mm audio in</title><rect x="1800" y="438" width="270" height="69" rx="6" fill="#eef9f1" stroke="#0969da" stroke-width="1.5"/>
-<text x="1810" y="456" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">10.1 in touch screen</text>
-<text x="1810" y="471" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">SCREEN · confirmed</text>
+<g data-device="RELAYS2" data-status="planned"><title>RELAYS2: 16-ch relay board, channels 9-16 (2 used, 6 spare) - Same board as RELAYS. Relay 9 steering enable, relay 10 drive lock (uses the NC contact)</title><rect x="1800" y="423" width="270" height="84" rx="6" fill="#f6f1ff" stroke="#424a53" stroke-width="1.5"/>
+<text x="1810" y="441" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">16-ch relay board, channels 9-16</text>
+<text x="1810" y="456" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">(2 used, 6 spare)</text>
+<text x="1810" y="471" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">RELAYS2 · planned · optional</text>
 <line x1="1800" y1="485" x2="2070" y2="485" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1935" y="489" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">DC_IN</text>
+<text x="1935" y="489" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">JDVCC</text>
 </g>
-<g data-device="MODEM_4G" data-status="placeholder"><title>MODEM_4G: SIMCom A7670SA 4G board - 6-pin header S G V K T R G. V takes 5-10 V from the spare Mini560 5 V buck. NEVER raw 12 V (10 V max, and the car runs 14.4 V with spikes). K is tied to ground on the board, so it starts by itself. T/R are 115200 baud TTL to the Pi&#x27;s GPIO 15/14; measure T before connecting (3.3 V ok, else BSS138). Micro USB also on board. Its GNSS (FASE version, u.FL GPS socket on Sam&#x27;s board) is the dash GPS too, so there is no separate USB GPS. Check on arrival that it gets a fix with the SIM out / 4G off. No USB: it&#x27;s on the header pins (soldered leads), so texts, GPS and slow data only, no live video over 4G</title><rect x="1800" y="529" width="270" height="69" rx="6" fill="#eef9f1" stroke="#8250df" stroke-width="1.5" stroke-dasharray="2 4"/>
-<text x="1810" y="547" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">SIMCom A7670SA 4G board</text>
-<text x="1810" y="562" font-size="10" text-anchor="start" font-weight="normal" fill="#8250df">MODEM_4G · placeholder · optional</text>
+<g data-device="SCREEN" data-status="confirmed"><title>SCREEN: 10.1 in touch screen - 1280x800, HDMI + USB touch, 3.5 mm audio in</title><rect x="1800" y="529" width="270" height="69" rx="6" fill="#eef9f1" stroke="#0969da" stroke-width="1.5"/>
+<text x="1810" y="547" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">10.1 in touch screen</text>
+<text x="1810" y="562" font-size="10" text-anchor="start" font-weight="normal" fill="#0969da">SCREEN · confirmed</text>
 <line x1="1800" y1="576" x2="2070" y2="576" stroke="#d0d7de" stroke-width="0.5"/>
-<text x="1935" y="580" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">V</text>
+<text x="1935" y="580" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">DC_IN</text>
 </g>
 <text x="472" y="194" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P01  10 mm²  60 A</text>
 <text x="758" y="254" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P02  1 mm²</text>
@@ -185,10 +176,10 @@
 <text x="1352" y="285" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P06  1 mm²</text>
 <text x="1352" y="376" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P07  1.5 mm²</text>
 <text x="1352" y="487" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P08  0.75 mm²  2 A</text>
-<text x="1638" y="396" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P09  1.5 mm²</text>
-<text x="1792" y="285" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P10  0.5 mm²</text>
+<text x="1792" y="194" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P09  1.5 mm²</text>
+<text x="1792" y="376" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P10  0.5 mm²</text>
 <text x="1198" y="194" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P11  0.5 mm²</text>
-<text x="1792" y="391" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P12  0.5 mm²</text>
+<text x="1792" y="482" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P12  0.5 mm²</text>
 <text x="1352" y="598" font-size="9.5" text-anchor="end" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">P13  1 mm²  3 A</text>
 <text x="1638" y="618" font-size="9.5" text-anchor="start" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">P14  1 mm²</text>
 <text x="758" y="214" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P15  1.5 mm²</text>
@@ -197,6 +188,5 @@
 <text x="758" y="380" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P17  0.5 mm²  2 A</text>
 <text x="472" y="471" font-size="9.5" text-anchor="end" font-weight="normal" fill="#bf8700" stroke="#ffffff" stroke-width="3" paint-order="stroke">P18</text>
 <text x="472" y="562" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P19  10 mm²  60 A</text>
-<text x="1352" y="709" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P21  0.5 mm²  2 A</text>
-<text x="1638" y="729" font-size="9.5" text-anchor="start" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P22  0.5 mm²</text>
+<text x="1792" y="285" font-size="9.5" text-anchor="end" font-weight="normal" fill="#424a53" stroke="#ffffff" stroke-width="3" paint-order="stroke">P22  0.5 mm²</text>
 </svg>

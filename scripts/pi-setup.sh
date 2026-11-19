@@ -15,8 +15,8 @@
 # Options:
 #   --version TAG     Release tag or branch to install (default: main)
 #   --repo URL        Git URL (default: this repo on GitHub)
-#   --can-osc HZ      Crystal on the Pi's CAN HAT/module (default 16000000; 12000000
-#                     for some Waveshare HATs, 8000000 for cheap blue modules. Read
+#   --can-osc HZ      Crystal on the Pi's CAN HAT/module (default 8000000, the blue MCP2515 boards; 16000000 for Seeed, 12000000
+#                     for some Waveshare HATs. Read
 #                     the number on the crystal)
 #   --can-int GPIO    CAN HAT interrupt pin (default 25)
 #   --bitrate BPS     CAN bit rate (default 250000, must match the Shinegle)
@@ -28,7 +28,7 @@ set -euo pipefail
 
 VERSION=main
 REPO_URL=https://github.com/electrumnz/TERYXDACTL.git
-CAN_OSC=16000000
+CAN_OSC=8000000
 CAN_INT=25
 BITRATE=250000
 DESK_USER="${SUDO_USER:-}"

@@ -10,7 +10,7 @@ Why things are wired this way (power hold, diodes, CAN rules): [`docs/wiring.md`
 Viewer with search: [`index.html`](index.html), also online at
 <https://electrumnz.github.io/TERYXDACTL/wiring/>.
 
-**94 devices, 327 wires.** By status: 19 from_manual, 3 confirmed, 263 planned, 38 tbc, 4 placeholder.
+**93 devices, 325 wires.** By status: 19 from_manual, 3 confirmed, 261 planned, 38 tbc, 4 placeholder.
 Nothing has been checked on the real Teryx yet.
 
 Wire sizes follow the conservative table in the YAML (from
@@ -75,6 +75,7 @@ runs up to about 5 m). Go one size up for bundled or hot runs.
 - [ ] **DC-DC converter 72 V to 12 V** (DCDC): DC-DC label (amps out), where its 72 V feed comes from, and whether it is isolated (does its 12 V negative join the pack negative?)
 - [ ] **Shinegle kit key switch** (KIT_KEY): Is the kit key the same switch as the Teryx key? Meter what voltage reaches J1-1 with the key on (12 V or 72 V)
 - [ ] **Blade fuse block** (FB): Check the 12-way's rating (want 30 A per way, about 100 A total, a cover). Read the front bar labels. Each pair (1+4, 2+3) must draw under about 12 A together (about 140 W) to share a 15 A fuse. If not, give each bar its own 10 A again
+- [ ] **Potted 5 V 10 A buck (12/24 V in)** (PI_BUCK): Measure its output on the bench under load: 5.0-5.25 V. The Pi flags low voltage below about 4.6 V
 - [ ] **Screen 12 V supply** (SCREEN_PSU): Read the label on the screen's power brick (volts and amps)
 - [ ] **16-ch relay board, channels 1-8** (RELAYS): Does the relay board click from 3.3 V logic? Active high or low? Relays are SRD-05VDC type, 10 A at 28-30 V DC. Keep each load under about 7 A. Nothing on the relays gets near that now the floods are on the MOSFET board (relay 1 only feeds the trailer reversing lamp)
 - [ ] **16-ch relay board, channels 9-16 (2 used, 6 spare)** (RELAYS2): Relay 10 is rated 30 V DC. If the Shinegle KSI turns out to be 72 V (see KIT_KEY), swap relay 10 for one rated 80 V DC or more
@@ -169,7 +170,6 @@ Fuses not in the block (inline, at the battery or on a board):
 | T07 | 2 A | RELAYS.NO7 | TCAM_PLUG.V12 |
 | T08 | 2 A | TCAM_PLUG.V12 | CAM_TRAILER.V12 |
 | X05 | 2 A | RELAYS.NO7 | CAM_REAR.V12 |
-| P21 | 2 A | RAIL.BUS | MODEM_BUCK.VIN |
 
 ## Wire schedule
 
@@ -234,8 +234,7 @@ Fuses not in the block (inline, at the battery or on a board):
 | P17 | RAIL.BUS | AMP.REM | 0.5 mm² | 2 A |  | planned (optional) | Remote turn-on, goes off with the rail |
 | P18 | DCDC.out_pos | BAT12.pos |  |  |  | tbc | DC-DC charge lead. Size and fuse depend on its rating |
 | P19 | BAT12.pos | EPS_ECU.B+ | 10 mm² | 60 A |  | planned (optional) | Own 60 A fuse and cable straight to the battery (Toyota fuses the Prius EPS at 60 A) |
-| P21 | RAIL.BUS | MODEM_BUCK.VIN | 0.5 mm² | 2 A |  | planned (optional) | 2 A inline fuse |
-| P22 | MODEM_BUCK.VOUT | MODEM_4G.V | 0.5 mm² |  |  | planned (optional) | Soldered lead to the V pin |
+| P22 | PI_BUCK.VOUT | MODEM_4G.V | 0.5 mm² |  |  | planned (optional) | Soldered lead to the V pin, from the Pi buck |
 
 ### Grounds (chassis, star point)
 
@@ -276,7 +275,6 @@ Fuses not in the block (inline, at the battery or on a board):
 | G22 | EPS_ECU.GND | BAT12.neg | 10 mm² |  |  | planned (optional) |  |
 | G23 | CAM_TRAILER.GND | TCAM_PLUG.GND | 0.5 mm² |  |  | planned (optional) | Earth the camera at the hitch, not through the 7-pin earth |
 | G34 | CAM_REAR.GND | GND_STAR.G | 0.5 mm² |  |  | tbc | Or a good chassis earth near the camera |
-| G35 | MODEM_BUCK.GND | PI_BUCK.GND | 0.5 mm² |  |  | planned (optional) |  |
 | G36 | MODEM_4G.G | PI5.GND |  |  |  | planned (optional) | Ground with the UART leads |
 
 ### CAN buses: main Teryx bus and the steering bus
@@ -307,8 +305,8 @@ Fuses not in the block (inline, at the battery or on a board):
 | L11 | PICO.GP27 | MCP1.SCL |  |  |  | planned |  |
 | L12 | PICO.GP26 | ADS1.SDA |  |  |  | planned |  |
 | L13 | PICO.GP27 | ADS1.SCL |  |  |  | planned |  |
-| L14 | PICO.GP26 | MCP2.SDA |  |  |  | planned (optional) |  |
-| L15 | PICO.GP27 | MCP2.SCL |  |  |  | planned (optional) |  |
+| L14 | PICO.GP26 | MCP2.SDA |  |  |  | planned |  |
+| L15 | PICO.GP27 | MCP2.SCL |  |  |  | planned |  |
 | L16 | PICO.GP26 | ADS2.SDA |  |  |  | planned (optional) |  |
 | L17 | PICO.GP27 | ADS2.SCL |  |  |  | planned (optional) |  |
 | L18 | MCP1.INTB | PICO.GP21 |  |  |  | planned |  |
@@ -326,13 +324,13 @@ Fuses not in the block (inline, at the battery or on a board):
 | L33 | OPTO.OUT5 | MCP1.B4 |  |  |  | planned | in.tray_up |
 | L34 | OPTO.OUT6 | MCP1.B5 |  |  |  | planned | in.winch_remote |
 | L35 | OPTO.OUT7 | MCP1.B6 |  |  |  | planned | in.park |
-| L36 | OPTO.OUT8 | MCP1.B7 |  |  |  | planned | in.trailer |
+| L36 | OPTO.OUT8 | MCP2.B0 |  |  |  | planned | in.trailer (not MCP1 B7: GPB7 is output only on newer chips) |
 | L37 | PICO.3V3 | MCP1.VDD |  |  |  | planned |  |
 | L38 | PICO.3V3 | ADS1.VDD |  |  |  | planned |  |
 | L39 | PICO.3V3 | PICO_CAN.VCC |  |  |  | planned |  |
 | L40 | PICO.3V3 | RELAYS.VCC |  |  |  | planned |  |
 | L41 | PICO.3V3 | OPTO.VCC |  |  |  | planned |  |
-| L42 | PICO.3V3 | MCP2.VDD |  |  |  | planned (optional) |  |
+| L42 | PICO.3V3 | MCP2.VDD |  |  |  | planned |  |
 | L43 | PICO.3V3 | ADS2.VDD |  |  |  | planned (optional) |  |
 | L44 | PICO.3V3 | EPS_CAN.VCC |  |  |  | planned (optional) |  |
 | L45 | PICO.3V3 | RELAYS2.VCC |  |  |  | planned (optional) |  |
@@ -583,19 +581,19 @@ Fuses not in the block (inline, at the battery or on a board):
 | KEY | Teryx key switch | cab | confirmed |  |
 | RAIL | Dash 12 V rail | dash | planned | Key OR relay 8 (power hold). Stays up after key-off until the Pico lets go See [`docs/wiring.md`](../../docs/wiring.md). |
 | TVS | 1.5KE18A TVS diode | dash | planned | Clamps spikes on the dash rail |
-| PI_BUCK | Pololu D36V50F5 5 V 5.5 A | dash | planned | Pi 5 power. About 16 W of its 27 W with the AI HAT+ 2 fitted |
+| PI_BUCK | Potted 5 V 10 A buck (12/24 V in) | dash | planned | Sealed car-type 12/24 V to 5 V 10 A (50 W) buck, input 8-35 V or wider. Feeds the Pi 5 (about 16 W with the AI HAT+ 2) and the 4G board (2 A peaks), so about 30 W worst case of its 50 W. Wide input rides out spikes the Mini560 (20 V max) couldn't |
 | PICO_BUCK | 5 V 5 A buck (Sam's, control box) | control_box | planned |  |
 | SCREEN_PSU | Screen 12 V supply | dash | tbc | LTC3780 buck-boost board (5-32 V in, set to 12.0 V, 80 W) in the Pi box. Keeps the screen on a steady 12 V while the battery swings 11-14.4 V. No reverse-polarity protection, so it sits after the fuse. Skip it if the screen's own board says 9-36 V in |
 | PICO | Raspberry Pi Pico 2 | control_box | planned | Talks to the Pi over CAN only. No USB lead to the Pi; reflash with a laptop on its own USB port in the workshop See [`docs/io-list.md`](../../docs/io-list.md). |
 | DEBUG | Debug UART header | control_box | planned | Inside the box. Vehicle lock workshop reset |
-| PICO_CAN | MCP2515 CAN module (control box) | control_box | planned | Seeed MCP2515 + SN65HVD230 (3.3 V). Crystal TBC on the bench |
+| PICO_CAN | MCP2515 CAN module (control box) | control_box | planned | Blue AliExpress MCP2515 board (8 MHz crystal) with its 5 V TJA1050 swapped for a 3.3 V SN65HVD230 (same pins), so the whole board runs on 3.3 V. Never fit one with the TJA1050 still on: it puts 5 V on the Pico pins |
 | EPS_CAN | MCP2515 CAN module (steering bus) | control_box | planned (optional) | Own 500 kbit/s bus to the steering ECU. Transmit only, INT not wired See [`docs/power-steering-wrecker.md`](../../docs/power-steering-wrecker.md). |
 | MCP1 | MCP23017 I/O expander (0x20) | control_box | planned |  |
-| MCP2 | Second MCP23017 (0x21) | control_box | planned (optional) | More outputs for the steering enable and the drive lock relay. The first one is full See [`docs/vehicle-lock.md`](../../docs/vehicle-lock.md). |
+| MCP2 | Second MCP23017 (0x21) | control_box | planned | Steering enable and drive lock relays, and the trailer input on B0. Newer MCP23017 chips say GPA7/GPB7 are outputs only (Microchip datasheet rev D on), so the trailer input moved here off MCP1 B7 See [`docs/vehicle-lock.md`](../../docs/vehicle-lock.md). |
 | PCA | PCA9685 16-ch PWM board (0x40) | control_box | planned (optional) | Every light that isn't a front bar or the cabin bar dims through this (docs/lights.md). Wires soldered straight to the pads, no header pins. VCC 3.3 V so the outputs are 3.3 V, which the MOSFET boards (3-20 V input) and the BTS7960s (3.3 V logic like BTS1-3) take. Leave V+ (servo power) empty. OE tied low on the board. PWM0 trailer bar, 1-10 stock lights on BTS7960 4-8, 11-12 rear floods, 13-14 beacon amber / white on BTS7960 9, 15 BTS7960 enable. All outputs are off at power-up |
 | ADS1 | ADS1115 ADC (0x48) | control_box | planned | ALERT pin left free so GP22 can be the steering CAN chip select (read "ready" over I2C) |
 | ADS2 | Second ADS1115 (0x49) | control_box | planned (optional) | Brake pedal regen only See [`docs/brake-regen.md`](../../docs/brake-regen.md). |
-| OPTO | 8-ch opto board (PC817, 12 V in) | control_box | planned | All 8 channels used. A second 8-ch board (AliExpress cart) gives 8 spare inputs, read on MCP2 port B |
+| OPTO | 8-ch opto board (PC817, 12 V in) | control_box | planned | All 8 channels used. OUT8 (trailer) goes to MCP2 B0. A second 8-ch board (AliExpress cart) gives spare inputs on MCP2 B1-B6 (B7 is output only) |
 | RELAYS | 16-ch relay board, channels 1-8 | control_box | planned | One 16-channel board of mechanical 5 V relays with opto and JD-VCC jumper (AliExpress cart), in an aux box next to the control box. RELAYS2 is channels 9-16 of the same board. The solid state G3MB-202P board Sam has is AC only and won't turn off on 12 V DC. JD-VCC jumper off, coils on 5 V, inputs from 3.3 V |
 | RELAYS2 | 16-ch relay board, channels 9-16 (2 used, 6 spare) | control_box | planned (optional) | Same board as RELAYS. Relay 9 steering enable, relay 10 drive lock (uses the NC contact) |
 | BTS1 | BTS7960 1 (front diff) | control_box | confirmed |  |
@@ -645,13 +643,12 @@ Fuses not in the block (inline, at the battery or on a board):
 | TCAM_DONGLE | Analogue video to camera-ribbon (CSI) board, ADV7280-M (rear + trailer) | dash | tbc | No USB (Sam). The cameras run in CVBS (PAL) mode into this board, which sits in the Pi box on the Pi's 2nd camera ribbon port. ADV7280-M has several analogue inputs picked in software (adv728x-m overlay, adv7180 driver), so it swaps rear/trailer itself, no relay. A spare input can take a small cabin camera later. Pi 5 support for these boards is not proven yet: bench test it first |
 | PI5 | Raspberry Pi 5 8GB | dash | confirmed | The 40-pin header and the PCIe port are kept for the AI HAT+ 2. CAN module wires go to header pins that come up through the HAT See [`docs/wiring.md`](../../docs/wiring.md). |
 | AIHAT | AI HAT+ 2 (later) | dash | placeholder (optional) | Not buying yet. Room, cooling (about 4.5 W) and the PCIe port stay free for it See [`docs/ai-hat-ideas.md`](../../docs/ai-hat-ideas.md). |
-| PI_CAN | MCP2515 CAN module (Pi) | dash | planned | Seeed MCP2515 + SN65HVD230 on the Pi box wall |
+| PI_CAN | MCP2515 CAN module (Pi) | dash | planned | Blue MCP2515 board with the SN65HVD230 swap (as the control box one), on the Pi box wall. 8 MHz crystal: pi-setup.sh default |
 | SCREEN | 10.1 in touch screen | dash | confirmed | 1280x800, HDMI + USB touch, 3.5 mm audio in |
 | GLOVE_USB | Glove box USB-C charger (RC phone) | dash | planned (optional) | 12 V to USB-C PD socket for the phone that lives in the glove box (docs/rc-beach-launch.md 4b). Fed from the accessory relay so it's off with the key off |
 | CAM_REAR | Rear camera (200 degree, Sam's) | rear | tbc | Sam thinks it's AHD. Set to CVBS/PAL mode, soldered shielded video lead to the analogue-to-ribbon board. Rear or trailer is picked in software when the trailer plug is in. 12 V from the accessory relay (relay 7) through its own 2 A inline fuse |
 | CAM_FRONT | Camera Module 3 Wide (front) | dash | planned | Inside the screen housing, 200-300 mm ribbon |
-| MODEM_4G | SIMCom A7670SA 4G board | dash | placeholder (optional) | 6-pin header S G V K T R G. V takes 5-10 V from the spare Mini560 5 V buck. NEVER raw 12 V (10 V max, and the car runs 14.4 V with spikes). K is tied to ground on the board, so it starts by itself. T/R are 115200 baud TTL to the Pi's GPIO 15/14; measure T before connecting (3.3 V ok, else BSS138). Micro USB also on board. Its GNSS (FASE version, u.FL GPS socket on Sam's board) is the dash GPS too, so there is no separate USB GPS. Check on arrival that it gets a fix with the SIM out / 4G off. No USB: it's on the header pins (soldered leads), so texts, GPS and slow data only, no live video over 4G |
-| MODEM_BUCK | Mini560 5 V buck (4G board) | dash | planned (optional) | Feeds the 4G board's V pin (5 V, 2 A peaks when it transmits). In the Pi box, on the dash rail, so the 4G board is on when the Pi is |
+| MODEM_4G | SIMCom A7670SA 4G board | dash | placeholder (optional) | 6-pin header S G V K T R G. V takes 5-10 V: a soldered lead from the Pi buck (5 V). NEVER raw 12 V (10 V max, and the car runs 14.4 V with spikes). K is tied to ground on the board, so it starts by itself. T/R are 115200 baud TTL to the Pi's GPIO 15/14; measure T before connecting (3.3 V ok, else BSS138). Micro USB also on board. Its GNSS (FASE version, u.FL GPS socket on Sam's board) is the dash GPS too, so there is no separate USB GPS. Check on arrival that it gets a fix with the SIM out / 4G off. No USB: it's on the header pins (soldered leads), so texts, GPS and slow data only, no live video over 4G |
 | CARPLAY | Carlinkit CPC200-CCPA | dash | planned (optional) |  |
 | DAC_HAT | Raspberry Pi DAC+ (on jumper leads) | dash | planned (optional) | PCM5122 DAC HAT (ex IQaudio DAC+), RCA line out to the amp. Sits on standoffs in the right-hand end of the Pi box, off the Pi, so the top of the Pi stays free for the AI HAT+ 2. Joined by 7 male-to-female jumper leads (about 20 cm), not a full 40-way ribbon: a ribbon would cover the header pins the CAN board, 4G board and IMU leads plug onto. Uses GPIO 18, 19, 21 (I2S), 2 and 3 (I2C, shared with the IMU: DAC 0x4D, IMU 0x68), 5 V and GND. Nothing else on the Pi uses 18-21 (CAN is SPI0 + GPIO 25, 4G is UART GPIO 14/15). The ID EEPROM pins 27/28 are left off, so it never fights the AI HAT's EEPROM; set the overlay by hand: scripts/audio-setup.sh --i2s iqaudio-dacplus. A dab of hot glue on the leads at both ends against vibration. Later the leads move onto the AI HAT's stacking header pins See [`docs/audio.md`](../../docs/audio.md). |
 | AMP | 4-ch class D amp (AliExpress, 4 x 63 W RMS at 4 ohm) | cab | confirmed (optional) | Sam's pick. 4 x 63 W RMS at 4 ohm, or 2 x 200 W RMS bridged at 4 ohm; built-in 90 Hz high and low pass; 8-16 V; up to 33 A flat out (16.5 A on music); 145 x 100 x 45 mm. Channels 1 and 2 drive the Kenwoods (set the HPF on). Channels 3 and 4 bridged (200 W at 4 ohm) drive the Kicker KM104 sub (LPF on, gain set so it stays under the sub's 150 W RMS) See [`docs/audio.md`](../../docs/audio.md). |
