@@ -20,7 +20,7 @@ version: 1
 shops:
   pbtech:    {title: "PB Tech (buy Thursday)", order: 1}
   aliexpress: {title: "AliExpress (one order, 2 to 4 weeks)", order: 2}
-  ali_topup: {title: "AliExpress top-up (small second order, 19 Nov)", order: 3}
+  ali_topup: {title: "AliExpress top-up (second order, not placed yet)", order: 3}
   local:     {title: "Local: Jaycar, Narva stockist, Repco, auto electrical", order: 5}
   pickup:    {title: "Separate pickup", order: 6}
 
@@ -57,7 +57,8 @@ blade_fuse_each: 1.5         # Narva standard blade
 inline_holder_each: 6.0      # waterproof standard blade holder with lead
 midi_fuse_each: 9.0
 midi_holder_each: 22.0
-lug_each: 2.0                # tinned copper lug, heatshrink
+lug_each: 1.0                # tinned copper lug, heatshrink (AliExpress kit price)
+lug_shop: ali_topup          # moved from local to the AliExpress top-up 22 Nov
 # Sam bought the plugs in the main AliExpress order (22 Nov), so the generator
 # no longer adds them to the shopping list. Set false to list them again.
 plugs_bought: true
@@ -107,23 +108,23 @@ lines:
   - {id: dpdt_signal, shop: ali_topup, part: "DPDT signal relay module, 5 V coil, transistor driver (HK19F / HFD2 / G5V-2 type, gold contacts)", qty: 2, each: 6.00, source: "Estimate, ~US$2-4", covers: [RC_REL], notes: "RC steering changeover for the two torque sensor wires. Needs a driver that switches from a 3.3 V input. 1 spare"}
   - {id: lvl_shift, shop: ali_topup, part: "4-channel I2C logic level shifter (BSS138), 5 pack", qty: 1, each: 4.00, source: "Estimate, ~US$1-2", covers: [RC_LVL], notes: "3.3 V Pico I2C to the 5 V DAC and ADC in the RC box"}
   - {id: tvs, shop: ali_topup, part: "1.5KE18A TVS diode, 10 pack", qty: 1, each: 4.00, source: "Estimate", covers: [TVS], notes: "Uni-directional (no C on the end). One on the dash rail, rest spare"}
+  - {id: foam, shop: ali_topup, part: "2mm closed-cell foam tape, 1m+", qty: 1, each: 5.00, source: "Estimate, AliExpress (moved from local 22 Nov)", notes: Bezel to panel}
+  - {id: ties, shop: ali_topup, part: "UV-black cable ties + adhesive P-clips", qty: 1, each: 10.00, source: "Estimate, AliExpress (moved from local 22 Nov)"}
+  - {id: loom, shop: ali_topup, part: "Split corrugated loom 10mm + 16mm, 10m each", qty: 1, each: 18.00, source: "Estimate, AliExpress (moved from local 22 Nov)"}
+  - {id: heatshrink, shop: ali_topup, part: Heatshrink assortment (glue-lined), qty: 1, each: 10.00, source: "Estimate, AliExpress (moved from local 22 Nov)"}
+  - {id: smallparts, shop: ali_topup, part: "Diodes and resistors (see contents)", qty: 1, each: 15.00, source: "Estimate, AliExpress (moved from local 22 Nov)", notes: "AUTO"}
+  - {id: busbar, shop: ali_topup, part: "Ground bus bar, M8 studs, 6+ ways, with cover", qty: 1, each: 15.00, source: "Estimate, AliExpress (moved from local 22 Nov)", covers: [GND_STAR]}
+  - {id: rca, shop: ali_topup, part: RCA to RCA stereo lead 3m, qty: 1, each: 8.00, source: "Estimate, AliExpress (moved from local 22 Nov)", notes: DAC HAT to the amp under the seat}
+  - {id: hsw, shop: ali_topup, part: "Momentary (ON)-OFF-(ON) toggle, 10A, with waterproof boot", qty: 2, each: 8.00, source: "Estimate, AliExpress (moved from local 22 Nov)", covers: [HSW_WINCH, HSW_CAB], notes: Hidden winch switches}
 
   # ------------------------------------------------------------- local
   - {id: narva_7pin, shop: local, part: Narva 7-pin flat socket with reed switch, sku: 82043BL, qty: 1, each: 35.00, source: Estimate, covers: [TRAILER], link: "https://narva.com.au/products/narva-7-pin-flat-quickfit-trailer-socket-with-reed-switch-for-use-with-normally-closed-circuits-1-pack"}
   - {id: fnr, shop: local, part: "F-N-R switch, DPDT centre-off, 10A+", qty: 1, each: 20.00, source: Estimate, covers: [FNR]}
   - {id: estop, shop: local, part: "E-stop mushroom button, twist release, NC, IP65", qty: 1, each: 25.00, source: Estimate, covers: [ESTOP], notes: "RC mode: cuts KSI with no software"}
-  - {id: hsw, shop: local, part: "Momentary (ON)-OFF-(ON) toggle, 10A, with waterproof boot", qty: 2, each: 15.00, source: Estimate, covers: [HSW_WINCH, HSW_CAB], notes: Hidden winch switches}
-  - {id: rca, shop: local, part: RCA to RCA stereo lead 3m, qty: 1, each: 15.00, source: Estimate, notes: DAC HAT to the amp under the seat}
   - {id: sim, shop: local, part: Prepaid SIM, qty: 1, each: 10.00, source: Estimate}
-  - {id: busbar, shop: local, part: "Ground bus bar, M8 studs, 6+ ways, with cover", qty: 1, each: 25.00, source: Estimate, covers: [GND_STAR]}
   - {id: wago, shop: local, part: "Wago 221 lever connectors, 5-way pack", qty: 1, each: 20.00, source: Estimate, covers: [RAIL], notes: Dash 12V rail splits}
   - {id: limp_sw, shop: local, part: "Waterproof toggle switch, on-off, 15 A+ at 12 V, with rubber boot", qty: 1, each: 12.00, source: Estimate, covers: [LIMP_SW], notes: "Hidden backup lights switch (low beams + tails at full if the control box dies). Narva or Jaycar"}
-  - {id: smallparts, shop: local, part: "Diodes and resistors (see contents)", qty: 1, each: 30.00, source: Estimate, notes: "AUTO"}
-  - {id: heatshrink, shop: local, part: Heatshrink assortment (glue-lined), qty: 1, each: 20.00, source: Estimate}
-  - {id: loom, shop: local, part: "Split corrugated loom 10mm + 16mm, 10m each", qty: 1, each: 30.00, source: Estimate}
-  - {id: ties, shop: local, part: "UV-black cable ties + adhesive P-clips", qty: 1, each: 20.00, source: Estimate}
   - {id: grease, shop: local, part: "Dielectric grease, small tube", qty: 1, each: 12.00, source: Estimate, notes: "Trailer plugs and outdoor connectors"}
-  - {id: foam, shop: local, part: "2mm closed-cell foam tape, 1m+", qty: 1, each: 10.00, source: Estimate, notes: Bezel to panel}
   - {id: asa, shop: local, part: "ASA filament 1.75mm 1kg (dash panel, hood, back plate, speaker pods and their T. rex heads)", qty: 7, each: 45.00, source: Estimate, notes: "Stone grey or olive. The two heads and jaws take about 1.6 kg at 10-15% infill. Leave out what you already have"}
   - {id: asa_colours, shop: local, part: "ASA filament 1.75mm, small spools: bone/off-white, amber/orange, black (T. rex teeth, eyes, pupils)", qty: 3, each: 45.00, source: Estimate, notes: "Only about 60 g of each is used. Leave out what you already have"}
   - {id: pod_fill, shop: local, part: "Polyester fibre fill (speaker wadding or pillow stuffing), 200 g", qty: 1, each: 12.00, source: Estimate, notes: "About 70 g per speaker pod, loose. Not foam (it holds water)"}

@@ -217,7 +217,7 @@ def all_lines(bom: dict, wiring: dict) -> list[dict]:
                       "qty": n, "each": bom["midi_fuse_each"] + bom["midi_holder_each"], "source": src,
                       "notes": "At the battery, one per big feed (fuse block, power steering, amp)"})
     for mm2, n in sorted(c["lugs"].items()):
-        lines.append({"id": f"lugs_{mm2}", "shop": "local", "part": f"Tinned lugs for {_num(mm2)} mm², M8 hole",
+        lines.append({"id": f"lugs_{mm2}", "shop": bom.get("lug_shop", "local"), "part": f"Tinned lugs for {_num(mm2)} mm², M8 hole",
                       "qty": n + 2, "each": bom["lug_each"], "source": src, "notes": "2 spare"})
     for size, n in sorted(c["plugs"].items() if not bom.get("plugs_bought") else []):
         lines.append({"id": f"plug_{size}", "shop": "aliexpress", "part": f"Waterproof {size}-pin plug pair (DT style)",

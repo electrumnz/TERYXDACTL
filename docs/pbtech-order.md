@@ -36,7 +36,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | CVBS (PAL) to MIPI CSI-2 board, ADV7280-M, multi-input | 1 | 120.00 | 120.00 | Estimate. AliExpress search: ADV7282 MIPI CSI (or ADV7280 CSI Raspberry Pi). No official Pi product does this | Sam unsure if ordered, check. Chip must be ADV7280-M, ADV7281-M or ADV7282-M (the -M is the ribbon output), 2+ CVBS inputs, Pi camera ribbon socket. Not TP28xx (no Pi driver) or HDMI-to-CSI. Bench test on the Pi 5 |
 | **Total** | | | **120.00** | | |
 
-### AliExpress top-up (small second order, 19 Nov)
+### AliExpress top-up (second order, not placed yet)
 
 | Part | Qty | Each NZ$ | Total NZ$ | Price from | Notes |
 |---|---|---|---|---|---|
@@ -49,7 +49,19 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | DPDT signal relay module, 5 V coil, transistor driver (HK19F / HFD2 / G5V-2 type, gold contacts) | 2 | 6.00 | 12.00 | Estimate, ~US$2-4 | RC steering changeover for the two torque sensor wires. Needs a driver that switches from a 3.3 V input. 1 spare |
 | 4-channel I2C logic level shifter (BSS138), 5 pack | 1 | 4.00 | 4.00 | Estimate, ~US$1-2 | 3.3 V Pico I2C to the 5 V DAC and ADC in the RC box |
 | 1.5KE18A TVS diode, 10 pack | 1 | 4.00 | 4.00 | Estimate | Uni-directional (no C on the end). One on the dash rail, rest spare |
-| **Total** | | | **94.00** | | |
+| 2mm closed-cell foam tape, 1m+ | 1 | 5.00 | 5.00 | Estimate, AliExpress (moved from local 22 Nov) | Bezel to panel |
+| UV-black cable ties + adhesive P-clips | 1 | 10.00 | 10.00 | Estimate, AliExpress (moved from local 22 Nov) |  |
+| Split corrugated loom 10mm + 16mm, 10m each | 1 | 18.00 | 18.00 | Estimate, AliExpress (moved from local 22 Nov) |  |
+| Heatshrink assortment (glue-lined) | 1 | 10.00 | 10.00 | Estimate, AliExpress (moved from local 22 Nov) |  |
+| Diodes and resistors (see contents) | 1 | 15.00 | 15.00 | Estimate, AliExpress (moved from local 22 Nov) | Contents, counted from the wiring: 10SQ045 10 A Schottky diode x1, 10k resistor x1, 1N4007 x1, 1N4148 x11, 1N5408 x8, 1k resistor x3, 2.2k resistor x1, 3.3 V zener x1, SB560 5 A Schottky diode x18. Buy a few spare of each |
+| Ground bus bar, M8 studs, 6+ ways, with cover | 1 | 15.00 | 15.00 | Estimate, AliExpress (moved from local 22 Nov) |  |
+| RCA to RCA stereo lead 3m | 1 | 8.00 | 8.00 | Estimate, AliExpress (moved from local 22 Nov) | DAC HAT to the amp under the seat |
+| Momentary (ON)-OFF-(ON) toggle, 10A, with waterproof boot | 2 | 8.00 | 16.00 | Estimate, AliExpress (moved from local 22 Nov) | Hidden winch switches |
+| Tinned lugs for 4 mm², M8 hole | 6 | 1.00 | 6.00 | Estimate; counted from config/wiring.yaml | 2 spare |
+| Tinned lugs for 6 mm², M8 hole | 6 | 1.00 | 6.00 | Estimate; counted from config/wiring.yaml | 2 spare |
+| Tinned lugs for 10 mm², M8 hole | 10 | 1.00 | 10.00 | Estimate; counted from config/wiring.yaml | 2 spare |
+| Tinned lugs for 35 mm², M8 hole | 4 | 1.00 | 4.00 | Estimate; counted from config/wiring.yaml | 2 spare |
+| **Total** | | | **217.00** | | |
 
 ### Local: Jaycar, Narva stockist, Repco, auto electrical
 
@@ -58,18 +70,10 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | [Narva 7-pin flat socket with reed switch](https://narva.com.au/products/narva-7-pin-flat-quickfit-trailer-socket-with-reed-switch-for-use-with-normally-closed-circuits-1-pack) (82043BL) | 1 | 35.00 | 35.00 | Estimate |  |
 | F-N-R switch, DPDT centre-off, 10A+ | 1 | 20.00 | 20.00 | Estimate |  |
 | E-stop mushroom button, twist release, NC, IP65 | 1 | 25.00 | 25.00 | Estimate | RC mode: cuts KSI with no software |
-| Momentary (ON)-OFF-(ON) toggle, 10A, with waterproof boot | 2 | 15.00 | 30.00 | Estimate | Hidden winch switches |
-| RCA to RCA stereo lead 3m | 1 | 15.00 | 15.00 | Estimate | DAC HAT to the amp under the seat |
 | Prepaid SIM | 1 | 10.00 | 10.00 | Estimate |  |
-| Ground bus bar, M8 studs, 6+ ways, with cover | 1 | 25.00 | 25.00 | Estimate |  |
 | Wago 221 lever connectors, 5-way pack | 1 | 20.00 | 20.00 | Estimate | Dash 12V rail splits |
 | Waterproof toggle switch, on-off, 15 A+ at 12 V, with rubber boot | 1 | 12.00 | 12.00 | Estimate | Hidden backup lights switch (low beams + tails at full if the control box dies). Narva or Jaycar |
-| Diodes and resistors (see contents) | 1 | 30.00 | 30.00 | Estimate | Contents, counted from the wiring: 10SQ045 10 A Schottky diode x1, 10k resistor x1, 1N4007 x1, 1N4148 x11, 1N5408 x8, 1k resistor x3, 2.2k resistor x1, 3.3 V zener x1, SB560 5 A Schottky diode x18. Buy a few spare of each |
-| Heatshrink assortment (glue-lined) | 1 | 20.00 | 20.00 | Estimate |  |
-| Split corrugated loom 10mm + 16mm, 10m each | 1 | 30.00 | 30.00 | Estimate |  |
-| UV-black cable ties + adhesive P-clips | 1 | 20.00 | 20.00 | Estimate |  |
 | Dielectric grease, small tube | 1 | 12.00 | 12.00 | Estimate | Trailer plugs and outdoor connectors |
-| 2mm closed-cell foam tape, 1m+ | 1 | 10.00 | 10.00 | Estimate | Bezel to panel |
 | ASA filament 1.75mm 1kg (dash panel, hood, back plate, speaker pods and their T. rex heads) | 7 | 45.00 | 315.00 | Estimate | Stone grey or olive. The two heads and jaws take about 1.6 kg at 10-15% infill. Leave out what you already have |
 | ASA filament 1.75mm, small spools: bone/off-white, amber/orange, black (T. rex teeth, eyes, pupils) | 3 | 45.00 | 135.00 | Estimate | Only about 60 g of each is used. Leave out what you already have |
 | Polyester fibre fill (speaker wadding or pillow stuffing), 200 g | 1 | 12.00 | 12.00 | Estimate | About 70 g per speaker pod, loose. Not foam (it holds water) |
@@ -90,11 +94,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Waterproof inline blade fuse holder | 8 | 6.00 | 48.00 | Estimate; counted from config/wiring.yaml | Feeds that don't come off the fuse block (bucks, screen, amp, 12V sense, accessories) |
 | 40 A MIDI fuse + bolt-down holder | 1 | 31.00 | 31.00 | Estimate; counted from config/wiring.yaml | At the battery, one per big feed (fuse block, power steering, amp) |
 | 60 A MIDI fuse + bolt-down holder | 2 | 31.00 | 62.00 | Estimate; counted from config/wiring.yaml | At the battery, one per big feed (fuse block, power steering, amp) |
-| Tinned lugs for 4 mm², M8 hole | 6 | 2.00 | 12.00 | Estimate; counted from config/wiring.yaml | 2 spare |
-| Tinned lugs for 6 mm², M8 hole | 6 | 2.00 | 12.00 | Estimate; counted from config/wiring.yaml | 2 spare |
-| Tinned lugs for 10 mm², M8 hole | 10 | 2.00 | 20.00 | Estimate; counted from config/wiring.yaml | 2 spare |
-| Tinned lugs for 35 mm², M8 hole | 4 | 2.00 | 8.00 | Estimate; counted from config/wiring.yaml | 2 spare |
-| **Total** | | | **1,824.50** | | |
+| **Total** | | | **1,592.50** | | |
 
 ### Separate pickup
 
@@ -109,10 +109,10 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 |---|---|
 | PB Tech (buy Thursday) | 623.21 |
 | AliExpress (one order, 2 to 4 weeks) | 120.00 |
-| AliExpress top-up (small second order, 19 Nov) | 94.00 |
-| Local: Jaycar, Narva stockist, Repco, auto electrical | 1,824.50 |
+| AliExpress top-up (second order, not placed yet) | 217.00 |
+| Local: Jaycar, Narva stockist, Repco, auto electrical | 1,592.50 |
 | Separate pickup | 20.00 |
-| **Everything** | **2,681.71** |
+| **Everything** | **2,572.71** |
 
 ### Already got (not in the totals)
 
