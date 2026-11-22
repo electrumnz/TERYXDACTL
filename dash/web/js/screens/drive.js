@@ -121,7 +121,7 @@ export class DriveScreen {
     const v = st.get("mc.batt_v", 0), a = st.get("mc.batt_a", 0);
     const kw = st.get("mc.power_kw") ?? (v * a) / 1000;
     const pmax = set.get("powerMaxKw");
-    const regen = regenOn(st);
+    const regen = regenOn(st, set.get("regenFrom"));
     q("#d-prect").setAttribute("width", (regen ? 0 : Math.max(0, Math.min(kw / pmax, 1)) * 300).toFixed(1));
     q("#d-kw").textContent = regen ? "REGEN" : `${Math.max(0, kw).toFixed(1)} kW`;
     q("#d-kw").className = `power-kw num ${regen ? "ok" : ""}`;

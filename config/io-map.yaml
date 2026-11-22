@@ -78,6 +78,7 @@ inputs:
     mc.motor_temp: {units: C, range: [-10, 150]}
     mc.ctrl_temp:  {units: C, range: [-10, 100]}
     mc.throttle:   {units: "%", range: [0, 100]}
+    mc.throttle_sw: {units: bool, optional: true, note: "Throttle micro switch (SG1810 PedalSW). If we get it, the dash uses it for throttle at rest"}
     mc.regen:      {units: bool, optional: true, note: "Only if the Shinegle sends its own regen flag. Without it the dash works regen out itself (dash/web/js/regen.js)"}
     mc.direction:  {enum: [forward, neutral, reverse]}
     mc.mode:       {enum: [eco, normal, sport]}
