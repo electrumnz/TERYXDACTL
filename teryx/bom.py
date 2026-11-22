@@ -219,7 +219,7 @@ def all_lines(bom: dict, wiring: dict) -> list[dict]:
     for mm2, n in sorted(c["lugs"].items()):
         lines.append({"id": f"lugs_{mm2}", "shop": "local", "part": f"Tinned lugs for {_num(mm2)} mm², M8 hole",
                       "qty": n + 2, "each": bom["lug_each"], "source": src, "notes": "2 spare"})
-    for size, n in sorted(c["plugs"].items()):
+    for size, n in sorted(c["plugs"].items() if not bom.get("plugs_bought") else []):
         lines.append({"id": f"plug_{size}", "shop": "aliexpress", "part": f"Waterproof {size}-pin plug pair (DT style)",
                       "qty": n + 1, "each": bom["plug_pair"][size], "source": src,
                       "notes": "So lights, actuators, switches and cameras unplug; 1 spare"})
