@@ -33,39 +33,10 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 
 | Part | Qty | Each NZ$ | Total NZ$ | Price from | Notes |
 |---|---|---|---|---|---|
-| Carlinkit CPC200-CCPA (or CCPA-MIC) CarPlay dongle | 1 | 65.00 | 65.00 | US$33-39 x 1.822 | Title must say CCPA + Android head unit; lsusb 1314:1520/1521 |
-| 4-channel class D amp, 4 x 63W RMS at 4 ohm, 2 x 200W bridged, 90Hz HPF/LPF (Sam's pick) | 1 | 100.00 | 100.00 | Sam, AliExpress ~NZ$100 | Ch 1-2 Kenwoods, ch 3-4 bridged to the Kicker KM104 sub; under the seat, not waterproof |
-| 8-channel PC817 opto board 12V in | 2 | 9.00 | 18.00 | ~US$5 estimate | Board 1 = all 8 inputs; board 2 = 8 spare on MCP2 |
-| 8-Channel Opto-Isolated MOSFET Driver Module, DC 3.7-27V, 10A per channel, PWM 3-20V input, 0-20kHz (Sam's pick) | 1 | 22.00 | 22.00 | ~US$12 estimate | Front bars, cabin bar, trailer bar, rear floods (all 8 used) |
-| BTS7960 43A motor driver board (IBT-2), same as the 3 already owned | 6 | 10.00 | 60.00 | ~US$5-6 estimate | Used as two + side (high side) switches each: headlights L and R (low + high), tail/brake L and R, trailer tail/stop, beacon amber/white. The stock bulbs share one earth per bulb, so the MOSFET boards can't do them |
-| 6-way blade fuse block with cover | 1 | 15.00 | 15.00 | Estimate | Stock lights, beacon, backup toggle and brake switch feed; the 12-way is full. All 6 ways used |
-| 16-channel 5V relay board, mechanical, opto + JD-VCC jumper, 10A | 1 | 21.00 | 21.00 | ~US$11.28 x 1.822 | 7 used, 9 spare after the lights moved to MOSFET/BTS7960 boards and the winch isolator was dropped; an 8-ch board would leave 1 spare. Must have the JD-VCC jumper |
-| Waterproof micro limit switch, roller lever (NC) | 3 | 2.67 | 8.01 | Estimate | Tray up/down + 1 spare |
-| LTC3780 auto buck-boost board, 5-32V in, 80W (set to 12.0V) | 1 | 18.00 | 18.00 | Spec from sellers (5-32V in, 1-30V out, 80W cont); price estimate | Search AliExpress: LTC3780 buck boost module. Bare board, lives in the Pi box. Screen draws well under 80W. Skip if the screen board says 9-36V in |
-| 12V USB-C PD panel socket, 30W, waterproof cap | 1 | 15.00 | 15.00 | Estimate | Glove box phone (RC remote) |
-| PCA9685 16-channel 12-bit PWM board (I2C) | 2 | 8.00 | 16.00 | Estimate | Sam got 2 in the 18 Nov order. One drives the dimmed lamps (all 16 channels used), the other is a spare / later dimming (set it to 0x41). Outputs only, so it can not replace the MCP23017 inputs. Solder wires to the pads, skip the header pins |
-| MPU-6050 IMU board (roll / pitch) | 1 | 5.00 | 5.00 | Estimate | I2C to the Pi |
-| 12V AHD reversing camera (trailer) | 1 | 30.00 | 30.00 | Estimate |  |
-| CVBS (PAL) to MIPI CSI-2 board, ADV7280-M, multi-input | 1 | 120.00 | 120.00 | Estimate. AliExpress search: ADV7282 MIPI CSI (or ADV7280 CSI Raspberry Pi). No official Pi product does this | Chip must be ADV7280-M, ADV7281-M or ADV7282-M (the -M is the ribbon output), 2+ CVBS inputs, Pi camera ribbon socket. Not TP28xx (no Pi driver) or HDMI-to-CSI. Bench test on the Pi 5 |
-| SIMCom A7670SA 4G board (B28, GPS 'FASE' option) | 1 | 28.00 | 28.00 | US$15.46 x 1.822 | Must list B28; V pin from the Pi buck (5 V), never raw 12V |
-| 4-channel BSS138 level shifter | 1 | 2.00 | 2.00 | Estimate | Probably not needed; measure the T pin first |
-| Active GPS antenna, SMA male | 1 | 8.00 | 8.00 | Estimate |  |
-| LTE antenna 698-2700MHz, SMA male | 1 | 12.00 | 12.00 | Estimate | Must cover 700MHz B28 |
-| u.FL to SMA female bulkhead pigtail with O-ring, 15cm | 2 | 3.00 | 6.00 | Estimate | Through the Pi box wall for both aerials |
-| Finned heatsink 100x100x40mm, flat 5mm+ base | 1 | 20.00 | 20.00 | Estimate | Pi box lid |
-| Thermal pad 1mm, 4 W/mK+ | 1 | 5.00 | 5.00 | Estimate |  |
-| Solid aluminium block 20x20x50mm | 1 | 5.00 | 5.00 | Estimate | Cut to ~45.3mm |
-| Thermal paste small tube | 1 | 3.00 | 3.00 | Estimate |  |
-| Bootlace ferrule kit 0.5-6mm² with ratchet crimper | 1 | 30.00 | 30.00 | Estimate | Every wire end into a screw terminal in the boxes |
-| Heatshrink ring / spade / butt terminal kit 0.5-6mm² | 1 | 25.00 | 25.00 | Estimate |  |
-| Dupont jumper wires (F-F, M-F, 20cm) + 2.54mm pin headers | 1 | 10.00 | 10.00 | Estimate | Pico, Pi and board-to-board links inside the boxes; debug header |
-| Waterproof 2-pin plug pair (DT style) | 12 | 2.50 | 30.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
-| Waterproof 3-pin plug pair (DT style) | 3 | 3.00 | 9.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
-| Waterproof 4-pin plug pair (DT style) | 4 | 3.50 | 14.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
-| Waterproof 6-pin plug pair (DT style) | 2 | 5.00 | 10.00 | Estimate; counted from config/wiring.yaml | So lights, actuators, switches and cameras unplug; 1 spare |
-| **Total** | | | **730.01** | | |
+| CVBS (PAL) to MIPI CSI-2 board, ADV7280-M, multi-input | 1 | 120.00 | 120.00 | Estimate. AliExpress search: ADV7282 MIPI CSI (or ADV7280 CSI Raspberry Pi). No official Pi product does this | Sam unsure if ordered, check. Chip must be ADV7280-M, ADV7281-M or ADV7282-M (the -M is the ribbon output), 2+ CVBS inputs, Pi camera ribbon socket. Not TP28xx (no Pi driver) or HDMI-to-CSI. Bench test on the Pi 5 |
+| **Total** | | | **120.00** | | |
 
-### AliExpress top-up (small second order, 19 Nov)
+### AliExpress top-up (second order, not placed yet)
 
 | Part | Qty | Each NZ$ | Total NZ$ | Price from | Notes |
 |---|---|---|---|---|---|
@@ -78,7 +49,19 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | DPDT signal relay module, 5 V coil, transistor driver (HK19F / HFD2 / G5V-2 type, gold contacts) | 2 | 6.00 | 12.00 | Estimate, ~US$2-4 | RC steering changeover for the two torque sensor wires. Needs a driver that switches from a 3.3 V input. 1 spare |
 | 4-channel I2C logic level shifter (BSS138), 5 pack | 1 | 4.00 | 4.00 | Estimate, ~US$1-2 | 3.3 V Pico I2C to the 5 V DAC and ADC in the RC box |
 | 1.5KE18A TVS diode, 10 pack | 1 | 4.00 | 4.00 | Estimate | Uni-directional (no C on the end). One on the dash rail, rest spare |
-| **Total** | | | **94.00** | | |
+| 2mm closed-cell foam tape, 1m+ | 1 | 5.00 | 5.00 | Estimate, AliExpress (moved from local 22 Nov) | Bezel to panel |
+| UV-black cable ties + adhesive P-clips | 1 | 10.00 | 10.00 | Estimate, AliExpress (moved from local 22 Nov) |  |
+| Split corrugated loom 10mm + 16mm, 10m each | 1 | 18.00 | 18.00 | Estimate, AliExpress (moved from local 22 Nov) |  |
+| Heatshrink assortment (glue-lined) | 1 | 10.00 | 10.00 | Estimate, AliExpress (moved from local 22 Nov) |  |
+| Diodes and resistors (see contents) | 1 | 15.00 | 15.00 | Estimate, AliExpress (moved from local 22 Nov) | Contents, counted from the wiring: 10SQ045 10 A Schottky diode x1, 10k resistor x1, 1N4007 x1, 1N4148 x11, 1N5408 x8, 1k resistor x3, 2.2k resistor x1, 3.3 V zener x1, SB560 5 A Schottky diode x18. Buy a few spare of each |
+| Ground bus bar, M8 studs, 6+ ways, with cover | 1 | 15.00 | 15.00 | Estimate, AliExpress (moved from local 22 Nov) |  |
+| RCA to RCA stereo lead 3m | 1 | 8.00 | 8.00 | Estimate, AliExpress (moved from local 22 Nov) | DAC HAT to the amp under the seat |
+| Momentary (ON)-OFF-(ON) toggle, 10A, with waterproof boot | 2 | 8.00 | 16.00 | Estimate, AliExpress (moved from local 22 Nov) | Hidden winch switches |
+| Tinned lugs for 4 mm², M8 hole | 6 | 1.00 | 6.00 | Estimate; counted from config/wiring.yaml | 2 spare |
+| Tinned lugs for 6 mm², M8 hole | 6 | 1.00 | 6.00 | Estimate; counted from config/wiring.yaml | 2 spare |
+| Tinned lugs for 10 mm², M8 hole | 10 | 1.00 | 10.00 | Estimate; counted from config/wiring.yaml | 2 spare |
+| Tinned lugs for 35 mm², M8 hole | 4 | 1.00 | 4.00 | Estimate; counted from config/wiring.yaml | 2 spare |
+| **Total** | | | **217.00** | | |
 
 ### Local: Jaycar, Narva stockist, Repco, auto electrical
 
@@ -87,18 +70,10 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | [Narva 7-pin flat socket with reed switch](https://narva.com.au/products/narva-7-pin-flat-quickfit-trailer-socket-with-reed-switch-for-use-with-normally-closed-circuits-1-pack) (82043BL) | 1 | 35.00 | 35.00 | Estimate |  |
 | F-N-R switch, DPDT centre-off, 10A+ | 1 | 20.00 | 20.00 | Estimate |  |
 | E-stop mushroom button, twist release, NC, IP65 | 1 | 25.00 | 25.00 | Estimate | RC mode: cuts KSI with no software |
-| Momentary (ON)-OFF-(ON) toggle, 10A, with waterproof boot | 2 | 15.00 | 30.00 | Estimate | Hidden winch switches |
-| RCA to RCA stereo lead 3m | 1 | 15.00 | 15.00 | Estimate | DAC HAT to the amp under the seat |
 | Prepaid SIM | 1 | 10.00 | 10.00 | Estimate |  |
-| Ground bus bar, M8 studs, 6+ ways, with cover | 1 | 25.00 | 25.00 | Estimate |  |
 | Wago 221 lever connectors, 5-way pack | 1 | 20.00 | 20.00 | Estimate | Dash 12V rail splits |
 | Waterproof toggle switch, on-off, 15 A+ at 12 V, with rubber boot | 1 | 12.00 | 12.00 | Estimate | Hidden backup lights switch (low beams + tails at full if the control box dies). Narva or Jaycar |
-| Diodes and resistors (see contents) | 1 | 30.00 | 30.00 | Estimate | Contents, counted from the wiring: 10SQ045 10 A Schottky diode x1, 10k resistor x1, 1N4007 x1, 1N4148 x11, 1N5408 x8, 1k resistor x3, 2.2k resistor x1, 3.3 V zener x1, SB560 5 A Schottky diode x18. Buy a few spare of each |
-| Heatshrink assortment (glue-lined) | 1 | 20.00 | 20.00 | Estimate |  |
-| Split corrugated loom 10mm + 16mm, 10m each | 1 | 30.00 | 30.00 | Estimate |  |
-| UV-black cable ties + adhesive P-clips | 1 | 20.00 | 20.00 | Estimate |  |
 | Dielectric grease, small tube | 1 | 12.00 | 12.00 | Estimate | Trailer plugs and outdoor connectors |
-| 2mm closed-cell foam tape, 1m+ | 1 | 10.00 | 10.00 | Estimate | Bezel to panel |
 | ASA filament 1.75mm 1kg (dash panel, hood, back plate, speaker pods and their T. rex heads) | 7 | 45.00 | 315.00 | Estimate | Stone grey or olive. The two heads and jaws take about 1.6 kg at 10-15% infill. Leave out what you already have |
 | ASA filament 1.75mm, small spools: bone/off-white, amber/orange, black (T. rex teeth, eyes, pupils) | 3 | 45.00 | 135.00 | Estimate | Only about 60 g of each is used. Leave out what you already have |
 | Polyester fibre fill (speaker wadding or pillow stuffing), 200 g | 1 | 12.00 | 12.00 | Estimate | About 70 g per speaker pod, loose. Not foam (it holds water) |
@@ -119,11 +94,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Waterproof inline blade fuse holder | 8 | 6.00 | 48.00 | Estimate; counted from config/wiring.yaml | Feeds that don't come off the fuse block (bucks, screen, amp, 12V sense, accessories) |
 | 40 A MIDI fuse + bolt-down holder | 1 | 31.00 | 31.00 | Estimate; counted from config/wiring.yaml | At the battery, one per big feed (fuse block, power steering, amp) |
 | 60 A MIDI fuse + bolt-down holder | 2 | 31.00 | 62.00 | Estimate; counted from config/wiring.yaml | At the battery, one per big feed (fuse block, power steering, amp) |
-| Tinned lugs for 4 mm², M8 hole | 6 | 2.00 | 12.00 | Estimate; counted from config/wiring.yaml | 2 spare |
-| Tinned lugs for 6 mm², M8 hole | 6 | 2.00 | 12.00 | Estimate; counted from config/wiring.yaml | 2 spare |
-| Tinned lugs for 10 mm², M8 hole | 10 | 2.00 | 20.00 | Estimate; counted from config/wiring.yaml | 2 spare |
-| Tinned lugs for 35 mm², M8 hole | 4 | 2.00 | 8.00 | Estimate; counted from config/wiring.yaml | 2 spare |
-| **Total** | | | **1,824.50** | | |
+| **Total** | | | **1,592.50** | | |
 
 ### Separate pickup
 
@@ -137,15 +108,15 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Shop | NZ$ |
 |---|---|
 | PB Tech (buy Thursday) | 623.21 |
-| AliExpress (one order, 2 to 4 weeks) | 730.01 |
-| AliExpress top-up (small second order, 19 Nov) | 94.00 |
-| Local: Jaycar, Narva stockist, Repco, auto electrical | 1,824.50 |
+| AliExpress (one order, 2 to 4 weeks) | 120.00 |
+| AliExpress top-up (second order, not placed yet) | 217.00 |
+| Local: Jaycar, Narva stockist, Repco, auto electrical | 1,592.50 |
 | Separate pickup | 20.00 |
-| **Everything** | **3,291.72** |
+| **Everything** | **2,572.71** |
 
 ### Already got (not in the totals)
 
-10.1 in touch screen, 12 V battery, 12 in light bar, 12-way fuse box (in the post; 12 fuses planned, so it is full), 200 degree rear camera (in the post), 250 A manual reset breaker (winch kill switch), 4 in pod, 5 A step-down buck (in the post; input must take 20 V+), 7 in light bar, ADS1115 (3 in the post), ADS1115 (third of the 3 in the post, for the RC box), Amber + white LED roof beacon, BTS7960 (3 in the post), EU 7-pin round trailer plug (check the socket half and cap came too), Kenwood KFC-2053MRB 8 in marine speakers (pair), Kicker KM104 10 in marine sub (bought 18 Nov), Toyota Aqua EPS ECU 89650-52B51 on the column, with its power plug (Dodson's, 19 Nov), Toyota Aqua EPS column (Dodson's, 19 Nov), XBull 5000 lb winch (and its 35 mm² cables), XBull remote, XBull solenoid box, short actuator (in the post), smart actuator with position feedback (in the post), spare light bar (trailer), tray actuator (in the post). Cable glands and M12 breather vents, 10 packs (boxes + speaker pods) (NZ$24), Heat-set insert kit (M2 to M6) and stainless bolt kit (M2 to M6) (NZ$45), Samsung Galaxy XCover 5 (RC remote) (NZ$187).
+10.1 in touch screen, 12 V battery, 12 in light bar, 12-way fuse box (in the post; 12 fuses planned, so it is full), 12V AHD trailer camera (AliExpress main order, bought 22 Nov), 12V USB-C panel socket (AliExpress main order, bought 22 Nov), 16-channel relay board (AliExpress main order, bought 22 Nov), 200 degree rear camera (in the post), 250 A manual reset breaker (winch kill switch), 4 in pod, 4-channel class D amp (AliExpress main order, bought 22 Nov), 5 A step-down buck (in the post; input must take 20 V+), 6-way blade fuse block (AliExpress main order, bought 22 Nov), 7 in light bar, 8-channel MOSFET driver board (AliExpress main order, bought 22 Nov), 8-channel PC817 opto boards (2) (AliExpress main order, bought 22 Nov), ADS1115 (3 in the post), ADS1115 (third of the 3 in the post, for the RC box), Amber + white LED roof beacon, BTS7960 (3 in the post), BTS7960 boards (6 more) (AliExpress main order, bought 22 Nov), Carlinkit CCPA CarPlay dongle (AliExpress main order, bought 22 Nov), Dupont jumpers + pin headers (AliExpress main order, bought 22 Nov), EU 7-pin round trailer plug (check the socket half and cap came too), Kenwood KFC-2053MRB 8 in marine speakers (pair), Kicker KM104 10 in marine sub (bought 18 Nov), LTC3780 buck-boost board (AliExpress main order, bought 22 Nov), MPU-6050 IMU board (AliExpress main order, bought 22 Nov), PCA9685 PWM boards (2) (AliExpress main order, bought 22 Nov), SIMCom A7670SA 4G board (AliExpress main order, bought 22 Nov), Toyota Aqua EPS ECU 89650-52B51 on the column, with its power plug (Dodson's, 19 Nov), Toyota Aqua EPS column (Dodson's, 19 Nov), Waterproof roller limit switches (3) (AliExpress main order, bought 22 Nov), XBull 5000 lb winch (and its 35 mm² cables), XBull remote, XBull solenoid box, short actuator (in the post), smart actuator with position feedback (in the post), spare light bar (trailer), tray actuator (in the post). Cable glands and M12 breather vents, 10 packs (boxes + speaker pods) (NZ$24), Heat-set insert kit (M2 to M6) and stainless bolt kit (M2 to M6) (NZ$45), Samsung Galaxy XCover 5 (RC remote) (NZ$187), 4-channel BSS138 level shifter (NZ$2), Active GPS antenna, SMA male (NZ$8), LTE antenna 698-2700MHz, SMA male (NZ$12), u.FL to SMA female bulkhead pigtail with O-ring, 15cm x2 (NZ$6), Finned heatsink 100x100x40mm, flat 5mm+ base (NZ$20), Thermal pad 1mm, 4 W/mK+ (NZ$5), Solid aluminium block 20x20x50mm (NZ$5), Thermal paste small tube (NZ$3), Bootlace ferrule kit 0.5-6mm² with ratchet crimper (NZ$30), Heatshrink ring / spade / butt terminal kit 0.5-6mm² (NZ$25), Waterproof DT-style plug pairs (2, 3, 4 and 6 pin) (NZ$63).
 
 ### Comes with the Shinegle kit or the stock Teryx
 
