@@ -1,0 +1,41 @@
+name: Phone sim (rig web)
+
+# The whole-Teryx simulator page (dash/web/rig/, docs/system-sim.md): the real control box
+# firmware built for the browser with Emscripten, plus teryx/rig running in Pyodide.
+# 1. pico.wasm in git must match the firmware source (else: python tools/build_rig_web.py --wasm).
+# 2. Rebuild it here with Emscripten (proves it still compiles) and run the whole sim in
+#    Pyodide under Node, driving it like the page does.
+on:
+  push:
+    paths: ["firmware/control-box/src/**", "firmware/VERSION", "teryx/**", "config/**",
+            "dash/web/rig/**", "tools/build_rig_web.py", "tools/rig_web_check.mjs",
+            ".github/workflows/rig-web.yml"]
+  pull_request:
+    paths: ["firmware/control-box/src/**", "firmware/VERSION", "teryx/**", "config/**",
+            "dash/web/rig/**", "tools/build_rig_web.py", "tools/rig_web_check.mjs",
+            ".github/workflows/rig-web.yml"]
+  workflow_dispatch:
+
+jobs:
+  browser-sim:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install pyyaml
+      - name: pico.wasm matches the firmware source
+        run: python tools/build_rig_web.py --check
+      - uses: mymindstorm/setup-emsdk@v14
+        with:
+          version: 6.0.13
+      - name: Rebuild the firmware for the browser
+        run: python tools/build_rig_web.py --wasm
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Pyodide for Node (same version as dash/web/rig/worker.js)
+        run: npm install --no-save pyodide@314.0.7
+      - name: Run the whole sim in Pyodide, like the page does
+        run: node tools/rig_web_check.mjs

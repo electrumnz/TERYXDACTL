@@ -7,7 +7,8 @@ name: Dash demo site
 on:
   push:
     branches: [main]
-    paths: ["dash/web/**", "docs/wiring/**", "android/**", ".github/workflows/dash-site.yml"]
+    paths: ["dash/web/**", "docs/wiring/**", "android/**", ".github/workflows/dash-site.yml",
+            "teryx/**", "config/**", "firmware/VERSION", "tools/build_rig_web.py"]   # the simulator page (rig/) bundles these
   workflow_dispatch:
 
 permissions:
@@ -51,6 +52,13 @@ jobs:
           TERYX_KEY_ALIAS: ${{ secrets.TERYX_KEY_ALIAS }}
           TERYX_KEY_PASSWORD: ${{ secrets.TERYX_KEY_PASSWORD }}
         run: gradle assembleRelease --no-daemon
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Bundle the Python for the simulator page (rig/)
+        run: |
+          pip install pyyaml
+          python tools/build_rig_web.py
       - name: Put the dash and the wiring viewer together
         run: |
           mkdir -p _site

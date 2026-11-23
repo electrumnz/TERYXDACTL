@@ -15,7 +15,9 @@ export const FEATURES = [
 ];
 
 // Not wired up yet (Sam, 2026-11-17): media, winch and tray.
-export const FEATURE_DEFAULTS = { trips: true, drivetrain: true, lights: true, winch: false, tray: false, camera: true, media: false };
+// In the whole-Teryx simulator (rig/) the winch and tray are wired up in the sim, so they start on.
+const IN_RIG = typeof location !== "undefined" && new URLSearchParams(location.search).has("rig");
+export const FEATURE_DEFAULTS = { trips: true, drivetrain: true, lights: true, winch: IN_RIG, tray: IN_RIG, camera: true, media: false };
 
 export function featureOn(settings, id) {
   if (!FEATURE_DEFAULTS.hasOwnProperty(id)) return true;   // drive, settings: always on

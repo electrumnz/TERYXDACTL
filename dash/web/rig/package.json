@@ -1,0 +1,5 @@
+{
+  "private": true,
+  "type": "module",
+  "description": "Marks the phone sim files as ES modules for the Node check (tools/rig_web_check.mjs)"
+}

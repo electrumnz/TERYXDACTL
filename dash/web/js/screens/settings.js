@@ -610,7 +610,7 @@ export class SettingsScreen {
     kv("Dash version", sys.version || "dev");
     kv("Control box", st.get("pico.online") ? `online (${st.get("pico.state", "run")})` : "offline");
     kv("Motor controller", st.get("mc.online") === false ? "no data" : "online");
-    kv("Mode", st.get("link.demo") ? "Demo (no server)" : "Live");
+    kv("Mode", st.get("link.demo") ? "Demo (no server)" : st.get("link.rig") ? "Simulator (real control box firmware)" : "Live");
     if (sys.uptime) kv("Up for", sys.uptime);
     if (sys.temp != null) kv("Pi temperature", `${sys.temp}°C`);
     const btns = el(`<div class="row" style="margin-top:16px"><button class="btn sm" id="a-restart">Restart dash</button><button class="btn sm danger" id="a-off">Shut down Pi</button></div>`);
@@ -620,6 +620,11 @@ export class SettingsScreen {
       api("system/shutdown", { method: "POST" }).then(() => toast("Shutting down…")).catch((e) => toast(e.message, "bad"));
     };
     body.appendChild(btns);
+    if (st.get("link.demo")) {
+      // The demo is a made-up Teryx. The simulator page runs the real firmware and wiring behind this dash.
+      const sim = el(`<div class="row" style="margin-top:16px"><a class="btn sm" href="rig/" target="_top">Open the whole-Teryx simulator</a></div>`);
+      body.appendChild(sim);
+    }
   }
 
   update() {}

@@ -56,6 +56,7 @@ Two caveats, both to check with a photo of the ECU sockets:
 | Hardware | `src/pico/main_pico.c` | Second MCP2515 on GP22, polled for replies. `EPS` on the UART console lists every ID heard |
 | Status to the Pi | CAN 0x718 `PICO_STEER` | State, flags, torque, angle, told speed, ECU status |
 | Python twin | `teryx/eps_toyota.py` | Same numbers, frame decoder, assist curve. Used by the simulator |
+| ECU in the sim | `teryx/rig/models.py` `EpsEcu` | A guessed Aqua ECU: answers 0x260/0x262, assist by speed, limp, sensor faults. Try it on the [simulator page](https://electrumnz.github.io/TERYXDACTL/rig/); the guesses are listed in [system-sim.md](system-sim.md#guesses-until-the-bench-test) |
 | Dash | `dash/web/js/alerts.js`, `telltales.js` | Steering lamp and alert text |
 
 The Python side is checked against the C header and settings table by

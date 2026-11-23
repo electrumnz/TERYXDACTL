@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en-NZ">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0c0a07">
+  <title>Teryx Simulator</title>
+  <link rel="stylesheet" href="rig.css">
+</head>
+<body>
+  <header class="top">
+    <a class="back" href="../" title="Back to the demo dash">&larr;</a>
+    <div class="title">Teryx simulator <span class="sub">real control box firmware, wiring and dash</span></div>
+    <div class="pill" id="status">Starting</div>
+  </header>
+
+  <main class="layout">
+    <section class="screen-wrap">
+      <div class="screen" id="screen">
+        <iframe id="dash" title="Dash screen" allow="autoplay"></iframe>
+        <div class="screen-off" id="screen-off" hidden><div>Screen off<small id="screen-why"></small></div></div>
+        <div class="loading" id="loading">
+          <div class="spinner"></div>
+          <div id="loading-text">Loading the simulator</div>
+          <small>First time takes a bit: it downloads Python (about 10 MB). After that it's cached.</small>
+        </div>
+      </div>
+      <div class="strip" id="strip"></div>
+    </section>
+
+    <section class="panel" id="panel">
+      <div class="card">
+        <h2>Driver</h2>
+        <div class="row">
+          <button class="tog" data-in="key">Key</button>
+          <button class="tog" data-in="park">Park brake</button>
+          <button class="hold" data-hold="brake">Brake</button>
+          <button class="tog danger" data-in="estop">E-stop</button>
+        </div>
+        <div class="row seg" data-seg="fnr">
+          <button data-v="forward">F</button><button data-v="neutral">N</button><button data-v="reverse">R</button>
+        </div>
+        <label class="slide">Throttle <b id="thr-v">0%</b>
+          <input type="range" id="throttle" min="0" max="100" value="0" step="1">
+        </label>
+        <label class="check"><input type="checkbox" id="cruise"> Keep the throttle where I leave it</label>
+        <label class="slide">Steering wheel <b id="str-v">hands off</b>
+          <input type="range" id="steer" min="-8" max="8" value="0" step="0.5">
+        </label>
+        <div class="gauges">
+          <div class="g"><span id="g-speed">0</span><small>km/h</small></div>
+          <div class="g wheel"><svg viewBox="-20 -20 40 40" id="g-wheel"><circle r="16" /><line x1="-16" y1="0" x2="16" y2="0" /><line x1="0" y1="0" x2="0" y2="16" /></svg><small id="g-angle">0&deg;</small></div>
+          <div class="g"><span id="g-assist">-</span><small>assist</small></div>
+          <div class="g"><span id="g-soc">-</span><small>battery %</small></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Switches and plugs</h2>
+        <div class="row">
+          <button class="tog" data-in="backup_lights">Backup lights toggle</button>
+          <button class="tog" data-in="trailer">Trailer plugged in</button>
+        </div>
+        <div class="row">
+          <span class="lbl">Cab winch switch</span>
+          <button class="hold" data-hold="winch_cab" data-v="in">In</button>
+          <button class="hold" data-hold="winch_cab" data-v="out">Out</button>
+        </div>
+        <div class="row">
+          <span class="lbl">Winch hand remote</span>
+          <button class="hold" data-hold="winch_remote" data-v="in">In</button>
+          <button class="hold" data-hold="winch_remote" data-v="out">Out</button>
+        </div>
+        <label class="slide">12 V battery <b id="bat-v">12.6 V</b>
+          <input type="range" id="battery" min="9" max="14.8" value="12.6" step="0.1">
+        </label>
+        <div class="row seg" data-seg="mode">
+          <button data-v="eco">Eco</button><button data-v="normal">Normal</button><button data-v="sport">Sport</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Break things</h2>
+        <div class="row">
+          <select id="sg-fault"><option value="">Shinegle fault...</option></select>
+          <button class="tog" id="sg-fault-btn" disabled>Fault on</button>
+        </div>
+        <div class="row">
+          <button class="tog" data-in="ecu_silent">Steering ECU goes quiet</button>
+          <button class="tog" data-in="trq_wire_off">Torque sensor wire off</button>
+        </div>
+        <details>
+          <summary>Pull a fuse or cut a fused wire</summary>
+          <div class="fuses" id="fuses"></div>
+        </details>
+        <button class="plain" id="restart">Start again</button>
+      </div>
+
+      <div class="card">
+        <h2>What the Teryx is doing</h2>
+        <div class="kv" id="kv"></div>
+        <h3>Lights</h3>
+        <div class="lamps" id="lamps"></div>
+        <h3>Relays</h3>
+        <div class="relays" id="relays"></div>
+        <h3>Actuators</h3>
+        <div class="acts" id="acts"></div>
+        <h3>Problems the sim found</h3>
+        <ul class="problems" id="problems"><li class="muted">None</li></ul>
+      </div>
+
+      <p class="foot">
+        The screen is the real dash, running the same code as the Pi. Behind it the real control box
+        firmware runs in your browser (built for the web from the same C), inside the whole wiring
+        diagram. The Shinegle and the power steering are modelled on guesses until the bench test.
+        See <a href="https://github.com/electrumnz/TERYXDACTL/blob/main/docs/system-sim.md">docs/system-sim.md</a>.
+      </p>
+    </section>
+  </main>
+  <script src="rig.js"></script>
+</body>
+</html>

@@ -84,6 +84,7 @@ class System:
                     return int(p[2:])
             raise KeyError(f"no Pico pin says '{desc}' in wiring.yaml")
 
+        self._gp_list = [int(p[2:]) for p in pico if re.fullmatch(r"GP\d+", p)]
         self.spi_pins = (gp_with("SPI0 SCK"), gp_with("SPI0 MOSI"), gp_with("SPI0 MISO"))
         self.i2c_pins = (gp_with("I2C1 SDA"), gp_with("I2C1 SCL"))
         sda, scl = (f"PICO.GP{g}" for g in self.i2c_pins)
@@ -115,7 +116,7 @@ class System:
                 self.problems.append(f"{dev_id}: SPI wires don't go to the Pico's SPI0 pins")
             self.can_chips.append((dev_id, int(cs[0].split("GP")[1])))
 
-    def _boot_pico(self, watchdog: bool = False, keep_chips: Firmware | None = None) -> None:
+    def _boot_pico(self, watchdog: bool = False, keep_regs: dict | None = None) -> None:
         fw = Firmware(self.lib)
         fw.set_pins(spi=self.spi_pins, i2c=self.i2c_pins)
         fw.watchdog_reboot(watchdog)
@@ -123,11 +124,11 @@ class System:
         self.can_index = {d: fw.add_can(cs) for d, cs in self.can_chips}
         if self._flash is not None:
             fw.load_flash(self._flash)
-        if keep_chips is not None:   # a Pico reset: the chips kept power and their registers
+        if keep_regs is not None:   # a Pico reset: the chips kept power and their registers
             for d, i in self.i2c_index.items():
                 fw.i2c_power(i, True)
-                for r in range(256):
-                    fw.set_reg(i, r, keep_chips.reg(i, r))
+                for r, v in enumerate(keep_regs[d]):
+                    fw.set_reg(i, r, v)
         self.fw = fw
         self._push_inputs()
         fw.start()
@@ -149,16 +150,16 @@ class System:
                 if isinstance(self.m[d], MD.Mcp23017):
                     self.m[d].regs = None
             return
-        pico.snap = {int(p[2:]): fw.pin(int(p[2:])) for p in pico.dev["pins"] if re.fullmatch(r"GP\d+", p)}
+        pico.snap = fw.pins(self._gp_list)
         for d, i in self.i2c_index.items():
             mdl = self.m[d]
             if isinstance(mdl, MD.Mcp23017):
                 mdl.regs = (fw.reg(i, 0x00), fw.reg(i, 0x01), fw.reg(i, 0x14), fw.reg(i, 0x15))
             elif isinstance(mdl, MD.Pca9685):
-                mdl.duty = [fw.pca(i, ch)[0] if fw.pca_totem(i) else 0.0 for ch in range(16)]
+                mdl.duty = fw.pca_all(i)
 
     _STATE_ATTRS = ("on", "pos", "pedal", "plugged", "remote", "present", "volts", "connected",
-                    "broken", "jammed", "current", "regs", "active_low")
+                    "broken", "jammed", "current", "regs", "active_low", "driver_nm", "trq2_broken")
 
     def _state_key(self) -> tuple:
         """Everything a solve depends on. Same key as last time = same answer, skip the solve."""
@@ -181,7 +182,7 @@ class System:
             self._last_key = key
         get = self.net.get
         for mdl in self.models:
-            if isinstance(mdl, MD.Actuator):
+            if isinstance(mdl, (MD.Actuator, MD.EpsEcu, MD.Shinegle)):
                 mdl.sense(get)
         if self.net.shorts:
             self._problem("short circuit on " + ", ".join(sorted(self.net.shorts)[:6]))
@@ -270,9 +271,16 @@ class System:
         if self.fw is not None and "PICO_CAN" in self.can_index:
             for cid, ext, data in self.fw.can_pop(self.can_index["PICO_CAN"]):
                 self._bus.send(can.Message(arbitration_id=cid, is_extended_id=ext, data=data))
+        ecu: MD.EpsEcu = self.m["EPS_ECU"]
+        wired = self._eps_listening()
         if self.fw is not None and "EPS_CAN" in self.can_index:
-            for cid, _ext, _data in self.fw.can_pop(self.can_index["EPS_CAN"]):
+            for cid, ext, data in self.fw.can_pop(self.can_index["EPS_CAN"]):
                 self.eps_frames[cid] = self.eps_frames.get(cid, 0) + 1
+                if wired and not ext:
+                    ecu.on_frame(cid, data)
+        for cid, data in ecu.take():      # the Aqua ECU's replies (ASSUMED frames, models.py)
+            if wired and self.fw is not None and "EPS_CAN" in self.can_index:
+                self.fw.can_push(self.can_index["EPS_CAN"], cid, data, False)
         # bus -> Pico (the gateway and the fake Shinegle sent onto the same virtual bus)
         while (msg := self._bus.recv(0)) is not None:
             if msg.arbitration_id == M.BENCH_INPUTS.can_id and not msg.is_extended_id:
@@ -308,11 +316,14 @@ class System:
         veh = self.sim.vehicle
         if self.sim.scenario.name == "manual":
             veh.inp.direction = sg.direction(get)
-            veh.inp.throttle = self.m["THROTTLE"].pedal
+            veh.inp.throttle = sg.throttle(get)      # through the pedal wires (models.Shinegle)
             veh.inp.brake = 1.0 if self.m["BRAKE_SW"].on else 0.0
+            # a shorted or open-ground throttle wire is the controller's own throttle fault
+            veh.forced_faults = set(self.sim.manual_faults) | ({"throttle"} if sg.throttle_fault(get) else set())
         else:   # a scripted drive: the F-N-R switch follows it
             self.m["FNR"].pos = veh.inp.direction if veh.inp.direction != "neutral" else None
         veh.drive_inhibit = not sg.ksi(get)
+        self.m["EPS_ECU"].road_kmh = veh.speed_kmh
         self.sim.links["shinegle"] = self.shinegle_on()
         self.sim.tick(STEP_S, self.t)
         powered = self.pi_powered()
@@ -349,8 +360,9 @@ class System:
                     self.problems.append("Pico watchdog reset")
                     old = self.fw
                     self._flash = old.flash()
-                    self._boot_pico(watchdog=True, keep_chips=old)
-                    old.close()
+                    regs = {d: [old.reg(i, r) for r in range(256)] for d, i in self.i2c_index.items()}
+                    old.close()     # the browser has one copy of the firmware: stop it before the reboot
+                    self._boot_pico(watchdog=True, keep_regs=regs)
                 else:
                     self._halt_pico()
                     self._pico_on = False
@@ -400,6 +412,10 @@ class System:
 
     def throttle(self, pedal: float) -> None:
         self.m["THROTTLE"].pedal = max(0.0, min(1.0, pedal))
+
+    def steer(self, nm: float) -> None:
+        """How hard the driver turns the wheel, Nm (+ = right). 0 = hands off."""
+        self.m["EPS_COL"].driver_nm = float(nm)
 
     def backup_lights(self, on: bool) -> None:
         self.m["LIMP_SW"].on = on
@@ -458,6 +474,10 @@ class System:
 
     def level(self, pin: str):
         return self.net.get(pin)
+
+    def eps(self) -> dict:
+        """The Aqua ECU: mode (manual, booting, normal, limp, fault), assist, column angle."""
+        return self.m["EPS_ECU"].report(self.net.get)
 
     def actuator(self, dev: str) -> MD.Actuator:
         return self.m[dev]

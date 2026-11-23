@@ -17,3 +17,8 @@ captures/
 *.asc
 *.blf
 !tests/data/*.log
+
+# Phone sim: built by tools/build_rig_web.py (the Pages workflow makes it too)
+dash/web/rig/teryx-py.zip
+dash/web/rig/_pyodide
+node_modules/

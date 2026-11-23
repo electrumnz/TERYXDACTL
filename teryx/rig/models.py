@@ -180,9 +180,24 @@ class Throttle(Model):
 
 
 # ------------------------------------------------------------------ Shinegle low voltage side
+# ASSUMED until Sam's SG1810 programmer shows the real settings (docs/shinegle-sg1810-tables.md):
+SG_THROTTLE_START_V = 0.8     # PedSet "throttle starting value": below this the motor does nothing
+SG_THROTTLE_FULL_V = 4.2      # full throttle (a hall pedal runs about 0.5 to 4.5 V)
+SG_THROTTLE_FAULT_V = 4.8     # above this the wiper is shorted to 5 V or the ground is off: throttle fault
+SG_HPD = True                 # high pedal disable: pedal down at key-on = no drive until you lift off
+
+
 class Shinegle(Model):
-    """SG1202 low voltage pins. KSI on J1-1 wakes it; it then feeds J1-25 (+12 V out)."""
+    """SG1202 low voltage pins. KSI on J1-1 wakes it; it then feeds J1-25 (+12 V out) to the
+    throttle and reads the pedal back on J1-16 (wiper) and J1-9 (pedal micro switch).
+    Its CAN frames are the fake controller in teryx/sim, on the PLACEHOLDER layout in
+    teryx/canbus/shinegle.dbc (made up until the bench sniff, docs/shinegle-decode.md)."""
     kind = "shinegle"
+
+    def __init__(self, dev_id, dev):
+        super().__init__(dev_id, dev)
+        self.was_on = False
+        self.hpd = False           # pedal was down at key-on: held off until it's lifted
 
     def ksi(self, get) -> bool:
         return volts(get(self.p("J1-1"))) >= 9.0
@@ -193,11 +208,40 @@ class Shinegle(Model):
         f, r = volts(get(self.p("J1-22"))) >= 9, volts(get(self.p("J1-33"))) >= 9
         return "forward" if f and not r else "reverse" if r and not f else "neutral"
 
+    def wiper_v(self, get) -> float:
+        return volts(get(self.p("J1-16")))
+
+    def pedal(self, get) -> float:
+        """0-1 from the wiper volts, before the switch and HPD checks."""
+        v = self.wiper_v(get)
+        return max(0.0, min(1.0, (v - SG_THROTTLE_START_V) / (SG_THROTTLE_FULL_V - SG_THROTTLE_START_V)))
+
+    def throttle_fault(self, get) -> bool:
+        return self.ksi(get) and self.wiper_v(get) > SG_THROTTLE_FAULT_V
+
+    def throttle(self, get) -> float:
+        """What the controller acts on: needs KSI, the pedal switch closed, no HPD, no fault."""
+        if not self.ksi(get) or self.hpd or self.throttle_fault(get):
+            return 0.0
+        if volts(get(self.p("J1-9"))) < 9.0:      # micro switch open: pedal up
+            return 0.0
+        return self.pedal(get)
+
+    def sense(self, get) -> None:
+        on = self.ksi(get)
+        if on and not self.was_on and SG_HPD and self.pedal(get) > 0.1:
+            self.hpd = True
+        if self.hpd and (not on or self.pedal(get) < 0.05):
+            self.hpd = False
+        self.was_on = on
+
     def step(self, get):
         return [], ([S(self.p("J1-25"), 12.0)] if self.ksi(get) else [])
 
     def report(self, get):
-        return {"ksi": self.ksi(get), "direction": self.direction(get)}
+        return {"ksi": self.ksi(get), "direction": self.direction(get),
+                "throttle": round(self.throttle(get), 2), "hpd": self.hpd,
+                "throttle_fault": self.throttle_fault(get)}
 
 
 # ------------------------------------------------------------------ control box chips
@@ -521,23 +565,178 @@ class WinchMotor(Model):
         return {"turning": self.turning(get)}
 
 
+# ------------------------------------------------------------------ Aqua power steering
+# EVERYTHING BELOW IS ASSUMED until the bench test (docs/power-steering-aqua.md). The frame
+# layouts are the ones in teryx/eps_toyota.py (opendbc's Toyota EPS frames); the numbers that
+# make it feel like power steering (sensor volts per Nm, assist map, how heavy the Teryx is to
+# turn) are rough guesses, each a named constant so the bench result is a one-line change.
+TRQ_CENTRE_V = 2.5        # ASSUMED: torque sensor output with hands off
+TRQ_V_PER_NM = 0.25       # ASSUMED: both outputs move the same way, 0.25 V per Nm
+TRQ_MATCH_V = 0.4         # ASSUMED: the ECU calls a sensor fault if the two outputs differ by this
+TRQ_RANGE_V = (0.5, 4.5)  # ASSUMED: outside this = sensor wire off or shorted
+ECU_BOOT_S = 0.4          # ASSUMED: ECU starts talking this long after IG
+ECU_TORQUE_PERIOD_S = 0.020   # ASSUMED: 0x260 at 50 Hz (Toyota EPS in opendbc)
+ECU_STATUS_PERIOD_S = 0.040   # ASSUMED: 0x262 at 25 Hz
+ECU_FRAMES_TIMEOUT_S = 1.0    # ASSUMED: no 0x0B4 + 0x2C4 for this long = limp mode
+RPM_RUNNING_MIN = 400         # ASSUMED: "engine running" if 0x2C4 says at least this
+ASSIST_LIMP = 1.0             # ASSUMED: assist ratio in the ECU's own fail-safe
+ASSIST_MAP = ((0, 3.0), (16.3, 3.0), (60, 1.2), (100, 0.6), (200, 0.6))  # ASSUMED: told km/h -> ratio
+COLUMN_LOCK_DEG = 450.0       # ASSUMED: lock to lock 2.5 turns through the Teryx rack
+COLUMN_FRICTION_NM = 6.0      # ASSUMED: torque at the wheel to start turning when stopped
+COLUMN_DEG_PER_NM_S = 60.0    # ASSUMED: how fast it turns per Nm over the friction
+SELF_CENTRE_NM_PER_DEG_KMH = 0.0004   # ASSUMED: rolling, the tyres pull it back straight
+
+
+def _interp(pts, x):
+    if x <= pts[0][0]:
+        return pts[0][1]
+    for (x0, y0), (x1, y1) in zip(pts, pts[1:]):
+        if x <= x1:
+            return y0 + (y1 - y0) * (x - x0) / (x1 - x0)
+    return pts[-1][1]
+
+
 class EpsEcu(Model):
+    """Toyota Aqua EPS ECU (89650-52B51): reads the torque sensor, turns the column, and
+    talks on the steering CAN bus. ASSUMED behaviour, see the constants above.
+
+    * Asleep without IG + B+ + ground: the column is a plain manual one.
+    * Awake with the Pico's 0x2C4 (engine running) and 0x0B4 (speed) frames: full assist,
+      less as the told speed goes up (ASSIST_MAP).
+    * Awake but no frames for ECU_FRAMES_TIMEOUT_S: limp mode (its own fixed, lighter assist).
+    * Torque sensor fault: no assist, and EPS_STATUS says permanent fault.
+    * Sends 0x260 (driver torque, angle, EPS torque) and 0x262 (status) back.
+    """
     kind = "eps_ecu"
+
+    def __init__(self, dev_id, dev):
+        super().__init__(dev_id, dev)
+        self.t = 0.0
+        self.awake_since: float | None = None
+        self.last_speed_t = self.last_rpm_t = -1e9
+        self.told_kmh = 0.0
+        self.rpm = 0
+        self.trq_v = (TRQ_CENTRE_V, TRQ_CENTRE_V)
+        self.is_awake = False
+        self.driver_nm = 0.0      # what the torque sensor says, worked out from TRQ1
+        self.assist_nm = 0.0
+        self.angle_deg = 0.0      # the column (shared with EPS_COL)
+        self.road_kmh = 0.0       # real speed, for self-centring (the System sets it)
+        self.silent = False       # sim switch: the ECU never talks (wrong frames guessed, dead ECU)
+        self.force_fault = False  # sim switch: the ECU reports a permanent fault
+        self._next_torque = self._next_status = 0.0
+        self.outbox: list[tuple[int, bytes]] = []
+        self.counts: dict[int, int] = {}
 
     def awake(self, get) -> bool:
         return (volts(get(self.p("IG"))) >= 9 and volts(get(self.p("B+"))) >= 9
                 and is_ground(get(self.p("GND"))))
 
+    # ---- what it hears from the Pico
+    def on_frame(self, can_id: int, data: bytes) -> None:
+        from ..eps_toyota import RPM_ID, SPEED_ID, SPEED_LSB_KMH, toyota_checksum
+        self.counts[can_id] = self.counts.get(can_id, 0) + 1
+        if len(data) != 8 or data[-1] != toyota_checksum(can_id, data):
+            return
+        if can_id == SPEED_ID:
+            self.told_kmh = ((data[5] << 8) | data[6]) * SPEED_LSB_KMH
+            self.last_speed_t = self.t
+        elif can_id == RPM_ID:
+            self.rpm = (data[0] << 8) | data[1]
+            self.last_rpm_t = self.t
+
+    # ---- what it's doing
+    def sensor_fault(self) -> bool:
+        a, b = self.trq_v
+        lo, hi = TRQ_RANGE_V
+        return not (lo <= a <= hi and lo <= b <= hi) or abs(a - b) > TRQ_MATCH_V
+
+    def mode(self) -> str:
+        if not self.is_awake:
+            return "manual"
+        if self.force_fault or self.sensor_fault():
+            return "fault"
+        if self.awake_since is not None and self.t - self.awake_since < ECU_BOOT_S:
+            return "booting"
+        fresh = (self.t - self.last_speed_t <= ECU_FRAMES_TIMEOUT_S
+                 and self.t - self.last_rpm_t <= ECU_FRAMES_TIMEOUT_S and self.rpm >= RPM_RUNNING_MIN)
+        return "normal" if fresh else "limp"
+
+    def ratio(self) -> float:
+        m = self.mode()
+        if m == "normal":
+            return _interp(ASSIST_MAP, self.told_kmh)
+        if m == "limp":
+            return ASSIST_LIMP
+        return 0.0
+
+    def sense(self, get) -> None:
+        """After each solve: wake up or sleep, and read the torque sensor at our own pins."""
+        awake = self.awake(get)
+        if awake and not self.is_awake:
+            self.awake_since = self.t
+            self._next_torque = self._next_status = self.t + ECU_BOOT_S
+        if not awake:
+            self.awake_since = None
+        self.is_awake = awake
+        self.trq_v = (volts(get(self.p("TRQ1"))), volts(get(self.p("TRQ2"))))
+        self.driver_nm = 0.0 if self.sensor_fault() else (self.trq_v[0] - TRQ_CENTRE_V) / TRQ_V_PER_NM
+
+    def advance(self, dt: float) -> None:
+        from ..eps_toyota import STATUS_ID, TORQUE_ID, toyota_checksum
+        self.t += dt
+        self.assist_nm = self.driver_nm * self.ratio()
+        total = self.driver_nm + self.assist_nm - SELF_CENTRE_NM_PER_DEG_KMH * self.angle_deg * self.road_kmh * 10
+        over = max(0.0, abs(total) - COLUMN_FRICTION_NM)
+        self.angle_deg += (1 if total > 0 else -1) * over * COLUMN_DEG_PER_NM_S * dt
+        self.angle_deg = max(-COLUMN_LOCK_DEG, min(COLUMN_LOCK_DEG, self.angle_deg))
+        if not self.is_awake or self.mode() == "booting" or self.silent:
+            return
+        if self.t >= self._next_torque:
+            self._next_torque = self.t + ECU_TORQUE_PERIOD_S
+            drv = max(-32768, min(32767, round(self.driver_nm * 100)))   # ASSUMED: 0.01 Nm per bit
+            eps = max(-32768, min(32767, round(self.assist_nm * 100)))
+            ang = max(-32768, min(32767, round(self.angle_deg / 0.0573)))
+            init = self.t - (self.awake_since or 0) < 1.0
+            b = bytearray(8)
+            b[0] = (0x01 if abs(self.driver_nm) > 3.0 else 0) | (0x08 if init else 0)
+            b[1:3] = drv.to_bytes(2, "big", signed=True)
+            b[3:5] = ang.to_bytes(2, "big", signed=True)
+            b[5:7] = eps.to_bytes(2, "big", signed=True)
+            b[7] = toyota_checksum(TORQUE_ID, b)
+            self.outbox.append((TORQUE_ID, bytes(b)))
+        if self.t >= self._next_status:
+            self._next_status = self.t + ECU_STATUS_PERIOD_S
+            from ..eps_toyota import STATUS_PERMANENT_FAULT
+            lka = STATUS_PERMANENT_FAULT if self.mode() == "fault" else (5 if self.mode() == "normal" else 1)
+            b = bytearray(5)
+            b[3] = (lka & 0x7F) << 1
+            b[4] = toyota_checksum(STATUS_ID, b)
+            self.outbox.append((STATUS_ID, bytes(b)))
+
+    def take(self) -> list[tuple[int, bytes]]:
+        out, self.outbox = self.outbox, []
+        return out
+
     def report(self, get):
-        return {"awake": self.awake(get)}
+        return {"awake": self.awake(get), "mode": self.mode(), "assist_ratio": round(self.ratio(), 2),
+                "told_kmh": round(self.told_kmh, 1), "driver_nm": round(self.driver_nm, 2),
+                "angle_deg": round(self.angle_deg, 1)}
 
 
 class TorqueSensor(Model):
-    """Aqua column torque sensor: both signals sit at about 2.5 V with no effort."""
+    """Aqua column torque sensor: 2.5 V hands off, ASSUMED 0.25 V per Nm, both outputs alike.
+    ``driver_nm`` is how hard the driver is turning the wheel (+ = right)."""
     kind = "torque"
 
+    def __init__(self, dev_id, dev):
+        super().__init__(dev_id, dev)
+        self.driver_nm = 0.0
+        self.trq2_broken = False    # sim switch: one sensor output gone (wire off)
+
     def step(self, get):
-        return [], [S(self.p("TRQ1"), 2.5), S(self.p("TRQ2"), 2.5)]
+        v = max(0.3, min(4.7, TRQ_CENTRE_V + TRQ_V_PER_NM * self.driver_nm))
+        return [], [S(self.p("TRQ1"), v), S(self.p("TRQ2"), 0.0 if self.trq2_broken else v)]
 
 
 class DpdtRelay(Model):
