@@ -188,6 +188,20 @@ def all_lines(bom: dict, wiring: dict) -> list[dict]:
     lines = []
     for line in bom["lines"]:
         line = dict(line)
+        if line.get("notes") == "AUTO" and bom.get("via_buy"):
+            need = dict(c["vias"])
+            for key, buy in bom["via_buy"].items():
+                parts = buy.get("covers") or [key]
+                got = {p: need.pop(p) for p in parts if p in need}
+                if not got:
+                    continue
+                lines.append({"id": f"via_{key}", "shop": line["shop"], "part": buy["part"], "qty": 1,
+                              "each": buy["each"], "source": line.get("source", ""),
+                              "notes": "Need " + ", ".join(f"{p} x{n}" for p, n in sorted(got.items())) + " (counted from the wiring), rest spare"})
+            for p, n in sorted(need.items()):
+                lines.append({"id": f"via_{p}", "shop": line["shop"], "part": p, "qty": n + 2, "each": 1.0,
+                              "source": "Estimate", "notes": "Counted from the wiring, 2 spare"})
+            continue
         if line.get("notes") == "AUTO":
             line["notes"] = "Contents, counted from the wiring: " + ", ".join(
                 f"{k} x{v}" for k, v in sorted(c["vias"].items())) + ". Buy a few spare of each"
@@ -195,21 +209,21 @@ def all_lines(bom: dict, wiring: dict) -> list[dict]:
     src = "Estimate; counted from config/wiring.yaml"
     for mm2, m in sorted(c["wire_m"].items()):
         qty = _up(m, 1 if mm2 >= 10 else 5)  # thick cable is sold by the metre
-        lines.append({"id": f"wire_{mm2}", "shop": "local", "part": f"Auto cable {_num(mm2)} mm² (metres)", "qty": qty,
+        lines.append({"id": f"wire_{mm2}", "shop": "local", "part": f"Auto cable {_num(mm2)} mm², pure copper (metres)", "qty": qty,
                       "each": bom["wire_price_m"][mm2], "source": src,
-                      "notes": f"About {m:.0f} m in the plan + 25%. Split red (+) / black (-) / a signal colour"})
+                      "notes": f"About {m:.0f} m in the plan + 25%. Split red (+) / black (-) / a signal colour. Buy by mm² (cross-section) on the label, not the outside 'mm' size, and not CCA (copper-clad aluminium)"})
     if c["can_m"]:
-        lines.append({"id": "can_cable", "shop": "local", "part": "CAN cable, 2-core twisted + screen (metres)",
+        lines.append({"id": "can_cable", "shop": "local", "part": "CAN cable: 2-core twisted pair, 0.5mm², screened (metres)",
                       "qty": _up(c["can_m"]), "each": bom["can_cable_price_m"], "source": src})
     if c["spk_m"]:
-        lines.append({"id": "spk_cable", "shop": "local", "part": "Speaker cable (metres)",
+        lines.append({"id": "spk_cable", "shop": "local", "part": "Speaker cable 1.5mm² (16 AWG), pure copper (metres)",
                       "qty": max(10, _up(c["spk_m"])), "each": bom["speaker_cable_price_m"], "source": src})
     blade_txt = ", ".join(f"{_num(a)} A x{n + 2}" for a, n in sorted(c["blade"].items()))
     lines.append({"id": "blade_fuses", "shop": "local", "part": "Standard blade fuses, Narva or Jaycar (not AliExpress)",
                   "qty": sum(n + 2 for n in c["blade"].values()), "each": bom["blade_fuse_each"], "source": src,
                   "notes": f"{blade_txt} (2 spare of each)"})
     if c["inline_blade"]:
-        lines.append({"id": "inline_holders", "shop": "local", "part": "Waterproof inline blade fuse holder",
+        lines.append({"id": "inline_holders", "shop": "local", "part": "Waterproof inline fuse holder, standard blade (ATO), 30A, with 4mm² leads",
                       "qty": c["inline_blade"], "each": bom["inline_holder_each"], "source": src,
                       "notes": "Feeds that don't come off the fuse block (bucks, screen, amp, 12V sense, accessories)"})
     for amps, n in sorted(c["midi"].items()):
@@ -217,8 +231,8 @@ def all_lines(bom: dict, wiring: dict) -> list[dict]:
                       "qty": n, "each": bom["midi_fuse_each"] + bom["midi_holder_each"], "source": src,
                       "notes": "At the battery, one per big feed (fuse block, power steering, amp)"})
     for mm2, n in sorted(c["lugs"].items()):
-        lines.append({"id": f"lugs_{mm2}", "shop": bom.get("lug_shop", "local"), "part": f"Tinned lugs for {_num(mm2)} mm², M8 hole",
-                      "qty": n + 2, "each": bom["lug_each"], "source": src, "notes": "2 spare"})
+        lines.append({"id": f"lugs_{mm2}", "shop": bom.get("lug_shop", "local"), "part": f"Tinned copper cable lug {_num(mm2)} mm², M8 hole (listed as SC{_num(mm2)}-8)",
+                      "qty": n + 2, "each": bom["lug_each"], "source": src, "notes": "2 spare. Crimp with a hex lug crimper (the ferrule crimper won't do these)"})
     for size, n in sorted(c["plugs"].items() if not bom.get("plugs_bought") else []):
         lines.append({"id": f"plug_{size}", "shop": "aliexpress", "part": f"Waterproof {size}-pin plug pair (DT style)",
                       "qty": n + 1, "each": bom["plug_pair"][size], "source": src,
