@@ -182,10 +182,10 @@
 <line x1="920" y1="831" x2="1190" y2="831" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="1055" y="835" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">TRQ2</text>
 </g>
-<g data-device="RC_ANGLE" data-status="tbc"><title>RC_ANGLE: AS5600 magnetic angle sensor + magnet - Steering shaft angle for the RC steering loop. Analogue OUT (not I2C) because it&#x27;s a long run from the cab. May not be needed if the Aqua ECU sends the angle on 0x260 (bench test step 4, docs/power-steering-aqua.md)</title><rect x="1360" y="150" width="270" height="124" rx="6" fill="#f0f6ff" stroke="#bf8700" stroke-width="1.5" stroke-dasharray="7 4"/>
+<g data-device="RC_ANGLE" data-status="planned"><title>RC_ANGLE: AS5600 magnetic angle sensor + magnet - Steering angle for the RC steering loop. The bought Aqua column has no clock spring or angle sensor, so the AS5600 sits on a small printed gear driven off the column, geared down so lock to lock is under one turn, magnet on that gear. Analogue OUT (not I2C) because it&#x27;s a long run from the cab. May not be needed if the Aqua ECU sends the angle on 0x260 (bench test step 4, docs/power-steering-aqua.md)</title><rect x="1360" y="150" width="270" height="124" rx="6" fill="#f0f6ff" stroke="#424a53" stroke-width="1.5"/>
 <text x="1370" y="168" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">AS5600 magnetic angle sensor +</text>
 <text x="1370" y="183" font-size="13" text-anchor="start" font-weight="bold" fill="#1f2328">magnet</text>
-<text x="1370" y="198" font-size="10" text-anchor="start" font-weight="normal" fill="#bf8700">RC_ANGLE · tbc · optional</text>
+<text x="1370" y="198" font-size="10" text-anchor="start" font-weight="normal" fill="#424a53">RC_ANGLE · planned · optional</text>
 <line x1="1360" y1="212" x2="1630" y2="212" stroke="#d0d7de" stroke-width="0.5"/>
 <text x="1495" y="216" font-size="11" text-anchor="middle" font-weight="normal" fill="#424a53">VCC</text>
 <line x1="1360" y1="232" x2="1630" y2="232" stroke="#d0d7de" stroke-width="0.5"/>

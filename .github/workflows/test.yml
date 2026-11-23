@@ -17,3 +17,6 @@ jobs:
           python-version: ${{ matrix.python }}
       - run: pip install -e ".[dev]" cantools
       - run: python -m pytest -q
+        env:
+          # The system sim (real Pico firmware in the wiring) must run on Linux, not skip.
+          TERYX_RIG_REQUIRED: ${{ runner.os == 'Linux' && '1' || '' }}

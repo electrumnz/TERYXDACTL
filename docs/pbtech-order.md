@@ -47,8 +47,8 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Split corrugated conduit (black ribbed tube with a slit), about 10mm and 16mm inside size, 10m each | 1 | 18.00 | 18.00 | Estimate, AliExpress | Yes, split conduit, not spiral wrap. It takes rubbing, mud and sun better and wires can be added later through the slit. Listings often give the outside size (AD13, AD21.2 etc), so pick by the inside size in the size chart. Nylon (PA) if you can, it handles heat better than PP near the motor |
 | Heatshrink, 3:1 glue-lined (adhesive), black kit: 1.6, 2.4, 3.2, 4.8, 6.4, 9.5, 12.7 and 19.1mm, plus a small red pack | 1 | 15.00 | 15.00 | Estimate, AliExpress | 3.2mm for 0.5-1mm² joins, 4.8mm for 1.5-2.5mm², 6.4-9.5mm for 4-10mm², 19.1mm for the 35mm² lugs (that cable is about 12mm thick). Red for the + ends of the big cables |
 | SB560 Schottky diode, 5A 60V (DO-201AD, through hole), 20 pack | 1 | 4.00 | 4.00 | Estimate, AliExpress | Need SB560 5 A Schottky diode x18 (counted from the wiring), rest spare |
-| 1N5408 rectifier diode, 3A 1000V, 20 pack | 1 | 3.00 | 3.00 | Estimate, AliExpress | Need 1N5408 x8 (counted from the wiring), rest spare |
-| 1N4148 small signal diode, 50 pack | 1 | 2.00 | 2.00 | Estimate, AliExpress | Need 1N4148 x11 (counted from the wiring), rest spare |
+| 1N5408 rectifier diode, 3A 1000V, 20 pack | 1 | 3.00 | 3.00 | Estimate, AliExpress | Need 1N5408 x10 (counted from the wiring), rest spare |
+| 1N4148 small signal diode, 50 pack | 1 | 2.00 | 2.00 | Estimate, AliExpress | Need 1N4148 x12 (counted from the wiring), rest spare |
 | 10SQ045 Schottky diode, 10A 45V (R-6, through hole), 5 pack | 1 | 4.00 | 4.00 | Estimate, AliExpress | Need 10SQ045 10 A Schottky diode x1 (counted from the wiring), rest spare |
 | 1N4007 rectifier diode, 1A 1000V, 20 pack | 1 | 2.00 | 2.00 | Estimate, AliExpress | Need 1N4007 x1 (counted from the wiring), rest spare |
 | 1N4728A zener diode, 3.3V 1W, 20 pack | 1 | 2.00 | 2.00 | Estimate, AliExpress | Need 3.3 V zener x1 (counted from the wiring), rest spare |
@@ -78,7 +78,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Polyester fibre fill (speaker wadding or pillow stuffing), 200 g | 1 | 12.00 | 12.00 | Estimate | Kmart or Spotlight pillow stuffing is fine. About 70 g per speaker pod, loose. Not foam (it holds water) |
 | PETG filament 1.75mm 1kg (boxes, liner) | 1 | 35.00 | 35.00 | Estimate | Bambu PETG or similar, any colour (inside the boxes) |
 | 3mm aluminium cut from DXF: back plate + Pi lid plate | 1 | 80.00 | 80.00 | Estimate | Laser or waterjet shop; send them the DXF files in cad/stl/*.dxf. 3mm 5052 or 5083 aluminium |
-| Auto cable 0.5 mm², pure copper (metres) | 105 | 0.90 | 94.50 | Estimate; counted from config/wiring.yaml | About 83 m in the plan + 25%. Split red (+) / black (-) / a signal colour. Buy by mm² (cross-section) on the label, not the outside 'mm' size, and not CCA (copper-clad aluminium) |
+| Auto cable 0.5 mm², pure copper (metres) | 110 | 0.90 | 99.00 | Estimate; counted from config/wiring.yaml | About 86 m in the plan + 25%. Split red (+) / black (-) / a signal colour. Buy by mm² (cross-section) on the label, not the outside 'mm' size, and not CCA (copper-clad aluminium) |
 | Auto cable 0.75 mm², pure copper (metres) | 15 | 1.10 | 16.50 | Estimate; counted from config/wiring.yaml | About 12 m in the plan + 25%. Split red (+) / black (-) / a signal colour. Buy by mm² (cross-section) on the label, not the outside 'mm' size, and not CCA (copper-clad aluminium) |
 | Auto cable 1 mm², pure copper (metres) | 65 | 1.40 | 91.00 | Estimate; counted from config/wiring.yaml | About 52 m in the plan + 25%. Split red (+) / black (-) / a signal colour. Buy by mm² (cross-section) on the label, not the outside 'mm' size, and not CCA (copper-clad aluminium) |
 | Auto cable 1.5 mm², pure copper (metres) | 105 | 1.90 | 199.50 | Estimate; counted from config/wiring.yaml | About 82 m in the plan + 25%. Split red (+) / black (-) / a signal colour. Buy by mm² (cross-section) on the label, not the outside 'mm' size, and not CCA (copper-clad aluminium) |
@@ -93,7 +93,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Waterproof inline fuse holder, standard blade (ATO), 30A, with 4mm² leads | 8 | 6.00 | 48.00 | Estimate; counted from config/wiring.yaml | Feeds that don't come off the fuse block (bucks, screen, amp, 12V sense, accessories) |
 | 40 A MIDI fuse + bolt-down holder | 1 | 31.00 | 31.00 | Estimate; counted from config/wiring.yaml | At the battery, one per big feed (fuse block, power steering, amp) |
 | 60 A MIDI fuse + bolt-down holder | 2 | 31.00 | 62.00 | Estimate; counted from config/wiring.yaml | At the battery, one per big feed (fuse block, power steering, amp) |
-| **Total** | | | **1,592.50** | | |
+| **Total** | | | **1,597.00** | | |
 
 ### Separate pickup
 
@@ -109,9 +109,9 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | PB Tech (buy Thursday) | 623.21 |
 | AliExpress (one order, 2 to 4 weeks) | 120.00 |
 | AliExpress top-up (second order, not placed yet) | 158.00 |
-| Local: Jaycar, Narva stockist, Repco, auto electrical | 1,592.50 |
+| Local: Jaycar, Narva stockist, Repco, auto electrical | 1,597.00 |
 | Separate pickup | 20.00 |
-| **Everything** | **2,513.71** |
+| **Everything** | **2,518.21** |
 
 ### Already got (not in the totals)
 

@@ -10,7 +10,7 @@ Why things are wired this way (power hold, diodes, CAN rules): [`docs/wiring.md`
 Viewer with search: [`index.html`](index.html), also online at
 <https://electrumnz.github.io/TERYXDACTL/wiring/>.
 
-**97 devices, 349 wires.** By status: 19 from_manual, 3 confirmed, 278 planned, 45 tbc, 4 placeholder.
+**97 devices, 374 wires.** By status: 19 from_manual, 3 confirmed, 300 planned, 48 tbc, 4 placeholder.
 Nothing has been checked on the real Teryx yet.
 
 Wire sizes follow the conservative table in the YAML (from
@@ -94,7 +94,7 @@ runs up to about 5 m). Go one size up for bundled or hot runs.
 - [ ] **Parking brake switch (stock)** (PARK_SW): Find the parking brake switch wire at the meter plug. Does it switch ground or 12 V?
 - [ ] **Toyota Aqua EPS ECU (89650-52B51)** (EPS_ECU): Photo both EPS ECU sockets (pin numbers) and the power plug's wire colours
 - [ ] **Aqua steering column (motor + torque sensor)** (EPS_COL): Measure the space from the steering wheel to where the Teryx shaft goes to the rack. Meter TRQ1/TRQ2 at centre, hard left and hard right effort (Toyota: about 2.5 V centre, the two moving in opposite directions)
-- [ ] **AS5600 magnetic angle sensor + magnet** (RC_ANGLE): Where to put it: it reads a magnet on the end of a shaft, so it needs a spot on the column or a small geared stub
+- [ ] **AS5600 magnetic angle sensor + magnet** (RC_ANGLE): Fit check: magnet centred over the chip, 1-2 mm gap (spec 0.5-3 mm), gear backlash small enough to hold centre
 - [ ] **7-pin flat trailer socket (Narva 82043BL, reed switch)** (TRAILER): Which way does the Narva reed switch switch, and what triggers it?
 - [ ] **Analogue video to camera-ribbon (CSI) board, ADV7280-M (rear + trailer)** (TCAM_DONGLE): Confirm the board works on the Pi 5 (dtoverlay=adv728x-m,adv7280m=1); set each AHD camera to CVBS/PAL (OSD menu or mode wire)
 - [ ] **Glove box USB-C charger (RC phone)** (GLOVE_USB): Pick a 12 V USB-C PD panel socket (waterproof cap, about 20-30 W)
@@ -110,10 +110,12 @@ Wires marked TBC, with what's unknown:
 - G27 HEAD_L.GND to GND_STAR.G: Stock earth, keep it if it's good
 - C01 SG1202.CAN_H to PICO_CAN.CANH: Twisted pair. CAN is optional on the SG1202, check it's fitted. Bit rate TBC (try 250k then 500k)
 - I03 FNR.R to OPTO.IN3: The F-N-R switch is on the Shinegle key line. If J1-1 runs at 72 V, this needs a 72 V rated input, not the 12 V opto
-- I10 WINCH_SOL.COIL_IN to OPTO.IN6: Remote taps: only if the remote's own lines can be reached. TBC
+- I10 WINCH_SOL.REM_IN to OPTO.IN6: Remote tap, on the remote's own line before its diode (WN21). Not on COIL_IN: that would also see relay 4 and make the Pico stop its own pull
+- I16 WINCH_SOL.REM_OUT to OPTO.IN6: Remote tap, out side
 - I11 PARK_SW.OUT to OPTO.IN7: If the switch grounds, wire the opto input the other way round
 - LT63 FB2.F6 to BRAKE_SW.IN: Brake switch feed, always live
 - WN19 WINCH_SOL.COIL_IN to WINCH_SOL.GND: Across the coil, at the solenoid box, unless the box already has one. Stops the coil's kick arcing the relay contacts and spiking the 12 V
+- WN21 WINCH_SOL.REM_IN to WINCH_SOL.COIL_IN: Inside the solenoid box: cut the remote socket's in wire off the coil and rejoin it through this diode
 - D33 EPS_ECU.MOTOR to EPS_COL.MOTOR: Toyota's own plug, keep it from the wrecker
 - RC23 EPS_COL.TRQ1 to RC_REL.NC1: Cut into Toyota's torque sensor lead; twisted with TRQ2
 - RC32 RC_ANGLE.OUT to RC_ADC.A2: Screened lead from the column
@@ -276,6 +278,28 @@ Fuses not in the block (inline, at the battery or on a board):
 | G17 | WINCH_SOL.GND | BAT12.neg | 35 mm² |  |  | planned | Winch return straight to the battery, cable from the winch kit |
 | G37 | RELAYS.GND | PICO_BUCK.GND | 0.5 mm² |  |  | planned | Relay coil return (JD-VCC side) |
 | G38 | RELAYS2.GND | PICO_BUCK.GND | 0.5 mm² |  |  | planned (optional) |  |
+| G39 | MCP1.GND | PICO.GND |  |  |  | planned | Logic ground. Without it the board has no ground and never answers on I2C |
+| G40 | MCP2.GND | PICO.GND |  |  |  | planned |  |
+| G41 | ADS1.GND | PICO.GND |  |  |  | planned | Also the diff pot's low end (D10) |
+| G42 | PCA.GND | PICO.GND |  |  |  | planned |  |
+| G43 | PICO_CAN.GND | PICO.GND |  |  |  | planned |  |
+| G44 | EPS_CAN.GND | PICO.GND |  |  |  | planned (optional) |  |
+| G45 | OPTO.GND | PICO.GND |  |  |  | planned | 3.3 V side only. COM12 (12 V side) stays on the chassis ground (G19), so the opto still isolates |
+| G46 | BTS1.GND | PICO.GND |  |  |  | planned | BTS7960 logic header ground, so the Pico's PWM has a reference. B- carries the load current |
+| G47 | BTS2.GND | PICO.GND |  |  |  | planned |  |
+| G48 | BTS3.GND | PICO.GND |  |  |  | planned |  |
+| G49 | BTS4.GND | PICO.GND |  |  |  | planned |  |
+| G50 | BTS5.GND | PICO.GND |  |  |  | planned |  |
+| G51 | BTS6.GND | PICO.GND |  |  |  | planned |  |
+| G52 | BTS7.GND | PICO.GND |  |  |  | planned |  |
+| G53 | BTS8.GND | PICO.GND |  |  |  | planned |  |
+| G54 | BTS9.GND | PICO.GND |  |  |  | planned |  |
+| G55 | PI_CAN.GND | PI5.GND |  |  |  | planned | Header ground pin, with the CAN board's other leads |
+| G56 | RC_CAN.GND | RC_PICO.GND |  |  |  | planned (optional) |  |
+| G57 | RC_LVL.GND | RC_PICO.GND |  |  |  | planned (optional) |  |
+| G58 | RC_DAC.GND | RC_PICO.GND |  |  |  | planned (optional) |  |
+| G59 | RC_ADC.GND | RC_PICO.GND |  |  |  | planned (optional) |  |
+| G60 | RC_REL.GND | RC_PICO.GND |  |  |  | planned (optional) |  |
 | G19 | OPTO.COM12 | GND_STAR.G | 0.5 mm² |  |  | planned | 12 V side ground of the opto board |
 | G20 | TRAILER.P3_EARTH | GND_STAR.G | 2.5 mm² |  |  | planned |  |
 | G21 | TCAM_PLUG.GND | GND_STAR.G | 0.5 mm² |  |  | planned (optional) |  |
@@ -359,7 +383,8 @@ Fuses not in the block (inline, at the battery or on a board):
 | I07 | HSW_WINCH.OUT | OPTO.IN6 | 0.5 mm² |  | 1N4148 | planned |  |
 | I08 | HSW_CAB.IN | OPTO.IN6 | 0.5 mm² |  | 1N4148 | planned |  |
 | I09 | HSW_CAB.OUT | OPTO.IN6 | 0.5 mm² |  | 1N4148 | planned |  |
-| I10 | WINCH_SOL.COIL_IN | OPTO.IN6 | 0.5 mm² |  | 1N4148 | tbc | Remote taps: only if the remote's own lines can be reached. TBC |
+| I10 | WINCH_SOL.REM_IN | OPTO.IN6 | 0.5 mm² |  | 1N4148 | tbc | Remote tap, on the remote's own line before its diode (WN21). Not on COIL_IN: that would also see relay 4 and make the Pico stop its own pull |
+| I16 | WINCH_SOL.REM_OUT | OPTO.IN6 | 0.5 mm² |  | 1N4148 | tbc | Remote tap, out side |
 | I11 | PARK_SW.OUT | OPTO.IN7 | 0.5 mm² |  |  | tbc | If the switch grounds, wire the opto input the other way round |
 | I12 | TRAILER.REED_A | OPTO.IN8 | 0.5 mm² |  |  | tbc |  |
 | I13 | FB.F6 | LIM_DN.C | 0.5 mm² | 3 A |  | planned | Limit switch and reed feed from a small fused 12 V |
@@ -454,6 +479,8 @@ Fuses not in the block (inline, at the battery or on a board):
 | WN11 | RELAYS.NO5 | WINCH_SOL.COIL_OUT | 0.5 mm² | 5 A | 3 A diode (1N5408) | planned | winch.out, interlocked with in |
 | WN19 | WINCH_SOL.COIL_IN | WINCH_SOL.GND |  |  | flyback diode 1N5408 (band to the coil wire) | tbc | Across the coil, at the solenoid box, unless the box already has one. Stops the coil's kick arcing the relay contacts and spiking the 12 V |
 | WN20 | WINCH_SOL.COIL_OUT | WINCH_SOL.GND |  |  | flyback diode 1N5408 (band to the coil wire) | tbc |  |
+| WN21 | WINCH_SOL.REM_IN | WINCH_SOL.COIL_IN | 0.5 mm² |  | 3 A diode (1N5408) | tbc | Inside the solenoid box: cut the remote socket's in wire off the coil and rejoin it through this diode |
+| WN22 | WINCH_SOL.REM_OUT | WINCH_SOL.COIL_OUT | 0.5 mm² |  | 3 A diode (1N5408) | tbc |  |
 | WN13 | FB.F6 | HSW_WINCH.FEED | 0.5 mm² | 5 A |  | planned |  |
 | WN14 | FB.F6 | HSW_CAB.FEED | 0.5 mm² | 5 A |  | planned |  |
 | WN15 | HSW_WINCH.IN | WINCH_SOL.COIL_IN | 0.5 mm² | 5 A | 3 A diode (1N5408) | planned |  |
@@ -656,7 +683,7 @@ Fuses not in the block (inline, at the battery or on a board):
 | LIMP_SW | Backup lights toggle (hidden) | cab | planned | The Teryx has no headlight switch, so the dash and the Pico do everything. This hidden toggle is the backup if the control box dies: it feeds both low beams, both tails and the trailer tail at full through diodes. Leave it off normally. The Pico also turns low beams and tails on by itself if the dash goes quiet with the key on |
 | BEACON | Roof beacon (amber + white LED, steady-on) | rear | planned | Sam's amber + white LED beacon (bought 18 Nov). Each colour stays on steady and the Pico flashes them at 3 Hz (NZ Vehicle Lighting Rule 11.1(2): 2 to 4 Hz), amber and white taking turns. White only when stopped: on the road only red or amber may show to the rear. Fits Sam's existing hole on the roof |
 | BRK_WINCH | 250 A breaker | engine_bay | planned | Manual reset breaker, also the winch's kill switch: push it off to make the winch dead. No isolator contactor (Sam, 18 Nov), so the XBull remote and hand switches work whenever this is on |
-| WINCH_SOL | XBull solenoid box | front | confirmed |  |
+| WINCH_SOL | XBull solenoid box | front | confirmed | The remote socket's in and out lines are cut from the coils inside the box and rejoined through their own diodes (WN21, WN22), like the hand switches. Then the in.winch_remote tap sees only the remote, not the Pico's own relays 4-5 driving the coils (found by the system sim, 23 Nov: tapped at the coil, the Pico would stop its own winch pull) |
 | WINCH_MOTOR | XBull 5000 lb winch motor | front | confirmed |  |
 | WINCH_REMOTE | XBull handheld remote | front | confirmed |  |
 | HSW_WINCH | Hidden winch switch (at the winch) | front | confirmed | Momentary (ON)-OFF-(ON) |
@@ -676,7 +703,7 @@ Fuses not in the block (inline, at the battery or on a board):
 | RC_DAC | MCP4728 4-ch 12-bit DAC (0x60) | control_box | planned (optional) | VOUTA = fake TRQ1, VOUTB = fake TRQ2 (a mirrored pair about the centre, trq_volts() in teryx/rc_mode.py). C and D spare (throttle wiper later). VDD 5 V, so 0-5 V out |
 | RC_ADC | ADS1115 ADC (third one, 0x48 on the RC box's own I2C) | control_box | planned (optional) | Reads back what actually reaches the ECU (A0 TRQ1, A1 TRQ2) and the steering angle (A2). If TRQ1/TRQ2 stop mirroring, the RC box drops the relay. VDD 5 V so it can read up to 5 V |
 | RC_REL | DPDT signal relay module, 5 V coil, gold contacts | control_box | planned (optional) | Off (NC) = the real torque sensor goes to the ECU. On (NO) = the DAC does. Not the 16-ch board: its 10 A silver contacts aren't made for tiny sensor currents. The coil only gets power from the RC box, so anything that stops the RC box hands the steering back |
-| RC_ANGLE | AS5600 magnetic angle sensor + magnet | cab | tbc (optional) | Steering shaft angle for the RC steering loop. Analogue OUT (not I2C) because it's a long run from the cab. May not be needed if the Aqua ECU sends the angle on 0x260 (bench test step 4, docs/power-steering-aqua.md) |
+| RC_ANGLE | AS5600 magnetic angle sensor + magnet | cab | planned (optional) | Steering angle for the RC steering loop. The bought Aqua column has no clock spring or angle sensor, so the AS5600 sits on a small printed gear driven off the column, geared down so lock to lock is under one turn, magnet on that gear. Analogue OUT (not I2C) because it's a long run from the cab. May not be needed if the Aqua ECU sends the angle on 0x260 (bench test step 4, docs/power-steering-aqua.md) |
 | TRAILER | 7-pin flat trailer socket (Narva 82043BL, reed switch) | rear | planned | See [`docs/cameras.md`](../../docs/cameras.md). |
 | TCAM_PLUG | Trailer EU 7-pin round plug (camera + light bar, Sam's) | rear | planned (optional) | Sam's EU round 7-pin, next to the flat NZ/AU 7-pin for the main trailer lights, so they can't be mixed up. NOT wired to the EU light standard. 1 cam +12 V, 2 video, 3 cam ground, 4 video shield, 5 light bar +12 V, 6 light bar - (switched), 7 spare. Light bar on 1.5 mm² (pins are good for 10 A+). Spring cap on the socket and dielectric grease on the pins |
 | CAM_TRAILER | Trailer camera (12 V AHD) | trailer | planned (optional) |  |
