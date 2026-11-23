@@ -30,16 +30,21 @@ English text, and are listed under Settings > Faults.
 
 ![Predator](docs/screens/drive-predator.png)
 
-| Look | When (in Auto) | What it's like |
+Each look has its own Drive screen layout, not just its own colours. The layouts follow the
+three full-screen mock-ups made at the start (project files `dash-dino/img/trex-art/mockups`).
+
+| Look | When (in Auto) | Drive screen |
 |---|---|---|
-| **Predator** | Everyday driving | Dark T. rex hide, lava orange, the T. rex head |
-| **Fossil** | 4WD on, or the diff lock above 0% | A T. rex skull in rock, stone plates, amber. Darker after sunset |
-| **Night Hunt** | Light bars on, or after sunset | Almost black, dim ember orange, the head in shadow |
+| **Predator** | Everyday driving | Big speed slab, three claw marks for power, a row of fangs for the battery (whole teeth light up, the gum doesn't), and the T. rex head filling the right half. Its jaw opens as you put the power down |
+| **Fossil** | 4WD on, or the diff lock above 0% | A T. rex skull in rock and a round speedo ringed with vertebrae. Stone cards down the right: battery and range, motor power and temperature, 4WD and diff lock (tap for the 4WD screen), and an inclinometer with the Teryx tipping with the slope. Darker after sunset |
+| **Night Hunt** | Light bars on, or after sunset | The Teryx from above in T. rex tracks. Speed in a notch at the top, a tall claw power meter on the left, one big tooth for the battery on the right (it fills from the tip up), and a readout by each wheel: front drive, diff lock, motor and controller temperature. Driven wheels glow |
 
 Off-road wins over night. Fossil stays on for 8 s after 4WD and the diff lock come off, so a
-quick flick doesn't flash the screen. The looks cross-fade over about a second. Settings >
-Display can lock one look instead of Auto. The logic is in `web/js/look.js`, colours in
-`web/css/theme.css`, the look itself in `web/css/dino.css`, art in `web/img/dino`.
+quick flick doesn't flash the screen. Settings > Display can lock one look instead of Auto; the
+online demo has look buttons beside the screen, and the phone sim (`/rig/`) has them in its panel.
+The warning lights and the "what's on" shortcut buttons show in every look. The logic is in
+`web/js/look.js`, the three layouts in `web/js/screens/drive.js` and `web/css/drive-looks.css`,
+colours in `web/css/theme.css`, the plates and keys in `web/css/dino.css`, art in `web/img/dino`.
 
 ![Fossil](docs/screens/drive-fossil.png)
 ![Night Hunt](docs/screens/drive-night-hunt.png)

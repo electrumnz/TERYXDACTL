@@ -1,0 +1,228 @@
+/* Teryx dash: the Drive screen, one layout per look. Loaded after dino.css.
+   Each layout follows its mock-up (project files dash-dino/img/trex-art/mockups):
+     .pv  Predator    mockup-1-predator
+     .fv  Fossil      mockup-2-fossil
+     .nv  Night Hunt  mockup-3-night-hunt
+   The screen area is 1280 x 636 (between the top bar and the bottom bar). Every layout fills it
+   edge to edge, so sizes here are in real pixels on the 10.1" screen. */
+
+.dv { position: absolute; inset: 0; animation: dv-in .7s ease both; }
+@keyframes dv-in { from { opacity: 0; } to { opacity: 1; } }
+.dv .lbl { font: italic 700 18px/1 var(--display); letter-spacing: .2em; color: var(--muted); text-transform: uppercase; }
+.dv .num { font-variant-numeric: tabular-nums; }
+.dv .ok { color: var(--regen) !important; }
+.dv .warn { color: var(--warn) !important; }
+.dv .bad { color: var(--bad) !important; }
+
+/* warning lights and "what's on" shortcuts: placed per look below */
+.d-tells { position: absolute; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; z-index: 3; }
+.d-tells:empty { display: none; }
+.tt { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 10px; background: rgba(6, 4, 3, .82); border: 1px solid rgba(255, 255, 255, .06); }
+.tt svg { width: 32px; height: 32px; }
+.tt-bad  { color: var(--bad);  box-shadow: 0 0 14px -4px var(--bad); }
+.tt-warn { color: var(--warn); box-shadow: 0 0 14px -4px var(--warn); }
+.tt-ok   { color: var(--good); }
+.tt-hi   { color: var(--hibeam, #3b8cff); box-shadow: 0 0 14px -4px var(--hibeam, #3b8cff); }
+.tt-flash { animation: tt-flash 1s steps(1, end) infinite; }
+@keyframes tt-flash { 50% { opacity: .15; } }
+.d-chips { position: absolute; display: flex; flex-wrap: wrap-reverse; gap: 8px; z-index: 3; }
+
+/* =====================================================================
+   Predator: speed slab, claw power, fang battery on the left; the T. rex fills the right
+   ===================================================================== */
+.pv-left { position: absolute; left: 20px; top: 14px; bottom: 12px; width: 600px; display: flex; flex-direction: column; gap: 12px; z-index: 2; }
+.pv-speed { flex: 1; position: relative; display: flex; align-items: center; padding: 0 28px; }
+.pv-speed .lbl { position: absolute; left: 30px; top: 22px; font-size: 22px; }
+.pv-speed .spd { display: flex; align-items: baseline; gap: 14px; margin: 26px 0 0 30px; }
+.pv-speed .speed { font: italic 800 230px/.8 var(--display); letter-spacing: -.03em; color: var(--text); text-shadow: 0 6px 24px rgba(0,0,0,.7); }
+.pv-speed .speed-unit { font: italic 700 44px/1 var(--display); letter-spacing: 0; text-transform: none; color: var(--text); }
+
+.pv-power { height: 112px; flex: none; display: grid; grid-template-columns: 130px 1fr 130px; align-items: center; padding: 0 22px 0 30px; }
+.pv-power .lbl, .pv-batt .lbl { font-size: 22px; display: flex; align-items: center; gap: 6px; }
+.pv-power .claws { height: 78px; width: 100%; overflow: visible; }
+.claws .gouge, .claws-tall .gouge { fill: rgba(0,0,0,.6); stroke: var(--key-edge); stroke-width: 1.2; }
+.claws .lava { fill: url(#lava); filter: drop-shadow(0 0 6px rgba(255,110,20,.85)); }
+.pv-power .power-kw { text-align: right; font: italic 800 40px/1 var(--display); color: var(--text); }
+
+.pv-batt { height: 136px; flex: none; display: grid; grid-template-columns: 150px 1fr 150px; align-items: center; padding: 0 22px 0 30px; cursor: pointer; }
+.pv-batt .lbl svg { width: 24px; height: 24px; color: var(--accent); }
+.pv-batt .bnum { text-align: right; }
+.pv-batt .bmain { font: italic 800 54px/1 var(--display); color: var(--text); white-space: nowrap; }
+.pv-batt .bsub { font: 700 20px/1.2 var(--display); color: var(--muted); letter-spacing: .04em; white-space: nowrap; }
+
+/* Fangs: the whole strip (teeth and gum) sits dim underneath. On top is a teeth-only copy
+   (teeth-lit.webp, no gum), cut at a tooth edge, so only whole teeth light up. */
+.fangs { position: relative; height: 104px; }
+.fangs img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: fill; }
+.fangs .dead { filter: brightness(.32) saturate(.5); }
+.fangs .lit { clip-path: inset(0 100% 0 0); transition: clip-path .6s; filter: sepia(.45) saturate(1.7) brightness(1.1) drop-shadow(0 0 6px rgba(255,130,30,.8)); }
+[data-batt].low .fangs .lit, [data-batt].low .tooth .lit { filter: sepia(1) saturate(4) hue-rotate(-30deg) brightness(.9) drop-shadow(0 0 7px rgba(255,40,20,.85)); }
+/* regen: the lit teeth turn green and pulse while the motor puts charge back */
+[data-batt].regen .fangs .lit, [data-batt].regen .tooth .lit { animation: regen-pulse 1.4s ease-in-out infinite; }
+@keyframes regen-pulse {
+  0%, 100% { filter: sepia(1) saturate(3.2) hue-rotate(65deg) brightness(.95) drop-shadow(0 0 4px rgba(60,230,120,.45)); }
+  50%      { filter: sepia(1) saturate(3.8) hue-rotate(65deg) brightness(1.25) drop-shadow(0 0 14px rgba(80,255,140,.95)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-batt].regen .fangs .lit, [data-batt].regen .tooth .lit { animation: none; filter: sepia(1) saturate(3.5) hue-rotate(65deg) brightness(1.1) drop-shadow(0 0 9px rgba(70,240,130,.8)); }
+}
+
+.pv-hero { position: absolute; left: 520px; right: 0; top: 0; bottom: 0; }
+.pv-hero .rex { position: absolute; inset: 0; pointer-events: none; }
+.pv-hero .rex img {
+  position: absolute; right: -60px; top: -40px; width: 1000px; height: auto; max-width: none;
+  filter: brightness(var(--art-dim)); transition: opacity .35s;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 20%); mask-image: linear-gradient(90deg, transparent 0, #000 20%);
+}
+.pv-hero .breathe { position: absolute; inset: 0; animation: breathe 7s ease-in-out infinite; transform-origin: 80% 60%; will-change: transform; }
+@keyframes breathe { 50% { transform: scale(1.012) translateY(-2px); } }
+.pv .d-tells { top: 14px; left: 130px; right: 20px; }
+.pv .d-chips { left: 130px; right: 20px; bottom: 12px; justify-content: flex-end; }
+
+/* =====================================================================
+   Fossil: skull and vertebrae speedo carved in rock, stone cards on the right
+   ===================================================================== */
+.fv-art { position: absolute; left: 0; top: 18px; width: 873px; height: 600px; pointer-events: none; }
+.fv-art img { width: 100%; height: 100%; filter: brightness(var(--art-dim));
+  -webkit-mask-image: linear-gradient(90deg, #000 88%, transparent 100%); mask-image: linear-gradient(90deg, #000 88%, transparent 100%); }
+/* the dial sits exactly in the ring of bones: centre (618, 299), ring inside radius 199 */
+.fv-dial { position: absolute; left: 418px; top: 99px; width: 400px; height: 400px; overflow: visible; pointer-events: none; }
+.fv-dial .track { fill: none; stroke: rgba(0,0,0,.55); stroke-width: 7; }
+.fv-dial .lit { fill: none; stroke: var(--accent); stroke-width: 7; stroke-linecap: round; filter: drop-shadow(0 0 6px var(--accent)); }
+.fv-dial .ticks line { stroke: var(--accent); stroke-linecap: round; }
+.fv-dial .ticks .mj { stroke-width: 4; }
+.fv-dial .ticks .mn { stroke-width: 2; opacity: .75; }
+.fv-dial .nums text { fill: var(--text); font: 700 26px/1 var(--display); text-anchor: middle; paint-order: stroke; stroke: rgba(0,0,0,.6); stroke-width: 3px; }
+.fv-dial .needle { transition: transform .25s ease-out; filter: drop-shadow(0 0 6px rgba(255,150,40,.7)) drop-shadow(0 3px 3px rgba(0,0,0,.6)); }
+.fv-dial .hub { fill: #3a2a1d; stroke: #b48d63; stroke-width: 3; }
+.fv-dial .spd { fill: var(--text); font: 800 112px/1 var(--display); text-anchor: middle; paint-order: stroke; stroke: rgba(0,0,0,.55); stroke-width: 6px; }
+.fv-dial .unit { fill: var(--text); font: italic 700 28px/1 var(--display); text-anchor: middle; }
+
+.fv-cards { position: absolute; left: 872px; right: 16px; top: 12px; bottom: 12px; display: flex; flex-direction: column; gap: 10px; z-index: 2; }
+/* stone cards: rounded slabs with a rock texture, not cut steel plates */
+.panel.stone {
+  clip-path: none; border-radius: 16px; padding: 10px 16px;
+  background: linear-gradient(170deg, rgba(90,64,44,.55), rgba(30,21,14,.78)), url("../img/dino/stone.webp") center / 600px;
+  box-shadow: inset 0 2px 0 rgba(255,230,190,.12), inset 0 -3px 0 rgba(0,0,0,.45), inset 0 0 0 1.5px rgba(160,120,80,.45), 0 6px 14px rgba(0,0,0,.55);
+  display: flex; align-items: center; gap: 12px; color: var(--text); text-align: left;
+}
+.panel.stone::before { display: none; }
+.fv-cell { display: flex; flex-direction: column; gap: 4px; }
+.fv-cell.grow { flex: 1; min-width: 0; }
+.fv-cell.sep { padding-left: 12px; border-left: 2px solid rgba(160,120,80,.45); }
+.fv .lbl { font: 700 17px/1 var(--display); letter-spacing: .1em; color: var(--muted); font-style: normal; display: inline-flex; align-items: center; gap: 6px; }
+.fv .val { font: 800 46px/1 var(--display); color: var(--text); white-space: nowrap; }
+.fv .val.small { font-size: 30px; }
+.fv .val.acc { color: var(--accent); }
+.fv .big-ico { width: 52px; height: 52px; color: var(--accent); }
+.fv .lbl svg { width: 22px; height: 22px; color: var(--accent); }
+.fv-batt { height: 112px; cursor: pointer; }
+.fv-batt .fv-cell:nth-child(2) { flex: 1; }
+.batt-ico { width: 82px; height: 44px; border: 3px solid var(--accent); border-radius: 7px; padding: 4px; position: relative; }
+.batt-ico::after { content: ""; position: absolute; right: -10px; top: 12px; width: 6px; height: 14px; background: var(--accent); border-radius: 0 3px 3px 0; }
+.batt-ico i { display: block; height: 100%; border-radius: 3px; background: repeating-linear-gradient(90deg, var(--accent) 0 12px, transparent 12px 15px); box-shadow: 0 0 10px rgba(255,162,58,.5); transition: width .6s; }
+.batt-ico i.warn { background: repeating-linear-gradient(90deg, var(--warn) 0 12px, transparent 12px 15px); }
+.batt-ico i.bad { background: repeating-linear-gradient(90deg, var(--bad) 0 12px, transparent 12px 15px); }
+.batt-ico i.regen { background: repeating-linear-gradient(90deg, var(--regen) 0 12px, transparent 12px 15px); }
+.fv-motor { height: 100px; }
+.fv-drive { height: 138px; cursor: pointer; font: inherit; border: 0; }
+.fv-drive:active { transform: scale(.98); }
+.fv-row { display: flex; justify-content: space-between; gap: 10px; }
+.fv-drive .val { font-size: 40px; }
+.fv-slide { position: relative; height: 14px; margin: 8px 10px 0 0; border-radius: 7px; background: rgba(0,0,0,.55); box-shadow: inset 0 0 0 1.5px rgba(160,120,80,.5); }
+.fv-slide i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 7px; background: linear-gradient(90deg, #f58b1c, #ffd27a); transition: width .4s; }
+.fv-slide b { position: absolute; top: 50%; width: 26px; height: 26px; margin: -13px 0 0 -13px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #f4e2c4, #9a7a58); box-shadow: 0 2px 4px rgba(0,0,0,.6); transition: left .4s; }
+.panel.fv-tilt { flex: 1; flex-direction: column; align-items: stretch; gap: 0; padding: 10px 16px; overflow: hidden; }
+.fv-tilt-top { display: flex; gap: 10px; justify-content: space-between; align-items: center; }
+.fv-tilt-pic { position: relative; flex: 1; min-height: 0; }
+.fv-tilt-pic .ground { position: absolute; left: 0; right: 0; top: 74%; border-top: 2px dashed rgba(244,226,196,.55); }
+.fv-tilt-pic img { position: absolute; left: 50%; top: 50%; width: 220px; margin: -66px 0 0 -110px; transition: transform .5s ease-out; filter: brightness(var(--art-dim)) drop-shadow(0 6px 6px rgba(0,0,0,.6)); }
+.fv-tilt-roll { display: flex; gap: 10px; justify-content: space-between; align-items: center; }
+.fv .d-tells { top: 8px; left: 20px; width: 360px; justify-content: flex-start; }
+.fv .d-chips { left: 20px; right: 430px; bottom: 10px; }
+
+/* =====================================================================
+   Night Hunt: the Teryx from above in T. rex tracks, readouts round it
+   ===================================================================== */
+/* art is 1200 x 679, drawn at 1124 x 636, 78 px in from the left and 30 px down */
+.nv-art { position: absolute; left: 78px; top: 30px; width: 1124px; height: 636px; pointer-events: none; }
+.nv-art img { width: 100%; height: 100%; filter: brightness(calc(var(--art-dim) * .95));
+  -webkit-mask-image: radial-gradient(ellipse 62% 70% at 50% 45%, #000 60%, transparent 100%); mask-image: radial-gradient(ellipse 62% 70% at 50% 45%, #000 60%, transparent 100%); }
+/* beams: the art has them baked in; with the light bars off a shadow sits over them */
+.nv-beams { position: absolute; left: 400px; width: 320px; top: -30px; height: 150px; background: radial-gradient(ellipse 50% 60% at 50% 40%, rgba(5,4,3,.92), rgba(5,4,3,.6) 70%, transparent 100%); transition: opacity .8s; }
+.nv-beams.on { opacity: 0; }
+.nv-wheel { position: absolute; width: 74px; height: 128px; margin: -64px 0 0 -37px; border-radius: 30px; opacity: 0; transition: opacity .4s; box-shadow: 0 0 0 3px var(--accent), 0 0 26px 4px rgba(255,95,20,.7); }
+.nv-wheel.on { opacity: .85; }
+.nv-wheel.lock { box-shadow: 0 0 0 4px var(--accent-2), 0 0 30px 8px rgba(255,150,60,.8); }
+.nv-wheel.fl { left: 427px; top: 145px; } .nv-wheel.fr { left: 697px; top: 145px; }
+.nv-wheel.rl { left: 419px; top: 450px; } .nv-wheel.rr { left: 700px; top: 450px; }
+
+.nv-speed {
+  position: absolute; left: 50%; top: 0; transform: translateX(-50%); z-index: 3;
+  display: flex; align-items: baseline; gap: 10px; padding: 0 56px 10px;
+  background: linear-gradient(180deg, rgba(10,7,5,.96), rgba(16,11,8,.9));
+  clip-path: polygon(0 0, 100% 0, calc(100% - 44px) 100%, 44px 100%);
+  filter: drop-shadow(0 0 1px var(--accent));
+}
+.nv-speed::after { content: ""; position: absolute; left: 44px; right: 44px; bottom: 0; height: 2px; background: var(--accent); box-shadow: 0 0 12px var(--accent); }
+.nv-speed .speed { font: italic 800 104px/.95 var(--display); color: var(--text); text-shadow: 0 0 22px rgba(255,95,20,.55); }
+.nv-speed .speed-unit { font: italic 700 32px/1 var(--display); letter-spacing: 0; text-transform: none; color: var(--text); }
+
+.panel.nv-side {
+  position: absolute; top: 14px; bottom: 12px; width: 190px; z-index: 2;
+  clip-path: none; border-radius: 26px; padding: 18px 14px;
+  background: linear-gradient(180deg, rgba(30,20,13,.9), rgba(12,8,6,.94)), url("../img/dino/hide-night.webp") center / 500px;
+  box-shadow: inset 0 0 0 2px rgba(255,95,20,.55), inset 0 0 26px rgba(255,95,20,.18), 0 0 18px rgba(255,95,20,.25);
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+.panel.nv-side::before { display: none; }
+.nv-power { left: 14px; } .nv-batt { right: 14px; cursor: pointer; }
+.nv-side .lbl { font: 700 22px/1 var(--display); font-style: normal; letter-spacing: .12em; color: var(--text); }
+.claws-tall { flex: 1; width: 120px; min-height: 0; overflow: visible; }
+.claws-tall .lava { fill: url(#lava-v); filter: drop-shadow(0 0 7px rgba(255,95,20,.9)); }
+.nv-num { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.nv-num .big { font: italic 800 44px/1 var(--display); color: var(--text); white-space: nowrap; text-shadow: 0 0 14px rgba(255,95,20,.4); }
+.nv-num .sub { font: 700 18px/1.1 var(--display); color: var(--muted); letter-spacing: .04em; white-space: nowrap; }
+/* the tooth: a dim copy underneath, a lit copy on top cut from the tip up to the charge level */
+.tooth { position: relative; flex: 1; width: 128px; min-height: 0; }
+.tooth img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.tooth .dead { filter: brightness(.3) saturate(.5); }
+.tooth .lit { clip-path: inset(100% 0 0 0); transition: clip-path .6s; filter: sepia(1) saturate(3.2) hue-rotate(-12deg) brightness(1.05) drop-shadow(0 0 8px rgba(255,95,20,.85)); }
+
+.nv-call { position: absolute; z-index: 2; display: flex; flex-direction: column; gap: 4px; min-width: 170px; padding: 8px 14px; background: rgba(6,4,3,.72); border-radius: 12px; }
+.nv-call::after { content: ""; position: absolute; top: 50%; height: 2px; width: 70px; background: linear-gradient(90deg, var(--accent), rgba(255,95,20,.2)); box-shadow: 0 0 8px var(--accent); }
+.nv-call.left { left: 240px; align-items: flex-start; } .nv-call.left::after { left: 100%; }
+.nv-call.right { right: 240px; align-items: flex-end; } .nv-call.right::after { right: 100%; transform: scaleX(-1); }
+.nv-call.top { top: 140px; } .nv-call.bot { top: 446px; }
+.nv-call .lbl { font: 700 17px/1 var(--display); font-style: normal; letter-spacing: .12em; color: var(--text); }
+.nv-call .val { font: italic 800 46px/1 var(--display); color: var(--text); }
+.nv-call .val.acc { color: var(--accent); text-shadow: 0 0 12px rgba(255,95,20,.5); }
+.nv .d-tells { top: 12px; right: 220px; width: 230px; }
+.nv .d-chips { left: 220px; right: 220px; bottom: 10px; justify-content: center; }
+
+/* =====================================================================
+   The bottom bar and plates take each look's materials too
+   ===================================================================== */
+/* Fossil: rounded stone keys with amber icons */
+body.look-offroad .nav-btn {
+  clip-path: none; border-radius: 14px;
+  background: linear-gradient(170deg, rgba(90,64,44,.6), rgba(30,21,14,.85)), url("../img/dino/stone.webp") center / 500px;
+  box-shadow: inset 0 2px 0 rgba(255,230,190,.12), inset 0 -3px 0 rgba(0,0,0,.45), inset 0 0 0 1.5px rgba(160,120,80,.45);
+  color: var(--text);
+}
+body.look-offroad .nav-btn svg { color: var(--accent); }
+body.look-offroad .nav-btn.active { box-shadow: inset 0 0 0 2px var(--accent), inset 0 0 22px rgba(255,162,58,.35); }
+body.look-offroad .nav-btn.active::before { display: none; }
+body.look-offroad #nav { background: linear-gradient(0deg, rgba(20,14,9,.9), rgba(20,14,9,.5)); }
+body.look-offroad #topbar { background: linear-gradient(180deg, rgba(20,14,9,.85), rgba(20,14,9,.35)); }
+
+/* Night Hunt: dark scaly keys with an ember rim, the live one glowing */
+body.look-night .nav-btn {
+  clip-path: none; border-radius: 20px;
+  background: linear-gradient(180deg, rgba(30,20,13,.92), rgba(10,7,5,.95)), url("../img/dino/hide-night.webp") center / 420px;
+  box-shadow: inset 0 0 0 1.5px rgba(255,95,20,.45), inset 0 0 14px rgba(255,95,20,.12);
+  color: var(--text);
+}
+body.look-night .nav-btn svg { color: var(--accent); filter: drop-shadow(0 0 5px rgba(255,95,20,.7)); }
+body.look-night .nav-btn.active { box-shadow: inset 0 0 0 3px var(--accent), inset 0 0 26px rgba(255,95,20,.45), 0 0 16px rgba(255,95,20,.45); }
+body.look-night .nav-btn.active::before { display: none; }

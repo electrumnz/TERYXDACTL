@@ -265,9 +265,12 @@ await nav("drive");
 await sleep(500);
 check(/km/.test(await page.$eval("#d-range", (e) => e.textContent)), "range shows on the drive screen");
 
-// Tilt and GPS widget (fake sensors in the sim)
-check(/°/.test(await page.$eval("#sn-roll", (e) => e.textContent)), "tilt widget shows roll");
-check(/[NSEW]+ \d+°/.test(await page.$eval("#sn-head", (e) => e.textContent)), "GPS widget shows heading");
+// Tilt (fake sensors in the sim): the Fossil look has the inclinometer card on the drive screen
+await page.evaluate(() => { teryx.settings.set("look", "offroad"); teryx.looks.refresh(); teryx.applyTheme(); });
+await sleep(800);
+check(/°/.test(await page.$eval("#fv-roll", (e) => e.textContent)), "inclinometer shows side to side");
+check(/°/.test(await page.$eval("#fv-pitch", (e) => e.textContent)), "inclinometer shows up / down");
+await page.evaluate(() => { teryx.settings.set("look", "auto"); teryx.looks.refresh(); teryx.applyTheme(); });
 
 // Alerts with sound: a steep side slope
 await sim({ scenario: "idle" });
