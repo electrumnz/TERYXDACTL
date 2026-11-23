@@ -57,7 +57,7 @@ jobs:
           python-version: "3.13"
       - name: Bundle the Python for the simulator page (rig/)
         run: |
-          pip install pyyaml
+          pip install pyyaml python-can
           python tools/build_rig_web.py
       - name: Put the dash and the wiring viewer together
         run: |
