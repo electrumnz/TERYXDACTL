@@ -6,7 +6,7 @@ control box does the safety-critical switching, and they talk over CAN.
 
 | Part | Where | Start here |
 |---|---|---|
-| Plan, IO list, wiring | `docs/` | [`io-list.md`](docs/io-list.md), [`wiring.md`](docs/wiring.md), whole-vehicle wiring [`docs/wiring/`](docs/wiring/README.md) from [`config/wiring.yaml`](config/wiring.yaml), [`bench-test.md`](docs/bench-test.md) |
+| Plan, IO list, wiring | `docs/` | [`io-list.md`](docs/io-list.md), [`wiring.md`](docs/wiring.md), whole-vehicle wiring [`docs/wiring/`](docs/wiring/README.md) from [`config/wiring.yaml`](config/wiring.yaml), [`bench-test.md`](docs/bench-test.md), and the system sim that tests the wiring with the real firmware: [`system-sim.md`](docs/system-sim.md) |
 | Test bench (fake Shinegle + control box) | `teryx/` | [`docs/TEST_ENVIRONMENT.md`](docs/TEST_ENVIRONMENT.md) |
 | Dash touch UI (Pi 5) | `dash/` | [`dash/README.md`](dash/README.md) |
 | Control box firmware (Pico 2) | `firmware/control-box/` | [`firmware/control-box/README.md`](firmware/control-box/README.md) |

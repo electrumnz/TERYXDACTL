@@ -26,6 +26,9 @@ firmware will, and refuses requests with a reason the dash can show.
 
 ![Sim panel](img/sim-panel.png)
 
+For testing the whole wiring diagram with the real Pico firmware (switches,
+fuses, lamps, motors), see the [system sim](system-sim.md).
+
 ## Run modes
 
 | Command | What runs | Use it for |

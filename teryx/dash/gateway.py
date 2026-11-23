@@ -37,13 +37,14 @@ LIGHT2_LEVELS = {"light.head_level": 255, "light.tail": 0, "light.rear_level": 0
 
 
 class Gateway:
-    def __init__(self, bus_spec: str = "virtual"):
+    def __init__(self, bus_spec: str = "virtual", clock=time.monotonic):
         self.bus_spec = bus_spec
+        self.clock = clock      # the system sim (teryx/rig) passes its own virtual clock
         self.node = Node(open_bus(bus_spec))
         self._lock = threading.RLock()
         self._stop = threading.Event()
         self._thread: threading.Thread | None = None
-        self.started = time.monotonic()
+        self.started = self.clock()
         # Start from defaults so the UI never sees a missing mc.* value, even if
         # the real Shinegle turns out not to send some of them.
         self.state: dict = dict(SG.MC_DEFAULTS)
@@ -79,7 +80,7 @@ class Gateway:
 
     # ------------------------------------------------------------ public API
     def snapshot(self) -> dict:
-        now = time.monotonic()
+        now = self.clock()
         with self._lock:
             s = dict(self.state)
             s.update(self.local)
@@ -152,7 +153,7 @@ class Gateway:
         with self._lock:
             if id == "winch":
                 self.winch_timed_s = max(0, min(255, int(secs or 0))) if value else 0
-            self.holds[id] = (value, time.monotonic())
+            self.holds[id] = (value, self.clock())
             if value == 0:
                 self._send_hold(force=True)
 
@@ -211,7 +212,7 @@ class Gateway:
         return {"fourwd_req": self.req["act.4wd"], "diff_target": self.req["act.diff"]}
 
     def _send_hold(self, force: bool = False) -> None:
-        now = time.monotonic()
+        now = self.clock()
         tray, t_at = self.holds["act.tray"]
         winch, w_at = self.holds["winch"]
         tray = tray if now - t_at < HOLD_TIMEOUT_S else 0
@@ -382,8 +383,8 @@ class Gateway:
     def run(self) -> None:
         while not self._stop.is_set():
             for msg, v, raw in self.node.poll(timeout=0.01):
-                self._on_frame(msg, v, raw, time.monotonic())
-            self._send_periodic(time.monotonic())
+                self._on_frame(msg, v, raw, self.clock())
+            self._send_periodic(self.clock())
 
     def start(self) -> "Gateway":
         self._thread = threading.Thread(target=self.run, name="teryx-gateway", daemon=True)
