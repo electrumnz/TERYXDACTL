@@ -7,10 +7,15 @@ are kept outside the repo (project files, `dash-dino/`).
 | File | Used for | Made from |
 |---|---|---|
 | `head-closed.webp`, `head-snarl.webp`, `head-roar.webp` | Drive screen hero (Predator and Night Hunt). Cross-faded by power: the jaw opens as you put the power down | Head cutouts, mirrored to face the readouts, 1280x800 |
-| `fossil.webp` | Drive screen hero in Fossil (off-road) | Cropped from the Fossil mock-up, mirrored |
+| `fossil.webp` | Fun screen tile | Cropped from the Fossil mock-up, mirrored |
 | `stone.webp` | Fossil background | The same crop, blurred and darkened |
 | `hide-night.webp` | Predator and Night Hunt background | T. rex hide texture |
-| `teeth.webp` | Battery meter: fangs light up to the charge level | Teeth strip cutout, trimmed |
+| `teeth.webp` | Predator battery meter: the whole strip, shown dim | Teeth strip cutout, trimmed |
+| `teeth-lit.webp` | Predator battery meter: teeth only (gum cut away), lit a whole tooth at a time | `teeth.webp` with the gum removed |
+| `tooth.webp` | Night Hunt battery: one big tooth that fills from the tip up | One loose tooth from the full size teeth strip cutout |
+| `fossil-dial.webp` | Fossil Drive screen: skull in rock and the ring of vertebrae the speedo sits in | Cut from the Fossil mock-up, the printed dial inside the ring painted out (the real dial is drawn live over it) |
+| `buggy-side.webp` | Fossil inclinometer card: tips with the slope | Cut out of the Fossil mock-up |
+| `nighthunt.webp` | Night Hunt Drive screen: the Teryx from above between T. rex footprints in mud | Cut from the Night Hunt mock-up, its printed labels painted out |
 | `badge.webp` | Top bar and boot splash | Forged steel skull badge, 256x256 |
 | `lock-sleep.webp`, `lock-awake.webp` | Lock screen. The T. rex sleeps while locked and opens its eye on a wrong PIN or a lockout. Both line up, so they cross-fade | Made 2026-11-18 from the closed head and hide as references, 1440 wide |
 | `padlock.webp` | Lock button in Settings and the lock screen badge (black background, use `mix-blend-mode: screen`) | Forged padlock with glowing claw marks, 512x512 |

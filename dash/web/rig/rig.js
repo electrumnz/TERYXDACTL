@@ -77,7 +77,19 @@
     b.addEventListener("pointerdown", down);
     for (const ev of ["pointerup", "pointerleave", "pointercancel"]) b.addEventListener(ev, up);
   }
-  for (const seg of document.querySelectorAll(".seg")) {
+  // Dash look: Auto or lock one of the three (same as Settings > Display on the dash).
+  const lookBtns = [...document.querySelectorAll("#looks button")];
+  const markLook = () => {
+    const t = dash.contentWindow && dash.contentWindow.teryx;
+    const now = (t && t.settings.get("look")) || "auto";
+    lookBtns.forEach((b) => b.classList.toggle("on", b.dataset.look === now));
+  };
+  for (const b of lookBtns) b.addEventListener("click", () => {
+    const t = dash.contentWindow && dash.contentWindow.teryx; if (!t) return;
+    t.settings.set("look", b.dataset.look); t.looks.refresh(); t.applyTheme(); markLook();
+  });
+  dash.addEventListener("load", () => setTimeout(markLook, 1500));
+  for (const seg of document.querySelectorAll(".seg[data-seg]")) {
     for (const b of seg.querySelectorAll("button")) {
       b.addEventListener("click", () => panel({ [seg.dataset.seg]: b.dataset.v }));
     }
@@ -114,7 +126,7 @@
     $("status").textContent = slow ? `Running at ${Math.round(m.speed * 100)}% speed` : "Running";
     $("status").className = "pill " + (slow ? "warn" : "ok");
     for (const b of document.querySelectorAll("button.tog[data-in]")) b.classList.toggle("on", !!i[b.dataset.in]);
-    for (const seg of document.querySelectorAll(".seg")) {
+    for (const seg of document.querySelectorAll(".seg[data-seg]")) {
       for (const b of seg.querySelectorAll("button")) b.classList.toggle("on", i[seg.dataset.seg] === b.dataset.v);
     }
     $("thr-v").textContent = `${Math.round(i.throttle * 100)}%` + (p.shinegle.hpd ? " (lift off: HPD)" : "");
