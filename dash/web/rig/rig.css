@@ -25,6 +25,7 @@ a { color: var(--accent); }
 .top .title { font: 700 20px/1.1 "Barlow Condensed", sans-serif; letter-spacing: .04em; text-transform: uppercase; flex: 1; }
 .top .sub { display: block; font: 400 12px/1.2 Inter, sans-serif; color: var(--muted); text-transform: none; letter-spacing: 0; }
 .pill { font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: var(--line); color: var(--muted); white-space: nowrap; }
+.pill.link { text-decoration: none; color: var(--accent); }
 .pill.ok { background: #18301b; color: var(--ok); }
 .pill.warn { background: #3a2d10; color: var(--warn); }
 .pill.bad { background: #3a1512; color: var(--bad); }

@@ -620,9 +620,11 @@ export class SettingsScreen {
       api("system/shutdown", { method: "POST" }).then(() => toast("Shutting down…")).catch((e) => toast(e.message, "bad"));
     };
     body.appendChild(btns);
-    if (st.get("link.demo")) {
+    if (st.get("link.demo") || st.get("link.rig")) {
       // The demo is a made-up Teryx. The simulator page runs the real firmware and wiring behind this dash.
-      const sim = el(`<div class="row" style="margin-top:16px"><a class="btn sm" href="rig/" target="_top">Open the whole-Teryx simulator</a></div>`);
+      // Both pages sit beside the dash on GitHub Pages. In the simulator the dash is in rig/'s iframe, same folder.
+      const simBtn = st.get("link.demo") ? `<a class="btn sm" href="rig/" target="_top">Open the whole-Teryx simulator</a>` : "";
+      const sim = el(`<div class="row" style="margin-top:16px">${simBtn}<a class="btn sm" href="wiring/" target="_top">Wiring diagram</a></div>`);
       body.appendChild(sim);
     }
   }
