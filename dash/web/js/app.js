@@ -153,8 +153,9 @@ function topbar(st) {
   else if (!st.get("pico.online")) alert = "CONTROL BOX OFFLINE";
   else if (st.get("mc.online") === false) alert = "NO DATA FROM MOTOR CONTROLLER";
   else if (st.get("link.demo")) alert = "DEMO MODE";
+  else if (st.get("link.rig")) alert = "SIMULATOR";
   document.getElementById("tb-alert").textContent = alert;
-  document.getElementById("tb-alert").style.color = st.get("link.demo") && alert === "DEMO MODE" ? "var(--info)" : "";
+  document.getElementById("tb-alert").style.color = (alert === "DEMO MODE" || alert === "SIMULATOR") ? "var(--info)" : "";
 }
 
 // Alerts banner: the worst alert not yet OK'd, along the bottom.

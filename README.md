@@ -25,6 +25,12 @@ control box does the safety-critical switching, and they talk over CAN.
 
 Everything runs on a laptop with no Teryx attached, using the simulator.
 
+**Whole-Teryx simulator on your phone:** <https://electrumnz.github.io/TERYXDACTL/rig/>.
+The real dash with working buttons, on top of the real control box firmware, the wiring
+diagram, the Shinegle and the power steering, all running in the browser. A panel next to
+the screen is your hands and feet (key, pedals, F-N-R, wheel, switches, fuses, faults).
+On a laptop: `python -m teryx rig-web`. See [`docs/system-sim.md`](docs/system-sim.md).
+
 ## Quick start (any laptop: Windows, Mac or Linux)
 
 You need Python 3.10 or newer.

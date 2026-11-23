@@ -55,18 +55,23 @@ def _version() -> tuple[str, str]:
     return major, minor.split(".")[0] or "0"
 
 
+def source_hash() -> str:
+    """sha256 of every file the sim's firmware is built from (C, headers, VERSION)."""
+    files = [FW / s for s in SOURCES] + sorted((FW / "src").rglob("*.h")) + [ROOT / "firmware" / "VERSION"]
+    h = hashlib.sha256()
+    for f in files:
+        h.update(f.read_bytes().replace(b"\r\n", b"\n"))
+    return h.hexdigest()
+
+
 def build(force: bool = False) -> Path:
     """Compile the firmware + board model into a shared library (cached by source hash)."""
     cc = compiler()
     if cc is None:
         raise BuildError("no C compiler (or Windows): the system sim needs cc/gcc/clang and pthreads")
     files = [FW / s for s in SOURCES]
-    headers = sorted((FW / "src").rglob("*.h"))
-    h = hashlib.sha256()
-    for f in files + headers + [ROOT / "firmware" / "VERSION"]:
-        h.update(f.read_bytes())
     ext = ".dylib" if platform.system() == "Darwin" else ".so"
-    out = BUILD / f"libteryx_rig_{h.hexdigest()[:12]}{ext}"
+    out = BUILD / f"libteryx_rig_{source_hash()[:12]}{ext}"
     if out.exists() and not force:
         return out
     BUILD.mkdir(parents=True, exist_ok=True)
@@ -93,7 +98,7 @@ class Firmware:
         dst = Path(self._tmp.name) / src.name
         shutil.copy(src, dst)
         L = self.lib = C.CDLL(str(dst))
-        L.rig_run_us.argtypes = [C.c_uint64]
+        L.rig_run_us.argtypes = [C.c_uint32]
         L.rig_now_us.restype = C.c_uint64
         L.rig_errors.restype = C.c_char_p
         L.rig_pin.argtypes = [C.c_int, C.POINTER(C.c_double), C.POINTER(C.c_double), C.POINTER(C.c_int)]
@@ -164,6 +169,9 @@ class Firmware:
         mode = self.lib.rig_pin(gp, C.byref(v), C.byref(hz), C.byref(pu))
         return PIN_MODES.get(mode, "input"), v.value, hz.value, bool(pu.value)
 
+    def pins(self, gps) -> dict:
+        return {gp: self.pin(gp) for gp in gps}
+
     def pin_in(self, gp: int, level: int | None) -> None:
         self.lib.rig_pin_in(gp, -1 if level is None else int(bool(level)))
 
@@ -192,6 +200,12 @@ class Firmware:
         hz = C.c_double()
         d = self.lib.rig_pca_duty(dev, ch, C.byref(hz))
         return d, hz.value
+
+    def pca_all(self, dev: int) -> list[float]:
+        """All 16 duties (0 when the outputs aren't totem-pole driven)."""
+        if not self.pca_totem(dev):
+            return [0.0] * 16
+        return [self.pca(dev, ch)[0] for ch in range(16)]
 
     def pca_totem(self, dev: int) -> bool:
         return bool(self.lib.rig_pca_totem(dev))
@@ -236,3 +250,11 @@ class Firmware:
 
     def load_flash(self, data: bytes) -> None:
         C.memmove(self.lib.rig_flash_base(), data, len(data))
+
+
+# In a web browser (Pyodide) the firmware is the WebAssembly build instead: same C, same calls.
+if sys.platform == "emscripten":   # pragma: no cover - runs in the phone sim only
+    from .webfw import WebFirmware as Firmware  # noqa: F811
+
+    def build(force: bool = False):  # noqa: F811
+        return None

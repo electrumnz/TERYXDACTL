@@ -19,6 +19,50 @@ firmware, a test fails. That's the point: the SLD gets tested, not just drawn.
  lamp ─ fuse ─ BTS7960 ─ PCA9685 / GP ◄──┘                          (teryx/dash)
 ```
 
+## On your phone: the simulator page
+
+**<https://electrumnz.github.io/TERYXDACTL/rig/>**
+
+The real dash screen, with every button working, sitting on top of the whole sim:
+the real control box firmware (built for the browser from the same C files with
+Emscripten), the wiring diagram, the Shinegle and the power steering. Next to the
+screen is a panel that stands in for your hands and feet: the key, park brake,
+brake pedal, F-N-R, throttle, steering wheel, E-stop, winch switches, trailer plug,
+the 12 V battery, Shinegle faults, steering faults, and every fuse to pull.
+
+Press a light bar button on the dash and it goes dash -> Pi gateway -> CAN -> real
+firmware -> PCA9685 -> MOSFET -> fuse -> lamp, and the lamp lights up in the panel.
+Pull fuse FB.F1 and bars 1 and 4 go dark while the dash still thinks they're on.
+
+The first load downloads Python for the browser (Pyodide, about 10 MB, from the
+jsDelivr CDN); after that it's cached. It runs in real time on a laptop and on most
+phones; if a phone can't keep up the status pill says "Running at 70% speed".
+Turn the phone sideways for a bigger screen.
+
+On the laptop, with no GitHub Pages: `python -m teryx rig-web` then open
+<http://localhost:8090/rig/>.
+
+How it fits together (all in `dash/web/rig/`):
+
+| File | What it does |
+|---|---|
+| `index.html`, `rig.js`, `rig.css` | The page: dash in an iframe (`../index.html?rig=1`), the panel |
+| `worker.js` | Web worker: runs the sim in real time off the page's main thread |
+| `rig-core.js` | Starts Pyodide, unpacks the Python, makes a `WebRig` |
+| `rigfw.js` | The calls `teryx/rig/webfw.py` makes into the firmware |
+| `pico.js`, `pico.wasm` | The firmware, built by `python tools/build_rig_web.py --wasm` (kept in git) |
+| `teryx-py.zip` | `teryx/` + `config/`, built by `python tools/build_rig_web.py` (not in git) |
+
+The dash's `js/link.js` sees `?rig` and swaps its websocket for messages to the page,
+in the same format (`docs/DASH_API.md`). `teryx/rig/web.py` (`WebRig`) answers them,
+and is the same code on the PC (`tests/test_rig_web.py`) and in the browser.
+`teryx/rig/web_can.py` stands in for python-can in the browser.
+
+If you change the firmware, rebuild the browser copy:
+`python tools/build_rig_web.py --wasm` (needs [Emscripten](https://emscripten.org) 6.0.13).
+`tests/test_rig_web.py` fails until you do, and CI (`.github/workflows/rig-web.yml`)
+rebuilds it and runs the whole sim in Pyodide under Node.
+
 ## Running it
 
 Linux or macOS with a C compiler (`cc`). On Windows the sim tests skip.
@@ -44,9 +88,9 @@ print(s.report())               # every device model's state
 s.close()
 ```
 
-Inputs: `key`, `brake`, `park`, `fnr`, `throttle`, `backup_lights`, `estop`,
+Inputs: `key`, `brake`, `park`, `fnr`, `throttle`, `steer` (Nm on the wheel), `backup_lights`, `estop`,
 `trailer`, `winch_switch`, `winch_remote`, `winch_breaker`, `battery`,
-`pull_fuse`. Read-backs: `lamp`, `trailer_pin`, `relay`, `powered`, `volts`,
+`pull_fuse`. Read-backs: `lamp`, `trailer_pin`, `relay`, `powered`, `volts`, `eps`,
 `level`, `actuator`, `ground_ok`, `pi_on`, `shinegle_on`, `report`, and the dash
 snapshot (`s.dash.snapshot()`).
 
@@ -60,13 +104,46 @@ snapshot (`s.dash.snapshot()`).
 | I2C and SPI chips | Register-level models: MCP23017, ADS1115, PCA9685, MCP2515 (bit rate worked out from CNF1-3, frames only ACK'd when something is listening) |
 | Pico pins | PWM slices, ADC, watchdog, flash, UART |
 | Boards and loads | Switch-level models: battery, DC-DC, bucks, fuse box, optos, relay boards, BTS7960 (with current sense), actuators (travel time, end stops, can jam), limit switches, lamps, winch solenoid and motor, EPS ECU, trailer |
-| Shinegle | The fake controller in `teryx/sim`, driven by the key, F-N-R, throttle and brake wires |
+| Shinegle | `models.Shinegle` reads the key (KSI), F-N-R and the throttle pedal off its own pins; the fake controller in `teryx/sim` drives and sends the CAN frames. **Assumed**, see below |
+| Power steering | `models.EpsEcu` + `models.TorqueSensor`: the Aqua ECU wakes on IG, hears the Pico's speed frames, gives assist, turns the column, and answers on the steering CAN bus. **Assumed**, see below |
 | Pi | Powered from its buck, shuts itself down 6 s after the Pico asks |
 
 Not simulated, each with a reason in `teryx/rig/models.py` (`NOT_SIMULATED`):
 the 72 V side, cameras, audio, CarPlay, the AI HAT+ 2 placeholder, and the RC
 box chips until the RC box has firmware. A test fails if a new device is added
 to the wiring without a model or a reason.
+
+## Guesses until the bench test
+
+Sam asked for the sim to work end to end now, on sensible guesses, and to swap them
+for the real thing once the bench sniffing is done. Every guess is a named constant
+marked `ASSUMED`, so a bench result is a one-line change and the tests show what moved.
+
+**Shinegle SG1202** (`teryx/rig/models.py`, top of the Shinegle section, and `teryx/canbus/shinegle.dbc`)
+
+| Guess | Value | Swap for |
+|---|---|---|
+| CAN layout | `shinegle.dbc` PLACEHOLDER: 0x180 motor, 0x181 battery, 0x182 temps, 0x183 faults | The `.dbc` from the decode kit (`python -m teryx decode`, docs/shinegle-decode.md) |
+| Throttle start (PedSet) | 0.8 V | Read PedSet off the SG1810 programmer |
+| Full throttle | 4.2 V | Programmer / measure the pedal |
+| Throttle fault | wiper over 4.8 V | Programmer manual |
+| High pedal disable (HPD) | on | Programmer "HPD" setting |
+
+**Aqua EPS column** (`teryx/rig/models.py`, the power steering section, and `teryx/eps_toyota.py`)
+
+| Guess | Value | Swap for |
+|---|---|---|
+| Frames from the Pico | 0x2C4 engine running + 0x0B4 speed, 20 ms, 500 kbit/s (Prius gen 2) | Sniff a running Aqua's OBD port |
+| Frames back | 0x260 torque + angle (50 Hz), 0x262 status (25 Hz), opendbc layouts | Same sniff |
+| Driver torque scale | 0.01 Nm per bit in 0x260 | Bench: turn the wheel with a known force |
+| Torque sensor | 2.5 V hands off, 0.25 V per Nm, both outputs alike | Meter on the sensor plug |
+| Sensor fault | outputs more than 0.4 V apart, or outside 0.5-4.5 V | Bench: pull one wire |
+| Assist | 3x up to 16.3 km/h, 1.2x at 60, 0.6x from 100 | Feel on the bench |
+| Limp mode | 1x assist after 1 s without frames | Bench: stop the frames |
+| Column | 450 deg each way, 6 Nm to start turning, self-centres when rolling | The real Teryx |
+
+The panel on the simulator page can make the ECU go quiet (wrong frames guessed) or
+pull a torque sensor wire, so you can see what the dash does when the guesses are wrong.
 
 ## What the tests cover
 
@@ -76,6 +153,15 @@ reverse, trailer plug pins), brake and backup lights with the control box dead,
 and the hand switches, key-off power hold and Pi shutdown, vehicle lock, drive
 and E-stop, power steering CAN frames, a low 12 V battery, a lost logic ground,
 and a deliberate wiring mistake that the sim has to catch.
+
+`tests/test_system_sim_drive.py`: steering assist and the Pico hearing the ECU,
+assist dropping with speed, a heavy manual column with the key off, limp mode, a
+quiet ECU, a torque sensor wire off, high pedal disable, a cut throttle wire, and a
+Shinegle fault reaching the dash.
+
+`tests/test_rig_web.py`: the simulator page's Python side (dash buttons through the
+real firmware, the panel, pulling fuses), the python-can stand-in, the bundle, and
+that `pico.wasm` matches the firmware source.
 
 CI runs them on Linux and macOS (`.github/workflows/test.yml`). On Linux they
 must run, not skip (`TERYX_RIG_REQUIRED`).

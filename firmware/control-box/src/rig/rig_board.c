@@ -14,7 +14,6 @@
 //            CNF bit timing, 3 TX buffers, RXB0 -> RXB1 rollover, CANINTF, EFLG
 #include "sdk/rig_sdk.h"
 
-#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -31,11 +30,32 @@ int pico_main(void);          // main_pico.c's main(), renamed with -Dmain=pico_
 enum { RUN_IDLE, RUN_RUNNING, RUN_PARKED, RUN_EXITED };
 enum { EXIT_NONE, EXIT_STOPPED, EXIT_WATCHDOG, EXIT_BOOTLOADER, EXIT_RETURNED };
 
+// Two ways to run the firmware next to its caller, same behaviour:
+//  * PC (Linux, macOS): its own thread, handed the CPU with a mutex + condition.
+//  * Browser (Emscripten, the phone sim on GitHub Pages): a fiber on one thread,
+//    swapped in and out with emscripten_fiber_swap (needs -sASYNCIFY).
+#ifdef __EMSCRIPTEN__
+#include <emscripten/fiber.h>
+#define FW_STACK (64 * 1024)
+static emscripten_fiber_t fib_main, fib_fw;
+static char fib_main_astack[16 * 1024];
+static char fib_fw_cstack[FW_STACK] __attribute__((aligned(16)));
+static char fib_fw_astack[FW_STACK];
+#define LOCK() ((void)0)
+#define UNLOCK() ((void)0)
+#else
+#include <pthread.h>
+#define LOCK() pthread_mutex_lock(&R.mu)
+#define UNLOCK() pthread_mutex_unlock(&R.mu)
+#endif
+
 static struct {
+#ifndef __EMSCRIPTEN__
     pthread_t thread;
-    bool started;
     pthread_mutex_t mu;
     pthread_cond_t cv;
+#endif
+    bool started;
     int run;
     int exit_reason;
     bool quit;
@@ -122,6 +142,34 @@ uart_inst_t rig_uart0_obj = {0};
 // ---------------------------------------------------------------- scheduling
 // The firmware thread gives the CPU back here. It parks once virtual time
 // reaches the target Python asked for, and waits for the next rig_run_us().
+#ifdef __EMSCRIPTEN__
+static void yield_us(uint64_t us) {
+    R.now_us += us;
+    if (R.wd_on && R.now_us - R.wd_last_us > (uint64_t)R.wd_ms * 1000u) {
+        R.exit_reason = EXIT_WATCHDOG;
+        R.quit = true;
+    }
+    while (!R.quit && R.now_us >= R.target_us) {
+        R.run = RUN_PARKED;
+        emscripten_fiber_swap(&fib_fw, &fib_main);
+    }
+    if (R.quit) {
+        if (R.exit_reason == EXIT_NONE) R.exit_reason = EXIT_STOPPED;
+        R.run = RUN_EXITED;
+        for (;;) emscripten_fiber_swap(&fib_fw, &fib_main);  // never comes back
+    }
+    R.run = RUN_RUNNING;
+}
+
+static void fw_fiber(void *arg) {
+    (void)arg;
+    yield_us(0);
+    pico_main();
+    R.exit_reason = EXIT_RETURNED;
+    R.run = RUN_EXITED;
+    for (;;) emscripten_fiber_swap(&fib_fw, &fib_main);
+}
+#else
 static void yield_us(uint64_t us) {
     pthread_mutex_lock(&R.mu);
     R.now_us += us;
@@ -156,6 +204,7 @@ static void *fw_thread(void *arg) {
     pthread_mutex_unlock(&R.mu);
     return NULL;
 }
+#endif
 
 // ---------------------------------------------------------------- SDK: time
 absolute_time_t get_absolute_time(void) { return R.now_us; }
@@ -271,10 +320,10 @@ void flash_range_program(uint32_t off, const uint8_t *data, size_t n) {
 int flash_safe_execute(void (*fn)(void *), void *param, uint32_t t) { (void)t; fn(param); return PICO_OK; }
 void reset_usb_boot(uint32_t a, uint32_t b) {
     (void)a; (void)b;
-    pthread_mutex_lock(&R.mu);
+    LOCK();
     R.exit_reason = EXIT_BOOTLOADER;
     R.quit = true;
-    pthread_mutex_unlock(&R.mu);
+    UNLOCK();
     yield_us(0);  // never returns
     for (;;) {}
 }
@@ -554,8 +603,10 @@ int spi_read_blocking(spi_inst_t *spi, uint8_t tx, uint8_t *dst, size_t len) {
 // ================================================================ API for Python
 RIG_API void rig_init(void) {
     memset(&R, 0, sizeof R);
+#ifndef __EMSCRIPTEN__
     pthread_mutex_init(&R.mu, NULL);
     pthread_cond_init(&R.cv, NULL);
+#endif
     for (int p = 0; p < NPINS; p++) { G[p].fn = GPIO_FUNC_NULL; G[p].ext = -1; G[p].out = G[p].out_dir = G[p].pull_up = false; }
     memset(S, 0, sizeof S);
     memset(rig_flash, 0xFF, sizeof rig_flash);
@@ -570,6 +621,33 @@ RIG_API void rig_set_pins(int sck, int mosi, int miso, int sda, int scl, int tx,
     uart_pins[0] = (uint)tx; uart_pins[1] = (uint)rx;
 }
 
+#ifdef __EMSCRIPTEN__
+RIG_API int rig_start(void) {
+    R.run = RUN_IDLE;
+    R.target_us = 0;
+    emscripten_fiber_init_from_current_context(&fib_main, fib_main_astack, sizeof fib_main_astack);
+    emscripten_fiber_init(&fib_fw, fw_fiber, NULL, fib_fw_cstack, sizeof fib_fw_cstack,
+                          fib_fw_astack, sizeof fib_fw_astack);
+    R.started = true;
+    return 0;
+}
+
+RIG_API int rig_run_us(uint32_t us) {  // 32-bit: a 64-bit argument breaks the browser build's fiber rewind
+    if (!R.started || R.run == RUN_EXITED) return RUN_EXITED;
+    R.target_us = R.now_us + us;
+    R.run = RUN_RUNNING;
+    emscripten_fiber_swap(&fib_main, &fib_fw);
+    return R.run;
+}
+
+RIG_API void rig_stop(void) {
+    if (R.started && R.run != RUN_EXITED) {
+        R.quit = true;
+        emscripten_fiber_swap(&fib_main, &fib_fw);
+    }
+    R.started = false;
+}
+#else
 RIG_API int rig_start(void) {
     R.run = RUN_IDLE;
     R.target_us = 0;
@@ -579,7 +657,7 @@ RIG_API int rig_start(void) {
 }
 
 // Let the firmware run until virtual time has moved on by `us`. Returns the run state.
-RIG_API int rig_run_us(uint64_t us) {
+RIG_API int rig_run_us(uint32_t us) {  // 32-bit: a 64-bit argument breaks the browser build's fiber rewind
     pthread_mutex_lock(&R.mu);
     if (R.run == RUN_EXITED) { pthread_mutex_unlock(&R.mu); return RUN_EXITED; }
     R.target_us = R.now_us + us;
@@ -601,8 +679,12 @@ RIG_API void rig_stop(void) {
     if (started) pthread_join(R.thread, NULL);
     R.started = false;
 }
+#endif
 
 RIG_API int rig_exit_reason(void) { return R.exit_reason; }
+// The run state after rig_run_us(). The browser build reads it here: a call that swapped
+// fibers loses its own return value on the way back out to JavaScript.
+RIG_API int rig_run_state(void) { return R.run; }
 RIG_API uint64_t rig_now_us(void) { return R.now_us; }
 RIG_API const char *rig_errors(void) { return R.errors; }
 

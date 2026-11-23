@@ -218,6 +218,28 @@ def cmd_decode(args) -> None:
         return
 
 
+def cmd_rig_web(args) -> None:
+    """The whole-Teryx simulator page (dash/web/rig/) on this laptop: dash + real firmware in the browser."""
+    import functools
+    import http.server
+    import runpy
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parent.parent
+    runpy.run_path(str(root / "tools" / "build_rig_web.py"), run_name="teryx_rig_bundle")["bundle"]()
+    web = root / "dash" / "web"
+    handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(web))
+    handler.func.extensions_map = {**handler.func.extensions_map, ".wasm": "application/wasm",
+                                   ".js": "text/javascript", ".mjs": "text/javascript"}
+    srv = http.server.ThreadingHTTPServer((args.host, args.port), handler)
+    print(f"Teryx simulator: http://localhost:{args.port}/rig/  (Ctrl+C to stop)")
+    print("It needs the internet the first time, to fetch Python for the browser (Pyodide).")
+    try:
+        srv.serve_forever()
+    except KeyboardInterrupt:
+        pass
+
+
 def main(argv=None) -> None:
     p = argparse.ArgumentParser(prog="teryx", description="Teryx OS dash and test bench")
     p.add_argument("-v", "--verbose", action="store_true")
@@ -311,6 +333,10 @@ def main(argv=None) -> None:
     d = dsub.add_parser("install", help="make a .dbc the Shinegle layout Teryx OS uses")
     d.add_argument("dbc")
     sp.set_defaults(fn=cmd_decode)
+
+    sp = sub.add_parser("rig-web", help="whole-Teryx simulator page: real dash + real firmware, in the browser")
+    web_args(sp, 8090)
+    sp.set_defaults(fn=cmd_rig_web)
 
     raw = sys.argv[1:] if argv is None else list(argv)
     if raw[:1] == ["speakerbox"]:

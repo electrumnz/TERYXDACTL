@@ -27,6 +27,9 @@ export class Link {
 
   start() {
     const params = new URLSearchParams(location.search);
+    // Inside the whole-Teryx sim page (rig/index.html): that page runs the real Pico firmware and
+    // the Pi's gateway in the browser, and passes the same messages the Pi's websocket would.
+    if (params.has("rig") && window.parent !== window) { this.startRig(); return; }
     if (params.has("demo") || location.protocol === "file:" || isHostedDemo()) {
       this.startDemo(params.get("demo") || "drive");
       return;
@@ -40,6 +43,19 @@ export class Link {
     this.store.set({ "link.online": true, "link.demo": true });
     this.demo.onState = (s) => this.store.set(s);
     this.demo.start();
+  }
+
+  startRig() {
+    this.rig = true;
+    window.addEventListener("message", (ev) => {
+      if (ev.source !== window.parent || !ev.data || !ev.data.teryxRig) return;
+      const msg = ev.data.msg;
+      if (msg.type === "state" && msg.state) {
+        this.connected = !!msg.state["link.online"];
+        this.store.set(msg.state);
+      } else if (msg.type === "event") this.store.emit("event", msg);
+    });
+    window.parent.postMessage({ teryxRig: "hello" }, "*");
   }
 
   connect() {
@@ -71,6 +87,7 @@ export class Link {
 
   send(obj) {
     if (this.demo) { this.demo.receive(obj); return true; }
+    if (this.rig) { window.parent.postMessage({ teryxRig: "ui", msg: obj }, "*"); return true; }
     if (this.ws && this.ws.readyState === 1) { this.ws.send(JSON.stringify(obj)); return true; }
     return false;
   }
