@@ -53,6 +53,9 @@ rig.ui({ type: "setting", key: "eps_listen", value: 1 });
 o = run(0.5);
 check(o.replies.some((r) => r.type === "setting_ack" && r.key === "eps_listen"), "settings get their ack");
 
+const ws = rig.wiring();
+check(ws.pins["RAIL.BUS"][1] > 11 && ws.pins["RELAYS.COM8"][0] === ws.pins["RELAYS.NO8"][0], "live wiring state for the drawing");
+
 rig.panel({ fuse: ["FB.F8", true] });
 o = run(1);
 check(o.panel.problems.length >= 0, "pulling a fuse doesn't crash the sim");

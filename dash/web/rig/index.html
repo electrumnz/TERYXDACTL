@@ -12,7 +12,7 @@
   <header class="top">
     <a class="back" href="../" title="Back to the demo dash">&larr;</a>
     <div class="title">Teryx simulator <span class="sub">real control box firmware, wiring and dash</span></div>
-    <a class="pill link" href="../wiring/">Wiring diagram</a>
+    <a class="pill link" href="../wiring/" id="wiring-btn">Wiring (live)</a>
     <div class="pill" id="status">Starting</div>
   </header>
 
@@ -126,6 +126,14 @@
       </p>
     </section>
   </main>
+  <div class="wiring-panel" id="wiring-panel" hidden>
+    <div class="wp-bar">
+      <button class="plain" id="wiring-close">&larr; Back to the sim</button>
+      <span>Live wiring: red = 12 V on, amber = logic high, dashed = PWM</span>
+      <a href="../wiring/" target="_blank" rel="noopener">Open in its own tab</a>
+    </div>
+    <iframe id="wiring-frame" title="Live wiring drawing"></iframe>
+  </div>
   <script src="rig.js"></script>
 </body>
 </html>

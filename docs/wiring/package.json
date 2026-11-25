@@ -1,0 +1,5 @@
+{
+  "//": "Lets Node load sld.js as a module (tools/wiring_sld_check.mjs). The page doesn't need it.",
+  "type": "module",
+  "private": true
+}

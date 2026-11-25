@@ -1,0 +1,5 @@
+{
+  "//": "elk.bundled.js is a classic script (UMD), not an ES module.",
+  "type": "commonjs",
+  "private": true
+}

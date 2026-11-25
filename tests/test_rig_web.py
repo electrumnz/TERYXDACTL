@@ -124,3 +124,19 @@ def test_start_again(rig):
     rig.panel({"key": False, "battery": 11.0})
     rig.panel({"restart": True})
     assert rig.inputs["key"] is True and rig.inputs["battery"] == pytest.approx(12.6)
+
+
+@needs_cc
+def test_live_wiring_state_for_the_drawing(rig):
+    """docs/wiring/ lights up from this: every pin's net and level, cut wires, pulled fuses."""
+    st = rig.wiring_state()
+    pins = st["pins"]
+    assert pins["RAIL.BUS"][1] > 11                                # key on: the dash rail is up
+    assert pins["RELAYS.COM8"][0] == pins["RELAYS.NO8"][0]         # power hold relay closed
+    rig.panel({"fuse": ["FB.F12", True]})
+    rig.tick(0.25)
+    assert "FB.F12" in rig.wiring_state()["blown"]
+    fused = next(ref for ref in rig.fuses if "." not in ref)
+    rig.panel({"fuse": [fused, True]})
+    rig.tick(0.25)
+    assert fused in rig.wiring_state()["cut"]

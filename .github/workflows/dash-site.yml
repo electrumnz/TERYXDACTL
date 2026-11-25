@@ -2,7 +2,7 @@ name: Dash demo site
 
 # Puts dash/web online on GitHub Pages so the dash can be opened on a phone
 # with no Pi or laptop on. On *.github.io the dash runs its built-in demo vehicle.
-# The wiring viewer (docs/wiring, made from config/wiring.yaml) goes up at /wiring/.
+# The wiring drawing (docs/wiring: schematic.json made from config/wiring.yaml, drawn by sld.js) goes up at /wiring/.
 # The Android remote app (android/) goes up as /teryx-remote.apk, to download on the phone.
 on:
   push:
@@ -64,7 +64,7 @@ jobs:
           mkdir -p _site
           cp -r dash/web/. _site/
           mkdir -p _site/wiring
-          cp docs/wiring/index.html docs/wiring/*.svg _site/wiring/
+          cp -r docs/wiring/. _site/wiring/
           cp android/app/build/outputs/apk/release/app-release.apk _site/teryx-remote.apk
       - name: Stamp the code with this build so phones never mix old and new files
         # A phone can keep some old .js files cached after a deploy. Old and new modules then don't
