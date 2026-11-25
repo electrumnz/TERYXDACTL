@@ -178,5 +178,23 @@ class WebRig:
             "problems": list(s.problems)[-8:],
         }
 
+    def wiring_state(self) -> dict:
+        """Every pin's net and level, for the live wiring drawing (docs/wiring/, rig/ links to it).
+
+        ``pins``: "DEV.PIN" -> [net number, volts or None when floating, duty]. Two pins on one net
+        share a number, which is how the drawing knows a relay contact is closed.
+        """
+        net = self.s.net
+        uf = getattr(net, "_uf", None) or net.static
+        ids: dict[str, int] = {}
+        pins = {}
+        for p in net.pins:
+            root = uf.find(p)
+            n = ids.setdefault(root, len(ids))
+            lv = net.values.get(p)
+            pins[p] = [n, None if lv is None else round(lv.v, 2), 1 if lv is None else round(lv.duty, 3)]
+        blown = [ref for ref, f in self.fuses.items() if f["pulled"] and "." in ref]
+        return {"t": round(self.s.t, 1), "pins": pins, "cut": sorted(net.removed), "blown": blown}
+
     def close(self) -> None:
         self.s.close()

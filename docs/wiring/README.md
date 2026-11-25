@@ -1,14 +1,17 @@
 # Teryx wiring (made from `config/wiring.yaml`)
 
-Don't edit this file or the SVGs here. Edit [`config/wiring.yaml`](../../config/wiring.yaml), then run
+Don't edit this file or schematic.json here. Edit [`config/wiring.yaml`](../../config/wiring.yaml), then run
 `python -m teryx wiring`. A test fails if they get out of step, and it also checks the wiring
 itself: every fused feed has a fuse, wires are thick enough for their fuse, no 12 V or 72 V
 wire lands on a 3.3 V pin, each CAN bus has exactly two 120 ohm ends, the Pico pins match
 `config/io-map.yaml`, and the Pi's PCIe port and header stay free for the AI HAT+ 2.
 
 Why things are wired this way (power hold, diodes, CAN rules): [`docs/wiring.md`](../wiring.md).
-Viewer with search: [`index.html`](index.html), also online at
-<https://electrumnz.github.io/TERYXDACTL/wiring/>.
+The drawing: one big schematic of the whole Teryx on a pan and zoom grid, online at
+<https://electrumnz.github.io/TERYXDACTL/wiring/> (or open [`index.html`](index.html) through any
+web server). It's laid out from [`schematic.json`](schematic.json) by [`sld.js`](sld.js) with ELK
+(elkjs, EPL-2.0, unchanged copy in [`vendor/`](vendor/)). The simulator page links to it and lights
+up the live wires.
 
 **97 devices, 374 wires.** By status: 19 from_manual, 3 confirmed, 300 planned, 48 tbc, 4 placeholder.
 Nothing has been checked on the real Teryx yet.
@@ -17,59 +20,21 @@ Wire sizes follow the conservative table in the YAML (from
 [speedingparts.eu](https://info.speedingparts.eu/what-cable-size-should-you-use-in-a-12v-automotive-system),
 runs up to about 5 m). Go one size up for bundled or hot runs.
 
-## Sheets
+## Sections on the drawing
 
-### Traction: 72 V pack, controller, motor, DC-DC
-
-![hv](sheet-hv.svg)
-
-### Shinegle low voltage: key, F-N-R, throttle, sensors, programmer
-
-![sg](sheet-sg.svg)
-
-### 12 V power: battery, fuses, key, dash rail, bucks
-
-![power](sheet-power.svg)
-
-### Grounds (chassis, star point)
-
-![ground](sheet-ground.svg)
-
-### CAN buses: main Teryx bus and the steering bus
-
-![can](sheet-can.svg)
-
-### Control box inside: Pico 2 and its boards
-
-![logic](sheet-logic.svg)
-
-### 12 V signals into the control box (opto board)
-
-![inputs](sheet-inputs.svg)
-
-### Lights
-
-![lights](sheet-lights.svg)
-
-### Winch
-
-![winch](sheet-winch.svg)
-
-### Drive: 4WD, diff lock, tray, power steering
-
-![drive](sheet-drive.svg)
-
-### Trailer plug and trailer camera
-
-![trailer](sheet-trailer.svg)
-
-### Dash computer: Pi 5, screen, cameras, USB, audio
-
-![dash](sheet-dash.svg)
-
-### RC box: steering by remote (fake torque sensor)
-
-![rc](sheet-rc.svg)
+1. Traction: 72 V pack, controller, motor, DC-DC (10 wires)
+2. 12 V power: battery, fuses, key, dash rail, bucks (25 wires)
+3. Grounds (chassis, star point) (1 wires)
+4. Shinegle low voltage: key, F-N-R, throttle, sensors, programmer (18 wires)
+5. Winch (20 wires)
+6. Lights (85 wires)
+7. Drive: 4WD, diff lock, tray, power steering (39 wires)
+8. Trailer plug and trailer camera (24 wires)
+9. Control box inside: Pico 2 and its boards (51 wires)
+10. 12 V signals into the control box (opto board) (18 wires)
+11. CAN buses: main Teryx bus and the steering bus (8 wires)
+12. RC box: steering by remote (fake torque sensor) (37 wires)
+13. Dash computer: Pi 5, screen, cameras, USB, audio (38 wires)
 
 ## Things to check or photograph on the Teryx
 

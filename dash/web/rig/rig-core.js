@@ -34,6 +34,9 @@ def _rig_ui(text):
 def _rig_panel(text):
     rig.panel(json.loads(text))
 
+def _rig_wiring():
+    return json.dumps(rig.wiring_state())
+
 def _rig_out():
     out = {"dash": rig.dash_state(), "panel": rig.panel_state(), "replies": rig.replies}
     rig.replies = []
@@ -41,11 +44,13 @@ def _rig_out():
 `);
   const g = py.globals;
   const tick = g.get("_rig_tick"), ui = g.get("_rig_ui"), panel = g.get("_rig_panel"), out = g.get("_rig_out");
+  const wiring = g.get("_rig_wiring");
   return {
     py,
     tick: (s) => tick(s),
     ui: (msg) => ui(JSON.stringify(msg)),
     panel: (cmd) => panel(JSON.stringify(cmd)),
     out: () => JSON.parse(out()),
+    wiring: () => JSON.parse(wiring()),
   };
 }

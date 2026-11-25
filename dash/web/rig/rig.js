@@ -27,6 +27,8 @@
         $("status").className = "pill bad";
       } else if (m.type === "warn") {
         console.warn(m.text);
+      } else if (m.type === "wiring") {
+        sendWiring(m.state);
       } else if (m.type === "out") {
         $("loading").hidden = true;
         last = m;
@@ -60,6 +62,28 @@
   }
   window.addEventListener("resize", fit);
   fit();
+
+  // ---------------------------------------------------------------- live wiring drawing
+  // The wiring page (../wiring/) lights up energised wires, closed contacts and lit lamps from
+  // the sim. It opens over this page, or in another tab (BroadcastChannel "teryx-rig").
+  const wPanel = $("wiring-panel"), wFrame = $("wiring-frame");
+  let chan = null, tabWants = false;
+  try {
+    chan = new BroadcastChannel("teryx-rig");
+    chan.onmessage = (e) => { if (e.data && e.data.teryxWiringHello) { tabWants = true; wiringFeed(); } };
+  } catch { /* no BroadcastChannel: the panel still works */ }
+  const wiringFeed = () => send("wiring", { on: !wPanel.hidden || tabWants });
+  function sendWiring(state) {
+    if (!wPanel.hidden && wFrame.contentWindow) wFrame.contentWindow.postMessage({ teryxWiring: state }, "*");
+    if (chan && tabWants) chan.postMessage({ teryxWiring: state });
+  }
+  $("wiring-btn").addEventListener("click", (e) => {
+    e.preventDefault();
+    if (!wFrame.src) wFrame.src = "../wiring/" + (ver ? `?v=${ver}` : "");
+    wPanel.hidden = false;
+    wiringFeed();
+  });
+  $("wiring-close").addEventListener("click", () => { wPanel.hidden = true; wiringFeed(); });
 
   // ---------------------------------------------------------------- panel controls
   for (const b of document.querySelectorAll("button.tog[data-in]")) {
