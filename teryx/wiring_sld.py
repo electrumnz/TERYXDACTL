@@ -2,20 +2,18 @@
 
     python -m teryx wiring     writes docs/wiring/schematic.json (with the other wiring files)
 
-docs/wiring/index.html + sld.js read schematic.json, lay each section out with ELK
-(elkjs, EPL-2.0, kept unchanged in docs/wiring/vendor/) and draw the lot on one
-unlimited pan/zoom grid with IEC 60617 style symbols that we draw ourselves.
+docs/wiring/index.html + sld.js read schematic.json, lay the whole thing out in one go
+with ELK (elkjs, EPL-2.0, kept unchanged in docs/wiring/vendor/) and draw it as one
+canvas on an unlimited pan/zoom grid, with IEC 60617 style symbols that we draw ourselves.
 
 This file decides *what* goes on the drawing, the page decides *where*:
 
-* Sections, in the order an electrician reads a drawing: power first (traction,
-  12 V distribution, earths), then each control system.
-* Each wire sits in exactly one section. Earth wires sit in the section their device
-  mostly lives in, and are drawn there as an earth symbol (the Earths section has the
-  star point with a reference to every one of them, like a terminal strip).
-* A device that has wires in several sections is drawn once in each, showing only the
-  pins used there, with cross references to the other places (like a relay coil on
-  one sheet and its contacts on another).
+* One canvas, no sheets or frames. Every device is drawn once and every wire runs
+  end to end between the two devices it joins.
+* Earth wires are drawn as the earth symbol at the device, like any schematic; the
+  earth star point lists every one of them.
+* Each device and wire still carries the system it belongs to (traction, 12 V, lights
+  and so on), so the page can find a system and the wire list can group by it.
 * Every device gets a symbol kind: a plain box with pins for boards and controllers,
   real symbols for lamps, switches, fuses, motors, batteries, relays, contactors.
   Set `symbol:` on a device in wiring.yaml to override the guess.
@@ -39,10 +37,6 @@ SECTION_ORDER = ["hv", "power", "ground", "sg", "winch", "lights", "drive", "tra
 
 EARTH_POINTS = {("GND_STAR", "G"), ("BAT12", "neg")}
 
-# Wires with both ends in these are control signals. Each section is drawn as two areas side by
-# side, power circuit then control signals, like the power and control sheets of a panel drawing.
-LOGIC = {"3v3", "5v", "can", "usb", "hdmi", "csi", "pcie", "video", "audio"}
-SUBS = ["power", "control"]
 
 # Symbol kind for each device (wiring.yaml `symbol:` wins).
 #   rows kinds:  a symbol per row between two pins, rows joined to one common pin
@@ -117,6 +111,27 @@ def suggested_colour(d: dict, w: dict) -> str:
     return ""
 
 
+# What a wire carries, for the line colour on the drawing (the page can turn colours off).
+LINE_KINDS = {"hv": "72 V traction", "12v": "12 V power", "logic": "5 V / 3.3 V logic",
+              "gnd": "Earth / negative", "can": "CAN bus", "signal": "Signals, video, audio"}
+
+
+def line_kind(d: dict, w: dict) -> str:
+    devs = d["devices"]
+    vs = {devs[e[0]]["pins"][e[1]]["v"] for e in (w["_a"], w["_b"])}
+    if vs & {"hv", "motor", "hvneg"}:
+        return "hv"
+    if vs == {"gnd"}:
+        return "gnd"
+    if "can" in vs:
+        return "can"
+    if "12v" in vs:
+        return "12v"
+    if vs <= {"3v3", "5v", "gnd"}:
+        return "logic"
+    return "signal"
+
+
 def _section_of(d: dict, w: dict, home: dict[str, str]) -> str:
     if w["sys"] != "ground":
         return w["sys"]
@@ -159,106 +174,70 @@ def build(d: dict | None = None) -> dict:
     home = _homes(d)
     sec_keys = [k for k in SECTION_ORDER if k in d["sheets"]] + [k for k in d["sheets"] if k not in SECTION_ORDER]
 
-    def dom(end):
-        return devs[end[0]]["pins"][end[1]]["v"]
-
-    # power or control for each wire; earth wires follow their device
-    secs = {w["id"]: _section_of(d, w, home) for w in d["wires"]}
-    subs: dict[str, str] = {}
-    where: dict[tuple[str, str], Counter] = defaultdict(Counter)    # (sec, dev) -> sub counts
-    for w in d["wires"]:
-        if dom(w["_a"]) == "gnd" or dom(w["_b"]) == "gnd":
-            continue
-        sub = "control" if dom(w["_a"]) in LOGIC and dom(w["_b"]) in LOGIC else "power"
-        subs[w["id"]] = sub
-        for end in (w["_a"], w["_b"]):
-            where[(secs[w["id"]], end[0])][sub] += 1
-    for w in d["wires"]:
-        if w["id"] in subs:
-            continue
-        sec = secs[w["id"]]
-        ends = [e for e in (w["_a"], w["_b"]) if tuple(e) not in EARTH_POINTS]
-        votes = Counter()
-        for e in ends:
-            votes.update(where[(sec, e[0])])
-        if len(ends) == 2:
-            both = [s_ for s_ in SUBS if all(where[(sec, e[0])][s_] for e in ends)]
-            subs[w["id"]] = both[-1] if both else (votes.most_common(1)[0][0] if votes else "power")
-        else:
-            subs[w["id"]] = votes.most_common(1)[0][0] if votes else "power"
-
     wires_out = []
-    used: dict[tuple[str, str], dict[str, dict[str, int]]] = defaultdict(lambda: defaultdict(lambda: {"in": 0, "out": 0}))
+    used: dict[str, dict[str, dict[str, int]]] = defaultdict(lambda: defaultdict(lambda: {"in": 0, "out": 0}))
     earth_refs: list[dict] = []
     for w in d["wires"]:
-        sec = secs[w["id"]]
-        sub = subs[w["id"]] if sec != "ground" else "power"
-        area = f"{sec}/{sub}"
+        sec = _section_of(d, w, home)
         a, b = tuple(w["_a"]), tuple(w["_b"])
         earth_end = None
-        if w["sys"] == "ground" and sec != "ground":
-            if b in EARTH_POINTS:
-                earth_end = "to"
-            elif a in EARTH_POINTS:
-                earth_end = "from"
+        if b in EARTH_POINTS and a not in EARTH_POINTS:
+            earth_end = "to"
+        elif a in EARTH_POINTS and b not in EARTH_POINTS:
+            earth_end = "from"
         fuse = w.get("fuse")
         inline_fuse = fuse if (fuse is not None and symbol_of(a[0], devs[a[0]]) != "fuseblock") else None
         kind, _k = _via_kind(w.get("via"))
         out = {
-            "id": w["id"], "sec": sec, "sub": sub, "from": list(a), "to": list(b),
+            "id": w["id"], "sec": sec, "from": list(a), "to": list(b),
             "mm2": w.get("mm2"), "fuse": W.fuse_for(d, w), "inline_fuse": inline_fuse,
-            "via": w.get("via"), "via_kind": kind, "colour": suggested_colour(d, w),
+            "via": w.get("via"), "via_kind": kind, "colour": suggested_colour(d, w), "line": line_kind(d, w),
             "status": w["status"], "optional": bool(w.get("optional")),
             "note": w.get("note", ""), "bus": w.get("bus"), "earth": earth_end,
         }
         wires_out.append(out)
         if earth_end:
             dev_end = a if earth_end == "to" else b
-            u = used[(dev_end[0], area)][dev_end[1]]
+            u = used[dev_end[0]][dev_end[1]]
             u["earth"] = u.get("earth", 0) + 1
             pt = b if earth_end == "to" else a
-            earth_refs.append({"wire": w["id"], "dev": dev_end[0], "pin": dev_end[1], "part": f"{area}:{dev_end[0]}",
+            earth_refs.append({"wire": w["id"], "dev": dev_end[0], "pin": dev_end[1], "part": dev_end[0],
                                "point": list(pt)})
         else:
-            used[(a[0], area)][a[1]]["out"] += 1
-            used[(b[0], area)][b[1]]["in"] += 1
+            used[a[0]][a[1]]["out"] += 1
+            used[b[0]][b[1]]["in"] += 1
 
-    # The earth star: one stub per earth wire drawn elsewhere, pointing at where it is.
+    # The earth star: one stub per earth wire, listing where each one lands.
     for ref in earth_refs:
-        used[(ref["point"][0], "ground/power")][ref["point"][1]]["in"] += 1
+        used[ref["point"][0]][ref["point"][1]]["in"] += 1
+
+    order = {k: i for i, k in enumerate(sec_keys)}
+    def sec_of_dev(dev_id):
+        return home.get(dev_id, "ground")
 
     parts: dict[str, dict] = {}
-    appears: dict[str, list[str]] = defaultdict(list)
-    def area_order(area):
-        sec, sub = area.split("/")
-        return sec_keys.index(sec), SUBS.index(sub)
-
-    for (dev_id, area), pins in sorted(used.items(), key=lambda kv: (area_order(kv[0][1]), kv[0][0])):
+    for dev_id, pins in sorted(used.items(), key=lambda kv: (order.get(sec_of_dev(kv[0]), 99), kv[0])):
         dev = devs[dev_id]
         kind = symbol_of(dev_id, dev)
-        sec, sub = area.split("/")
-        pid = f"{area}:{dev_id}"
         ports = []
         # pins in yaml order so boxes read like the datasheet
         for pin in dev["pins"]:
             if pin not in pins:
                 continue
             u = pins[pin]
-            if u.get("earth") and not (u["in"] or u["out"]):
-                ports.append({"pin": pin, "side": "S"})
-                continue
             if u.get("earth"):
                 ports.append({"pin": pin, "side": "S"})
+                if not (u["in"] or u["out"]):
+                    continue
             if u["in"] and u["out"]:
                 ports.append({"pin": pin, "side": "W"})
                 ports.append({"pin": pin, "side": "E"})
             else:
                 ports.append({"pin": pin, "side": "W" if u["in"] >= u["out"] and u["in"] else "E"})
-        part = {"id": pid, "dev": dev_id, "sec": sec, "sub": sub, "kind": kind, "ports": ports}
+        part = {"id": dev_id, "dev": dev_id, "sec": sec_of_dev(dev_id), "kind": kind, "ports": ports}
         if kind in ROW_KINDS:
             part.update(_row_layout(kind, dev))
-        parts[pid] = part
-        appears[dev_id].append(pid)
+        parts[dev_id] = part
 
     devices_out = {}
     for dev_id, dev in devs.items():
@@ -267,25 +246,21 @@ def build(d: dict | None = None) -> dict:
             "name": dev["name"], "zone": dev.get("zone"), "status": dev.get("status"),
             "optional": bool(dev.get("optional")), "note": dev.get("note", ""), "check": dev.get("check", ""),
             "doc": dev.get("doc", ""), "kind": kind, "tag": TAG_LETTER.get(kind, "A"),
-            "parts": appears.get(dev_id, []),
+            "parts": [dev_id] if dev_id in parts else [],
             "pins": {p: {k: v for k, v in spec.items() if k in ("v", "desc", "fuse_a", "supply", "term")}
                      for p, spec in dev["pins"].items()},
         }
 
     sections = []
     for i, k in enumerate(sec_keys, 1):
-        areas = []
-        for sub in SUBS:
-            ps = [p for p in parts if parts[p]["sec"] == k and parts[p]["sub"] == sub]
-            if ps:
-                areas.append({"key": sub, "parts": ps,
-                              "wires": [w["id"] for w in wires_out if w["sec"] == k and w["sub"] == sub]})
-        sections.append({"key": k, "no": i, "title": d["sheets"][k]["title"], "areas": areas,
+        sections.append({"key": k, "no": i, "title": d["sheets"][k]["title"],
+                         "parts": [p for p in parts if parts[p]["sec"] == k],
                          "wires": [w["id"] for w in wires_out if w["sec"] == k]})
 
     return {
-        "version": 1,
+        "version": 2,
         "source": "config/wiring.yaml",
+        "lines": LINE_KINDS,
         "statuses": {k: {"colour": c, "dash": dash, "label": label} for k, (c, dash, label) in W.STATUS_STYLE.items()},
         "sections": sections,
         "devices": devices_out,

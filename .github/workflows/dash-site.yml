@@ -65,6 +65,8 @@ jobs:
           cp -r dash/web/. _site/
           mkdir -p _site/wiring
           cp -r docs/wiring/. _site/wiring/
+          # lay the wiring canvas out once here, so the page opens straight away on a phone
+          node tools/wiring_sld_check.mjs --geom _site/wiring/layout.json
           cp android/app/build/outputs/apk/release/app-release.apk _site/teryx-remote.apk
       - name: Stamp the code with this build so phones never mix old and new files
         # A phone can keep some old .js files cached after a deploy. Old and new modules then don't

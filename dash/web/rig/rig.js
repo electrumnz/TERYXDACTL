@@ -70,7 +70,10 @@
   let chan = null, tabWants = false;
   try {
     chan = new BroadcastChannel("teryx-rig");
-    chan.onmessage = (e) => { if (e.data && e.data.teryxWiringHello) { tabWants = true; wiringFeed(); } };
+    chan.onmessage = (e) => {
+      if (e.data && e.data.teryxWiringHello) { tabWants = true; wiringFeed(); }
+      if (e.data && e.data.teryxPanel) fromWiring(e.data.teryxPanel);
+    };
   } catch { /* no BroadcastChannel: the panel still works */ }
   const wiringFeed = () => send("wiring", { on: !wPanel.hidden || tabWants });
   function sendWiring(state) {
@@ -83,6 +86,16 @@
     wPanel.hidden = false;
     wiringFeed();
   });
+  // The wiring canvas can work the switches, key, E-stop and fuses too.
+  window.addEventListener("message", (ev) => {
+    if (ev.source === wFrame.contentWindow && ev.data && ev.data.teryxPanel) fromWiring(ev.data.teryxPanel);
+  });
+  const WIRING_CONTROLS = new Set(["key", "brake", "park", "estop", "backup_lights", "trailer", "fnr", "winch_cab", "winch_breaker", "fuse"]);
+  function fromWiring(cmd) {
+    if (!cmd || typeof cmd !== "object") return;
+    const ok = Object.fromEntries(Object.entries(cmd).filter(([k]) => WIRING_CONTROLS.has(k)));
+    if (Object.keys(ok).length) panel(ok);
+  }
   $("wiring-close").addEventListener("click", () => { wPanel.hidden = true; wiringFeed(); });
 
   // ---------------------------------------------------------------- panel controls

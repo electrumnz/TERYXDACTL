@@ -35,7 +35,7 @@ class WebRig:
         self.replies: list[dict] = []
         self.inputs = {"key": key_on, "park": True, "brake": False, "fnr": "neutral", "throttle": 0.0,
                        "steer": 0.0, "estop": False, "trailer": False, "backup_lights": False,
-                       "winch_cab": None, "winch_remote": None, "battery": MD.V_BATT,
+                       "winch_cab": None, "winch_remote": None, "winch_breaker": True, "battery": MD.V_BATT,
                        "mode": "eco", "ecu_silent": False, "trq_wire_off": False}
         self.fuses = self._fuse_list()
 
@@ -107,6 +107,8 @@ class WebRig:
                 s.winch_switch("cab", value or None)
             elif name == "winch_remote":
                 s.winch_remote(value or None)
+            elif name == "winch_breaker":            # True = closed (normal), False = tripped
+                s.winch_breaker(bool(value))
             elif name == "battery":
                 value = max(9.0, min(14.8, float(value)))
                 s.battery(value)
@@ -182,7 +184,8 @@ class WebRig:
         """Every pin's net and level, for the live wiring drawing (docs/wiring/, rig/ links to it).
 
         ``pins``: "DEV.PIN" -> [net number, volts or None when floating, duty]. Two pins on one net
-        share a number, which is how the drawing knows a relay contact is closed.
+        share a number, which is how the drawing knows a relay contact is closed. ``inputs`` and
+        ``pulled`` let the drawing show the right button for each switch and fuse.
         """
         net = self.s.net
         uf = getattr(net, "_uf", None) or net.static
@@ -194,7 +197,9 @@ class WebRig:
             lv = net.values.get(p)
             pins[p] = [n, None if lv is None else round(lv.v, 2), 1 if lv is None else round(lv.duty, 3)]
         blown = [ref for ref, f in self.fuses.items() if f["pulled"] and "." in ref]
-        return {"t": round(self.s.t, 1), "pins": pins, "cut": sorted(net.removed), "blown": blown}
+        pulled = sorted(ref for ref, f in self.fuses.items() if f["pulled"])
+        return {"t": round(self.s.t, 1), "pins": pins, "cut": sorted(net.removed), "blown": blown,
+                "pulled": pulled, "inputs": self.inputs}
 
     def close(self) -> None:
         self.s.close()
