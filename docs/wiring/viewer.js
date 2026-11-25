@@ -4,7 +4,7 @@
 // Live state comes in two ways, both the same message from rig/rig.js:
 //   - the simulator page opens this page in a panel and posts {teryxWiring: state} to it
 //   - any other tab of the simulator on this device sends it on BroadcastChannel "teryx-rig"
-import { layout, draw, gridRef, rowName, GRID, wireText, shapesFor, SVG_STYLE } from "./sld.js";
+import { layout, draw, gridRef, rowName, GRID, wireText, SVG_STYLE, packGeom, unpackGeom } from "./sld.js";
 
 document.head.insertAdjacentHTML("beforeend", `<style>${SVG_STYLE}</style>`);
 
@@ -19,9 +19,9 @@ const view = { x: 0, y: 0, k: 0.1 };            // top-left of the screen in dra
   try {
     const v = new URL(import.meta.url).searchParams.get("v") || "";
     model = await (await fetch("schematic.json" + (v ? `?v=${v}` : ""))).json();
-    geom = cached(model) || await layout(model, new self.ELK());
+    geom = cached(model) || await prebuilt(model, v) || await layout(model, new self.ELK());
     store(model, geom);
-    canvas.innerHTML = draw(model, geom);
+    canvas.innerHTML = draw(model, geom, { colours: coloursOn() });
     svg = canvas.querySelector("svg");
     svg.removeAttribute("width");
     svg.removeAttribute("height");
@@ -37,31 +37,32 @@ const view = { x: 0, y: 0, k: 0.1 };            // top-left of the screen in dra
   }
 })();
 
-// The layout takes a second or two on a phone. Keep the last one for the same schematic.json.
-function sig(m) {
-  const s = JSON.stringify(m);
-  let h = 0;
-  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
-  return `sld1:${s.length}:${h}`;
-}
-function cached(m) {
+// Laying out the whole Teryx takes a few seconds (longer on a phone). The site build saves the
+// layout as layout.json; failing that, keep the last one made here for the same schematic.json.
+async function prebuilt(m, v) {
   try {
-    const raw = localStorage.getItem("teryx-wiring-geom");
-    if (!raw) return null;
-    const c = JSON.parse(raw);
-    if (c.sig !== sig(m)) return null;
-    // shapes aren't stored (they're quick to rebuild from the model): put them back
-    const shapes = shapesFor(m);
-    for (const [k, n] of Object.entries(c.geom.nodes)) n.shape = shapes[k];
-    return c.geom;
+    const r = await fetch("layout.json" + (v ? `?v=${v}` : ""));
+    return r.ok ? unpackGeom(m, await r.json()) : null;
   } catch { return null; }
 }
-function store(m, g) {
-  try {
-    const nodes = Object.fromEntries(Object.entries(g.nodes).map(([k, n]) => [k, { x: n.x, y: n.y }]));
-    localStorage.setItem("teryx-wiring-geom", JSON.stringify({ sig: sig(m), geom: { ...g, nodes } }));
-  } catch { /* storage full or blocked: lay out again next time */ }
+function cached(m) {
+  try { return unpackGeom(m, JSON.parse(localStorage.getItem("teryx-wiring-geom") || "null")); } catch { return null; }
 }
+function store(m, g) {
+  try { localStorage.setItem("teryx-wiring-geom", JSON.stringify(packGeom(m, g))); } catch { /* storage full or blocked */ }
+}
+
+// Line colours by what the wire carries, on unless turned off (remembered on this device).
+function coloursOn() {
+  try { return localStorage.getItem("teryx-wiring-colours") !== "off"; } catch { return true; }
+}
+$("cols").setAttribute("aria-pressed", String(coloursOn()));
+$("cols").onclick = () => {
+  const on = !svg.classList.contains("colours");
+  svg.classList.toggle("colours", on);
+  $("cols").setAttribute("aria-pressed", String(on));
+  try { localStorage.setItem("teryx-wiring-colours", on ? "on" : "off"); } catch { /* ignore */ }
+};
 
 // ------------------------------------------------------------------------------------ view
 function apply() {
@@ -223,7 +224,7 @@ function pickWire(id, zoom = false) {
   const pinDesc = (end) => (dev(end).pins[end[1]] || {}).desc;
   const sec = model.sections.find((s) => s.key === w.sec);
   const st = model.statuses[w.status] || {};
-  const end = (e) => `<button class="lnk" data-dev="${e[0]}" data-sec="${w.sec}" data-sub="${w.sub}">${e[0]}.${e[1]}</button>
+  const end = (e) => `<button class="lnk" data-dev="${e[0]}">${e[0]}.${e[1]}</button>
     <small>${esc(dev(e).name)}${pinDesc(e) ? ", " + esc(pinDesc(e)) : ""}</small>`;
   info(`<h2>Wire ${esc(w.id)} <span class="tagst" style="--c:${st.colour}">${esc(st.label || w.status)}</span></h2>
     <div class="kv">
@@ -234,10 +235,12 @@ function pickWire(id, zoom = false) {
       <span>Fuse</span><div>${w.fuse != null ? w.fuse + " A" + (w.inline_fuse != null ? " in line" : "") : "none"}</div>
       ${w.via ? `<span>In line</span><div>${esc(w.via)}</div>` : ""}
       ${w.bus ? `<span>CAN bus</span><div>${esc(w.bus)}</div>` : ""}
-      <span>Section</span><div>${sec.no}. ${esc(sec.title)}</div>
+      <span>Carries</span><div>${esc((model.lines || {})[w.line] || w.line)}</div>
+      <span>System</span><div>${sec.no}. ${esc(sec.title)}</div>
       ${w.optional ? `<span>Optional</span><div>Yes, the Teryx works without it</div>` : ""}
     </div>
     ${w.note ? `<p>${esc(w.note)}</p>` : ""}
+    ${w.inline_fuse != null ? simButtons([[`Pull or refit fuse ${w.inline_fuse} A`, { fuse: [w.id, !pulled(w.id)] }]]) : ""}
     <p class="small">Label on the drawing: <code>${esc(wireText(w))}</code></p>`);
   if (zoom && els.length) show(bboxOf(els), 120, 1.4);
   setHash(`w=${id}`);
@@ -257,16 +260,15 @@ function pickPart(pid, zoom = false) {
     return `<tr><td><b>${esc(pin)}</b></td><td>${esc(p.v)}${p.fuse_a ? `, ${p.fuse_a} A` : ""}</td><td>${esc(p.desc || "")}</td>
       <td>${ws.map((w) => `<button class="lnk" data-wire="${w.id}">${w.id}</button>`).join(" ") || "<small>not wired</small>"}</td></tr>`;
   }).join("");
-  const places = d.parts.map((p) => {
-    const n = geom.nodes[p], s = model.sections.find((q) => q.key === model.parts[p].sec);
-    return `<button class="lnk" data-part="${p}">${gridRef(n.x + 1, n.y + 1)}</button> <small>${s.no}. ${esc(s.title.split(":")[0])}${model.parts[p].sub === "control" ? " (control)" : ""}</small>`;
-  }).join("<br>");
+  const sys = model.sections.find((q) => q.key === part.sec);
+  const n = geom.nodes[pid];
   info(`<h2>-${esc(d.tag)} ${esc(part.dev)} <span class="tagst" style="--c:${st.colour}">${esc(st.label || d.status)}</span></h2>
     <p class="nm">${esc(d.name)}${d.optional ? " <small>(optional)</small>" : ""}</p>
     ${d.note ? `<p>${esc(d.note)}</p>` : ""}
     ${d.check ? `<p class="chk"><b>To check:</b> ${esc(d.check)}</p>` : ""}
     ${d.doc ? `<p><a href="${REPO + d.doc}" target="_blank" rel="noopener">${esc(d.doc)}</a></p>` : ""}
-    <h3>Drawn at</h3><p>${places}</p>
+    <p><small>At ${gridRef(n.x + 1, n.y + 1)}${sys ? `, ${sys.no}. ${esc(sys.title.split(":")[0])}` : ""}</small></p>
+    ${simButtons(controlsFor(part.dev))}
     <h3>Pins</h3><table class="pins">${pins}</table>`);
   if (zoom) goPart(pid, false);
   setHash(`d=${part.dev}`);
@@ -287,14 +289,13 @@ function info(html) {
 $("info-close").onclick = clearPick;
 for (const b of document.querySelectorAll("[data-close]")) b.onclick = () => { $(b.dataset.close).hidden = true; };
 $("info").addEventListener("click", (e) => {
+  const sb = e.target.closest("button.simbtn");
+  if (sb) { toSim(JSON.parse(sb.dataset.cmd)); sb.disabled = true; setTimeout(refreshInfo, 500); return; }
   const b = e.target.closest("button.lnk");
   if (!b) return;
   if (b.dataset.wire) pickWire(b.dataset.wire, true);
   else if (b.dataset.part) goPart(b.dataset.part);
-  else if (b.dataset.dev) {
-    const pid = `${b.dataset.sec}/${b.dataset.sub}:${b.dataset.dev}`;
-    goPart(model.parts[pid] ? pid : model.devices[b.dataset.dev].parts[0]);
-  }
+  else if (b.dataset.dev) goPart(b.dataset.dev);
 });
 $("key").onclick = () => { $("legend").hidden = !$("legend").hidden; if (!$("legend").hidden) $("info").hidden = true; };
 
@@ -304,7 +305,7 @@ function fromHash() {
   const h = new URLSearchParams(location.hash.slice(1));
   if (h.get("w")) { pickWire(h.get("w"), true); return true; }
   if (h.get("d") && model.devices[h.get("d")]) { goPart(model.devices[h.get("d")].parts[0]); return true; }
-  if (h.get("s")) { const f = geom.frames.find((q) => q.key === h.get("s")); if (f) { show(f, 30); return true; } }
+  if (h.get("s") && showSystem(h.get("s"))) return true;
   return false;
 }
 
@@ -314,14 +315,25 @@ function fillPickers() {
   for (const [id, d] of Object.entries(model.devices)) if (d.parts.length) opts.push(`<option value="${id}">${esc(d.name)}</option>`);
   for (const w of model.wires) opts.push(`<option value="${w.id}">${w.from.join(".")} to ${w.to.join(".")}</option>`);
   $("ids").innerHTML = opts.join("");
-  $("secs").innerHTML = `<option value="">Sections</option>` + model.sections.map((s) => `<option value="${s.key}">${s.no}. ${esc(s.title)}</option>`).join("");
+  $("secs").innerHTML = `<option value="">Systems</option>` + model.sections.map((s) => `<option value="${s.key}">${s.no}. ${esc(s.title)}</option>`).join("");
 }
 $("secs").onchange = (e) => {
-  const f = geom.frames.find((q) => q.key === e.target.value);
-  if (f) { show(f, 30); setHash(`s=${f.key}`); }
+  showSystem(e.target.value);
   e.target.value = "";
 };
-let lastFind = { q: "", i: 0 };
+// Light up one system's parts and wires (they stay where they are on the canvas) and fit them.
+function showSystem(key) {
+  const f = geom.frames.find((q) => q.key === key);
+  if (!f) return false;
+  clearPick();
+  const sec = model.sections.find((q) => q.key === key);
+  for (const p of sec.parts) svg.querySelector(`[data-p="${CSS.escape(p)}"]`)?.classList.add("pick");
+  for (const w of sec.wires) for (const el of svg.querySelectorAll(`[data-w="${CSS.escape(w)}"]`)) el.classList.add("pick");
+  svg.classList.add("picking");
+  show(f, 30);
+  setHash(`s=${key}`);
+  return true;
+}
 $("search").onsubmit = (e) => {
   e.preventDefault();
   const q = $("q").value.trim();
@@ -332,24 +344,24 @@ $("search").onsubmit = (e) => {
   let d = model.devices[Q] ? Q : Object.keys(model.devices).find((k) => model.devices[k].parts.length &&
     (k.includes(Q) || model.devices[k].name.toUpperCase().includes(Q)));
   if (d && model.devices[d].parts.length) {
-    const parts = model.devices[d].parts;
-    lastFind = lastFind.q === d ? { q: d, i: (lastFind.i + 1) % parts.length } : { q: d, i: 0 };
-    goPart(parts[lastFind.i]);
+    goPart(d);
     $("q").blur();
   }
 };
 
 // ------------------------------------------------------------------------------------ key
+const LINE_HEX = { hv: "#e16f24", "12v": "#d1242f", logic: "#0969da", gnd: "#24292f", can: "#1a7f37", signal: "#8a6a00" };
 function buildKey() {
+  $("linekey").innerHTML = Object.entries(model.lines || {}).map(([k, label]) =>
+    `<li><svg width="46" height="10"><path d="M2 5H44" stroke="${LINE_HEX[k] || "#24292f"}" stroke-width="3"/></svg>${esc(label)}</li>`).join("");
   const row = (y, html, text) => `<g transform="translate(0 ${y})">${html}<text x="120" y="5" class="kt">${text}</text></g>`;
   const line = (cls) => `<path class="w ${cls}" d="M10 0H100"/>`;
   $("keysvg").innerHTML = [
     row(16, line("st-planned"), "Wire, our design (not built yet)"),
     row(42, line("st-tbc"), "Wire, TBC: needs checking on the Teryx"),
     row(68, line("st-placeholder"), "Placeholder or later add-on"),
-    row(94, line("hv"), "72 V traction (orange cable)"),
-    row(120, line("heavy"), "Heavy cable, 6 mm² and up"),
-    row(146, line("st-planned opt"), "Optional (faded)"),
+    row(94, line("heavy"), "Heavy cable, 6 mm² and up"),
+    row(120, line("st-planned opt"), "Optional (faded)"),
     row(176, `<line class="lead" x1="10" y1="0" x2="100" y2="0"/><rect class="sym" x="40" y="-6" width="30" height="12" fill="#fff"/>`, "Fuse"),
     row(206, `<circle class="sym" cx="55" r="11"/><path class="sym" d="M47 -8L63 8M47 8L63 -8"/>`, "Lamp"),
     row(236, `<line class="lead" x1="10" y1="0" x2="45" y2="0"/><line class="blade" x1="45" y1="0" x2="66" y2="-10"/><path class="sym" d="M66 0H100M66 0v-4"/>`, "Switch or relay contact"),
@@ -357,11 +369,54 @@ function buildKey() {
   ].join("");
 }
 
+// ------------------------------------------------------------------------------------ sim controls
+// With the simulator running, the switches, key, E-stop and fuses on the canvas work: tap one,
+// then the button in its info sheet. The command goes to the simulator page the same way the
+// live state comes from it (the parent page, or the "teryx-rig" BroadcastChannel).
+let lastLive = null;
+const inp = (k) => lastLive && lastLive.inputs ? lastLive.inputs[k] : undefined;
+const pulled = (ref) => !!(lastLive && (lastLive.pulled || []).includes(ref));
+function controlsFor(dev) {
+  const tog = (label, k) => [`${label}: turn ${inp(k) ? "off" : "on"}`, { [k]: !inp(k) }];
+  const cyc = (k, vals) => { const i = vals.indexOf(inp(k) ?? null); const nx = vals[(i + 1) % vals.length]; return [`Move to ${nx ?? "off"}`, { [k]: nx }]; };
+  switch (dev) {
+    case "KEY": case "KIT_KEY": return [tog("Key", "key")];
+    case "BRAKE_SW": return [tog("Brake", "brake")];
+    case "PARK_SW": return [tog("Park brake", "park")];
+    case "ESTOP": return [[inp("estop") ? "Release the E-stop" : "Press the E-stop", { estop: !inp("estop") }]];
+    case "LIMP_SW": return [tog("Backup lights switch", "backup_lights")];
+    case "TRAILER": return [[inp("trailer") ? "Unplug the trailer" : "Plug the trailer in", { trailer: !inp("trailer") }]];
+    case "FNR": return ["forward", "neutral", "reverse"].map((v) => [`F-N-R to ${v}`, { fnr: v }]);
+    case "HSW_CAB": return [["Winch in", { winch_cab: "in" }], ["Winch off", { winch_cab: null }], ["Winch out", { winch_cab: "out" }]];
+    case "BRK_WINCH": return [[inp("winch_breaker") === false ? "Close the winch breaker" : "Trip the winch breaker", { winch_breaker: inp("winch_breaker") === false }]];
+    case "FB": case "FB2": return Object.entries(model.devices[dev].pins).filter(([p, s]) => s.fuse_a != null)
+      .map(([p, s]) => [`${pulled(`${dev}.${p}`) ? "Refit" : "Pull"} ${p} (${s.fuse_a} A)`, { fuse: [`${dev}.${p}`, !pulled(`${dev}.${p}`)] }]);
+    default: return [];
+  }
+}
+function simButtons(list) {
+  if (!list.length) return "";
+  if (!liveSeen) return `<p class="small">Open this from the simulator (Sim, then Wiring) to work the controls here.</p>`;
+  return `<h3>In the simulator</h3><p class="simrow">${list.map(([label, cmd]) =>
+    `<button class="simbtn" data-cmd='${esc(JSON.stringify(cmd))}'>${esc(label)}</button>`).join(" ")}</p>`;
+}
+function toSim(cmd) {
+  try { if (window.parent !== window) window.parent.postMessage({ teryxPanel: cmd }, "*"); } catch { /* ignore */ }
+  try { new BroadcastChannel("teryx-rig").postMessage({ teryxPanel: cmd }); } catch { /* ignore */ }
+}
+function refreshInfo() {
+  if ($("info").hidden) return;
+  const h = new URLSearchParams(location.hash.slice(1));
+  if (h.get("d")) pickPart(h.get("d"));
+  else if (h.get("w")) pickWire(h.get("w"));
+}
+
 // ------------------------------------------------------------------------------------ live
 let liveSeen = 0;
 function onLive(st) {
   if (!svg || !st || !st.pins) return;
   liveSeen = Date.now();
+  lastLive = st;
   $("live").hidden = false;
   $("live").textContent = st.t != null ? `LIVE ${(+st.t).toFixed(0)} s` : "LIVE";
   svg.classList.add("live");

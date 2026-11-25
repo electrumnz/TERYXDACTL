@@ -34,7 +34,12 @@ button, select, input, .btn { font: inherit; }
   .bar .search { margin-left: 0; }
   .bar select { max-width: 92px; padding: 0 4px; }
   .bar button, .bar .btn { padding: 0 8px; }
+  .bar .search { min-width: 54px; }
+  .bar select { max-width: 76px; }
+  #cols .long { display: none; }
 }
+#cols .short { display: none; }
+@media (max-width: 560px) { #cols .short { display: inline; } }
 
 #stage { position: fixed; inset: 52px 0 0 0; overflow: hidden; touch-action: none; cursor: grab; background: var(--paper); }
 #stage:active { cursor: grabbing; }
@@ -100,3 +105,11 @@ table.pins td { border-top: 1px solid #eaeef2; padding: 3px 6px 3px 0; vertical-
 .sld.live .sym.blown { stroke: #d1242f; fill: #ffebe9; stroke-width: 2.4; }
 .sld.live .contact.on .blade { stroke: #d1242f; }
 @keyframes flow { to { stroke-dashoffset: -16; } }
+
+/* line colour key and simulator buttons */
+.linekey { list-style: none; padding: 0; margin: 4px 0 10px; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 4px 12px; font-size: 14px; }
+.linekey li { display: flex; align-items: center; gap: 8px; }
+.simrow { display: flex; flex-wrap: wrap; gap: 6px; }
+.simbtn { font: inherit; font-size: 14px; padding: 7px 12px; border-radius: 8px; border: 1px solid #0969da; background: #0969da; color: #fff; cursor: pointer; }
+.simbtn:disabled { opacity: .5; }
+#cols[aria-pressed="false"] { opacity: .6; }

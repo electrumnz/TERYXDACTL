@@ -140,3 +140,17 @@ def test_live_wiring_state_for_the_drawing(rig):
     rig.panel({"fuse": [fused, True]})
     rig.tick(0.25)
     assert fused in rig.wiring_state()["cut"]
+    assert {"FB.F12", fused} <= set(rig.wiring_state()["pulled"])
+
+
+@needs_cc
+def test_the_wiring_canvas_can_work_the_controls(rig):
+    """The canvas shows a button per switch from `inputs`, and its commands go through panel()."""
+    assert rig.wiring_state()["inputs"]["winch_breaker"] is True
+    rig.panel({"winch_breaker": False})
+    rig.tick(0.25)
+    assert rig.wiring_state()["inputs"]["winch_breaker"] is False
+    assert rig.s.m["BRK_WINCH"].on                                 # the model's on = tripped
+    rig.panel({"estop": True})
+    rig.tick(0.25)
+    assert rig.wiring_state()["inputs"]["estop"] is True

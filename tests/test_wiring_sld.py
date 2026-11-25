@@ -24,13 +24,19 @@ def model():
     return S.build(W.load())
 
 
-def test_every_wire_is_in_one_section_and_area(model):
+def test_one_canvas_every_device_once(model):
+    # no sheets or sections to split things up: one part per device, keyed by the device id
+    assert all(pid == p["dev"] for pid, p in model["parts"].items())
+    assert all(len(d["parts"]) <= 1 for d in model["devices"].values())
+    assert "areas" not in model["sections"][0]
+
+
+def test_every_wire_is_in_one_system(model):
     seen = {}
     for sec in model["sections"]:
-        for area in sec["areas"]:
-            for wid in area["wires"]:
-                assert wid not in seen, f"{wid} drawn twice"
-                seen[wid] = sec["key"]
+        for wid in sec["wires"]:
+            assert wid not in seen, f"{wid} listed twice"
+            seen[wid] = sec["key"]
     assert set(seen) == {w["id"] for w in model["wires"]}
 
 
@@ -41,12 +47,11 @@ def test_power_comes_first(model):
 
 def test_every_wire_end_has_a_pin_on_a_part(model):
     for w in model["wires"]:
-        area = f"{w['sec']}/{w['sub']}"
         for end, which in ((w["from"], "from"), (w["to"], "to")):
             if w["earth"] == which:
                 continue                       # the earth symbol stands in for the star point
-            part = model["parts"].get(f"{area}:{end[0]}")
-            assert part, f"{w['id']}: {end[0]} not drawn in {area}"
+            part = model["parts"].get(end[0])
+            assert part, f"{w['id']}: {end[0]} not drawn"
             assert any(p["pin"] == end[1] for p in part["ports"]), f"{w['id']}: no {end[1]} on {part['id']}"
 
 
@@ -57,14 +62,12 @@ def test_earths_are_symbols_and_listed_at_the_star(model):
     assert all(w["colour"] == "BK" for w in earths)
 
 
-def test_control_signals_are_kept_apart_from_power(model):
-    lights = next(s for s in model["sections"] if s["key"] == "lights")
-    assert [a["key"] for a in lights["areas"]] == ["power", "control"]
-    ctrl = set(next(a for a in lights["areas"] if a["key"] == "control")["wires"])
+def test_only_device_earths_become_symbols(model):
+    # the battery to star point lead is a real wire; device earths are earth symbols
     for w in model["wires"]:
-        if w["id"] in ctrl and not w["earth"]:
-            doms = {model["devices"][e[0]]["pins"][e[1]]["v"] for e in (w["from"], w["to"])}
-            assert doms <= S.LOGIC | {"gnd"}, f"{w['id']} is power but drawn with the control signals"
+        ends = {tuple(w["from"]), tuple(w["to"])}
+        if ends <= S.EARTH_POINTS:
+            assert not w["earth"], w["id"]
 
 
 def test_symbols_are_real_symbols(model):
@@ -104,3 +107,10 @@ def test_elk_is_kept_with_its_licence():
 def test_the_drawing_lays_out_with_no_overlaps():
     r = subprocess.run(["node", str(ROOT / "tools" / "wiring_sld_check.mjs")], capture_output=True, text=True, timeout=300)
     assert r.returncode == 0, r.stdout + r.stderr
+
+
+def test_lines_are_coloured_by_what_they_carry(model):
+    kinds = {w["id"]: w["line"] for w in model["wires"]}
+    assert set(kinds.values()) <= set(model["lines"])
+    assert kinds["H01"] == "hv"
+    assert {"hv", "12v", "logic", "gnd", "can"} <= set(kinds.values())

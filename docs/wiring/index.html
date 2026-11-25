@@ -17,7 +17,8 @@
       <input id="q" type="search" placeholder="Find a part or wire (PICO, P03)" list="ids" enterkeyhint="search">
       <datalist id="ids"></datalist>
     </form>
-    <select id="secs" title="Jump to a section"><option value="">Sections</option></select>
+    <select id="secs" title="Show one system"><option value="">Systems</option></select>
+    <button id="cols" title="Colour the lines by what they carry" aria-pressed="true"><span class="long">Colours</span><svg class="short" width="18" height="14" aria-hidden="true"><path d="M1 3H17" stroke="#ff7b72" stroke-width="2.5"/><path d="M1 7H17" stroke="#58a6ff" stroke-width="2.5"/><path d="M1 11H17" stroke="#3fb950" stroke-width="2.5"/></svg></button>
     <button id="key" title="What the lines and symbols mean">Key</button>
     <a class="btn" id="sim" href="../rig/" title="Open the simulator">Sim</a>
     <span class="pill" id="live" hidden>LIVE</span>
@@ -43,15 +44,20 @@
   <aside class="sheet key" id="legend" hidden>
     <button class="close" data-close="legend" title="Close">×</button>
     <h2>Reading the drawing</h2>
-    <p>One drawing of the whole Teryx on an unlimited grid. Pinch or scroll to zoom, drag to move.
-      Grid squares are lettered down the side and numbered along the top, so <b>C14</b> is a place on
-      the drawing. Power comes first (traction, 12 V, earths), then each system. Inside a section
-      the <b>power circuit</b> is on the left and the <b>control signals</b> on the right.</p>
-    <p>A part that has wires in more than one section is drawn in each, with only the pins used
-      there. Blue <b>also C14</b> under a part takes you to the other places. Earths are drawn as the
-      earth symbol at the part; section 3 has the star point with every earth wire listed.</p>
+    <p>One canvas with the whole Teryx on it. Every part is drawn once and every wire runs end to
+      end between the two parts it joins. Pinch or scroll to zoom, drag to move. Grid squares are
+      lettered down the side and numbered along the top, so <b>C14</b> is a place on the canvas.
+      <b>Systems</b> lights up one system's parts and wires. Earths are drawn as the earth symbol at
+      the part, and the earth star point lists every one of them.</p>
+    <p>Opened from the simulator (Sim, then Wiring), the canvas runs live: powered wires light up,
+      relay contacts close and lamps glow as you drive. Tap the key, a switch, the E-stop or a fuse
+      block to work it from here.</p>
+    <h3>Line colours</h3>
+    <ul class="linekey" id="linekey"></ul>
+    <p class="small"><b>Colours</b> at the top turns these off. While the sim runs, powered wires show
+      live instead: orange 72 V, red 12 V, amber logic, grey cut.</p>
     <svg class="keysvg" viewBox="0 0 560 300" id="keysvg"></svg>
-    <p class="small">Wire labels: number, size, colour. Colours are suggestions (red fused feed, black
+    <p class="small">Wire labels: number, size, cable colour. Cable colours are suggestions (red fused feed, black
       earth, orange high voltage, yellow CAN H, green CAN L) until set with <code>colour:</code> in
       wiring.yaml. Tags follow IEC 81346 letters: F fuse, K relay, Q contactor or isolator, S switch,
       E lamp, M motor, G source, T converter, A board or controller, X plug, B sensor, P display or speaker.</p>

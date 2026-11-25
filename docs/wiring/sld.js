@@ -1,4 +1,5 @@
-// Teryx whole-vehicle schematic: lays out schematic.json with ELK and draws it as one SVG.
+// Teryx whole-vehicle schematic: lays out schematic.json with ELK and draws it as one SVG,
+// one canvas with every device once and every wire drawn end to end.
 //
 // schematic.json is made from config/wiring.yaml by `python -m teryx wiring` (teryx/wiring_sld.py).
 // This file is shared by the page (index.html via viewer.js) and the Node check in CI
@@ -10,6 +11,26 @@
 // Symbols are drawn here in IEC 60617 style (our own drawing, MIT): fuse = box on the line,
 // lamp = circle with a cross, motor = circle with M, contact = gap with a blade, relay coil
 // = box, battery = long and short plates, earth = three shrinking bars.
+
+// A short fingerprint of schematic.json, so a saved layout is only used for the same drawing.
+export function sig(m) {
+  const s = JSON.stringify(m);
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
+  return `sld2:${s.length}:${h}`;
+}
+
+// A layout without the shapes (they're quick to rebuild from the model), for saving.
+export function packGeom(m, g) {
+  const nodes = Object.fromEntries(Object.entries(g.nodes).map(([k, n]) => [k, { x: n.x, y: n.y }]));
+  return { sig: sig(m), geom: { ...g, nodes } };
+}
+export function unpackGeom(m, saved) {
+  if (!saved || saved.sig !== sig(m)) return null;
+  const shapes = shapesFor(m);
+  for (const [k, n] of Object.entries(saved.geom.nodes)) n.shape = shapes[k];
+  return saved.geom;
+}
 
 export const GRID = 400;            // one grid square, in drawing units (references like C14)
 const P = 22;                       // pin pitch
@@ -26,8 +47,7 @@ const r1 = (n) => Math.round(n * 10) / 10;
 // Every part becomes a node with fixed ports. Coordinates are local to the node.
 function partShape(model, part) {
   const dev = model.devices[part.dev];
-  const multi = dev.parts.length > 1;
-  const foot = multi ? 16 : 0;
+  const foot = 0;
   const earthS = part.ports.filter((p) => p.side === "S");
   const title = `-${dev.tag} ${part.dev}`;
   if (ROW_KINDS.has(part.kind)) return rowShape(model, part, dev, title, foot, earthS);
@@ -190,49 +210,43 @@ export function shapesFor(model) {
 }
 
 export async function layout(model, elk) {
+  // One graph: every device once, every wire end to end. Devices go in system order
+  // (traction, 12 V, earths, then each system) so ELK keeps each system's parts together.
   const shapes = shapesFor(model);
-  const wiresById = Object.fromEntries(model.wires.map((w) => [w.id, w]));
-  const sections = [];
-  for (const sec of model.sections) {
-    const areas = [];
-    for (const area of sec.areas) {
-      const children = [], edges = [], inl = {};
-      const key = `${sec.key}/${area.key}`;
-      for (const id of area.parts) {
-        const s = shapes[id];
-        children.push({
-          id, width: s.w, height: s.h,
-          layoutOptions: { "elk.portConstraints": "FIXED_POS" },
-          ports: s.ports.map((p) => ({ id: p.id, x: p.x, y: p.y, width: 0, height: 0,
-            layoutOptions: { "elk.port.side": { W: "WEST", E: "EAST", S: "SOUTH", N: "NORTH" }[p.side] } })),
-        });
-      }
-      for (const wid of area.wires) {
-        const w = wiresById[wid];
-        if (w.earth) continue;                                   // drawn as an earth symbol on the part
-        const a = portFor(shapes, `${key}:${w.from[0]}`, w.from[1], "E");
-        const b = portFor(shapes, `${key}:${w.to[0]}`, w.to[1], "W");
-        if (!a || !b) throw new Error(`wire ${w.id}: no port for ${!a ? w.from.join(".") : w.to.join(".")}`);
-        const chain = inlineNodes(w);
-        let prev = a;
-        chain.forEach((n, i) => {
-          const nid = `${key}~${w.id}~${i}`;
-          inl[nid] = { ...n, wire: w.id };
-          children.push({ id: nid, width: n.w, height: n.h, layoutOptions: { "elk.portConstraints": "FIXED_POS" },
-            ports: [{ id: nid + "|a", x: 0, y: n.h / 2, width: 0, height: 0, layoutOptions: { "elk.port.side": "WEST" } },
-                    { id: nid + "|b", x: n.w, y: n.h / 2, width: 0, height: 0, layoutOptions: { "elk.port.side": "EAST" } }] });
-          edges.push({ id: `${w.id}#${i}`, sources: [prev], targets: [nid + "|a"], wire: w.id });
-          prev = nid + "|b";
-        });
-        edges.push({ id: `${w.id}#${chain.length}`, sources: [prev], targets: [b], wire: w.id, last: true });
-      }
-      const g = await elk.layout({ id: key, layoutOptions: LAYOUT, children,
-        edges: edges.map(({ id, sources, targets }) => ({ id, sources, targets })) });
-      areas.push({ key: area.key, g, inl, edgeMeta: Object.fromEntries(edges.map((e) => [e.id, e])) });
-    }
-    sections.push({ sec, areas });
+  const order = model.sections.flatMap((s) => s.parts);
+  const children = [], edges = [], inl = {};
+  for (const id of order) {
+    const s = shapes[id];
+    children.push({
+      id, width: s.w, height: s.h,
+      layoutOptions: { "elk.portConstraints": "FIXED_POS" },
+      ports: s.ports.map((p) => ({ id: p.id, x: p.x, y: p.y, width: 0, height: 0,
+        layoutOptions: { "elk.port.side": { W: "WEST", E: "EAST", S: "SOUTH", N: "NORTH" }[p.side] } })),
+    });
   }
-  return pack(model, shapes, sections);
+  const bySec = Object.fromEntries(model.sections.map((s) => [s.key, s.no]));
+  const wires = [...model.wires].sort((p, q) => (bySec[p.sec] || 99) - (bySec[q.sec] || 99));
+  for (const w of wires) {
+    if (w.earth) continue;                                   // drawn as an earth symbol on the part
+    const a = portFor(shapes, w.from[0], w.from[1], "E");
+    const b = portFor(shapes, w.to[0], w.to[1], "W");
+    if (!a || !b) throw new Error(`wire ${w.id}: no port for ${!a ? w.from.join(".") : w.to.join(".")}`);
+    const chain = inlineNodes(w);
+    let prev = a;
+    chain.forEach((n, i) => {
+      const nid = `~${w.id}~${i}`;
+      inl[nid] = { ...n, wire: w.id };
+      children.push({ id: nid, width: n.w, height: n.h, layoutOptions: { "elk.portConstraints": "FIXED_POS" },
+        ports: [{ id: nid + "|a", x: 0, y: n.h / 2, width: 0, height: 0, layoutOptions: { "elk.port.side": "WEST" } },
+                { id: nid + "|b", x: n.w, y: n.h / 2, width: 0, height: 0, layoutOptions: { "elk.port.side": "EAST" } }] });
+      edges.push({ id: `${w.id}#${i}`, sources: [prev], targets: [nid + "|a"], wire: w.id });
+      prev = nid + "|b";
+    });
+    edges.push({ id: `${w.id}#${chain.length}`, sources: [prev], targets: [b], wire: w.id, last: true });
+  }
+  const g = await elk.layout({ id: "teryx", layoutOptions: LAYOUT, children,
+    edges: edges.map(({ id, sources, targets }) => ({ id, sources, targets })) });
+  return place(model, shapes, g, inl, Object.fromEntries(edges.map((e) => [e.id, e])));
 }
 
 function portFor(shapes, partId, pin, prefer) {
@@ -242,52 +256,33 @@ function portFor(shapes, partId, pin, prefer) {
   return (ps.find((p) => p.side === prefer) || ps[0] || {}).id;
 }
 
-// Put the sections on one big grid: power along the top, control systems below. Inside a
-// section the power circuit is on the left and the control signals on the right.
-const AREA_NAME = { power: "Power circuit", control: "Control signals" };
-function pack(model, shapes, sections) {
-  const M = 40, TITLE = 64, SUBHEAD = 34, GAP = 120;
-  const boxes = sections.map((s) => {
-    let w = M, h = 0;
-    const two = s.areas.length > 1;
-    for (const a of s.areas) {
-      a.dx = w; w += a.g.width + GAP;
-      h = Math.max(h, a.g.height);
-    }
-    w += M - GAP;
-    return { ...s, two, w: snap(w, 40), h: snap(h + TITLE + (two ? SUBHEAD : 0) + 2 * M, 40) };
-  });
-  const area = boxes.reduce((t, b) => t + b.w * b.h, 0);
-  const rowWidth = Math.max(...boxes.map((b) => b.w), Math.sqrt(area * 1.5));
-  let x = GRID, y = GRID, rowH = 0;
-  for (const b of boxes) {
-    if (x > GRID && x + b.w > rowWidth + GRID) { x = GRID; y += rowH + 120; rowH = 0; }
-    b.x = x; b.y = y; x += b.w + 120; rowH = Math.max(rowH, b.h);
+// Put the laid-out graph on the grid, one square in from the top left. `systems` are the
+// bounding boxes of each system's parts: not drawn, just so the page can jump to one.
+function place(model, shapes, g, inl, edgeMeta) {
+  const ox = GRID, oy = GRID;
+  const nodes = {}, edges = [], inlines = [];
+  for (const c of g.children) {
+    if (inl[c.id]) inlines.push({ ...inl[c.id], x: ox + c.x, y: oy + c.y });
+    else nodes[c.id] = { x: ox + c.x, y: oy + c.y, shape: shapes[c.id] };
   }
-  const width = snap(Math.max(...boxes.map((b) => b.x + b.w)) + GRID / 2, GRID);
-  const height = snap(Math.max(...boxes.map((b) => b.y + b.h)) + GRID / 2, GRID);
-
-  const nodes = {}, edges = [], inlines = [], areaBoxes = [];
-  for (const b of boxes) {
-    for (const a of b.areas) {
-      const ox = b.x + a.dx, oy = b.y + TITLE + M + (b.two ? SUBHEAD : 0);
-      if (b.two) areaBoxes.push({ sec: b.sec.key, key: a.key, name: AREA_NAME[a.key], x: ox, y: b.y + TITLE + 16, w: a.g.width, h: b.h - TITLE - 32 });
-      for (const c of a.g.children) {
-        if (a.inl[c.id]) inlines.push({ ...a.inl[c.id], x: ox + c.x, y: oy + c.y });
-        else nodes[c.id] = { x: ox + c.x, y: oy + c.y, shape: shapes[c.id] };
-      }
-      for (const e of a.g.edges || []) {
-        const meta = a.edgeMeta[e.id];
-        for (const s of e.sections || []) {
-          const pts = [s.startPoint, ...(s.bendPoints || []), s.endPoint].map((p) => [r1(ox + p.x), r1(oy + p.y)]);
-          edges.push({ id: e.id, wire: meta.wire, last: !!meta.last, first: e.id.endsWith("#0"), pts,
-            junctions: (e.junctionPoints || []).map((p) => [r1(ox + p.x), r1(oy + p.y)]) });
-        }
-      }
+  for (const e of g.edges || []) {
+    const meta = edgeMeta[e.id];
+    for (const s of e.sections || []) {
+      const pts = [s.startPoint, ...(s.bendPoints || []), s.endPoint].map((p) => [r1(ox + p.x), r1(oy + p.y)]);
+      edges.push({ id: e.id, wire: meta.wire, last: !!meta.last, first: e.id.endsWith("#0"), pts,
+        junctions: (e.junctionPoints || []).map((p) => [r1(ox + p.x), r1(oy + p.y)]) });
     }
   }
-  const frames = boxes.map((b) => ({ key: b.sec.key, no: b.sec.no, title: b.sec.title, x: b.x, y: b.y, w: b.w, h: b.h }));
-  return { width, height, frames, areas: areaBoxes, nodes, edges, inlines };
+  const width = snap(ox + g.width + GRID / 2, GRID), height = snap(oy + g.height + GRID / 2, GRID);
+  const systems = [];
+  for (const s of model.sections) {
+    const ns = s.parts.map((p) => nodes[p]).filter(Boolean);
+    if (!ns.length) continue;
+    const x0 = Math.min(...ns.map((n) => n.x)), y0 = Math.min(...ns.map((n) => n.y));
+    const x1 = Math.max(...ns.map((n) => n.x + n.shape.w)), y1 = Math.max(...ns.map((n) => n.y + n.shape.h));
+    systems.push({ key: s.key, no: s.no, title: s.title, x: x0 - 40, y: y0 - 40, w: x1 - x0 + 80, h: y1 - y0 + 80 });
+  }
+  return { width, height, frames: systems, nodes, edges, inlines };
 }
 
 // ------------------------------------------------------------------------------------ grid refs
@@ -313,6 +308,8 @@ export const SVG_STYLE = `
 .sld .w.st-tbc{stroke-dasharray:8 4}.sld .w.st-placeholder{stroke-dasharray:2 4;stroke:#8250df}
 .sld .w.opt{stroke-opacity:.55}
 .sld .jn{fill:#24292f}
+.sld.colours .w.k-hv{stroke:#e16f24}.sld.colours .w.k-12v{stroke:#d1242f}.sld.colours .w.k-logic{stroke:#0969da}
+.sld.colours .w.k-gnd{stroke:#24292f}.sld.colours .w.k-can{stroke:#1a7f37;stroke-width:2}.sld.colours .w.k-signal{stroke:#8a6a00}
 .sld .wl{font:500 10.5px ${MONO};fill:#57606a;paint-order:stroke;stroke:#fffefb;stroke-width:3px}
 .sld .wl .sw{font-size:11px;stroke:none}
 .sld .box{fill:#fff;stroke:#24292f;stroke-width:1.6}.sld .hrule{stroke:#24292f;stroke-width:.8}
@@ -343,7 +340,8 @@ export function draw(model, geom, opts = {}) {
   const wiresById = Object.fromEntries(model.wires.map((w) => [w.id, w]));
   const out = [];
   const { width, height } = geom;
-  out.push(`<svg xmlns="http://www.w3.org/2000/svg" class="sld" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" font-family="${FONT}">`);
+  const colours = opts.colours === false ? "" : " colours";
+  out.push(`<svg xmlns="http://www.w3.org/2000/svg" class="sld${colours}" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" font-family="${FONT}">`);
   if (opts.style) out.push(`<style>${opts.style}</style>`);
   out.push(`<defs>
   <pattern id="g-minor" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" class="gmin"/></pattern>
@@ -356,21 +354,6 @@ export function draw(model, geom, opts = {}) {
   for (let r = 0; r * GRID < height; r++) out.push(`<text x="${GRID / 2 - 60}" y="${r * GRID + GRID / 2}" text-anchor="middle" dominant-baseline="middle">${rowName(r)}</text>`);
   out.push(`</g>`);
 
-  // section frames
-  for (const f of geom.frames) {
-    out.push(`<g class="frame" data-sec="${f.key}"><rect x="${f.x}" y="${f.y}" width="${f.w}" height="${f.h}"/>` +
-      `<rect class="fhead" x="${f.x}" y="${f.y}" width="${f.w}" height="56"/>` +
-      `<text class="fno" x="${f.x + 18}" y="${f.y + 38}">${f.no}</text>` +
-      `<text class="ftitle" x="${f.x + 64}" y="${f.y + 37}">${esc(f.title)}</text>` +
-      `<text class="fref" x="${f.x + f.w - 16}" y="${f.y + 36}" text-anchor="end">${gridRef(f.x + 1, f.y + 1)} to ${gridRef(f.x + f.w - 1, f.y + f.h - 1)}</text></g>`);
-  }
-
-  for (const a of geom.areas || []) {
-    out.push(`<g class="area"><text class="ahead" x="${a.x}" y="${a.y + 14}">${esc(a.name.toUpperCase())}</text>` +
-      `<line class="arule" x1="${a.x}" y1="${a.y + 22}" x2="${a.x + a.w}" y2="${a.y + 22}"/></g>`);
-    if (a.key === "control") out.push(`<line class="adiv" x1="${a.x - 60}" y1="${a.y}" x2="${a.x - 60}" y2="${a.y + a.h}"/>`);
-  }
-
   // wires
   const lastEnd = {}, firstEnd = {}, portUse = {};
   for (const e of geom.edges) {
@@ -381,7 +364,7 @@ export function draw(model, geom, opts = {}) {
   for (const e of geom.edges) {
     const w = wiresById[e.wire];
     const d = "M" + e.pts.map((p) => p.join(" ")).join("L");
-    const cls = ["w", "st-" + w.status, w.optional ? "opt" : "", w.colour === "OG" ? "hv" : "", (w.mm2 || 0) >= 6 ? "heavy" : ""].join(" ").trim();
+    const cls = ["w", "k-" + (w.line || "signal"), "st-" + w.status, w.optional ? "opt" : "", w.colour === "OG" ? "hv" : "", (w.mm2 || 0) >= 6 ? "heavy" : ""].join(" ").trim();
     out.push(`<path class="${cls}" data-w="${w.id}" d="${d}"/>`);
     for (const j of e.junctions) out.push(`<circle class="jn" cx="${j[0]}" cy="${j[1]}" r="3.5"/>`);
     if (e.last) lastEnd[w.id] = e;
@@ -512,7 +495,7 @@ function partSym(model, geom, id, n) {
   const x = n.x, y = n.y;
   const st = dev.status, opt = dev.optional ? " opt" : "";
   const g = [`<g class="part k-${part.kind} st-${st}${opt}" data-p="${id}" data-d="${part.dev}" transform="translate(${x} ${y})">`];
-  const earthWires = model.wires.filter((w) => w.earth && w.sec === part.sec && w.sub === part.sub && (w.earth === "to" ? w.from[0] : w.to[0]) === part.dev);
+  const earthWires = model.wires.filter((w) => w.earth && (w.earth === "to" ? w.from[0] : w.to[0]) === part.dev);
   const earthLbl = (pin) => earthWires.filter((w) => (w.earth === "to" ? w.from[1] : w.to[1]) === pin).map((w) => {
     const pt = w.earth === "to" ? w.to : w.from;
     return `${w.id}${w.mm2 ? " " + w.mm2 + "mm²" : ""} BK${pt[0] === "GND_STAR" ? "" : " to " + pt.join(".")}`;
@@ -586,14 +569,6 @@ function partSym(model, geom, id, n) {
     });
   } else {
     g.push(boxPart(model, part, dev, s, earthLbl));
-  }
-  // cross references to the other places this device is drawn
-  if (dev.parts.length > 1) {
-    const others = dev.parts.filter((p) => p !== id).map((p) => {
-      const t = geom.nodes[p];
-      return t ? `<tspan class="xr" data-goto="${p}">${gridRef(t.x + 1, t.y + 1)}</tspan>` : "";
-    }).filter(Boolean);
-    g.push(`<text class="xrefs" x="0" y="${s.h - 3}">also ${others.join(" · ")}</text>`);
   }
   g.push(`</g>`);
   return g.join("");

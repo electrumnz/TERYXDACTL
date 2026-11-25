@@ -20,7 +20,7 @@ Wire sizes follow the conservative table in the YAML (from
 [speedingparts.eu](https://info.speedingparts.eu/what-cable-size-should-you-use-in-a-12v-automotive-system),
 runs up to about 5 m). Go one size up for bundled or hot runs.
 
-## Sections on the drawing
+## Systems on the drawing
 
 1. Traction: 72 V pack, controller, motor, DC-DC (10 wires)
 2. 12 V power: battery, fuses, key, dash rail, bucks (25 wires)

@@ -264,7 +264,7 @@ def render_readme(d: dict) -> str:
         "[speedingparts.eu](https://info.speedingparts.eu/what-cable-size-should-you-use-in-a-12v-automotive-system),",
         "runs up to about 5 m). Go one size up for bundled or hot runs.",
         "",
-        "## Sections on the drawing",
+        "## Systems on the drawing",
         "",
     ]
     from . import wiring_sld
