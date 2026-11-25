@@ -143,6 +143,7 @@ def test_live_wiring_state_for_the_drawing(rig):
     assert {"FB.F12", fused} <= set(rig.wiring_state()["pulled"])
 
 
+@needs_cc
 def test_the_wiring_canvas_can_work_the_controls(rig):
     """The canvas shows a button per switch from `inputs`, and its commands go through panel()."""
     assert rig.wiring_state()["inputs"]["winch_breaker"] is True
