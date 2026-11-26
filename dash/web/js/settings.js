@@ -5,12 +5,13 @@
 import { FEATURE_DEFAULTS } from "./features.js";
 import { CAMP_DEFAULTS } from "./fun/campcalc.js";
 import { NIGHT_CABIN_DEFAULTS } from "./nightcabin.js";
+import { BAR_PRESET_DEFAULTS } from "./barstack.js";
 
 export const LIGHTS = [
-  { id: "light.front_1", name: "Bar 1", where: "Front far left", dimmable: true },
-  { id: "light.front_2", name: "Bar 2", where: "Front inner left", dimmable: true },
-  { id: "light.front_3", name: "Bar 3", where: "Front inner right", dimmable: true },
-  { id: "light.front_4", name: "Bar 4", where: "Front far right", dimmable: true },
+  { id: "light.front_1", name: "Bar 1", where: "Grille, top", dimmable: true },
+  { id: "light.front_2", name: "Bar 2", where: "Grille, 2nd down", dimmable: true },
+  { id: "light.front_3", name: "Bar 3", where: "Grille, 3rd down", dimmable: true },
+  { id: "light.front_4", name: "Bar 4", where: "Grille, bottom", dimmable: true },
   { id: "light.interior", name: "Interior", where: "7\" cab bar", dimmable: true },
 ];
 
@@ -29,6 +30,11 @@ export const DEFAULTS = {
   cells: 24,               // for a voltage-based battery % if the Shinegle doesn't send one (72V pack, TBC)
   lights: Object.fromEntries(LIGHTS.map((l) => [l.id, { name: l.name, dimmable: l.dimmable }])),
   nightCabin: { ...NIGHT_CABIN_DEFAULTS },   // Night mode fades the cabin light to this % (nightcabin.js)
+  // Front bars (barstack.js): Low / Med / High are saved levels for the 4 bars ("Save as" in
+  // the Each bar menu changes them). barOrder is the order the one slider fills them in:
+  // top (1 2 3 4), bottom (4 3 2 1) or middle (2 3 1 4).
+  barPresets: structuredClone(BAR_PRESET_DEFAULTS),
+  barOrder: "top",
   lightPresets: {
     trail: { "light.front_1": 0, "light.front_2": 255, "light.front_3": 255, "light.front_4": 0 },
     work:  { "light.front_1": 255, "light.front_2": 255, "light.front_3": 255, "light.front_4": 255 },

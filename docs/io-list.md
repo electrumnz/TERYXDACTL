@@ -102,10 +102,10 @@ Prices and links checked live: [`shopping-list.md`](shopping-list.md).
 | GP13 | PWM | BTS7960 #3 (tray) RPWM |
 | GP14 | PWM | BTS7960 #3 LPWM |
 | GP15 | Out | BTS7960 #3 R_EN + L_EN |
-| GP16 | PWM | Front bar 1 (far left) MOSFET |
-| GP17 | PWM | Front bar 2 (inner left) MOSFET |
-| GP18 | PWM | Front bar 3 (inner right) MOSFET |
-| GP19 | PWM | Front bar 4 (far right) MOSFET |
+| GP16 | PWM | Front bar 1 (top) MOSFET |
+| GP17 | PWM | Front bar 2 (2nd down) MOSFET |
+| GP18 | PWM | Front bar 3 (3rd down) MOSFET |
+| GP19 | PWM | Front bar 4 (bottom) MOSFET |
 | GP20 | PWM | Interior 7" bar MOSFET |
 | GP21 | IRQ in | MCP23017 INTB (inputs changed) |
 | GP22 | SPI CS out | Steering CAN board (MCP2515 #2) chip select. ADS1115 ALERT left free, "ready" is read over I2C |
@@ -122,10 +122,10 @@ so the wiring doesn't change. Effects (strobe, chase) still work.
 
 | ID | Output | Driver | Pico control | Fuse | Notes |
 |---|---|---|---|---|---|
-| `light.front_1` | Front bar 1 (far left) | MOSFET ch1 | GP16 PWM | 10A | Dimmable **TBC** |
-| `light.front_2` | Front bar 2 (inner left) | MOSFET ch2 | GP17 PWM | 10A | |
-| `light.front_3` | Front bar 3 (inner right) | MOSFET ch3 | GP18 PWM | 10A | |
-| `light.front_4` | Front bar 4 (far right) | MOSFET ch4 | GP19 PWM | 10A | |
+| `light.front_1` | Front bar 1 (top) | MOSFET ch1 | GP16 PWM | 10A | Dimmable **TBC** |
+| `light.front_2` | Front bar 2 (2nd down) | MOSFET ch2 | GP17 PWM | 10A | |
+| `light.front_3` | Front bar 3 (3rd down) | MOSFET ch3 | GP18 PWM | 10A | |
+| `light.front_4` | Front bar 4 (bottom) | MOSFET ch4 | GP19 PWM | 10A | |
 | `light.interior` | Interior 7" bar | MOSFET ch5 | GP20 PWM | 5A | |
 | `light.rear` | Rear / reverse pods (pair) | Relay 1 | MCP23017 A0 | 10A | Auto on in reverse |
 | `trailer.tail` | Trailer tail lights | Relay 2 | MCP23017 A1 | 5A | On with any front light |

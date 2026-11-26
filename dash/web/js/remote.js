@@ -283,20 +283,49 @@
   }
   const lights = { bars: 0, head: 100, headMode: "off", cabin: 0, rear: 0, trailer: 0, beacon: 0, white: 0 };
   const to255 = (pct) => Math.round((pct / 100) * 255);
+  // Front bars (js/barstack.js, shared with the dash): one slider fills bar 1, then 2, 3, 4.
+  // Presets and fill order come from the dash's settings when on the Teryx, else the defaults.
+  let bs = null, barPresets = null, barOrder = "top", barLevels = {};
+  import("./barstack.js").then((m) => {
+    bs = m; barPresets = m.BAR_PRESET_DEFAULTS;
+    if (onTeryx) fetch("/api/settings", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)).then((j) => {
+      if (j && j.barPresets) barPresets = j.barPresets;
+      if (j && m.BAR_ORDERS[j.barOrder]) barOrder = j.barOrder;
+    }).catch(() => {});
+  }).catch(() => {});
+  function barsSend(levels) {
+    barLevels = levels;
+    Object.entries(levels).forEach(([id, v]) => dashSend(id, v));
+    const preset = !Object.values(levels).some((v) => v > 0) ? "off" : bs.matchPreset(levels, barPresets);
+    document.querySelectorAll("[data-bars]").forEach((x) => x.classList.toggle("on", x.dataset.bars === preset));
+    $("lv-bars").textContent = bs.stackLabel(levels, barOrder).toUpperCase();
+    veh.lights = Object.values(levels).some((v) => v > 0) || lights.headMode !== "off" || lights.rear > 0;
+  }
+  document.querySelectorAll("[data-bars]").forEach((b) => b.addEventListener("click", () => {
+    if (!bs) return;
+    const k = b.dataset.bars;
+    const now = bs.matchPreset(barLevels, barPresets);
+    const lv = k === "off" || k === now ? {} : barPresets[k] || {};
+    const levels = Object.fromEntries(bs.BAR_IDS.map((id) => [id, lv[id] || 0]));
+    const r = document.querySelector('[data-light="bars"]');
+    r.value = bs.levelsToSlider(levels, barOrder).slider;
+    lights.bars = +r.value;
+    barsSend(levels);
+  }));
   function lightsSend(which) {
-    if (which === "bars") ["light.front_1", "light.front_2", "light.front_3", "light.front_4"].forEach((id) => dashSend(id, to255(lights.bars)));
+    if (which === "bars") { if (bs) barsSend(bs.sliderToLevels(lights.bars, barOrder)); return; }
     if (which === "cabin") dashSend("light.interior", to255(lights.cabin));
     if (which === "head") { dashSend("light.head_level", to255(lights.head)); dashSend("light.head", lights.headMode); }
     if (which === "rear") { dashSend("light.rear_level", to255(lights.rear)); dashSend("light.rear", lights.rear ? "on" : "auto"); }
     if (which === "trailer") dashSend("light.trailer_bar", to255(lights.trailer));
     if (which === "beacon") dashSend("light.beacon", to255(lights.beacon));
     if (which === "white") dashSend("light.beacon_white", to255(lights.white));
-    veh.lights = lights.bars > 0 || lights.headMode !== "off" || lights.rear > 0;
+    veh.lights = Object.values(barLevels).some((v) => v > 0) || lights.headMode !== "off" || lights.rear > 0;
   }
   document.querySelectorAll("[data-light]").forEach((r) => r.addEventListener("input", () => {
     const k = r.dataset.light;
     lights[k] = +r.value;
-    $(`lv-${k}`).textContent = `${r.value}%`;
+    if (k !== "bars") $(`lv-${k}`).textContent = `${r.value}%`;
     lightsSend(k);
   }));
   document.querySelectorAll("[data-head]").forEach((b) => b.addEventListener("click", () => {

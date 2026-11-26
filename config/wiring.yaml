@@ -415,10 +415,10 @@ devices:
     pins: {GND: gnd, IN1: 3v3, IN2: 3v3, IN3: 3v3, IN4: 3v3, IN5: 3v3, OUT1: 12v, OUT2: 12v, OUT3: 12v, OUT4: 12v, OUT5: 12v, IN6: 3v3, OUT6: 12v,
            IN7: 3v3, OUT7: 12v, IN8: 3v3, OUT8: 12v}
   # ---------------------------------------------------------- lights
-  LB1: {name: Front bar 1 (far left), zone: front, status: confirmed, pins: {pos: 12v, neg: 12v}}
-  LB2: {name: Front bar 2 (inner left), zone: front, status: confirmed, pins: {pos: 12v, neg: 12v}}
-  LB3: {name: Front bar 3 (inner right), zone: front, status: confirmed, pins: {pos: 12v, neg: 12v}}
-  LB4: {name: Front bar 4 (far right), zone: front, status: confirmed, pins: {pos: 12v, neg: 12v}}
+  LB1: {name: Front bar 1 (top), zone: front, status: confirmed, pins: {pos: 12v, neg: 12v}}
+  LB2: {name: Front bar 2 (2nd down), zone: front, status: confirmed, pins: {pos: 12v, neg: 12v}}
+  LB3: {name: Front bar 3 (3rd down), zone: front, status: confirmed, pins: {pos: 12v, neg: 12v}}
+  LB4: {name: Front bar 4 (bottom), zone: front, status: confirmed, pins: {pos: 12v, neg: 12v}}
   LB_INT: {name: Interior 7 in bar, zone: cab, status: confirmed, pins: {pos: 12v, neg: 12v}}
   LB_TRL: {name: Trailer light bar (Sam's spare), zone: trailer, status: planned, optional: true, note: "On the trailer, through the 8-pin plug. On/off from the dash and the phone remote; only live when the trailer plug is in", pins: {pos: 12v, neg: 12v}}
   FLOOD_L:

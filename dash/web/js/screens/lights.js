@@ -1,14 +1,20 @@
 // Lights: 4 front bars, interior bar, headlights, tails, rear floods, beacon, trailer bar and the
-// light show, plus the beacon strobe and full emergency flash modes. Each front bar is set up as dimmable or on/off in Settings. Everything else dims
+// light show, plus the beacon strobe and full emergency flash modes.
+// The 4 front bars are stacked in the grille (bar 1 on top). The main screen runs them as one:
+// Off / Low / Med / High and one slider that fills bar 1, then 2, then 3, then 4 (barstack.js).
+// Each bar on its own, the groups, effects, fill order and "Save as" live in the Each bar menu.
+// Each front bar is set up as dimmable or on/off in Settings. Everything else dims
 // through the control box's PWM board (docs/lights.md), which also makes the safety calls:
 // brake lights always full, headlights and tails only dim when parked, show parked only.
-import { el, $, Slider } from "../ui/controls.js";
+import { el, $, Slider, toast } from "../ui/controls.js";
 import { LIGHTS } from "../settings.js";
 import { vehicleDiagram } from "../ui/vehicle.js";
+import { BAR_IDS, BAR_ORDERS, BAR_PRESET_DEFAULTS, sliderToLevels, levelsToSlider, matchPreset, stackLabel } from "../barstack.js";
 
 // Effect names match the control box (LIGHT_EFFECT in teryx/canbus/messages.py). "none" is steady.
-const EFFECTS = [["none", "Steady"], ["breathe", "Breathe"], ["strobe", "Strobe"], ["chase", "Chase"], ["outside_only", "Outside pair"], ["inside_only", "Inside pair"]];
+const EFFECTS = [["none", "Steady"], ["breathe", "Breathe"], ["strobe", "Strobe"], ["chase", "Chase"], ["outside_only", "Top + bottom"], ["inside_only", "Middle two"]];
 // "sos" is also supported by the control box but kept off the main grid so it isn't hit by accident.
+const ORDERS = [["top", "Top down"], ["middle", "Middle out"], ["bottom", "Bottom up"]];
 const SHOWS = [["wave", "Wave"], ["breathe", "Breathe"], ["roar", "Roar"], ["party", "Party"]];
 const pct = (v) => Math.round((v / 255) * 100);
 const lvl = (p) => Math.round((p / 100) * 255);
@@ -28,9 +34,24 @@ export class LightsScreen {
     root.innerHTML = `
       <div class="lights">
         <div class="col">
-          <div class="light-grid" id="l-front"></div>
+          <div id="l-stack"></div>
+          <div class="bars-menu" id="l-bars" hidden>
+            <div class="bm-head"><button class="btn sm" id="l-bars-back">‹ Back</button><h3>Each bar</h3><span class="muted small">Bar 1 is the top of the grille</span></div>
+            <div class="light-grid" id="l-front"></div>
+            <div class="bm-row">
+              <div class="panel"><h3>Groups</h3><div class="fx-grid" id="l-groups"></div></div>
+              <div class="panel"><h3>Effects</h3><div class="fx-grid" id="l-fx"></div></div>
+              <div class="panel">
+                <h3>Slider fills</h3><div class="fx-grid" id="l-order"></div>
+                <h3 style="margin-top:10px">Save these bars as</h3><div class="fx-grid" id="l-saveas"></div>
+                <button class="btn sm wide" id="l-reset-presets" style="margin-top:8px">Reset Low / Med / High</button>
+              </div>
+            </div>
+          </div>
+          <div id="l-main">
           <div class="light-grid" id="l-other"></div>
           <div class="light-grid" id="l-more"></div>
+          </div>
         </div>
         <div class="col lights-side">
           <div class="panel">
@@ -48,11 +69,6 @@ export class LightsScreen {
             <div id="l-head-dim" style="margin-top:8px"></div>
             <div class="muted small" style="margin-top:4px">Only dims when parked. Always full on the move.</div>
           </div>
-          <div class="panel">
-            <h3>Front bars</h3>
-            <div class="fx-grid" id="l-groups"></div>
-            <div class="fx-grid" id="l-fx" style="margin-top:8px"></div>
-          </div>
           <div class="panel grow">
             <h3>Light show</h3>
             <div class="fx-grid" id="l-show"></div>
@@ -64,6 +80,22 @@ export class LightsScreen {
     this.tiles = {};
     const front = $(root, "#l-front"), other = $(root, "#l-other");
     LIGHTS.forEach((l, i) => (i < 4 ? front : other).appendChild(this.makeTile(l)));
+    $(root, "#l-stack").appendChild(this.makeStackTile());
+    this.showBars(!!this.barsOpen);
+    $(root, "#l-bars-back").onclick = () => this.showBars(false);
+    const ord = $(root, "#l-order");
+    ORDERS.forEach(([k, label]) => {
+      const b = el(`<button class="btn sm" data-order="${k}">${label}</button>`);
+      b.onclick = () => { this.ctx.settings.set("barOrder", k); };
+      ord.appendChild(b);
+    });
+    const sa = $(root, "#l-saveas");
+    [["low", "Low"], ["med", "Med"], ["high", "High"]].forEach(([k, label]) => {
+      const b = el(`<button class="btn sm">${label}</button>`);
+      b.onclick = () => this.savePreset(k);
+      sa.appendChild(b);
+    });
+    $(root, "#l-reset-presets").onclick = () => { this.ctx.settings.set("barPresets", structuredClone(BAR_PRESET_DEFAULTS)); toast("Low / Med / High back to the defaults."); };
     other.appendChild(this.makeRearTile());
     other.lastElementChild.style.gridColumn = "span 2";
     const more = $(root, "#l-more");
@@ -110,7 +142,91 @@ export class LightsScreen {
     this.paintFx();
     // Subscribe once only: rebuild() calls mount() again, and adding a subscriber while the
     // settings are telling subscribers about a change used to loop forever (renaming a bar hung the dash).
-    if (!this._subbed) { this._subbed = true; this.ctx.settings.subscribe((path) => { if (path.startsWith("lights.")) this.rebuild(); }); }
+    if (!this._subbed) {
+      this._subbed = true;
+      this.ctx.settings.subscribe((path) => {
+        if (path.startsWith("lights.")) this.rebuild();
+        else if (path.startsWith("barOrder") || path.startsWith("barPresets")) this.paintStack();
+      });
+    }
+    this.paintStack();
+  }
+
+  // ---- the front bar stack: Off / Low / Med / High + one slider -----------------------
+  makeStackTile() {
+    const t = el(`<div class="light-tile bar-stack" data-id="light.front">
+      <div class="lt-head"><div><div class="lt-name">Front bars</div><div class="lt-sub" id="bs-sub">4 bars in the grille</div></div>
+        <button class="btn sm" id="bs-each">Each bar ›</button></div>
+      <div class="bs-body">
+        <div class="bs-pic">${BAR_IDS.map((id, i) => `<div class="bs-bar" data-bar="${id}"><i></i><span>${i + 1}</span></div>`).join("")}</div>
+        <div class="bs-ctl">
+          <div class="seg" id="bs-preset"><button data-p="off">Off</button><button data-p="low">Low</button><button data-p="med">Med</button><button data-p="high">High</button></div>
+          <div id="bs-slider"></div>
+        </div>
+      </div>
+    </div>`);
+    t.querySelector("#bs-each").onclick = () => this.showBars(true);
+    t.querySelectorAll("#bs-preset button").forEach((b) => (b.onclick = () => this.preset(b.dataset.p)));
+    this.stackMixed = false;
+    this.stackSlider = new Slider({ min: 0, max: 100, step: 2.5, label: "",
+      fmt: (v) => (this.stackMixed ? stackLabel(this.want, this.order()) : stackLabel(this.stackLevels(v), this.order())),
+      onChange: (v) => this.setStack(v) });
+    t.querySelector("#bs-slider").appendChild(this.stackSlider.root);
+    this.stackTile = t;
+    return t;
+  }
+
+  order() { const o = this.ctx.settings.get("barOrder"); return BAR_ORDERS[o] ? o : "top"; }
+  presets() { return this.ctx.settings.get("barPresets") || BAR_PRESET_DEFAULTS; }
+  stackLevels(v) { return sliderToLevels(v, this.order(), (id) => this.ctx.settings.light(id).dimmable); }
+  front() { return Object.fromEntries(BAR_IDS.map((id) => [id, this.want[id] || 0])); }
+
+  setStack(v) {
+    this.stackMixed = false;
+    const lv = this.stackLevels(v);
+    BAR_IDS.forEach((id) => { if (lv[id] !== this.want[id]) this.set(id, lv[id]); });
+    this.paintStack();
+  }
+
+  preset(k) {
+    // Tapping the lit preset again turns the bars off.
+    const now = matchPreset(this.front(), this.presets());
+    const lv = k === "off" || k === now ? {} : this.presets()[k] || {};
+    BAR_IDS.forEach((id) => this.set(id, lv[id] || 0));
+    this.paintStack();
+  }
+
+  savePreset(k) {
+    const p = structuredClone(this.presets());
+    p[k] = this.front();
+    this.ctx.settings.set("barPresets", p);
+    toast(`Saved as ${k === "med" ? "Med" : k[0].toUpperCase() + k.slice(1)}.`, "good");
+  }
+
+  showBars(open) {
+    this.barsOpen = open;
+    $(this.root, "#l-bars").hidden = !open;
+    $(this.root, "#l-stack").hidden = open;
+    $(this.root, "#l-main").hidden = open;
+  }
+
+  paintStack() {
+    if (!this.stackTile) return;
+    const lv = this.front(), order = this.order();
+    const { slider, mixed } = levelsToSlider(lv, order);
+    this.stackMixed = mixed;
+    this.stackSlider.set(slider);
+    const p = BAR_IDS.every((id) => !lv[id]) ? "off" : matchPreset(lv, this.presets());
+    this.stackTile.querySelectorAll("#bs-preset button").forEach((b) => b.classList.toggle("on", b.dataset.p === p));
+    this.stackTile.classList.toggle("on", p !== "off");
+    this.stackTile.querySelectorAll(".bs-bar").forEach((b) => {
+      const v = lv[b.dataset.bar] || 0;
+      b.classList.toggle("lit", v > 0);
+      b.querySelector("i").style.opacity = v > 0 ? (0.25 + 0.75 * (v / 255)).toFixed(2) : "0";
+    });
+    const names = { off: "All off", low: "Low", med: "Med", high: "High" };
+    $(this.stackTile, "#bs-sub").textContent = p ? `${names[p]} · ${stackLabel(lv, order)}` : (mixed ? "Set bar by bar" : stackLabel(lv, order));
+    this.root.querySelectorAll("[data-order]").forEach((b) => b.classList.toggle("on", b.dataset.order === order));
   }
 
   rebuild() { const r = this.root; r.innerHTML = ""; this.mount(r); }
@@ -216,6 +332,7 @@ export class LightsScreen {
     tile.root.classList.toggle("on", v > 0);
     tile.big.textContent = v > 0 ? (tile.cfg.dimmable ? `ON ${Math.round((v / 255) * 100)}%` : "ON") : "OFF";
     if (tile.slider) tile.slider.set(Math.round((v / 255) * 100));
+    if (BAR_IDS.includes(id)) this.paintStack();
   }
 
   paintFx() { this.root.querySelectorAll("[data-fx]").forEach((b) => b.classList.toggle("on", b.dataset.fx === this.effect)); }

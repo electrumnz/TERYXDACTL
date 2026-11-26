@@ -22,10 +22,10 @@ can:
     pi_fw_update:   0x71F  # Pi -> Pico, on demand
 
 outputs:
-  light.front_1:   {driver: mosfet, pin: GP16, pwm: true, fuse_a: 10, label: "Front bar 1 (far left)"}
-  light.front_2:   {driver: mosfet, pin: GP17, pwm: true, fuse_a: 10, label: "Front bar 2 (inner left)"}
-  light.front_3:   {driver: mosfet, pin: GP18, pwm: true, fuse_a: 10, label: "Front bar 3 (inner right)"}
-  light.front_4:   {driver: mosfet, pin: GP19, pwm: true, fuse_a: 10, label: "Front bar 4 (far right)"}
+  light.front_1:   {driver: mosfet, pin: GP16, pwm: true, fuse_a: 10, label: "Front bar 1 (top)"}
+  light.front_2:   {driver: mosfet, pin: GP17, pwm: true, fuse_a: 10, label: "Front bar 2 (2nd down)"}
+  light.front_3:   {driver: mosfet, pin: GP18, pwm: true, fuse_a: 10, label: "Front bar 3 (3rd down)"}
+  light.front_4:   {driver: mosfet, pin: GP19, pwm: true, fuse_a: 10, label: "Front bar 4 (bottom)"}
   light.interior:  {driver: mosfet, pin: GP20, pwm: true, fuse_a: 5,  label: "Interior bar"}
   light.rear:      {driver: relay, relay: 1, expander_pin: A0, fuse_a: 15, label: "Trailer reverse pin (follows the rear floods)"}
   # Everything below dims through the PCA9685 (0x40) on the Pico's I2C. docs/lights.md

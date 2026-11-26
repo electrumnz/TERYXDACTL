@@ -82,8 +82,8 @@ the phone remote's Lights sheet (STROBE / EMERGENCY / CANCEL).
 | Full emergency | Beacon as above, plus every lamp flashes left side then right side at 2 Hz: low beams, tails, brake lamps, rear floods, front bars, trailer tail / stop / bar | Amber beacon only, plain 3 Hz. Everything else goes back to normal and starts flashing again when you stop |
 
 - **Left side:** left low beam, left tail and brake, left flood, front bars
-  1 and 2, trailer tail and the trailer bar. **Right side:** the same on the
-  right, front bars 3 and 4, trailer stop.
+  1 and 2 (the top pair, as the bars are stacked), trailer tail and the trailer bar. **Right side:** the same on the
+  right, front bars 3 and 4 (the bottom pair), trailer stop.
 - High beams stay off. The cabin bar is left as it is, so you aren't blinded.
 - The Teryx has no indicators, so there are no hazard lamps to flash. The
   tail/brake lamps and the beacon do that job.
@@ -133,6 +133,30 @@ Rules text: <https://www.nzta.govt.nz/resources/rules/vehicle-lighting-2004/>
   board OK and flash running.
 
 Full layout in [`CAN_PROTOCOL.md`](CAN_PROTOCOL.md).
+
+## Front bars: Low / Med / High and one slider
+
+The 4 front bars sit one above the other in the grille gaps, bar 1 at the top.
+The Lights screen (and the phone remote's Lights sheet) runs them as one stack:
+
+- **Off / Low / Med / High.** Defaults: Low = bar 1 at 50%, Med = bars 1 and 2
+  at 100%, High = all 4 at 100%. Tap the lit one again to turn the bars off.
+- **One slider.** Each quarter fills one bar: 0-25% ramps bar 1 from 0 to 100%,
+  25-50% ramps bar 2, then 3, then 4. The presets move the slider to match
+  (Low sits at 12.5%, Med at 50%, High at 100%). A bar set to on/off only in
+  Settings comes on half way through its quarter.
+- **Fill order** is top down by default, as Sam numbered them. Top down also
+  means Med (bars 1 and 2) runs on two different fuses (bars share 1+4 and
+  2+3), so one blown fuse never drops both lit bars. Middle out (2, 3, 1, 4)
+  and bottom up are in the Each bar menu.
+- **Each bar menu** ("Each bar ›" on the Front bars tile): each bar on its own,
+  the groups (All on, Trail, Work, Spot), the effects, the fill order, and
+  "Save these bars as Low / Med / High" to change a preset to whatever the bars
+  are set to now. "Reset Low / Med / High" puts the defaults back.
+
+It's all on the dash and phone side (`dash/web/js/barstack.js`). They still send
+each bar's own level, the same requests as before, so the control box and CAN
+didn't change. Settings keys: `barPresets`, `barOrder`.
 
 ## Light shows
 
