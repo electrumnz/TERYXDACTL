@@ -201,3 +201,34 @@ async def test_no_drive_no_recording(tmp_path, monkeypatch):
     st = await svc.tick()
     assert st["mode"] == "dashcam" and st["recording"] == [] and "No video drive" in st["problem"]
     assert not os.path.exists(tmp_path / "missing")
+
+
+async def test_dashcam_records_front_first_on_the_video_board(tmp_path, monkeypatch):
+    # Every camera is on the video board (one decoder): the dashcam records the front one.
+    monkeypatch.setenv("TERYX_VIDEO_DIR", str(tmp_path / "video"))
+    node = tmp_path / "video0"
+    node.write_text("")
+    monkeypatch.setenv("TERYX_VIDEO_BOARD", str(node))
+    cams = {"rear": {"fitted": True, "v4l2Device": "adv:0"}, "trailer": {"fitted": True, "v4l2Device": "adv:1"},
+            "front": {"fitted": True, "v4l2Device": "adv:3"}}
+    gw = Gw()
+    gw.state.update({"in.ignition": True, "lock.state": "unlocked"})
+    svc = S.SentryService(gw, gw.snapshot, lambda: {"camera": {"cams": cams}})
+
+    class Rec:
+        watch_motion = False
+        def available(self):
+            return True
+        async def ensure(self, wanted):
+            self.wanted = wanted
+            return list(wanted)
+        async def stop_all(self):
+            pass
+
+    svc.recorder = Rec()
+    st = await svc.tick()
+    assert st["mode"] == "dashcam" and st["recording"] == ["front"]
+    assert "--set-input=3" in " ".join(svc.recorder.wanted["front"])
+    # No front camera fitted: the rear one.
+    cams["front"]["fitted"] = False
+    assert (await svc.tick())["recording"] == ["rear"]

@@ -236,7 +236,7 @@ export class SettingsScreen {
     const s = this.ctx.settings, hub = this.ctx.media;
     this.title(body, "Audio and media", "Where the sound goes and how music behaves. Alert sounds are set under Sounds and alerts, and are never turned down by the music.");
     const outBox = el(`<div class="col" style="gap:10px"><div class="muted">Checking…</div></div>`);
-    body.appendChild(row("Sound goes to", "The Pi 5 has no headphone jack. The Raspberry Pi DAC+ (on jumper leads, I2S) feeds the amp over RCA.", outBox));
+    body.appendChild(row("Sound goes to", "The Pi 5 has no headphone jack. A PCM5102 DAC board (on jumper leads, I2S) feeds the amp over RCA.", outBox));
     const lvl = stepper(100, { step: 10, min: 10, max: 100, fmt: (v) => `${v}%`, onChange: (v) => api("audio/output-level", { method: "POST", body: { level: v / 100 } }).catch((e) => toast(`Couldn't set the level (${e.message}).`, "bad")) });
     body.appendChild(row("Output level", "The feed to the amp. Leave it at 100% and set the amp's gain once, so alerts are always loud enough.", lvl));
     const fill = async () => {
@@ -296,20 +296,21 @@ export class SettingsScreen {
   // ---------- Camera ----------
   async sec_camera(body) {
     const s = this.ctx.settings;
-    this.title(body, "Cameras", "Up to four: rear, front, trailer and cabin. No USB: the front is the Pi Camera Module 3 on ribbon port 0 (csi0); rear, trailer and cabin are analogue (CVBS/PAL) into the video board on ribbon port 1 (adv:0, adv:1, adv:2). The video board shows one of its cameras at a time. Cameras that aren't fitted show greyed out on the Cameras screen.");
+    this.title(body, "Cameras", "Up to four: rear, front, trailer and cabin. No USB: they're all car cameras set to CVBS/PAL, into the video board on the Pi's camera ribbon (rear adv:0, trailer adv:1, cabin adv:2, front adv:3). The video board shows one camera at a time. Cameras that aren't fitted show greyed out on the Cameras screen.");
     body.appendChild(row("Source", "Auto tries the camera directly, then the server stream.", seg([["auto", "Auto"], ["usb", "Camera"], ["stream", "Server stream"]], s.get("camera.source"), (v) => s.set("camera.source", v))));
     body.appendChild(row("Pop up in reverse", "Shows a camera when you select reverse, and goes back after.", toggle(s.get("camera.autoOnReverse"), (v) => s.set("camera.autoOnReverse", v))));
     body.appendChild(row("Trailer camera in reverse", "With a trailer plugged in, reverse shows the trailer camera instead of the rear one. You can still swap on the Cameras screen.", toggle(s.get("camera.trailerInReverse") !== false, (v) => s.set("camera.trailerInReverse", v))));
     body.appendChild(row("Reverse shows", "One big camera, or the combined view (front and rear, plus the trailer when it's on). If you're already on the combined view, reverse keeps it.", seg([["single", "One camera"], ["combo", "Combined"]], s.get("camera.reverseView") || "single", (v) => s.set("camera.reverseView", v))));
+    body.appendChild(row("Combined view", "The video board shows one camera at a time, so the others pause on their last picture. Follow: the front is live driving forward, the one behind you in reverse, and you tap to swap. Or take turns every few seconds (not in reverse).", seg([[0, "Follow"], [3, "3 s"], [5, "5 s"], [10, "10 s"]], Number(s.get("camera.comboCycle")) || 0, (v) => s.set("camera.comboCycle", Number(v)))));
     body.appendChild(row("Trailer detect", "How the dash knows the trailer camera is there. Picture: the video board sees a picture from it. Plug: the reed switch in the 7-pin socket. Either is best: a trailer with no camera stays off the combined view.", seg([["either", "Either"], ["picture", "Picture"], ["plug", "Plug"]], s.get("camera.trailerDetect") || "either", (v) => s.set("camera.trailerDetect", v))));
     body.appendChild(row("Guide line offset", "Nudge if the camera isn't mounted in the middle.", stepper(s.get("camera.guideOffset"), { step: 10, min: -200, max: 200, fmt: (v) => `${v > 0 ? "+" : ""}${v}`, onChange: (v) => s.set("camera.guideOffset", v) })));
     const devices = await listCameras();
     const esc = (t) => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
     const HELP = {
       rear: "Mirror on, so left on screen is left behind you.",
-      front: "Grille or bull bar camera, for seeing over a crest. Usually no mirror and no guide lines.",
+      front: "Car camera on the grille or bull bar, for seeing over a crest, on video board input 3 (adv:3). Your best camera goes here: it's the dashcam too. Usually no mirror and no guide lines.",
       trailer: "On the back of the trailer. Only shows when a trailer is plugged in (reed switch in the 7-pin socket).",
-      cabin: "Small camera on the dash looking at the seats, on the video board's spare input (adv:2). Shares the board with the rear and trailer cameras, so only one of them records at a time. Records with the others and takes the face shot if someone tries the key while it's locked.",
+      cabin: "Small camera on the dash looking at the seats, on the video board's spare input (adv:2). Shares the board with the other cameras, so only one of them records at a time. Records with the others and takes the face shot if someone tries the key while it's locked.",
     };
     CAMS.forEach((c) => {
       const k = `camera.cams.${c.id}`, cfg = s.get(k) || {};

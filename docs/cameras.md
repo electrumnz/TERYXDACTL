@@ -1,5 +1,53 @@
 # Cameras: rear, front, trailer and cabin
 
+> **Changed 26 Nov (Sam):** the **Pi Camera Module 3 is dropped** (PB Tech had none, and Sam
+> now has 3 car cameras from AliExpress: one good, two not as good). **Every camera is now a
+> 12 V car camera in CVBS/PAL mode, all into the one analogue video board** on the Pi's camera
+> ribbon port (CSI1). The other ribbon port is free. See section 0 below. Older notes further
+> down that talk about the Camera Module 3 on the front are out of date.
+
+## 0. Current plan (26 Nov)
+
+| Camera | Which one | Video board input | Notes |
+|---|---|---|---|
+| Front | **The good one** | 3 (`adv:3`) | Grille or bull bar, looking ahead. It's the dashcam and the trail view at speed, where detail matters most. |
+| Rear | The 200 degree one (owned) | 0 (`adv:0`) | Reversing is slow and close up, so a lesser camera is fine. Mirrored, guide lines on. |
+| Trailer | A lesser one | 1 (`adv:1`) | Through the round EU 7-pin. Only on with a trailer plugged in. |
+| Cabin | Later | 2 (`adv:2`) | Small camera at the seats, face shot in Sentry. |
+
+Each camera gets 12 V from the accessory relay (relay 7) through its own 2 A inline fuse,
+an earth at the star point (or good chassis earth nearby), and a shielded video lead soldered
+to the board. Wiring: `config/wiring.yaml` (CAM_FRONT, CAM_REAR, CAM_TRAILER, TCAM_DONGLE).
+
+**The video board needs enough inputs.** The chips have plenty: ADV7280-M has 8 analogue inputs
+([Analog Devices](https://www.analog.com/en/products/adv7280.html)), ADV7281-M and ADV7282-M
+have 6 ([Analog Devices](https://www.analog.com/en/products/adv7282.html)). But cheap boards
+only bring some of them out to plugs or pads. **Count them in the listing photos: 3 needed now
+(front, rear, trailer), 4 with the cabin camera.**
+
+**One decoder, one live picture.** The chip can only decode one input at a time, and changing
+input takes up to 250 ms to lock
+([AN-1337](https://www.analog.com/en/resources/app-notes/an-1337.html)). So:
+
+- The combined (ALL) view shows one live picture and the others pause on their last picture.
+  By default the live one follows what you're doing: the **front driving forward**, the
+  **trailer or rear in reverse**. Tap a paused picture to swap.
+- Settings > Cameras > **Combined view** can make them take turns every 3, 5 or 10 s instead
+  (not in reverse: the camera behind you stays live).
+- The dashcam and Sentry record **one camera at a time**, front first (then rear, trailer,
+  cabin). A live picture on the Cameras screen takes the board off the dashcam until you leave.
+
+**CVBS, not AHD.** The ADV chips only decode plain analogue video (CVBS, PAL or NTSC). An AHD
+picture won't show. How to check a camera or its listing:
+
+- Good signs: "CVBS", "PAL/NTSC", "analogue", a TVL number (like "700TVL" or "1000TVL"), or
+  a yellow RCA plug.
+- AHD only ("AHD 720P", "AHD 1080P", "2MP AHD") is no good, unless it also says it can switch
+  to CVBS: a switch wire or loop on the lead, a button, or an OSD menu (joystick on the lead).
+- On the bench: plug it into any old TV's yellow AV input. If you get a picture, it's CVBS.
+  If you get rolling lines or nothing, it's in AHD mode, so switch it.
+- Set them to **PAL**.
+
 > **Changed 18 Nov (Sam):** three cameras: front (CSI ribbon), rear (Sam's 200 degree camera) and trailer (only when a trailer is on). Cabin camera moved to "later" (the 2nd ribbon port stays free for it). Sam: no USB for cameras. The front stays a Camera Module 3 on ribbon port 1. The rear and trailer cameras (AHD) are set to their CVBS/PAL mode and soldered into one ADV7280-M analogue-to-ribbon board on ribbon port 2, which picks rear or trailer in software, so only two streams ever record. Nobody makes an AHD-to-ribbon board with Pi drivers, and CVBS boards on the Pi 5 are not proven yet, so bench test it first. The cabin camera is 'later', on a spare input of that board.
 
 Researched 18 November 2026 (NZ time). Prices incl GST unless it says otherwise. Each price
@@ -171,8 +219,8 @@ ribbon port.
   ([Analog Devices AN-1337](https://www.analog.com/en/resources/app-notes/an-1337.html)), so
   flicking between them would give each about one picture a second at best. So one of the two
   is live and the other keeps its last picture with **PAUSED, tap to show live**. With a trailer
-  on, the trailer camera starts live (the rear one mostly sees the drawbar). The front camera is
-  on its own ribbon port, so it's always live.
+  on, the trailer camera starts live (the rear one mostly sees the drawbar). **Since 26 Nov the
+  front camera is on the board too**, so only one of all of them is live (see section 0).
 - **Lights on the pictures:** front bars 1-4 and ALL on the front picture, rear lights on the
   rear, trailer bar on the trailer, cab light on the cabin. In reverse, on a single rear or
   trailer picture, the rear lights button goes big like before.
@@ -236,7 +284,8 @@ PAL, and that the cameras are waterproof.
 
 ## Still to check
 
-- Rear camera: USB or RCA/AHD?
+- Each of the 3 car cameras: CVBS/PAL, or AHD with a CVBS mode? (TV test above.)
+- How many video inputs the video board actually has (3 needed, 4 with the cabin camera).
 - Which way the Narva reed switch switches, and what triggers it.
 - Whether a wireless kit's receiver has an AV out (if you go wireless).
 - Any AHD-to-USB dongle on the real Pi before buying more than one.

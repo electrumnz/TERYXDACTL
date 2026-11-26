@@ -43,6 +43,9 @@ SEGMENT_S = 60
 PRE_S = 30
 POST_S = 30
 CAMS = ("rear", "front", "trailer", "cabin")
+# All the cameras share the video board's one decoder, so the dashcam and sentry record one of
+# them at a time: the first fitted one in this order (the front is the dashcam).
+BOARD_ORDER = ("front", "rear", "trailer", "cabin")
 DEFAULTS = {
     "enabled": True,        # sentry when locked
     "dashcam": True,        # loop recording with the key on
@@ -438,7 +441,7 @@ class SentryService:
         if self.plan.mode in ("dashcam", "sentry") and store and self.recorder and self.recorder.available():
             wanted = {}
             board_used = False   # the video board has one decoder: one of its cameras at a time
-            for cam in fitted_cams(self.dash_settings()):
+            for cam in sorted(fitted_cams(self.dash_settings()), key=BOARD_ORDER.index):
                 dev, h264 = self._device(cam)
                 if dev.startswith("adv:"):
                     # Someone watching a video board camera on the screen has the board.

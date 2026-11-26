@@ -1,10 +1,11 @@
 """Camera as an MJPEG stream, for when the browser can't open the camera itself.
 
-Works for a Raspberry Pi camera on the ribbon port ("csi0", read with rpicam-vid), for an
-analogue camera on the video board on the second ribbon port ("adv:N", see videoboard.py), and
-for a /dev/videoN device (read with ffmpeg). Both tools are on Raspberry Pi OS. One ffmpeg per viewer (?cam=rear|front|trailer|cabin). The combined view opens two at once:
-the front ribbon camera and one camera from the video board (it can only decode one input at a
-time, so a newer video board stream stops the older one).
+Works for an analogue car camera on the video board on the ribbon port ("adv:N", see
+videoboard.py; all four cameras are these now), for a Raspberry Pi ribbon camera ("csi0", read
+with rpicam-vid), and for a /dev/videoN device (read with ffmpeg). Both tools are on Raspberry Pi
+OS. One ffmpeg per viewer (?cam=rear|front|trailer|cabin). The video board can only decode one
+input at a time, so a newer video board stream stops the older one (the combined view shows one
+live picture and pauses the rest).
 """
 
 from __future__ import annotations

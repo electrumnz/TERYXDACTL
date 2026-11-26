@@ -85,7 +85,8 @@ The Pi 5 has **no headphone jack**, and the screen has no speaker.
 
 | Option | Good for | Approx |
 |---|---|---|
-| **Pick (18 Nov): Raspberry Pi DAC+** (official, ex IQaudio, PB Tech SEVRBP0313) | No USB. On 7 jumper leads from the Pi's header (GPIO 18, 19, 21, SDA, SCL, 5 V, GND), not a 40-way ribbon, so the CAN, 4G and IMU leads still reach their pins. RCA out to the amp. `audio-setup.sh --i2s iqaudio-dacplus`. | ~NZ$36 |
+| **Pick (26 Nov): PCM5102 I2S DAC board** (AliExpress, about NZ$8) | No USB. Replaces the official DAC+ HAT (PB Tech), which costs about NZ$36 for the same job. On 5 jumper leads from the Pi's header (GPIO 18 BCK, 19 LCK, 21 DIN, 5 V, GND), so the CAN, 4G and IMU leads still reach their pins, and no I2C. 3.5 mm out, then a 3.5 mm to 2x RCA lead and a ground loop isolator to the amp. On the board, SCK goes to GND (solder bridge or jumper). `audio-setup.sh --i2s hifiberry-dac`. | ~NZ$8 |
+| Was the pick (18 Nov): Raspberry Pi DAC+ (official, PB Tech SEVRBP0313) | Same idea, RCA out, a bit cleaner. Dropped 26 Nov to keep the PB Tech list short and cheap. `--i2s iqaudio-dacplus` if you ever use one. | ~NZ$36 |
 | USB DAC with a line out (dropped: USB plugs shake loose) (e.g. a small USB audio adapter with RCA or 3.5 mm out) | Easiest. Plug in and pick it under Settings > Audio and media. Get a decent one, cheap ones hiss. | $20–80 |
 | **I2S DAC HAT** (PCM5122 based, e.g. HiFiBerry DAC+ or a clone, RCA out) | Cleanest sound, no USB. Sits on the GPIO header, but the CAN HAT is there too: check they don't both want the same pins, or use a stacking header. Run `audio-setup.sh --i2s hifiberry-dacplus`. | $40–90 |
 | **HDMI** | Only if the HDMI to VGA adapter for the screen has a 3.5 mm audio out. Free if it does. | $0 |
@@ -139,7 +140,7 @@ EQ on the Pi ("Teryx speaker pods" output) to suit these free-air marine speaker
 | Part | Why | Approx |
 |---|---|---|
 | Amp wiring kit (8 AWG for up to ~400 W, inline fuse within 30 cm of the battery) | Power to the amp | $60–120 |
-| Ground loop isolator (RCA) | Only if you hear a hum or whine with the motor running | $15–30 |
+| Ground loop isolator (RCA) | On the AliExpress top-up (26 Nov): fit it from the start with the cheap DAC board | $8–30 |
 | Carlinkit CPC200-CCPA | CarPlay and Android Auto | $80–150 |
 | USB mic (later) | Siri / Assistant / calls through the dash | $15–40 |
 | RTL-SDR USB dongle (optional, not built yet) | Real FM radio with no internet. The Pi could tune it and play it like an internet station | $50–80 |
@@ -159,7 +160,7 @@ EQ on the Pi ("Teryx speaker pods" output) to suit these free-air marine speaker
 `scripts/pi-setup.sh` runs `scripts/audio-setup.sh` for you. To add an I2S HAT later:
 
 ```bash
-sudo bash scripts/audio-setup.sh --i2s hifiberry-dacplus
+sudo bash scripts/audio-setup.sh --i2s hifiberry-dac
 sudo reboot
 ```
 

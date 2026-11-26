@@ -91,21 +91,19 @@ via_buy:
 # Devices out in the weather that get a waterproof plug, so they unplug.
 # The plug size comes from how many of their pins are wired.
 plugs: [LB1, LB2, LB3, LB4, LB_INT, FLOOD_L, FLOOD_R, BEACON, ACT_DIFF, ACT_4WD, ACT_TRAY,
-        LIM_DN, LIM_UP, HSW_WINCH, CAM_REAR, CAM_TRAILER, IMU]
+        LIM_DN, LIM_UP, HSW_WINCH, CAM_REAR, CAM_TRAILER, CAM_FRONT, IMU]
 
 lines:
   # ------------------------------------------------------------- PB Tech
   - {id: pi5, shop: pbtech, part: Raspberry Pi 5 8GB, sku: SEVRBP0502, qty: 1, each: 371.39, source: Checked 17 Nov, covers: [PI5], notes: "On order, ships about 30 Nov; ask in store", link: "https://www.pbtech.co.nz/product/SEVRBP0502"}
-  - {id: cam_front, shop: pbtech, part: Raspberry Pi Camera Module 3 Wide (front), sku: SEVRBP0398, qty: 1, each: 80.71, source: Search result 18 Nov, covers: [CAM_FRONT], notes: "Out of stock when indexed; alt element14 SC0874 ~NZ$69", link: "https://www.pbtech.co.nz/product/SEVRBP0398"}
-  - {id: cam_cable, shop: pbtech, part: Pi 5 camera cable 200mm, sku: SEVRBP0541, qty: 2, each: 2.12, source: Search result 18 Nov, notes: Front camera + video board, link: "https://www.pbtech.com/pacific/product/SEVRBP0541"}
+  - {id: cam_cable, shop: pbtech, part: Pi 5 camera cable 200mm, sku: SEVRBP0541, qty: 1, each: 2.12, source: Search result 18 Nov, notes: "Video board to the Pi 5 (the Pi 5 has the small 22-pin socket; skip it if the board comes with a Pi 5 cable). Only one now: the Pi Camera Module 3 is dropped", link: "https://www.pbtech.com/pacific/product/SEVRBP0541"}
   - {id: pico, shop: pbtech, part: Raspberry Pi Pico 2 5-pack, sku: SEVRBP0628, qty: 1, each: 47.20, source: Checked 17 Nov, covers: [PICO, RC_PICO], notes: "Control box, RC box, CAN sniffer, steering bench test, 1 spare", link: "https://www.pbtech.co.nz/product/SEVRBP0628"}
   - {id: psu27, shop: pbtech, part: Raspberry Pi 27W USB-C power supply (bench), sku: SEVRBP0512, qty: 1, each: 24.90, source: Search result 18 Nov, notes: Bench only, link: "https://www.pbtech.co.nz/product/SEVRBP0512"}
   - {id: hdmi, shop: pbtech, part: Raspberry Pi micro HDMI to HDMI cable 1m, sku: SEVRBP0207, qty: 1, each: 11.80, source: Search result 18 Nov, notes: "Alt black SEVRBP0262 ~11.10", link: "https://www.pbtech.co.nz/product/SEVRBP0207"}
   - {id: sd, shop: pbtech, part: "Raspberry Pi A2 SD card 128GB (OS)", sku: SEVRBP0538, qty: 1, each: 47.32, source: "Search result 18 Nov", notes: "Official card, in the Pi's own slot. Not made for non-stop writes, so dashcam/Sentry recording stays off or minimal until extra storage is added", link: "https://www.pbtech.co.nz/product/SEVRBP0538"}
-  - {id: dac_hat, shop: pbtech, part: "Raspberry Pi DAC+ HAT (ex IQaudio DAC+, SC0368)", sku: SEVRBP0313, qty: 1, each: 35.65, source: "Search result 18 Nov (out of stock when indexed)", covers: [DAC_HAT], notes: "Official board, RCA out. If PB Tech has none: Pakronics NZ ~NZ$40", link: "https://www.pbtech.co.nz/product/SEVRBP0313"}
 
   # ------------------------------------------------------------- AliExpress
-  - {id: tcam_dongle, shop: aliexpress, part: "CVBS (PAL) to MIPI CSI-2 board, ADV7280-M, multi-input", qty: 1, each: 120.00, source: "Estimate. AliExpress search: ADV7282 MIPI CSI (or ADV7280 CSI Raspberry Pi). No official Pi product does this", covers: [TCAM_DONGLE], notes: "Sam unsure if ordered: check your AliExpress orders first. Search: ADV7282 MIPI CSI Raspberry Pi (or ADV7280 CVBS to CSI2). Chip must be ADV7280-M, ADV7281-M or ADV7282-M (the -M is the ribbon output), 2+ CVBS inputs, Pi camera ribbon socket. Not TP28xx (no Pi driver) or HDMI-to-CSI. Bench test on the Pi 5"}
+  - {id: tcam_dongle, shop: aliexpress, part: "CVBS (PAL) to MIPI CSI-2 board, ADV728x-M, 3-4 video inputs", qty: 1, each: 120.00, source: "Estimate. AliExpress search: ADV7282 MIPI CSI (or ADV7280 CSI Raspberry Pi). No official Pi product does this", covers: [TCAM_DONGLE], notes: "Sam unsure if ordered: check your AliExpress orders first. Search: ADV7282 MIPI CSI Raspberry Pi (or ADV7280 CVBS to CSI2). Chip must be ADV7280-M, ADV7281-M or ADV7282-M (the -M is the ribbon output), at least 3 video inputs on plugs or pads (front, rear, trailer), 4 to add the cabin camera later. All the cameras go into this board now, so check the photos and count the inputs. Pi camera ribbon socket. Not TP28xx (no Pi driver) or HDMI-to-CSI. Bench test on the Pi 5"}
 
   # ------------------------------------------------------------- AliExpress top-up
   # 19 Nov: replaces the Core Electronics order (CAN, MCP23017, Pololu) and the
@@ -118,7 +116,9 @@ lines:
   - {id: heatshrink, shop: ali_topup, part: "Heatshrink, 3:1 glue-lined (adhesive), black kit: 1.6, 2.4, 3.2, 4.8, 6.4, 9.5, 12.7 and 19.1mm, plus a small red pack", qty: 1, each: 15.00, source: "Estimate, AliExpress", notes: "3.2mm for 0.5-1mm² joins, 4.8mm for 1.5-2.5mm², 6.4-9.5mm for 4-10mm², 19.1mm for the 35mm² lugs (that cable is about 12mm thick). Red for the + ends of the big cables"}
   - {id: smallparts, shop: ali_topup, part: "Diodes and resistors", qty: 1, each: 0, source: "Estimate, AliExpress", notes: "AUTO"}   # split into one line per part from via_buy
   - {id: busbar, shop: ali_topup, part: "Ground bus bar, 150A or more, M8 studs plus small screw terminals, with cover", qty: 1, each: 15.00, source: "Estimate, AliExpress", covers: [GND_STAR], notes: "About 25 earths land here, the biggest is the 10mm² battery negative, and the total is well under 100 A. A bar with 2-4 M8 studs plus 8-12 small screw terminals saves stacking lots of rings on a stud. The winch earth goes straight to the battery, not here"}
-  - {id: rca, shop: ali_topup, part: "RCA stereo lead 3m (one cable, 2 plugs each end)", qty: 1, each: 8.00, source: "Estimate, AliExpress", notes: "One lead is all you need: it's the left + right pair in one cable, DAC HAT to the amp. If the amp has a 2CH/4CH input switch set it to 2CH so the sub channels get signal too, if not add a pair of RCA Y splitters (1 male to 2 female)"}
+  - {id: dac, shop: ali_topup, part: "PCM5102 (PCM5102A) I2S DAC board with 3.5mm stereo jack", qty: 1, each: 8.00, source: "Estimate, AliExpress", covers: [DAC_HAT], notes: "Search: PCM5102 I2S DAC Raspberry Pi (or PCM5102A DAC module). The small board (often purple, about 32 x 24 mm) with pins marked VIN, GND, LCK, DIN, BCK, SCK and a 3.5mm jack. Takes 3.3-5V. Replaces the official DAC+ HAT from PB Tech (26 Nov). Wired with 5 jumper leads, so no HAT version needed. Pi overlay: hifiberry-dac"}
+  - {id: rca, shop: ali_topup, part: "3.5mm stereo jack to 2x RCA male lead, 3m", qty: 1, each: 6.00, source: "Estimate, AliExpress", notes: "DAC board's 3.5mm jack to the amp's left + right RCA inputs. If the amp has a 2CH/4CH input switch set it to 2CH so the sub channels get signal too, if not add a pair of RCA Y splitters (1 male to 2 female)"}
+  - {id: gli, shop: ali_topup, part: "Ground loop isolator, RCA stereo (2 RCA in, 2 RCA out), car audio noise filter", qty: 1, each: 8.00, source: "Estimate, AliExpress (Jaycar has them too, about NZ$20-30, if you want one sooner)", notes: "Search: car audio ground loop isolator RCA. Goes between the RCA lead and the amp. Stops hum or whine from the motor, DC-DC and the Pi sharing earths. A cheap DAC board has no filtering of its own, so fit it from the start"}
   - {id: hsw, shop: ali_topup, part: "Heavy duty momentary toggle switch, (ON)-OFF-(ON), SPDT 3 terminals, 20A 12V DC, 12mm hole, with waterproof rubber boot", qty: 2, each: 8.00, source: "Estimate, AliExpress", covers: [HSW_WINCH, HSW_CAB], notes: "Search: 12V 20A momentary toggle switch ON-OFF-ON 3 pin, and pick one where both sides spring back to the middle (shown as (ON)-OFF-(ON) or momentary on both sides). Hidden winch in/out switches, one at the winch and one in the cab. They work the solenoid coil (5 A fuse), so 20A is plenty. Get boots that match the thread (usually 12mm)"}
 
   # ------------------------------------------------------------- local
@@ -199,7 +199,8 @@ owned:
   GLOVE_USB: 12V USB-C panel socket (AliExpress main order, bought 22 Nov)
   PCA: PCA9685 PWM boards (2) (AliExpress main order, bought 22 Nov)
   IMU: MPU-6050 IMU board (AliExpress main order, bought 22 Nov)
-  CAM_TRAILER: 12V AHD trailer camera (AliExpress main order, bought 22 Nov)
+  CAM_TRAILER: 12V trailer camera (AliExpress main order, bought 22 Nov; one of the lesser 2, set to CVBS/PAL)
+  CAM_FRONT: "Car camera, the best of Sam's 3 from AliExpress (26 Nov, Sam to confirm; set to CVBS/PAL)"
   MODEM_4G: SIMCom A7670SA 4G board (AliExpress main order, bought 22 Nov)
   DEBUG: Dupont jumpers + pin headers (AliExpress main order, bought 22 Nov)
 
@@ -229,7 +230,7 @@ later:
 
 # Not in the totals; shown so nothing is forgotten.
 later_lines:
-  - {part: "Small CVBS (analogue) cabin camera (Sentry face shot)", shop: AliExpress, each: 25.00, notes: "Spare input on the video board; both camera ribbon ports are used (front Pi camera + video board)"}
+  - {part: "Small CVBS (analogue) cabin camera (Sentry face shot)", shop: AliExpress, each: 25.00, notes: "4th input on the video board (all cameras are on it now)"}
   - {part: "Recording storage (e.g. Samsung PRO Endurance 128GB, MEMSAM11230)", shop: PB Tech, each: 114.90, notes: "For dashcam/Sentry. Sam to sort later"}
   - {part: Raspberry Pi AI HAT+ 2, shop: PB Tech, each: 423.43, notes: Not now}
   - {part: Raspberry Pi Active Cooler, shop: PB Tech, each: 11.21, notes: Only with the AI HAT}

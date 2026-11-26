@@ -1,17 +1,17 @@
 // Cameras: rear, front, trailer, cabin, and ALL (the combined view). Pick with the buttons along the top.
 //
-// Where the pictures come from (docs/cameras.md, no USB):
-//  - front: Pi Camera Module 3 on the first ribbon port ("csi0"),
-//  - rear, trailer (and cabin later): analogue cameras on the video board on the second ribbon
-//    port ("adv:N"). That board has one decoder, so only ONE of its cameras can be live at a time.
-// Both come through the dash server (/api/camera.mjpg?cam=<id>). A browser camera (getUserMedia)
-// still works on the bench.
+// Where the pictures come from (docs/cameras.md, no USB): every camera is a car camera in
+// CVBS/PAL mode on the analogue video board on the Pi's ribbon port ("adv:N": rear 0, trailer 1,
+// cabin 2, front 3). The board has one decoder, so only ONE camera can be live at a time.
+// A Pi ribbon camera ("csi0") still works if one is ever fitted. All come through the dash server
+// (/api/camera.mjpg?cam=<id>). A browser camera (getUserMedia) still works on the bench.
 //
 // ALL shows every fitted camera that's useful while driving at once:
 //  - no trailer: front and rear side by side,
-//  - trailer on: front down the left, trailer and rear on the right. Rear and trailer share the
-//    video board, so one is live and the other shows its last picture with "PAUSED". Tap the
-//    paused one to swap. With a trailer on, the trailer camera is the live one to start with.
+//  - trailer on: front down the left, trailer and rear on the right.
+// They share the video board, so one is live and the others show their last picture with
+// "PAUSED". Tap a paused one to swap. Which one is live: the front driving forward, the trailer
+// (or rear) in reverse. Settings > Cameras > Combined view can make them take turns instead.
 // "Trailer on" means its camera is giving a picture (the server checks the video board, see
 // trailercam.py) or, until that's known, the trailer plug's reed switch (in.trailer).
 // Settings > Cameras > Trailer detect picks plug only, picture only, or either.
@@ -64,15 +64,20 @@ export function comboCams(settings, store) { return COMBO.filter((id) => camStat
 /** Does this camera come off the video board (shared decoder)? */
 export function onBoard(settings, id) { return /^adv:\d$/.test((settings.get(`camera.cams.${id}`) || {}).v4l2Device || ""); }
 
+/** Reversing? (Shinegle direction, or the F-N-R switch.) */
+export function reversing(store) { return store.get("mc.direction") === "reverse" || !!store.get("in.reverse"); }
+
 /**
  * What to show: a list of {cam, live}. Only one video board camera is live; the rest show
- * their last picture. `boardPick` is the one the driver tapped (or reverse picked).
+ * their last picture. `boardPick` is the one the driver tapped (or reverse or the cycle picked).
+ * With nothing picked: the camera behind you in reverse (trailer if one's on), else the front.
  */
 export function layoutFor(settings, store, view, boardPick) {
   if (view !== "combo") return [{ cam: view, live: true }];
   const list = comboCams(settings, store);
   const board = list.filter((id) => onBoard(settings, id));
-  const live = board.includes(boardPick) ? boardPick : board.includes("trailer") ? "trailer" : board[0];
+  const order = reversing(store) ? ["trailer", "rear", "front"] : ["front", "trailer", "rear"];
+  const live = board.includes(boardPick) ? boardPick : order.find((id) => board.includes(id)) || board[0];
   return list.map((cam) => ({ cam, live: !onBoard(settings, cam) || cam === live }));
 }
 
@@ -219,7 +224,7 @@ class Pane {
       if (run !== this.run) return;
       if (fake()) { this.img.hidden = true; showFake(); return; }
       this.msg.hidden = false; this.still.hidden = true;
-      this.msg.textContent = this.cam === "front" ? "No front camera picture. Check its ribbon cable."
+      this.msg.textContent = /^csi\d$/.test(cam.v4l2Device || "") ? `No ${name} camera picture. Check its ribbon cable.`
         : `No ${name} camera picture. Check its lead into the video board.`;
     };
     this.img.src = `${set.get("camera.streamUrl")}?cam=${this.cam}&t=${Date.now()}`;
@@ -363,7 +368,20 @@ export class CameraScreen {
   }
 
   /** Combined view: make this video board camera the live one. */
-  showLive(cam) { this.boardPick = cam; this.layout(); }
+  showLive(cam) { this.boardPick = cam; this.layout(); this.cycleAt = Date.now(); }
+
+  /** Combined view, Settings > Cameras > take turns: move the live picture on to the next camera. */
+  cycle(st) {
+    const set = this.ctx.settings, secs = Number(set.get("camera.comboCycle")) || 0;
+    if (this.view !== "combo" || !this.started || !secs || reversing(st)) { this.cycleAt = Date.now(); return; }
+    if (Date.now() - (this.cycleAt || 0) < secs * 1000) return;
+    this.cycleAt = Date.now();
+    const want = layoutFor(set, st, "combo", this.boardPick), board = want.filter((w) => onBoard(set, w.cam));
+    if (board.length < 2) return;
+    const i = board.findIndex((w) => w.live);
+    this.boardPick = board[(i + 1) % board.length].cam;
+    this.layout();
+  }
 
   camName(id) {
     if (id === "combo") return "All";
@@ -498,7 +516,7 @@ export class CameraScreen {
 
   update(st) {
     const set = this.ctx.settings;
-    const rev = st.get("mc.direction") === "reverse" || st.get("in.reverse");
+    const rev = reversing(st);
     // Trailer on or off (plug or picture), or a camera fitted or not: grey the buttons, and move
     // off a camera that just went away. The combined view adds or drops the trailer picture.
     const trailer = trailerOn(set, st), tState = camState(set, st, "trailer");
@@ -523,6 +541,9 @@ export class CameraScreen {
         this.layout();
       } else if (set.get("camera.autoOnReverse")) this.pick(this.reverseCam());
     }
+    // Out of reverse in the combined view: back to the front camera live.
+    if (!rev && this.wasRev && this.view === "combo") { this.boardPick = null; this.layout(); }
+    this.cycle(st);
     $(this.root, "#c-rev").hidden = !rev;
     // Big rear lights button in reverse, on a single rear or trailer picture.
     this.root.querySelectorAll(".cam-rear[data-light='light.rear']").forEach((b) => b.classList.toggle("big", !!rev && this.view !== "combo"));

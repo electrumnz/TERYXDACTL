@@ -148,6 +148,9 @@ M12V = 12.2;            // M12 breather vent plug (membrane vent)
 //   hence the module.
 //   CHECK on the real parts before printing.
 // ---------------------------------------------------------------------------
+// 2026-11-26: the DAC is now a small PCM5102 board (about 32 x 24 mm, AliExpress). The HAT-sized
+// space and standoffs below stay; the board goes on a small printed plate across the HAT standoffs
+// (or foam tape). Space not resized, so the box prints the same.
 // Audio DAC HAT off the Pi (2026-11-18, Sam): Raspberry Pi DAC+ (ex IQaudio DAC+,
 // PB Tech SEVRBP0313), 65 x 56.5 mm HAT, on 7 jumper leads from the Pi's header
 // (later from the AI HAT+ 2's stacking header), so the top of the Pi stays free. The box is dac_room wider on the right for it and everything that was in the
