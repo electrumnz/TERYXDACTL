@@ -426,7 +426,9 @@ function liveIndex() {
     fuses: [...svg.querySelectorAll("[data-f]")] };
 }
 // What each thing was last time, so a change can pulse and go on the list.
-const prevWire = {}, prevVolts = {}, prevContact = {}, prevLamp = {}, lastPulse = {};
+const prevWire = {}, prevVolts = {}, prevContact = {}, prevLamp = {}, lastPulse = {}, prevPin = {}, seenPin = {};
+let frameNo = 0;
+const EARTHS = new Set(["GND_STAR.G", "BAT12.neg"]);
 let firstFrame = true;
 const changes = [];                                   // newest first: {t, text, part?, wire?}
 
@@ -445,9 +447,26 @@ function onLive(st) {
   const changedParts = new Map();                     // part -> what changed there
   const note = (part, text) => { if (part && model.parts[part]) changedParts.set(part, [...(changedParts.get(part) || []), text]); };
 
+  // Each pin's own level: a part only flashes when one of its own pins changes, not because
+  // something further along a shared net did.
+  const clsOf = (v) => (v > 30 ? "hv" : v > 7 ? "12" : v > 0.5 ? "lo" : "");
+  for (const w of model.wires) {
+    for (const end of [w.from, w.to]) {
+      const key = `${end[0]}.${end[1]}`;
+      if (key in seenPin && seenPin[key] === frameNo) continue;
+      seenPin[key] = frameNo;
+      const now = clsOf(level(lv(end[0], end[1])));
+      if (prevPin[key] !== undefined && prevPin[key] !== now && !(w.earth && EARTHS.has(key)))
+        note(end[0], `${end[1]} ${now ? "on" : "off"}`);
+      prevPin[key] = now;
+    }
+  }
+  frameNo++;
+
   for (const w of model.wires) {
     const a = lv(w.from[0], w.from[1]), b = lv(w.to[0], w.to[1]);
-    const v = Math.max(level(a), level(b));
+    // a diode in line only lets the feed end through, so the wire shows what its feed end is doing
+    const v = w.via_kind === "diode" || w.via_kind === "flyback" ? level(a) : Math.max(level(a), level(b));
     const pwm = [a, b].some((x) => x && x[1] > 0.5 && x[2] != null && x[2] < 0.999);
     const cls = cut.has(w.id) ? "cut" : v > 30 ? "on-hv" : v > 7 ? "on-12" : v > 0.5 ? "on-lo" : "";
     const state = cls + (pwm ? "+pwm" : "");
@@ -464,7 +483,6 @@ function onLive(st) {
         const what = cls === "cut" ? "cut" : !cls ? "off" : moved ? `${v.toFixed(1)} V` : pwm ? "on (PWM)" : "on";
         frame.push({ wire: w.id, text: `${w.id} ${what}` });
         pulseWire(w.id);
-        if (!w.earth) { note(w.from[0], `${w.id} ${what}`); note(w.to[0], `${w.id} ${what}`); }
       }
       prevWire[w.id] = state;
     }
@@ -570,8 +588,8 @@ function addChanges(t, frame, changedParts) {
   for (const f of frame) if (f.strong && !seen.has(f.text)) { lines.push(f); seen.add(f.text); }
   for (const [part, what] of changedParts) {
     if (lines.some((l) => l.part === part)) continue;
-    const wires = what.filter((x) => /^\S+ (on|off|cut|on \(PWM\)|[\d.]+ V)$/.test(x));
-    lines.push({ part, text: wires.length > 2 ? `${part}: ${wires.length} wires changed` : `${part}: ${what.join(", ")}` });
+    const uniq = [...new Set(what)];
+    lines.push({ part, text: uniq.length > 3 ? `${part}: ${uniq.length} pins changed` : `${part}: ${uniq.join(", ")}` });
   }
   const tt = t != null ? `${(+t).toFixed(1)} s` : "";
   for (const l of lines.slice(0, 12).reverse()) changes.unshift({ ...l, t: tt });
@@ -581,7 +599,13 @@ function addChanges(t, frame, changedParts) {
 }
 function drawChanges() {
   const box = $("changes");
-  if (box.hidden && innerHeight < 520) box.classList.add("shut");   // small pane: just the count until tapped
+  if (box.hidden) {
+    // folded or open as you last left it; on a small pane it starts folded
+    let saved = null;
+    try { saved = localStorage.getItem("teryx-wiring-changes"); } catch { /* ignore */ }
+    box.classList.toggle("shut", saved ? saved === "shut" : innerHeight < 520);
+    $("changes-toggle").setAttribute("aria-expanded", String(!box.classList.contains("shut")));
+  }
   box.hidden = false;
   $("changes-list").innerHTML = changes.map((c, i) =>
     `<li><button data-i="${i}"${c.part || c.wire ? "" : " disabled"}><span>${esc(c.t)}</span>${esc(c.text)}</button></li>`).join("");
@@ -594,7 +618,11 @@ $("changes-list").addEventListener("click", (e) => {
   if (c.part) goPart(c.part);
   else if (c.wire) pickWire(c.wire, true);
 });
-$("changes-toggle").onclick = () => $("changes").classList.toggle("shut");
+$("changes-toggle").onclick = () => {
+  const shut = $("changes").classList.toggle("shut");
+  $("changes-toggle").setAttribute("aria-expanded", String(!shut));
+  try { localStorage.setItem("teryx-wiring-changes", shut ? "shut" : "open"); } catch { /* ignore */ }
+};
 $("changes-clear").onclick = () => { changes.length = 0; drawChanges(); };
 window.addEventListener("message", (e) => { if (e.data && e.data.teryxWiring) onLive(e.data.teryxWiring); });
 try { new BroadcastChannel("teryx-rig").onmessage = (e) => { if (e.data && e.data.teryxWiring) onLive(e.data.teryxWiring); }; } catch { /* old browser */ }
