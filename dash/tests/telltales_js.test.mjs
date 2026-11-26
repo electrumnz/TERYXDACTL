@@ -94,4 +94,12 @@ assert.ok(keys({ "steer.state": "limp" }).includes("a:steer_limp"));
 assert.ok(keys({ "steer.state": "ok", "steer.mode_pending": true }).includes("a:steer_pending"));
 assert.ok(!keys({ "steer.state": "ok" }).some((k) => k.startsWith("a:steer")));
 
+// park brake (docs/park-brake.md): F or R with it on = "Release park brake", in neutral nothing
+const alert = (s) => evaluate(st({ ...base, ...s }), settings(), new Set(), 0).find((a) => a.key === "a:handbrake");
+assert.ok(!alert({ "in.park": true, "mc.direction": "neutral" }));
+assert.match(alert({ "in.park": true, "mc.direction": "forward", "pico.park_block": true }).text, /Release park brake/);
+assert.match(alert({ "in.park": true, "mc.direction": "neutral", "in.reverse": true, "pico.park_block": true }).text, /Release park brake/);
+assert.match(alert({ "in.park": true, "mc.direction": "forward", "mc.speed": 10 }).text, /still on/);
+assert.ok(!alert({ "in.park": false, "mc.direction": "forward" }));
+
 console.log("telltales ok");

@@ -142,6 +142,7 @@
     "S08",
     "S09",
     "S10",
+    "S10b",
     "S11",
     "S12",
     "S13",
@@ -439,6 +440,7 @@
     "L19",
     "L22",
     "L23",
+    "L24",
     "L25",
     "L26",
     "L27",
@@ -1923,7 +1925,7 @@
      "v": "12v"
     },
     "COM6": {
-     "v": "12v"
+     "v": "sg"
     },
     "COM7": {
      "v": "12v"
@@ -1946,8 +1948,8 @@
     "NO5": {
      "v": "12v"
     },
-    "NO6": {
-     "v": "12v"
+    "NC6": {
+     "v": "sg"
     },
     "NO7": {
      "v": "12v",
@@ -3110,7 +3112,7 @@
    "zone": "cab",
    "status": "tbc",
    "optional": false,
-   "note": "Lights the red parking brake light in the meter",
+   "note": "Foot pedal park brake, cable only, no actuator. This switch only senses it: it lights the red park brake light in the meter and tells the control box (in.park), which then blocks drive through relay 6 (docs/park-brake.md)",
    "check": "Find the parking brake switch wire at the meter plug. Does it switch ground or 12 V?",
    "doc": "",
    "kind": "switch",
@@ -6228,6 +6230,10 @@
      "side": "E"
     },
     {
+     "pin": "A5",
+     "side": "E"
+    },
+    {
      "pin": "A6",
      "side": "E"
     },
@@ -6512,6 +6518,10 @@
      "side": "W"
     },
     {
+     "pin": "IN6",
+     "side": "W"
+    },
+    {
      "pin": "IN7",
      "side": "W"
     },
@@ -6532,6 +6542,10 @@
      "side": "W"
     },
     {
+     "pin": "COM6",
+     "side": "W"
+    },
+    {
      "pin": "COM7",
      "side": "W"
     },
@@ -6549,6 +6563,10 @@
     },
     {
      "pin": "NO5",
+     "side": "E"
+    },
+    {
+     "pin": "NC6",
      "side": "E"
     },
     {
@@ -7955,6 +7973,30 @@
     "SW"
    ],
    "to": [
+    "RELAYS",
+    "COM6"
+   ],
+   "mm2": null,
+   "fuse": null,
+   "inline_fuse": null,
+   "via": null,
+   "via_kind": "plain",
+   "colour": "",
+   "line": "signal",
+   "status": "planned",
+   "optional": false,
+   "note": "Pedal switch wire cut and run through relay 6 (park brake interlock, docs/park-brake.md)",
+   "bus": null,
+   "earth": null
+  },
+  {
+   "id": "S10b",
+   "sec": "sg",
+   "from": [
+    "RELAYS",
+    "NC6"
+   ],
+   "to": [
     "SG1202",
     "J1-9"
    ],
@@ -7965,9 +8007,9 @@
    "via_kind": "plain",
    "colour": "",
    "line": "signal",
-   "status": "from_manual",
+   "status": "planned",
    "optional": false,
-   "note": "",
+   "note": "NC contact: relay off = pedal switch works as normal, so a dead control box never strands you. Relay on (park brake on) = Shinegle sees the pedal as up, no drive",
    "bus": null,
    "earth": null
   },
@@ -10584,6 +10626,30 @@
    "status": "planned",
    "optional": false,
    "note": "winch.out",
+   "bus": null,
+   "earth": null
+  },
+  {
+   "id": "L24",
+   "sec": "logic",
+   "from": [
+    "MCP1",
+    "A5"
+   ],
+   "to": [
+    "RELAYS",
+    "IN6"
+   ],
+   "mm2": null,
+   "fuse": null,
+   "inline_fuse": null,
+   "via": null,
+   "via_kind": "plain",
+   "colour": "",
+   "line": "logic",
+   "status": "planned",
+   "optional": false,
+   "note": "drive.park_block (park brake interlock)",
    "bus": null,
    "earth": null
   },

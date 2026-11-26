@@ -79,7 +79,7 @@ RELAY_BITS = {   # 0x711 byte 0, relay 1 = bit 0
     2: "trailer.brake",    # the bits still say whether the trailer tail / stop are lit
     3: "winch.in",
     4: "winch.out",
-    5: "relay.spare6",     # was the winch isolator (dropped 18 Nov)
+    5: "drive.park_block", # relay 6: opens the throttle pedal switch while the park brake is on (docs/park-brake.md)
     6: "aux.accessory",
     7: "power.hold",
 }
@@ -236,6 +236,7 @@ PICO_STATUS = Message(
         S("fourwd_wait", 36, 1, comment="A 2WD/4WD request is waiting for the right speed (docs/drive-changes.md)"),
         S("diff_wait", 37, 1, comment="A diff lock request is waiting for the right speed"),
         S("throttle_hold", 38, 1, comment="Throttle held: a shift is running from a standstill"),
+        S("park_block", 39, 1, comment="Park brake on: drive blocked, relay 6 open (docs/park-brake.md)"),
         S("reject_reason", 40, 4, choices=REJECT_REASON, comment="Why the last request was refused"),
         S("reject_count", 44, 4, comment="Goes up by one each time a request is refused"),
         S("winch_armed", 48, 1),
@@ -409,6 +410,8 @@ SETTINGS: dict[int, tuple[str, str, int, int, int]] = {
     38: ("eps_silent_ms", "ms", 1000, 200, 5000),
     39: ("eps_rpm", "rpm", 1674, 0, 8000),
     40: ("eps_wake_ms", "ms", 3000, 500, 15000),
+    # Park brake interlock (docs/park-brake.md)
+    41: ("park_interlock", "bool", 1, 0, 1),
 }
 SETTING_SAVE = 0xF0
 SETTING_RESET = 0xF1

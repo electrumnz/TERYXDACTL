@@ -78,7 +78,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Polyester fibre fill (speaker wadding or pillow stuffing), 200 g | 1 | 12.00 | 12.00 | Estimate | Kmart or Spotlight pillow stuffing is fine. About 70 g per speaker pod, loose. Not foam (it holds water) |
 | PETG filament 1.75mm 1kg (boxes, liner) | 1 | 35.00 | 35.00 | Estimate | Bambu PETG or similar, any colour (inside the boxes) |
 | 3mm aluminium cut from DXF: back plate + Pi lid plate | 1 | 80.00 | 80.00 | Estimate | Laser or waterjet shop; send them the DXF files in cad/stl/*.dxf. 3mm 5052 or 5083 aluminium |
-| Auto cable 0.5 mm², pure copper (metres) | 115 | 0.90 | 103.50 | Estimate; counted from config/wiring.yaml | About 90 m in the plan + 25%. Split red (+) / black (-) / a signal colour. Buy by mm² (cross-section) on the label, not the outside 'mm' size, and not CCA (copper-clad aluminium) |
+| Auto cable 0.5 mm², pure copper (metres) | 120 | 0.90 | 108.00 | Estimate; counted from config/wiring.yaml | About 93 m in the plan + 25%. Split red (+) / black (-) / a signal colour. Buy by mm² (cross-section) on the label, not the outside 'mm' size, and not CCA (copper-clad aluminium) |
 | Auto cable 0.75 mm², pure copper (metres) | 15 | 1.10 | 16.50 | Estimate; counted from config/wiring.yaml | About 12 m in the plan + 25%. Split red (+) / black (-) / a signal colour. Buy by mm² (cross-section) on the label, not the outside 'mm' size, and not CCA (copper-clad aluminium) |
 | Auto cable 1 mm², pure copper (metres) | 65 | 1.40 | 91.00 | Estimate; counted from config/wiring.yaml | About 52 m in the plan + 25%. Split red (+) / black (-) / a signal colour. Buy by mm² (cross-section) on the label, not the outside 'mm' size, and not CCA (copper-clad aluminium) |
 | Auto cable 1.5 mm², pure copper (metres) | 105 | 1.90 | 199.50 | Estimate; counted from config/wiring.yaml | About 82 m in the plan + 25%. Split red (+) / black (-) / a signal colour. Buy by mm² (cross-section) on the label, not the outside 'mm' size, and not CCA (copper-clad aluminium) |
@@ -93,7 +93,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | Waterproof inline fuse holder, standard blade (ATO), 30A, with 4mm² leads | 9 | 6.00 | 54.00 | Estimate; counted from config/wiring.yaml | Feeds that don't come off the fuse block (bucks, screen, amp, 12V sense, accessories) |
 | 40 A MIDI fuse + bolt-down holder | 1 | 31.00 | 31.00 | Estimate; counted from config/wiring.yaml | At the battery, one per big feed (fuse block, power steering, amp) |
 | 60 A MIDI fuse + bolt-down holder | 2 | 31.00 | 62.00 | Estimate; counted from config/wiring.yaml | At the battery, one per big feed (fuse block, power steering, amp) |
-| **Total** | | | **1,609.00** | | |
+| **Total** | | | **1,613.50** | | |
 
 ### Separate pickup
 
@@ -109,9 +109,9 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | PB Tech (buy Thursday) | 504.73 |
 | AliExpress (one order, 2 to 4 weeks) | 120.00 |
 | AliExpress top-up (second order, not placed yet) | 172.00 |
-| Local: Jaycar, Narva stockist, Repco, auto electrical | 1,609.00 |
+| Local: Jaycar, Narva stockist, Repco, auto electrical | 1,613.50 |
 | Separate pickup | 20.00 |
-| **Everything** | **2,425.73** |
+| **Everything** | **2,430.23** |
 
 ### Already got (not in the totals)
 

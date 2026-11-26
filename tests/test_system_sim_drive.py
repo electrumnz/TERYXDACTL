@@ -137,6 +137,34 @@ def test_cut_throttle_wire_means_no_drive(teryx):
     s.throttle(0)
 
 
+def test_park_brake_on_blocks_drive(teryx):
+    """docs/park-brake.md: F can be picked with the park brake on, but the Pico opens the
+    pedal switch wire (relay 6) so the Shinegle gives no drive until it's let off."""
+    s = teryx                          # key on, park brake on
+    s.fnr("forward")
+    s.throttle(0.8)
+    s.run(3)
+    st = snap(s)
+    assert st["pico.park_block"] and st["drive.park_block"]
+    assert st["mc.direction"] == "forward" and st["mc.speed"] < 0.5
+    assert s.m["SG1202"].report(s.net.get)["throttle"] == 0
+    s.park(False)                      # let it off: drive straight away (pedal still down)
+    assert s.run(5, until=lambda: snap(s)["mc.speed"] > 5)
+    assert not snap(s)["pico.park_block"]
+    s.throttle(0)
+
+
+def test_park_interlock_setting_off_lets_it_drive(teryx):
+    s = teryx
+    setting(s, "park_interlock", 0)
+    s.fnr("forward")
+    s.throttle(1.0)
+    s.run(1)
+    assert not snap(s)["pico.park_block"]
+    assert s.m["SG1202"].report(s.net.get)["throttle"] > 0.5   # the pedal reaches the Shinegle again
+    s.throttle(0)
+
+
 def test_shinegle_fault_reaches_the_dash(teryx):
     s = teryx
     s.sim.apply({"shinegle_fault": ["motor_over_temp", True]})

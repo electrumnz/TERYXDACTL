@@ -39,6 +39,7 @@ static const range_t k_ranges[SET_COUNT] = {
     [SET_EPS_SILENT_MS]        = {1000, 200, 5000},
     [SET_EPS_RPM]              = {1674, 0, 8000},
     [SET_EPS_WAKE_MS]          = {3000, 500, 15000},
+    [SET_PARK_INTERLOCK]       = {1, 0, 1},       // on: no drive with the park brake on
 };
 
 void settings_defaults(settings_t *s) {

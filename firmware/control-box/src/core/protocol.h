@@ -122,6 +122,8 @@ enum {
     SET_EPS_SILENT_MS = 38,       // how long quiet counts as "no reply"
     SET_EPS_RPM = 39,             // engine RPM we pretend to have
     SET_EPS_WAKE_MS = 40,         // grace after power-on before judging the ECU
+    // Park brake interlock (docs/park-brake.md)
+    SET_PARK_INTERLOCK = 41,      // 1 = no drive while the park brake is on (relay 6 opens the pedal switch)
     SET_COUNT,
     SET_CMD_SAVE = 0xF0,          // write current settings to flash
     SET_CMD_DEFAULTS = 0xF1,      // go back to defaults (not saved until 0xF0)
@@ -174,6 +176,7 @@ enum { CB_STATE_BOOT = 0, CB_STATE_OK = 1, CB_STATE_DEGRADED = 2, CB_STATE_FAILS
 #define STATE_BIT_4WD_WAIT      0x10u   // b4 bit 4: a 4WD/2WD request is waiting for the right speed
 #define STATE_BIT_DIFF_WAIT     0x20u   // b4 bit 5: a diff lock request is waiting for the right speed
 #define STATE_BIT_THROTTLE_HOLD 0x40u   // b4 bit 6: throttle held while a shift runs from a standstill
+#define STATE_BIT_PARK_BLOCK    0x80u   // b4 bit 7: park brake on, drive blocked (relay 6 open)
 
 #define FLAG_WINCH_ARMED        0x01u   // b6
 #define FLAG_SPEED_VALID        0x02u

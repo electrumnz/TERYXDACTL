@@ -63,10 +63,19 @@ export function evaluate(st, settings, prev = new Set(), now = Date.now(), linkL
     if (st.get("mc.limp")) add("a:limp", "warn", "Motor controller has cut power back (limp mode).");
   }
 
-  // Handbrake left on: only worth a shout once you try to drive with it.
+  // Park brake (docs/park-brake.md): a foot pedal with a switch, no actuator. With it on the
+  // control box blocks drive (relay 6 opens the pedal switch), so picking F or R is the
+  // "trying to drive" moment: chime once and flash the lamp. Moving with it on (pulled on the
+  // move, or the interlock turned off) gets the same shout.
   const moving = (st.get("mc.speed") || 0) > 2 || (st.get("mc.throttle") || 0) > 5;
-  if (st.get("in.park") && st.get("mc.direction") !== "neutral" && moving)
-    add("a:handbrake", "warn", "Handbrake is still on. Let it off before you drive.");
+  const dir = st.get("mc.direction");
+  const inGear = (dir != null && dir !== "neutral") || st.get("in.reverse");
+  if (st.get("in.park") && (inGear || moving)) {
+    if (st.get("pico.park_block") && !moving)
+      add("a:handbrake", "warn", "Release park brake. Drive is blocked while it's on.");
+    else
+      add("a:handbrake", "warn", "Park brake is still on. Let it off before you drive.");
+  }
 
   const v12 = st.get("an.aux_12v");
   if (!asList(st.get("pico.faults")).includes("low_12v") && st.get("pico.online") !== false && under(was("a:12v"), v12, 11.8, 0.3))

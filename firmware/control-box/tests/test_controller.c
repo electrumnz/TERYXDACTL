@@ -989,6 +989,67 @@ static void hexcmp(const uint8_t *h, const char *hex) {
     CHECK(strcmp(buf, hex) == 0);
 }
 
+// Park brake interlock (docs/park-brake.md): park brake on = relay 6 opens the pedal
+// switch line, so no drive. F-N-R is free; the pedal does nothing until it's let off.
+static void test_park_interlock(void) {
+    rig_init();
+    run(300);
+    CHECK(!(R.out.relays & BIT(R_PARK_BLOCK)) && !R.out.park_block);
+    park_brake(true);
+    run(50);
+    CHECK(R.out.relays & BIT(R_PARK_BLOCK));
+    CHECK(R.out.park_block);
+    run(200);
+    CHECK(status_b4() & STATE_BIT_PARK_BLOCK);
+    // Forward selected: still blocked (F-N-R goes straight to the Shinegle)
+    R.dir = 1;
+    run(200);
+    CHECK(R.out.relays & BIT(R_PARK_BLOCK));
+    // Let it off: drive comes straight back
+    park_brake(false);
+    run(50);
+    CHECK(!(R.out.relays & BIT(R_PARK_BLOCK)));
+    run(200);
+    CHECK(!(status_b4() & STATE_BIT_PARK_BLOCK));
+    // Pulled on while rolling: not cut on the move...
+    R.speed_x10 = 150;
+    run(300);
+    park_brake(true);
+    run(200);
+    CHECK(!(R.out.relays & BIT(R_PARK_BLOCK)));
+    // ...but blocks once it's stopped, and stays on if it then creeps
+    R.speed_x10 = 0;
+    run(200);
+    CHECK(R.out.relays & BIT(R_PARK_BLOCK));
+    R.speed_x10 = 30;
+    run(200);
+    CHECK(R.out.relays & BIT(R_PARK_BLOCK));
+    R.speed_x10 = 0;
+    // Speed not known yet (Shinegle still waking at key-on): blocks
+    park_brake(false);
+    run(50);
+    R.shinegle = false;
+    run(1000);
+    park_brake(true);
+    run(50);
+    CHECK(R.out.relays & BIT(R_PARK_BLOCK));
+    R.shinegle = true;
+    // Key off: relay drops (no coil power wasted, and nothing to block)
+    R.p.din_model &= (uint8_t)~BIT(IN_IGNITION);
+    run(50);
+    CHECK(!(R.out.relays & BIT(R_PARK_BLOCK)));
+    R.p.din_model |= BIT(IN_IGNITION);
+    run(300);
+    CHECK(R.out.relays & BIT(R_PARK_BLOCK));
+    // Setting off: never blocks
+    setting(SET_PARK_INTERLOCK, 0);
+    run(50);
+    CHECK(!(R.out.relays & BIT(R_PARK_BLOCK)));
+    setting(SET_PARK_INTERLOCK, 1);
+    run(50);
+    CHECK(R.out.relays & BIT(R_PARK_BLOCK));
+}
+
 static void test_lock_hash(void) {
     sha256_t s;
     uint8_t h[32];
@@ -1417,6 +1478,7 @@ int main(void) {
         {"firmware update request", test_fw_update},
         {"IO bus dead", test_io_bus_dead},
         {"status frames", test_status_frames},
+        {"park brake: blocks drive, never on the move", test_park_interlock},
         {"lock: SHA-256 and PIN hash vectors", test_lock_hash},
         {"lock: set PIN, lock only when parked", test_lock_set_and_lock_rules},
         {"lock: blocks motion, lights, settings, OTA", test_lock_blocks_everything},

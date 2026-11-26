@@ -90,6 +90,7 @@ If CAN is down it falls back to `picotool reboot -f -u` over USB. Needs
 | 7 Reverse | Reverse = the wired input or the Shinegle's direction. Rear pods on when "auto rear" is set |
 | 8 Key-off | Accessory off, motion stops, winch disarmed. `0x710` asks the Pi to shut down. Power hold drops 10 s after the Pi stops heartbeating, or after 30 s at most. Key back on cancels it |
 | 10 Vehicle lock | `lock.c` (`docs/vehicle-lock.md`). PIN lock kept in its own flash sector with a salted SHA-256 hash and the wrong-try count, so a power cut doesn't unlock it. Locks only when stopped, park brake on and nothing moving. Locked: drive inhibit flag, no 4WD/diff/tray/winch, lights off, no settings or OTA. 5 wrong tries, then 30 s doubling to 15 min. Recovery code, or `LOCK RESET` on the debug UART inside the box |
+| 11 Park brake | `docs/park-brake.md`. Key on and park brake on: relay 6 (`R_PARK_BLOCK`) opens the throttle pedal switch wire through its NC contact, so the Shinegle sees the pedal as up and gives no drive. F-N-R still moves. Only goes on when stopped (or speed not known yet), never cuts on the move, then stays on until the park brake is let off. `0x710` byte 4 bit 7. Setting 41 `park_interlock` (default on) |
 | 9 Watchdog | 250 ms hardware watchdog. Everything starts off at boot. A watchdog reset shows as a fault for 30 s |
 
 Other things it does:
@@ -155,6 +156,9 @@ These are in the firmware and need adding to the test environment's
 - Winch: there's no isolator contactor (dropped 18 Nov). Arming on the dash
   only gates the control box's own in/out relays. The XBull remote and hand
   switches work whenever the 250 A breaker is on, so that breaker is the kill.
+- Park brake interlock: check the Shinegle doesn't throw a fault when the pedal switch is open
+  with the pedal down (it may treat it like HPD: lift off and press again after letting the
+  park brake off). Meter which way the park switch goes (ground or 12 V).
 - Pico power: if the Pico runs off switched 12V it loses power at key-off
   and can't hold the Pi on. Feed its buck from the power-hold side too.
 

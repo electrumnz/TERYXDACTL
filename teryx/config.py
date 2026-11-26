@@ -34,6 +34,7 @@ _SAFETY = {
     "winch_timed_max_s": ("winch_timed_max_s", 1),
     "shift_wait_s": ("shift_wait_ms", 1000),
     "shift_throttle_hold": ("shift_throttle_hold", 1),
+    "park_interlock": ("park_interlock", 1),
     "sentry_min_12v": ("sentry_min_12v_mv", 1000),
 }
 
@@ -49,7 +50,7 @@ def safety_defaults(path: Path = IO_MAP) -> dict[str, int]:
         return settings
     data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     for key, value in (data.get("safety") or {}).items():
-        if isinstance(value, bool) and key in ("shift_throttle_hold",):
+        if isinstance(value, bool) and key in ("shift_throttle_hold", "park_interlock"):
             value = int(value)
         if key in _SAFETY and isinstance(value, (int, float)) and not isinstance(value, bool):
             name, mult = _SAFETY[key]
