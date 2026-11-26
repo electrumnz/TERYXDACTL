@@ -149,3 +149,7 @@ table.pins td { border-top: 1px solid #eaeef2; padding: 3px 6px 3px 0; vertical-
 .changes li button span { color: #8c959f; min-width: 44px; font-variant-numeric: tabular-nums; }
 .changes li:first-child button { color: #ffb000; }
 .changes.shut ol, .changes.shut #changes-clear { display: none; }
+.changes.shut { width: auto; }
+.changes .chev { display: inline-block; width: 8px; height: 8px; margin: 0 8px 1px 2px; border: solid #fff; border-width: 0 2px 2px 0;
+  transform: rotate(45deg); transition: transform .15s; }
+.changes.shut .chev { transform: rotate(-45deg); }
