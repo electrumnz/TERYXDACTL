@@ -188,10 +188,10 @@ limit" and stops the tray instead of letting it run.
 ### Lights (MOSFET board)
 | Pico | MOSFET channel | Light | Fuse | Wire |
 |---|---|---|---|---|
-| GP16 | 1 | Front bar 1 (far left) | 15A (shared with bar 4) | 1.5mm² |
-| GP17 | 2 | Front bar 2 (inner left) | 15A (shared with bar 3) | 1.5mm² |
-| GP18 | 3 | Front bar 3 (inner right) | 15A (shared with bar 2) | 1.5mm² |
-| GP19 | 4 | Front bar 4 (far right) | 15A (shared with bar 1) | 1.5mm² |
+| GP16 | 1 | Front bar 1 (top) | 15A (shared with bar 4) | 1.5mm² |
+| GP17 | 2 | Front bar 2 (2nd down) | 15A (shared with bar 3) | 1.5mm² |
+| GP18 | 3 | Front bar 3 (3rd down) | 15A (shared with bar 2) | 1.5mm² |
+| GP19 | 4 | Front bar 4 (bottom) | 15A (shared with bar 1) | 1.5mm² |
 | GP20 | 5 | Interior bar | 10A (shared with accessory relay 7) | 1mm² |
 
 These are low-side switches: the light's **+** goes to its fuse, the light's

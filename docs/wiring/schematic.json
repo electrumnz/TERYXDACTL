@@ -2484,7 +2484,7 @@
    }
   },
   "LB1": {
-   "name": "Front bar 1 (far left)",
+   "name": "Front bar 1 (top)",
    "zone": "front",
    "status": "confirmed",
    "optional": false,
@@ -2506,7 +2506,7 @@
    }
   },
   "LB2": {
-   "name": "Front bar 2 (inner left)",
+   "name": "Front bar 2 (2nd down)",
    "zone": "front",
    "status": "confirmed",
    "optional": false,
@@ -2528,7 +2528,7 @@
    }
   },
   "LB3": {
-   "name": "Front bar 3 (inner right)",
+   "name": "Front bar 3 (3rd down)",
    "zone": "front",
    "status": "confirmed",
    "optional": false,
@@ -2550,7 +2550,7 @@
    }
   },
   "LB4": {
-   "name": "Front bar 4 (far right)",
+   "name": "Front bar 4 (bottom)",
    "zone": "front",
    "status": "confirmed",
    "optional": false,

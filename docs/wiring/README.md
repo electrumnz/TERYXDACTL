@@ -639,10 +639,10 @@ Fuses not in the block (inline, at the battery or on a board):
 | BTS8 | BTS7960 8 (trailer tail / stop) | control_box | planned |  |
 | BTS9 | BTS7960 9 (roof beacon amber / white) | control_box | planned | Two-colour beacons usually share one earth wire, so the colours are switched on the + side like the stock lamps: RPWM amber, LPWM white |
 | MOSFET | 8-ch isolated MOSFET board (low side, all 8 used) | control_box | planned | Sam's board: 8-channel opto-isolated MOSFET driver, DC 3.7-27 V, 10 A per channel, PWM input 3-20 V, 0-20 kHz. 1-4 front bars, 5 cabin bar, 6 trailer bar, 7-8 rear floods. Low side switching, so each light's + comes from its fuse and its - goes to an OUT pin |
-| LB1 | Front bar 1 (far left) | front | confirmed |  |
-| LB2 | Front bar 2 (inner left) | front | confirmed |  |
-| LB3 | Front bar 3 (inner right) | front | confirmed |  |
-| LB4 | Front bar 4 (far right) | front | confirmed |  |
+| LB1 | Front bar 1 (top) | front | confirmed |  |
+| LB2 | Front bar 2 (2nd down) | front | confirmed |  |
+| LB3 | Front bar 3 (3rd down) | front | confirmed |  |
+| LB4 | Front bar 4 (bottom) | front | confirmed |  |
 | LB_INT | Interior 7 in bar | cab | confirmed |  |
 | LB_TRL | Trailer light bar (Sam's spare) | trailer | planned (optional) | On the trailer, through the 8-pin plug. On/off from the dash and the phone remote; only live when the trailer plug is in |
 | FLOOD_L | Rear flood left (4 in pod) | rear | confirmed | Outside of the roll cage mounting plate. Also the reverse light. Dimmable on MOSFET channel 7 (left) and 8 (right) |

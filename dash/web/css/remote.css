@@ -119,6 +119,7 @@ body.has-pad main { grid-template-columns: 150px 1fr 120px; }
 .setbox h2 { margin: 0; font: italic 800 26px/1 var(--display); letter-spacing: .06em; }
 .setrow { display: grid; grid-template-columns: 1fr 120px; gap: 12px; align-items: center; }
 .setrow p { margin: 4px 0 0; font-size: 13px; color: var(--muted); line-height: 1.35; }
+#lightPanel .setrow { grid-template-columns: 1fr; gap: 6px; }   /* lights: buttons go under their slider */
 .appkeys { display: flex; flex-direction: column; gap: 6px; }
 .appkeys[hidden] { display: none; }
 .pinbox { display: flex; flex-direction: column; gap: 8px; padding: 10px; border: 1px solid var(--accent); border-radius: 10px; }

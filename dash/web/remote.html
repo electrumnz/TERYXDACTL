@@ -123,7 +123,12 @@
   <div id="lightPanel" class="setpanel" hidden>
     <div class="setbox">
       <h2>Lights</h2>
-      <label class="slider">FRONT BARS <b id="lv-bars">0%</b><input type="range" data-light="bars" min="0" max="100" step="5" value="0"></label>
+      <!-- Front bars: stacked in the grille, bar 1 on top. One slider fills bar 1, then 2, 3, 4
+           (each quarter of the slider is one bar). Low / Med / High come from the dash's settings. -->
+      <div class="setrow">
+        <label class="slider">FRONT BARS <b id="lv-bars">OFF</b><input type="range" data-light="bars" min="0" max="100" step="2.5" value="0"></label>
+        <div class="fnr" style="grid-template-columns:1fr 1fr 1fr 1fr"><button class="key on" data-bars="off">OFF</button><button class="key" data-bars="low">LOW</button><button class="key" data-bars="med">MED</button><button class="key" data-bars="high">HIGH</button></div>
+      </div>
       <div class="setrow">
         <label class="slider">HEADLIGHTS <b id="lv-head">100%</b><input type="range" data-light="head" min="10" max="100" step="5" value="100"></label>
         <div class="fnr" style="grid-template-columns:1fr 1fr 1fr"><button class="key on" data-head="off">OFF</button><button class="key" data-head="low">LOW</button><button class="key" data-head="high">HIGH</button></div>
