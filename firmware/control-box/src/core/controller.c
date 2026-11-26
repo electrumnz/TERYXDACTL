@@ -333,6 +333,7 @@ void ctl_on_frame(controller_t *c, const can_frame_t *f, uint32_t now,
         c->lreq.beacon = f->data[5];
         c->lreq.show = (f->data[6] & 0x0Fu) < SHOW_COUNT ? (f->data[6] & 0x0Fu) : SHOW_NONE;
         c->lreq.beacon_white = f->dlc >= 8 ? f->data[7] : 0;
+        c->lreq.flash = ((f->data[6] >> 4) & 0x03u) < FLASH_COUNT ? ((f->data[6] >> 4) & 0x03u) : FLASH_OFF;
         break;
 
     case CAN_ID_PI_DRIVE: {
@@ -773,6 +774,7 @@ static void run_lamps(controller_t *c, uint32_t now, cb_out_t *o, bool dash_ok, 
         .locked = locked,
         .dash_ok = dash_ok,
         .now_ms = now,
+        .interior = o->light[L_INTERIOR],
     };
     for (int i = L_FRONT_1; i <= L_FRONT_4; i++) s.front_on |= c->light_req[i] != 0;
     c->lreq.rear_on = (c->light_flags & LIGHTS_FLAG_REAR_ON) != 0;
@@ -780,7 +782,7 @@ static void run_lamps(controller_t *c, uint32_t now, cb_out_t *o, bool dash_ok, 
     lights_step(&c->lights, &c->lreq, &s, &c->lout);
     memcpy(o->lamp, c->lout.level, LP_COUNT);
     o->lamp_enable = true;
-    if (c->lout.front_valid) {   // the show drives the front bars and cabin bar too
+    if (c->lout.front_valid) {   // the show / emergency drives the front bars and cabin bar too
         uint16_t mask = S(c, SET_LIGHT_DIMMABLE_MASK);
         for (int i = 0; i < L_COUNT; i++) {
             uint8_t v = c->lout.front[i];
@@ -852,6 +854,7 @@ static void send_status(controller_t *c, uint32_t now, cb_send_fn send, void *u)
     if (c->lout.show_running) l2.data[7] |= LIGHTS2_FLAG_SHOW_RUNNING;
     if (c->lout.show_blocked) l2.data[7] |= LIGHTS2_FLAG_SHOW_BLOCKED;
     if (c->in.pwm_ok) l2.data[7] |= LIGHTS2_FLAG_PWM_OK;
+    if (c->lout.flash_running) l2.data[7] |= LIGHTS2_FLAG_FLASH;
     send(&l2, u);
 
     can_frame_t st;

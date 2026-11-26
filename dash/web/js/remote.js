@@ -304,6 +304,14 @@
     document.querySelectorAll("[data-head]").forEach((x) => x.classList.toggle("on", x === b));
     lightsSend("head");
   }));
+  // Beacon strobe / full emergency (docs/lights.md rule 11). CANCEL always turns it off.
+  document.querySelectorAll("[data-flash]").forEach((b) => b.addEventListener("click", () => {
+    const v = b.dataset.flash;
+    document.querySelectorAll("[data-flash]").forEach((x) => x.classList.toggle("on", x === b));
+    $("lv-flash").textContent = v === "off" ? "OFF" : v === "warning" ? "STROBE" : "EMERGENCY";
+    $("lights").classList.toggle("on", v !== "off");
+    dashSend("light.flash", v);
+  }));
   $("lights").addEventListener("click", () => ($("lightPanel").hidden = false));
   $("lightClose").addEventListener("click", () => ($("lightPanel").hidden = true));
   $("drop").addEventListener("click", () => {

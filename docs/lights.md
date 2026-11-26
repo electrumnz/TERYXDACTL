@@ -68,6 +68,41 @@ same rules in C, and `tests/test_lights_parity.py` checks the two match.
 10. The light show only runs with the key on, the park brake on, the speed
     signal there and under 0.5 km/h, the dash talking and the vehicle not
     locked. Lose any of those and it stops at once. Never while driving.
+11. Warning lights (flash modes): **Beacon strobe** or **Full emergency**.
+    See the next section.
+
+## Beacon strobe and full emergency
+
+Two warning modes, from the Lights screen on the dash ("Warning lights"), or
+the phone remote's Lights sheet (STROBE / EMERGENCY / CANCEL).
+
+| Mode | Stopped | Moving (or speed unknown) |
+|---|---|---|
+| Beacon strobe | Amber double strobe (two quick 60 ms pulses, 2 groups a second), white strobes in the gaps | Amber only, plain 3 Hz flash |
+| Full emergency | Beacon as above, plus every lamp flashes left side then right side at 2 Hz: low beams, tails, brake lamps, rear floods, front bars, trailer tail / stop / bar | Amber beacon only, plain 3 Hz. Everything else goes back to normal and starts flashing again when you stop |
+
+- **Left side:** left low beam, left tail and brake, left flood, front bars
+  1 and 2, trailer tail and the trailer bar. **Right side:** the same on the
+  right, front bars 3 and 4, trailer stop.
+- High beams stay off. The cabin bar is left as it is, so you aren't blinded.
+- The Teryx has no indicators, so there are no hazard lamps to flash. The
+  tail/brake lamps and the beacon do that job.
+- Brake pedal still wins: brake lamps go steady full while you press it.
+- Beats the light show (the show stops while a warning mode is on).
+- Key on and not locked only. **Key off or locking cancels it.** It keeps
+  going if the dash goes quiet, like hazard lights should.
+- Easy to cancel: the Cancel button, tapping the same button again, the
+  flashing STROBE / EMERGENCY chip in the dash top bar (on every screen), or
+  CANCEL on the phone.
+- Brightness: the beacon sliders set the strobe level (0 = full).
+
+Why it drops to the amber beacon on the move: on the road the rear must show
+steady red (stop and rear lamps), flashing white or red to the front is for
+emergency vehicles, and a warning lamp must flash 2 to 4 times a second
+(clause 11.1(2)). The plain 3 Hz amber flash is the one that's clearly fine.
+The strobe and the full flash are for when you're stopped: broken down on a
+track, a beach launch, or being found in the dark. Don't use them to pretend
+to be an emergency vehicle.
 
 ## NZ rules we checked
 
@@ -91,11 +126,11 @@ Rules text: <https://www.nzta.govt.nz/resources/rules/vehicle-lighting-2004/>
 ## CAN
 
 - **0x706 PI_LIGHTS2** (dash to Pico): head low, head high, tail (0 = auto),
-  rear flood level (0 = full), trailer bar, beacon amber, show + counter (4 bits each), beacon white. Sent on
-  change and every second.
+  rear flood level (0 = full), trailer bar, beacon amber, show (4 bits) + flash
+  mode (2 bits) + counter (2 bits), beacon white. Sent on change and every second.
 - **0x717 PICO_LIGHTS2** (Pico to dash, 10 Hz): what each of the 15 lamps is
-  really doing (4-bit level each), plus show running, show blocked and PWM
-  board OK.
+  really doing (4-bit level each), plus show running, show blocked, PWM
+  board OK and flash running.
 
 Full layout in [`CAN_PROTOCOL.md`](CAN_PROTOCOL.md).
 

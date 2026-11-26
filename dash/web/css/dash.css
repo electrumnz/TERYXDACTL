@@ -616,3 +616,12 @@ select.big { min-height: var(--touch); font-size: 18px; }
 #look-rail button.on { border-color: #ff7a1a; color: #fff; background: #3a1d08; box-shadow: 0 0 10px rgba(255,122,26,.45); }
 #look-rail.lr-tight { gap: 4px; padding: 4px; }
 #look-rail.lr-tight button { min-height: 34px; font-size: 11px; padding: 2px 4px; }
+
+/* ---------- top bar: warning lights (beacon strobe / full emergency), tap to cancel ---------- */
+.tb-flash {
+  display: inline-flex; align-items: center; height: 60px; padding: 0 14px; border-radius: 12px;
+  border: 2px solid var(--warn); background: var(--panel-2); color: var(--warn); font-weight: 800; font-size: 15px;
+  letter-spacing: .04em; animation: pulse .5s infinite;
+}
+.tb-flash[hidden] { display: none; }
+.tb-flash.emergency { border-color: var(--bad); color: var(--bad); }

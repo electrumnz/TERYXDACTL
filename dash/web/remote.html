@@ -133,7 +133,12 @@
       <label class="slider">TRAILER BAR <b id="lv-trailer">0%</b><input type="range" data-light="trailer" min="0" max="100" step="5" value="0"></label>
       <label class="slider">BEACON AMBER <b id="lv-beacon">0%</b><input type="range" data-light="beacon" min="0" max="100" step="5" value="0"></label>
       <label class="slider">BEACON WHITE <b id="lv-white">0%</b><input type="range" data-light="white" min="0" max="100" step="5" value="0"></label>
-      <p class="lightnote">Brake lights always go full. Headlights and tails only dim when parked. White beacon only when stopped.</p>
+      <div class="setrow">
+        <span class="slider">WARNING LIGHTS <b id="lv-flash">OFF</b></span>
+        <div class="fnr" style="grid-template-columns:1fr 1fr 1fr"><button class="key" data-flash="warning">STROBE</button><button class="key" data-flash="emergency">EMERGENCY</button><button class="key on" data-flash="off">CANCEL</button></div>
+      </div>
+      <p class="lightnote">Brake lights always go full. Headlights and tails only dim when parked. White beacon only when stopped.
+        Strobe flashes the beacon. Emergency flashes everything once stopped; on the move only the amber beacon flashes.</p>
       <button class="key" id="lightClose">CLOSE</button>
     </div>
   </div>

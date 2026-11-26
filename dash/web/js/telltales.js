@@ -135,7 +135,9 @@ export function lampStates(st, settings, alertKeys = new Set(), now = Date.now()
   if (low) lit("lowbeam");
   if (high) lit("highbeam");
   if (["light.front_1", "light.front_2", "light.front_3", "light.front_4"].some((k) => (st.get(k) || 0) > 0)) lit("bars");
-  if ((st.get("light.beacon") || 0) > 0 || (st.get("light.beacon_white") || 0) > 0) lit("beacon");
+  const flashing = st.get("light.flash_running") || (st.get("req.light.flash", "off") || "off") !== "off";
+  if (flashing) lit("beacon", st.get("req.light.flash") === "emergency" ? "bad" : "warn", true);
+  else if ((st.get("light.beacon") || 0) > 0 || (st.get("light.beacon_white") || 0) > 0) lit("beacon");
   if (st.get("in.trailer")) lit("trailer");
   return on;
 }

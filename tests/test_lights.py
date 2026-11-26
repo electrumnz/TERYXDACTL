@@ -1,7 +1,7 @@
 """Stock lamps, floods, beacon, trailer bar and the parked-only light show (teryx/lights.py)."""
 
 from teryx.canbus import messages as M
-from teryx.lights import LAMPS, LIGHT_SHOW, Lights, LightsReq, LightsState, show_level
+from teryx.lights import FLASH_EMERGENCY, FLASH_LEFT, FLASH_RIGHT, FLASH_WARNING, LAMPS, LIGHT_SHOW, Lights, LightsReq, LightsState, show_level
 
 
 def parked(**kw):
@@ -129,11 +129,12 @@ def test_every_show_uses_every_lamp_and_stays_in_range():
 
 def test_can_frames_round_trip():
     v = {"head_low": 10, "head_high": 0, "tail": 0, "rear": 200, "trailer_bar": 30,
-         "beacon": 255, "show": 3, "counter": 7, "beacon_white": 90}
+         "beacon": 255, "show": 3, "flash": 2, "counter": 3, "beacon_white": 90}
     assert M.PI_LIGHTS2.decode(M.PI_LIGHTS2.encode(v)) == v
     lv = {k: i for i, k in enumerate(LAMPS)}
-    d = M.PICO_LIGHTS2.decode(M.PICO_LIGHTS2.encode({**lv, "show_running": 1, "show_blocked": 0, "pwm_ok": 1}))
-    assert all(d[k] == lv[k] for k in LAMPS) and d["show_running"] == 1
+    d = M.PICO_LIGHTS2.decode(M.PICO_LIGHTS2.encode({**lv, "show_running": 1, "show_blocked": 0, "pwm_ok": 1,
+                                                       "flash_running": 1}))
+    assert all(d[k] == lv[k] for k in LAMPS) and d["show_running"] == 1 and d["flash_running"] == 1
 
 
 def test_sim_control_box_runs_a_show_and_reports_it():
@@ -168,3 +169,103 @@ def test_white_beacon_takes_turns_with_amber_and_only_when_stopped():
     for ms in range(0, 1000, 7):                       # moving: never white
         assert run(LightsReq(beacon_white=255), driving(), ms=ms)["beacon_white"] == 0
     assert run(LightsReq(beacon_white=255), parked(locked=True), ms=200)["beacon_white"] == 0
+
+
+# ---- Flash modes (rule 11): beacon warning strobe and full emergency
+
+def frames(req, st, ms_range):
+    L = Lights()
+    for ms in ms_range:
+        st.now_ms = ms
+        yield ms, L.step(req, st)
+
+
+def test_warning_strobes_the_beacon_amber_and_white_take_turns_when_stopped():
+    seen_a = seen_w = 0
+    for _, o in frames(LightsReq(flash=FLASH_WARNING), parked(park=False), range(0, 2000, 5)):
+        lv = o.level
+        assert o.flash_running and not (lv["beacon"] and lv["beacon_white"])
+        seen_a += bool(lv["beacon"])
+        seen_w += bool(lv["beacon_white"])
+        assert lv["head_l_low"] == lv["tail_l"] == 0          # warning leaves the other lamps alone
+    assert seen_a == seen_w == 4 * 2 * 12                     # 4 groups x 2 pulses x 60 ms / 5 ms
+
+
+def test_warning_uses_the_set_brightness_or_full():
+    lv = run(LightsReq(flash=FLASH_WARNING, beacon=90), parked(), ms=0)
+    assert lv["beacon"] == 90
+    assert run(LightsReq(flash=FLASH_WARNING), parked(), ms=0)["beacon"] == 255
+
+
+def test_on_the_move_only_the_amber_beacon_flashes_at_3hz():
+    for mode in (FLASH_WARNING, FLASH_EMERGENCY):
+        on = 0
+        for ms, o in frames(LightsReq(flash=mode, head_low=255), driving(), range(0, 3330, 1)):
+            lv = o.level
+            assert lv["beacon_white"] == 0
+            assert lv["head_l_low"] == lv["head_r_low"] == 255     # steady, as normal
+            assert lv["tail_l"] == lv["tail_r"] == 255
+            assert lv["brake_l"] == lv["flood_l"] == 0
+            assert (lv["beacon"] > 0) == (ms % 333 < 167)
+            on += lv["beacon"] > 0
+        assert o.front is None
+        assert 1600 < on < 1700
+
+
+def test_emergency_flashes_everything_left_then_right_when_stopped():
+    seen = {k: set() for k in FLASH_LEFT + FLASH_RIGHT}
+    for ms, o in frames(LightsReq(flash=FLASH_EMERGENCY, head_high=255), parked(park=False), range(0, 1000, 10)):
+        lv = {**o.level, **o.front}
+        assert lv["head_l_high"] == lv["head_r_high"] == 0
+        first = ms % 500 < 250
+        for k in FLASH_LEFT:
+            assert lv[k] == (255 if first else 0), (k, ms)
+            seen[k].add(lv[k])
+        for k in FLASH_RIGHT:
+            assert lv[k] == (0 if first else 255), (k, ms)
+            seen[k].add(lv[k])
+    assert all(v == {0, 255} for v in seen.values())
+
+
+def test_emergency_leaves_the_cabin_light_alone():
+    st = parked(interior=77)
+    st.now_ms = 0
+    assert Lights().step(LightsReq(flash=FLASH_EMERGENCY), st).front["interior"] == 77
+
+
+def test_emergency_trailer_bar_only_with_the_plug_in():
+    for _, o in frames(LightsReq(flash=FLASH_EMERGENCY), parked(trailer=False), range(0, 1000, 10)):
+        assert o.level["trailer_bar"] == 0
+
+
+def test_brake_beats_emergency():
+    for _, o in frames(LightsReq(flash=FLASH_EMERGENCY), parked(brake=True), range(0, 1000, 10)):
+        assert o.level["brake_l"] == o.level["brake_r"] == o.level["trailer_stop"] == 255
+
+
+def test_emergency_beats_the_show_and_key_off_or_lock_cancels():
+    o = Lights().step(LightsReq(flash=FLASH_EMERGENCY, show=4), parked())
+    assert o.flash_running and not o.show_running and o.show_blocked
+    for st in (parked(ignition=False), parked(locked=True)):
+        o = Lights().step(LightsReq(flash=FLASH_EMERGENCY), st)
+        assert not o.flash_running and o.front is None
+        assert max(o.level.values()) == 0
+
+
+def test_emergency_keeps_going_if_the_dash_goes_quiet():
+    o = Lights().step(LightsReq(flash=FLASH_EMERGENCY), parked(dash_ok=False))
+    assert o.flash_running and o.front is not None
+
+
+def test_gateway_sends_the_flash_mode():
+    from teryx.dash.gateway import Gateway
+    g = Gateway("virtual")
+    g.request("light.flash", "emergency")
+    assert g._lights2_values()["flash"] == FLASH_EMERGENCY
+    g.request("light.flash", "off")
+    assert g._lights2_values()["flash"] == 0
+    try:
+        g.request("light.flash", "disco")
+        raise AssertionError("should refuse")
+    except ValueError:
+        pass

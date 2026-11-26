@@ -27,6 +27,16 @@ Rules:
 10. The light show only runs with the key on, the park brake on, the Teryx known
     to be stopped (speed signal there and under 0.5 km/h), the dash talking and
     not locked. Any of those goes and the show stops at once. Never while driving.
+11. Flash modes (0x706 "flash"): "warning" strobes the beacon, "emergency" flashes
+    everything. Key on and not locked only; key off or lock cancels them. They
+    keep going if the dash goes quiet (that's the point of hazard lights).
+    Stopped: the beacon does a double strobe (two quick pulses, 2 groups a second),
+    white in the gaps, and in emergency every other lamp flashes left side then
+    right side at 2 Hz (high beams stay off). Moving, or speed unknown: only the
+    amber beacon flashes, at the plain 3 Hz of rule 5, and every other lamp goes
+    back to normal, because on the road the rear must show steady red and only
+    emergency vehicles may flash headlights. A flash mode beats the light show.
+    Rule 1 still wins: brake pressed = brake lamps steady at full.
 """
 
 from __future__ import annotations
@@ -40,10 +50,18 @@ LAMPS = ("head_l_low", "head_l_high", "head_r_low", "head_r_high",
 FRONT = ("front_1", "front_2", "front_3", "front_4", "interior")   # 0x701 lights
 LIGHT_SHOW = {0: "none", 1: "wave", 2: "breathe", 3: "roar", 4: "party"}
 SHOW_TEXT = {"wave": "Wave", "breathe": "Breathe", "roar": "Roar", "party": "Party"}
+FLASH_MODE = {0: "off", 1: "warning", 2: "emergency"}
+FLASH_WARNING, FLASH_EMERGENCY = 1, 2
 
 BEACON_PERIOD_MS = 333        # 3 Hz
 BEACON_ON_MS = 167
 SHOW_PERIOD_MS = {1: 2000, 2: 3000, 3: 8000, 4: 2000}
+STROBE_PERIOD_MS = 500        # flash modes, stopped: 2 groups a second
+STROBE_PULSE_MS = 60
+
+# Emergency, stopped: the left side flashes in the first half, the right in the second.
+FLASH_LEFT = ("head_l_low", "tail_l", "brake_l", "flood_l", "trailer_tail", "trailer_bar", "front_1", "front_2")
+FLASH_RIGHT = ("head_r_low", "tail_r", "brake_r", "flood_r", "trailer_stop", "front_3", "front_4")
 
 # Where each lamp sits, left (-1) to right (+1), for the sweeps.
 _X = {"head_l_low": -1.0, "front_1": -0.6, "front_2": -0.2, "front_3": 0.2, "front_4": 0.6,
@@ -124,6 +142,23 @@ def show_level(show: int, lamp: str, t: int) -> int:
     return 0
 
 
+def strobe_amber(t: int) -> bool:
+    """Double strobe: two quick pulses at the start of each 500 ms group."""
+    p = t % STROBE_PERIOD_MS
+    return p < STROBE_PULSE_MS or 120 <= p < 120 + STROBE_PULSE_MS
+
+
+def strobe_white(t: int) -> bool:
+    """The same double strobe in the other half, so white fills amber's gaps."""
+    return strobe_amber(t + STROBE_PERIOD_MS // 2)
+
+
+def flash_side_on(lamp: str, t: int) -> bool:
+    """Emergency, stopped: left side on in the first half of each 500 ms, right in the second."""
+    first = t % STROBE_PERIOD_MS < STROBE_PERIOD_MS // 2
+    return first if lamp in FLASH_LEFT else not first
+
+
 @dataclass
 class LightsReq:
     """What the dash asks for on 0x706 (plus the rear bits of 0x701)."""
@@ -137,6 +172,7 @@ class LightsReq:
     beacon_white: int = 0
     rear_on: bool = False
     rear_auto: bool = True
+    flash: int = 0         # FLASH_MODE: 0 off, 1 warning (beacon strobe), 2 emergency (everything)
 
 
 @dataclass
@@ -151,6 +187,7 @@ class LightsState:
     dash_ok: bool = True
     front_on: bool = False  # any front bar asked for
     now_ms: int = 0
+    interior: int = 0       # what the cabin bar is doing now (emergency leaves it alone)
 
 
 @dataclass
@@ -159,6 +196,7 @@ class LightsOut:
     front: dict | None = None     # show levels for the 0x701 lights, None = leave them alone
     show_running: bool = False
     show_blocked: bool = False
+    flash_running: bool = False   # a flash mode is running (moving = beacon only)
 
 
 class Lights:
@@ -167,10 +205,15 @@ class Lights:
     def __init__(self):
         self.show_start_ms = 0
         self._running = 0
+        self.flash_start_ms = 0
+        self._flash = 0
+
+    def flash_ok(self, req: LightsReq, st: LightsState) -> bool:
+        return bool(req.flash in (FLASH_WARNING, FLASH_EMERGENCY) and st.ignition and not st.locked)
 
     def show_ok(self, req: LightsReq, st: LightsState) -> bool:
         return bool(req.show in SHOW_PERIOD_MS and st.ignition and st.park and st.stopped
-                    and st.dash_ok and not st.locked)
+                    and st.dash_ok and not st.locked and not self.flash_ok(req, st))
 
     def step(self, req: LightsReq, st: LightsState) -> LightsOut:
         out = LightsOut()
@@ -225,12 +268,40 @@ class Lights:
             self._running = 0
             out.show_blocked = bool(req.show)
 
+        # Flash modes (rule 11): beat the show, lose to the brake pedal
+        flashing = self.flash_ok(req, st)
+        all_flash = False
+        if flashing:
+            if self._flash != req.flash:
+                self._flash = req.flash
+                self.flash_start_ms = st.now_ms
+            t = st.now_ms - self.flash_start_ms
+            if st.stopped:
+                lv["beacon"] = (req.beacon or 255) if strobe_amber(t) else 0
+                lv["beacon_white"] = (req.beacon_white or 255) if strobe_white(t) else 0
+            else:
+                lv["beacon"] = (req.beacon or 255) if t % BEACON_PERIOD_MS < BEACON_ON_MS else 0
+                lv["beacon_white"] = 0
+            if req.flash == FLASH_EMERGENCY and st.stopped:
+                all_flash = True
+                for k in FLASH_LEFT + FLASH_RIGHT:
+                    if k in lv:
+                        lv[k] = 255 if flash_side_on(k, t) else 0
+                lv["head_l_high"] = lv["head_r_high"] = 0
+                if not st.trailer:
+                    lv["trailer_bar"] = 0
+                out.front = {k: 255 if flash_side_on(k, t) else 0 for k in FRONT if k != "interior"}
+                out.front["interior"] = st.interior
+            out.flash_running = True
+        else:
+            self._flash = 0
+
         # Rule 2, then rule 1 last so nothing can undo it
         for lo, hi in (("head_l_low", "head_l_high"), ("head_r_low", "head_r_high")):
             if lv[hi]:
                 lv[lo] = 0
         if st.brake:
             lv["brake_l"] = lv["brake_r"] = lv["trailer_stop"] = 255
-        elif not ok:
+        elif not ok and not all_flash:
             lv["brake_l"] = lv["brake_r"] = lv["trailer_stop"] = 0
         return out

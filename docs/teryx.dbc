@@ -92,7 +92,8 @@ BO_ 1798 PI_LIGHTS2: 8 PI_DASH
  SG_ trailer_bar : 32|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ beacon : 40|8@1+ (1,0) [0|255] "" Vector__XXX
  SG_ show : 48|4@1+ (1,0) [0|15] "" Vector__XXX
- SG_ counter : 52|4@1+ (1,0) [0|15] "" Vector__XXX
+ SG_ flash : 52|2@1+ (1,0) [0|3] "" Vector__XXX
+ SG_ counter : 54|2@1+ (1,0) [0|3] "" Vector__XXX
  SG_ beacon_white : 56|8@1+ (1,0) [0|255] "" Vector__XXX
 
 BO_ 1823 PI_FW_UPDATE: 8 PI_DASH
@@ -183,6 +184,7 @@ BO_ 1815 PICO_LIGHTS2: 8 PICO_BOX
  SG_ show_running : 60|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ show_blocked : 61|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ pwm_ok : 62|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ flash_running : 63|1@1+ (1,0) [0|1] "" Vector__XXX
 
 BO_ 1816 PICO_STEER: 8 PICO_BOX
  SG_ state : 0|4@1+ (1,0) [0|15] "" Vector__XXX
@@ -239,6 +241,7 @@ CM_ SG_ 1798 tail "Tail lights, 0 = automatic (on with any headlight or front ba
 CM_ SG_ 1798 rear "Rear flood level while 0x701 rear_on is set, 0 = full";
 CM_ SG_ 1798 beacon "Roof beacon brightness, 0 = off. The Pico flashes it at 3 Hz";
 CM_ SG_ 1798 show "Light show, parked only";
+CM_ SG_ 1798 flash "Flash mode: warning = beacon strobe, emergency = every lamp flashes (stopped). Key on, not locked. Moving: amber beacon only, at 3 Hz";
 CM_ SG_ 1798 beacon_white "White side of the beacon, 0 = off. 3 Hz opposite the amber, only when stopped";
 CM_ BO_ 1798 "Stock lamps, rear floods, beacon, trailer bar and the light show (docs/lights.md). On change, plus a resend every 1 s. Levels 0-255, 0 = off. The Pico keeps brake lights at full, never dims headlights or tails while moving, and only runs a show when parked.";
 CM_ BO_ 1823 "Pico reboots to its bootloader when magic = 0x5445 ('TE') and parked.";
@@ -276,6 +279,7 @@ CM_ SG_ 1814 fails "Wrong tries in a row (kept over power cuts)";
 CM_ BO_ 1814 "Vehicle lock state (docs/vehicle-lock.md). Also sent straight after every 0x705.";
 CM_ SG_ 1815 show_blocked "A show was asked for but the Teryx isn't parked (key on, park brake, stopped)";
 CM_ SG_ 1815 pwm_ok "PCA9685 answering";
+CM_ SG_ 1815 flash_running "Beacon warning or full emergency running";
 CM_ BO_ 1815 "What the PCA9685 lamps are actually doing, after every safety rule (docs/lights.md). Levels are 0-15 (top 4 bits of 0-255).";
 CM_ SG_ 1816 frames_on "Speed frames going to the ECU";
 CM_ SG_ 1816 heard "Something heard from the ECU lately";
@@ -322,6 +326,7 @@ VAL_ 1792 dash_state 0 "boot" 1 "ok" 2 "shutting_down" 3 "sentry" ;
 VAL_ 1793 effect 0 "none" 1 "strobe" 2 "chase" 3 "outside_only" 4 "inside_only" 5 "breathe" 6 "sos" ;
 VAL_ 1797 cmd 1 "lock" 2 "unlock" 3 "verify" 4 "set_pin" 5 "set_puk" 6 "remove" 7 "remote" ;
 VAL_ 1798 show 0 "none" 1 "wave" 2 "breathe" 3 "roar" 4 "party" ;
+VAL_ 1798 flash 0 "off" 1 "warning" 2 "emergency" ;
 VAL_ 1808 state 0 "boot" 1 "ok" 2 "degraded" 3 "failsafe" ;
 VAL_ 1808 reject_reason 0 "none" 1 "too_fast" 2 "not_stopped" 3 "speed_unknown" 4 "not_armed" 5 "interlock" 6 "actuator_fault" 7 "low_12v" 8 "dash_link" 9 "ignition_off" 10 "at_limit" 11 "not_parked" 12 "winch_remote" 13 "bad_frame" 14 "wait_timeout" 15 "busy" ;
 VAL_ 1809 effect 0 "none" 1 "strobe" 2 "chase" 3 "outside_only" 4 "inside_only" 5 "breathe" 6 "sos" ;

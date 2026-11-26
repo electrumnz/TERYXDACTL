@@ -136,6 +136,15 @@ function topbar(st) {
   c4.className = `tb-chip ${fw === "4wd" ? "on" : fw.startsWith("to_") || st.get("act.4wd_wait") ? "busy" : ""}`;
   const d = Math.round(st.get("an.diff_pos", 0)), cd = document.getElementById("tb-diff");
   cd.textContent = `DIFF ${d}%`; cd.className = `tb-chip ${d > 2 ? "on" : ""}`;
+  // Warning lights: shown on every screen so they're one tap to cancel
+  const fl = st.get("req.light.flash", "off"), cf = document.getElementById("tb-flash");
+  cf.hidden = !fl || fl === "off";
+  if (!cf.hidden) {
+    const txt = fl === "emergency" ? "EMERGENCY ✕" : "STROBE ✕";
+    if (cf.textContent !== txt) cf.textContent = txt;
+    cf.className = `tb-flash ${fl === "emergency" ? "emergency" : ""}`;
+    if (!cf.onclick) cf.onclick = () => ctx.link.request("light.flash", "off");
+  }
   const v12 = st.get("an.aux_12v");
   const e12 = document.getElementById("tb-12v");
   e12.textContent = v12 == null ? "--" : `${v12.toFixed(1)}V`;
