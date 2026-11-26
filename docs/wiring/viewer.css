@@ -95,15 +95,27 @@ table.pins td { border-top: 1px solid #eaeef2; padding: 3px 6px 3px 0; vertical-
 .sld .w { pointer-events: stroke; }
 .sld .xref:hover text, .sld .xr:hover { text-decoration: underline; }
 
-/* live from the simulator */
-.sld.live .w.on-12 { stroke: #d1242f; stroke-width: 2.6; }
-.sld.live .w.on-lo { stroke: #bf8700; stroke-width: 2.2; }
-.sld.live .w.on-hv { stroke: #ff5a00; stroke-width: 4; }
+/* live from the simulator: dead wires fade right back, powered ones go bold (in their type
+   colour with Colours on, else orange 72 V, red 12 V, amber logic) */
+.sld.live .wires .w { stroke-opacity: .2; }
+.sld.live .wires .w.on-12, .sld.live .wires .w.on-lo, .sld.live .wires .w.on-hv { stroke-opacity: 1; stroke-width: 3.4; }
+.sld.live .wires .w.on-hv { stroke-width: 5; }
+.sld.live:not(.colours) .w.on-12 { stroke: #d1242f; }
+.sld.live:not(.colours) .w.on-lo { stroke: #bf8700; }
+.sld.live:not(.colours) .w.on-hv { stroke: #ff5a00; }
 .sld.live .w.pwm { stroke-dasharray: 10 6; animation: flow .6s linear infinite; }
-.sld.live .w.cut { stroke: #8c959f; stroke-dasharray: 3 6; }
+.sld.live .wires .w.cut { stroke: #8c959f; stroke-dasharray: 3 6; stroke-opacity: 1; }
 .sld.live .isym.cut .sym { stroke: #d1242f; fill: #ffebe9; }
 .sld.live .sym.blown { stroke: #d1242f; fill: #ffebe9; stroke-width: 2.4; }
-.sld.live .contact.on .blade { stroke: #d1242f; }
+.sld.live .contact.on .blade { stroke: #d1242f; stroke-width: 2.6; }
+/* a change: amber flash on the wire and round the part, sized in screen pixels so it shows at any zoom */
+.sld .wpulse { fill: none; stroke: #ffb000; stroke-width: 14px; vector-effect: non-scaling-stroke; stroke-linecap: round; pointer-events: none;
+  animation: wpulse 1.4s ease-out forwards; }
+@keyframes wpulse { 0% { stroke-opacity: .95; } 100% { stroke-opacity: 0; } }
+.sld .ppulse { fill: rgba(255, 176, 0, .35); stroke: #ffb000; stroke-width: 6px; vector-effect: non-scaling-stroke; pointer-events: none;
+  animation: ppulse 1.6s ease-out forwards; }
+.sld .ppulse.small { fill: rgba(255, 176, 0, .5); }
+@keyframes ppulse { 0%, 30% { opacity: 1; } 100% { opacity: 0; } }
 @keyframes flow { to { stroke-dashoffset: -16; } }
 
 /* line colour key and simulator buttons */
@@ -115,9 +127,25 @@ table.pins td { border-top: 1px solid #eaeef2; padding: 3px 6px 3px 0; vertical-
 #cols[aria-pressed="false"] { opacity: .6; }
 
 .embedded #sim, .embedded .back { display: none; }
-/* live and zoomed out: dead wires fade, powered ones stand out so you can see it working */
-.sld.live.far .w:not(.on-12):not(.on-hv):not(.on-lo) { stroke-opacity: .35; }
-.sld.live.far .w.on-12, .sld.live.far .w.on-lo { stroke-width: 6; }
-.sld.live.far .w.on-hv { stroke-width: 9; }
-.sld.live.veryfar .w.on-12, .sld.live.veryfar .w.on-lo { stroke-width: 12; }
-.sld.live.veryfar .w.on-hv { stroke-width: 16; }
+/* live and zoomed out: powered wires thicker still */
+.sld.live.far .wires .w.on-12, .sld.live.far .wires .w.on-lo { stroke-width: 7; }
+.sld.live.far .wires .w.on-hv { stroke-width: 10; }
+.sld.live.veryfar .wires .w.on-12, .sld.live.veryfar .wires .w.on-lo { stroke-width: 14; }
+.sld.live.veryfar .wires .w.on-hv { stroke-width: 18; }
+
+/* the "What changed" list, bottom left while the sim runs */
+.changes { position: fixed; left: 34px; bottom: 12px; z-index: 6; width: min(300px, calc(100vw - 110px)); max-height: 38vh;
+  display: flex; flex-direction: column; background: rgba(36, 41, 47, .94); color: #fff; border-radius: 10px;
+  box-shadow: 0 6px 24px #0005; font: 13px/1.3 Inter, system-ui, sans-serif; }
+.changes[hidden] { display: none; }
+.changes .ch-head { display: flex; gap: 6px; padding: 6px; }
+.changes .ch-head button { background: none; border: 0; color: #fff; font: inherit; font-weight: 600; cursor: pointer; padding: 4px 6px; }
+.changes #changes-toggle { flex: 1; text-align: left; }
+.changes #changes-toggle b { background: #ffb000; color: #24292f; border-radius: 99px; padding: 0 7px; margin-left: 4px; }
+.changes #changes-clear { color: #8c959f; font-weight: 400; }
+.changes ol { list-style: none; margin: 0; padding: 0 6px 6px; overflow: auto; }
+.changes li button { width: 100%; text-align: left; background: none; border: 0; color: #e6edf3; font: inherit; padding: 5px 6px; border-radius: 6px; cursor: pointer; display: flex; gap: 8px; }
+.changes li button:hover { background: #ffffff14; }
+.changes li button span { color: #8c959f; min-width: 44px; font-variant-numeric: tabular-nums; }
+.changes li:first-child button { color: #ffb000; }
+.changes.shut ol, .changes.shut #changes-clear { display: none; }

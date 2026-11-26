@@ -415,50 +415,187 @@ function refreshInfo() {
 
 // ------------------------------------------------------------------------------------ live
 let liveSeen = 0;
+// Element lists, found once (a few hundred wires, three times a second).
+let liveEls = null;
+function liveIndex() {
+  const wires = {};
+  for (const el of svg.querySelectorAll(".wires [data-w], .isym[data-w]")) (wires[el.dataset.w] = wires[el.dataset.w] || []).push(el);
+  const parts = {};
+  for (const el of svg.querySelectorAll(".parts [data-p]")) parts[el.dataset.p] = el;
+  return { wires, parts, contacts: [...svg.querySelectorAll(".contact")], glows: [...svg.querySelectorAll(".glow")],
+    fuses: [...svg.querySelectorAll("[data-f]")] };
+}
+// What each thing was last time, so a change can pulse and go on the list.
+const prevWire = {}, prevVolts = {}, prevContact = {}, prevLamp = {}, lastPulse = {};
+let firstFrame = true;
+const changes = [];                                   // newest first: {t, text, part?, wire?}
+
 function onLive(st) {
   if (!svg || !st || !st.pins) return;
   liveSeen = Date.now();
   lastLive = st;
+  liveEls = liveEls || liveIndex();
   $("live").hidden = false;
   $("live").textContent = st.t != null ? `LIVE ${(+st.t).toFixed(0)} s` : "LIVE";
   svg.classList.add("live");
   const lv = (dev, pin) => st.pins[`${dev}.${pin}`];
+  const level = (x) => (x && x[1] != null ? x[1] * (x[2] ?? 1) : 0);
   const cut = new Set(st.cut || []), blown = new Set(st.blown || []);
+  const frame = [];                                   // this frame's changes
+  const changedParts = new Map();                     // part -> what changed there
+  const note = (part, text) => { if (part && model.parts[part]) changedParts.set(part, [...(changedParts.get(part) || []), text]); };
+
   for (const w of model.wires) {
     const a = lv(w.from[0], w.from[1]), b = lv(w.to[0], w.to[1]);
-    const v = Math.max(a && a[1] != null ? a[1] * (a[2] ?? 1) : 0, b && b[1] != null ? b[1] * (b[2] ?? 1) : 0);
+    const v = Math.max(level(a), level(b));
     const pwm = [a, b].some((x) => x && x[1] > 0.5 && x[2] != null && x[2] < 0.999);
     const cls = cut.has(w.id) ? "cut" : v > 30 ? "on-hv" : v > 7 ? "on-12" : v > 0.5 ? "on-lo" : "";
-    for (const el of svg.querySelectorAll(`.wires [data-w="${w.id}"], .isym[data-w="${w.id}"]`)) {
-      el.classList.remove("on-hv", "on-12", "on-lo", "cut", "pwm");
-      if (cls) el.classList.add(cls);
-      if (pwm && cls && cls !== "cut") el.classList.add("pwm");
+    const state = cls + (pwm ? "+pwm" : "");
+    const was = prevWire[w.id];
+    // a big enough move on an analogue signal (throttle, sensors) counts as a change too
+    const moved = was === state && cls === "on-lo" && Math.abs(v - (prevVolts[w.id] ?? v)) > 0.4;
+    if (was !== state || moved) {
+      for (const el of liveEls.wires[w.id] || []) {
+        el.classList.remove("on-hv", "on-12", "on-lo", "cut", "pwm");
+        if (cls) el.classList.add(cls);
+        if (pwm && cls && cls !== "cut") el.classList.add("pwm");
+      }
+      if (!firstFrame) {
+        const what = cls === "cut" ? "cut" : !cls ? "off" : moved ? `${v.toFixed(1)} V` : pwm ? "on (PWM)" : "on";
+        frame.push({ wire: w.id, text: `${w.id} ${what}` });
+        pulseWire(w.id);
+        if (!w.earth) { note(w.from[0], `${w.id} ${what}`); note(w.to[0], `${w.id} ${what}`); }
+      }
+      prevWire[w.id] = state;
     }
+    if (was !== state || moved || prevVolts[w.id] == null) prevVolts[w.id] = v;
   }
   // relay contacts: closed to NO when COM and NO are on one net
-  for (const c of svg.querySelectorAll(".contact")) {
+  for (const c of liveEls.contacts) {
     const [dev, n] = c.dataset.k.split(":");
     const com = lv(dev, `COM${n}`), no = lv(dev, `NO${n}`);
-    const closed = com && no && com[0] === no[0];
-    const blade = c.querySelector(".blade");
-    const [x, y] = (closed ? blade.dataset.no : blade.dataset.nc).split(" ");
-    blade.setAttribute("x2", x); blade.setAttribute("y2", y);
-    c.classList.toggle("on", !!closed);
+    const closed = !!(com && no && com[0] === no[0]);
+    if (prevContact[c.dataset.k] !== closed) {
+      const blade = c.querySelector(".blade");
+      const [x, y] = (closed ? blade.dataset.no : blade.dataset.nc).split(" ");
+      blade.setAttribute("x2", x); blade.setAttribute("y2", y);
+      c.classList.toggle("on", closed);
+      if (!firstFrame) {
+        const t = `${dev} relay ${n} ${closed ? "on" : "off"}`;
+        frame.unshift({ part: dev, text: t, strong: true });
+        note(dev, t);
+        pulseEl(c);
+      }
+      prevContact[c.dataset.k] = closed;
+    }
   }
   // lamps: lit when one side is up and the other is down
-  for (const g of svg.querySelectorAll(".glow")) {
+  for (const g of liveEls.glows) {
     const [dev, pin] = g.dataset.k.split(":");
     const d = model.devices[dev];
     const p = lv(dev, pin);
     const others = Object.keys(d.pins).filter((q) => q !== pin && (d.pins[q].v === "gnd" || /neg|GND/.test(q)));
     const low = others.some((q) => { const o = lv(dev, q); return o && o[1] != null && o[1] < 1; });
-    const level = p && p[1] != null ? p[1] * (p[2] ?? 1) : 0;
-    const lit = low && level > 5 ? Math.min(1, level / 12) : 0;
+    const lit = low && level(p) > 5 ? Math.min(1, level(p) / 12) : 0;
     g.style.fill = lit ? `rgba(255, 196, 0, ${0.25 + 0.6 * lit})` : "";
+    const on = lit > 0;
+    if (prevLamp[g.dataset.k] !== on) {
+      if (prevLamp[g.dataset.k] !== undefined) {
+        const t = `${dev} ${on ? "lit" : "off"}`;
+        frame.unshift({ part: dev, text: t, strong: true });
+        note(dev, t);
+      }
+      prevLamp[g.dataset.k] = on;
+    }
   }
-  for (const f of svg.querySelectorAll("[data-f]")) f.classList.toggle("blown", blown.has(f.dataset.f));
-  for (const f of svg.querySelectorAll(".isym[data-w]")) if (cut.has(f.dataset.w)) f.classList.add("cut");
+  for (const f of liveEls.fuses) {
+    const was = f.classList.contains("blown"), now = blown.has(f.dataset.f);
+    if (was !== now) {
+      f.classList.toggle("blown", now);
+      const [dev, way] = f.dataset.f.split(".");
+      frame.unshift({ part: dev, text: `${dev} ${way} ${now ? "pulled" : "back in"}`, strong: true });
+      note(dev, `${way} ${now ? "pulled" : "back in"}`);
+    }
+  }
+  for (const [part] of changedParts) pulsePart(part);
+  firstFrame = false;
+  if (frame.length) addChanges(st.t, frame, changedParts);
 }
+
+// ---- pulses: a quick amber flash on whatever changed, big enough to see zoomed right out
+function pulseWire(id) {
+  const now = Date.now();
+  if (now - (lastPulse[id] || 0) < 1200) return;    // a busy analogue wire doesn't strobe
+  lastPulse[id] = now;
+  for (const el of liveEls.wires[id] || []) {
+    if (el.tagName !== "path") continue;
+    const ghost = el.cloneNode();
+    ghost.removeAttribute("data-w");
+    ghost.setAttribute("class", "wpulse");
+    el.parentNode.insertBefore(ghost, el);
+    ghost.addEventListener("animationend", () => ghost.remove());
+  }
+}
+function pulsePart(pid) {
+  const now = Date.now();
+  if (now - (lastPulse["p:" + pid] || 0) < 1200) return;
+  lastPulse["p:" + pid] = now;
+  const g = liveEls.parts[pid], n = geom.nodes[pid];
+  if (!g || !n) return;
+  const r = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  r.setAttribute("class", "ppulse");
+  r.setAttribute("x", -14); r.setAttribute("y", -14);
+  r.setAttribute("width", n.shape.w + 28); r.setAttribute("height", n.shape.h + 28);
+  r.setAttribute("rx", 10);
+  g.insertBefore(r, g.firstChild);
+  r.addEventListener("animationend", () => r.remove());
+}
+function pulseEl(el) {
+  const b = el.getBBox();
+  const r = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  r.setAttribute("class", "ppulse small");
+  r.setAttribute("x", b.x - 6); r.setAttribute("y", b.y - 6);
+  r.setAttribute("width", b.width + 12); r.setAttribute("height", b.height + 12);
+  r.setAttribute("rx", 4);
+  el.insertBefore(r, el.firstChild);
+  r.addEventListener("animationend", () => r.remove());
+}
+
+// ---- the "What changed" list: newest first, tap one to go to it
+function addChanges(t, frame, changedParts) {
+  // one line per part that changed (relays and lamps by name), wires on their own only if
+  // nothing else explains them; a key turn changes 100 wires, so keep it short
+  const lines = [];
+  const seen = new Set();
+  for (const f of frame) if (f.strong && !seen.has(f.text)) { lines.push(f); seen.add(f.text); }
+  for (const [part, what] of changedParts) {
+    if (lines.some((l) => l.part === part)) continue;
+    const wires = what.filter((x) => /^\S+ (on|off|cut|on \(PWM\)|[\d.]+ V)$/.test(x));
+    lines.push({ part, text: wires.length > 2 ? `${part}: ${wires.length} wires changed` : `${part}: ${what.join(", ")}` });
+  }
+  const tt = t != null ? `${(+t).toFixed(1)} s` : "";
+  for (const l of lines.slice(0, 12).reverse()) changes.unshift({ ...l, t: tt });
+  if (lines.length > 12) changes.unshift({ text: `and ${lines.length - 12} more`, t: tt });
+  changes.length = Math.min(changes.length, 40);
+  drawChanges();
+}
+function drawChanges() {
+  const box = $("changes");
+  if (box.hidden && innerHeight < 520) box.classList.add("shut");   // small pane: just the count until tapped
+  box.hidden = false;
+  $("changes-list").innerHTML = changes.map((c, i) =>
+    `<li><button data-i="${i}"${c.part || c.wire ? "" : " disabled"}><span>${esc(c.t)}</span>${esc(c.text)}</button></li>`).join("");
+  $("changes-n").textContent = changes.length;
+}
+$("changes-list").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-i]");
+  if (!b) return;
+  const c = changes[+b.dataset.i];
+  if (c.part) goPart(c.part);
+  else if (c.wire) pickWire(c.wire, true);
+});
+$("changes-toggle").onclick = () => $("changes").classList.toggle("shut");
+$("changes-clear").onclick = () => { changes.length = 0; drawChanges(); };
 window.addEventListener("message", (e) => { if (e.data && e.data.teryxWiring) onLive(e.data.teryxWiring); });
 try { new BroadcastChannel("teryx-rig").onmessage = (e) => { if (e.data && e.data.teryxWiring) onLive(e.data.teryxWiring); }; } catch { /* old browser */ }
 setInterval(() => {
