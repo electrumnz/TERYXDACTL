@@ -631,18 +631,18 @@ devices:
     note: "Sam's EU round 7-pin, next to the flat NZ/AU 7-pin for the main trailer lights, so they can't be mixed up. NOT wired to the EU light standard. 1 cam +12 V, 2 video, 3 cam ground, 4 video shield, 5 light bar +12 V, 6 light bar - (switched), 7 spare. Light bar on 1.5 mm² (pins are good for 10 A+). Spring cap on the socket and dielectric grease on the pins"
     pins: {V12: {v: 12v, multi: true}, GND: gnd, VID: {v: video, multi: true}, VID_GND: {v: video, multi: true}, LB_POS: {v: 12v, multi: true}, LB_NEG: {v: 12v, multi: true}}
   CAM_TRAILER:
-    name: Trailer camera (12 V AHD)
+    name: Trailer camera (12 V car camera, CVBS/PAL mode)
     zone: trailer
     status: planned
     optional: true
     pins: {V12: 12v, GND: gnd, VID: video, VID_GND: video}
   TCAM_DONGLE:
-    name: Analogue video to camera-ribbon (CSI) board, ADV7280-M (rear + trailer)
+    name: Analogue video to camera-ribbon (CSI) board, ADV728x-M (front + rear + trailer, cabin later)
     zone: dash
     status: tbc
-    note: "No USB (Sam). The cameras run in CVBS (PAL) mode into this board, which sits in the Pi box on the Pi's 2nd camera ribbon port. ADV7280-M has several analogue inputs picked in software (adv728x-m overlay, adv7180 driver), so it swaps rear/trailer itself, no relay. A spare input can take a small cabin camera later. Pi 5 support for these boards is not proven yet: bench test it first"
-    check: "Confirm the board works on the Pi 5 (dtoverlay=adv728x-m,adv7280m=1); set each AHD camera to CVBS/PAL (OSD menu or mode wire)"
-    pins: {VID: video, VID_GND: video, VID_R: video, VID_R_GND: video, CSI: csi}
+    note: "No USB (Sam). ALL the cameras are car cameras in CVBS (PAL) mode into this one board, which sits in the Pi box on the Pi's camera ribbon port (CSI1). The Pi Camera Module 3 is dropped (26 Nov, PB Tech had none and Sam has car cameras). Inputs picked in software (adv728x-m overlay, adv7180 driver): input 0 rear, 1 trailer, 2 cabin (later), 3 front. The chip has 6-8 inputs (ADV7280-M 8, ADV7281-M/ADV7282-M 6) but cheap boards only bring some out to plugs: needs 3 now, 4 with the cabin camera. ONE decoder: only one camera is live at a time, the others show their last picture (or take turns, see docs/cameras.md). Pi 5 support for these boards is not proven yet: bench test it first"
+    check: "Count the video inputs on the board (need 3, 4 with the cabin cam). Confirm it works on the Pi 5 (dtoverlay=adv728x-m,adv7280m=1); set each camera to CVBS/PAL, not AHD (OSD menu, button or mode wire)"
+    pins: {VID: video, VID_GND: video, VID_R: video, VID_R_GND: video, VID_F: video, VID_F_GND: video, CSI: csi}
 
   # ---------------------------------------------------------- dash computer
   PI5:
@@ -660,7 +660,7 @@ devices:
       USB3_B: usb
       USB2_A: usb
       USB2_B: usb
-      CSI0: csi
+      CSI0: {v: csi, desc: free (no Pi camera now; all cameras on the video board)}
       CSI1: csi
       PCIE: pcie
       HAT_HDR: {v: 3v3, desc: 40-pin header to the 16 mm stacking header}
@@ -715,11 +715,12 @@ devices:
     check: "Rear camera: AHD with a CVBS mode? Photo its plug and label"
     pins: {V12: 12v, GND: gnd, VID: video, VID_GND: video}
   CAM_FRONT:
-    name: Camera Module 3 Wide (front)
-    zone: dash
-    status: planned
-    note: Inside the screen housing, 200-300 mm ribbon
-    pins: {CSI: csi}
+    name: Front camera (12 V car camera, Sam's best of the 3)
+    zone: front
+    status: tbc
+    note: "Replaces the Pi Camera Module 3 (26 Nov). Use the best of Sam's 3 AliExpress car cameras here: the front is the dashcam and the trail view at speed, so detail matters most. CVBS/PAL mode, not AHD. Mount behind the grille or on the bull bar, looking ahead, not mirrored. 12 V from the accessory relay (relay 7) through its own 2 A inline fuse, shielded video lead to video board input 3"
+    check: "Front camera: CVBS (PAL) or AHD with a CVBS mode? Photo its plug and label"
+    pins: {V12: 12v, GND: gnd, VID: video, VID_GND: video}
   MODEM_4G:
     name: SIMCom A7670SA 4G board
     zone: dash
@@ -1150,7 +1151,10 @@ wires:
   - {id: X03b, from: CAM_REAR.VID_GND, to: TCAM_DONGLE.VID_R_GND, sys: dash, status: tbc}
   - {id: X04, from: TCAM_DONGLE.CSI, to: PI5.CSI1, sys: dash, status: tbc, note: "Camera ribbon, 2nd port"}
   - {id: X07, from: CARPLAY.USB, to: PI5.USB2_A, sys: dash, status: planned, optional: true, note: "CarPlay dongle is USB only. Right-angle lead, dongle zip-tied down inside the box"}
-  - {id: X11, from: CAM_FRONT.CSI, to: PI5.CSI0, sys: dash, status: planned}
+  - {id: X11, from: CAM_FRONT.VID, to: TCAM_DONGLE.VID_F, sys: dash, status: tbc, note: "Shielded video lead to video board input 3, soldered"}
+  - {id: X11b, from: CAM_FRONT.VID_GND, to: TCAM_DONGLE.VID_F_GND, sys: dash, status: tbc}
+  - {id: X12, from: RELAYS.NO7, to: CAM_FRONT.V12, sys: dash, mm2: 0.5, fuse: 2, status: tbc, note: "2 A inline fuse. On with the key, like the rear camera"}
+  - {id: G61, from: CAM_FRONT.GND, to: GND_STAR.G, sys: ground, mm2: 0.5, status: tbc, note: "Or a good chassis earth near the camera"}
   - {id: X13, from: AIHAT.PCIE, to: PI5.PCIE, sys: dash, status: placeholder, optional: true, note: "Keep the PCIe port free for this"}
   - {id: X14, from: AIHAT.HDR, to: PI5.HAT_HDR, sys: dash, status: placeholder, optional: true, note: "16 mm stacking header over the Active Cooler"}
   - {id: X15, from: PI5.P1_3V3, to: PI_CAN.VCC, sys: dash, status: planned}

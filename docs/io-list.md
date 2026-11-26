@@ -188,7 +188,7 @@ and programmer plugged in.
 | ID | Input | How |
 |---|---|---|
 | `pi.touch` | Touch screen | USB |
-| `pi.camera` | Cameras | Front: Camera Module 3 on ribbon port 1. Rear + trailer (+ cabin later): CVBS into an ADV7280-M board on ribbon port 2. See `cameras.md` |
+| `pi.camera` | Cameras | All car cameras in CVBS/PAL into one ADV728x-M video board on the ribbon port: rear (input 0), trailer (1), cabin later (2), front (3). One live at a time. See `cameras.md` |
 | `pi.imu` | Roll / pitch | MPU-6050 on the Pi's I2C (GPIO2/3), read by `dash/server/teryx_dash/imu.py` |
 | `pi.gps` | Position / speed backup | The A7670SA 4G board's own GPS, read by `dash/server/teryx_dash/remote.py`, see `shopping-list.md` 4b |
 

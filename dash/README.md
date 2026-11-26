@@ -118,8 +118,10 @@ guide lines). Any of these work:
 - **USB camera**: shows up as a video device and opens straight in the browser.
 - **RCA / AHD camera**: plug it into a cheap USB AV capture dongle (UVC). It then looks
   exactly like a USB camera. The Pi 5 has no analogue video input, so a dongle is needed.
-- **Raspberry Pi ribbon camera** (Camera Module 3, for the front one in the screen housing):
-  set its `v4l2Device` to `csi0` or `csi1`. Chromium can't open these, so it always comes
+- **Car camera on the video board** (what the Teryx uses for all four, since 26 Nov): a 12 V
+  car camera in CVBS/PAL mode into the ADV728x-M board on the ribbon port. Set its
+  `v4l2Device` to `adv:N` (rear 0, trailer 1, cabin 2, front 3). One live at a time.
+- **Raspberry Pi ribbon camera** (not used now): set its `v4l2Device` to `csi0` or `csi1`. Chromium can't open these, so it always comes
   through the server stream, using `rpicam-vid`.
 - **Fallback**: Source > Server stream uses ffmpeg on the Pi to serve
   `/api/camera.mjpg?cam=rear` (or `front`, `trailer`), in case the browser can't open the device.

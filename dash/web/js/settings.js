@@ -45,14 +45,19 @@ export const DEFAULTS = {
     trailerDetect: "either",
     reverseView: "single",  // reverse pops up one big camera ("single") or the combined view ("combo")
     current: "rear",       // last camera picked on the Cameras screen ("combo" = the combined view)
+    // Combined view: the video board shows one camera at a time. 0 = the live one follows what
+    // you're doing (front driving forward, rear or trailer in reverse) and you tap to swap.
+    // 3, 5 or 10 = take turns every that many seconds (not in reverse).
+    comboCycle: 0,
     // One entry per camera (see CAMS in screens/camera.js). No USB cameras (docs/cameras.md):
-    // v4l2Device is "csi0" for the Pi Camera Module 3 on the first ribbon port, or "adv:N" for
-    // input N of the analogue video board on the second ribbon port (rear 0, trailer 1, cabin 2).
-    // Both come through the server stream. deviceId is only for a browser camera on the bench.
+    // all four are car cameras (CVBS/PAL) on the analogue video board on the ribbon port, and
+    // v4l2Device "adv:N" is its input N (rear 0, trailer 1, cabin 2, front 3). "csi0"/"csi1" (a
+    // Pi ribbon camera) still works. All come through the server stream. deviceId is only for a
+    // browser camera on the bench.
     // Rear cameras are usually mirrored so left is left.
     cams: {
       rear:    { fitted: true,  name: "Rear",    deviceId: "", v4l2Device: "adv:0", mirror: true,  guides: true },
-      front:   { fitted: true,  name: "Front",   deviceId: "", v4l2Device: "csi0", mirror: false, guides: false },
+      front:   { fitted: true,  name: "Front",   deviceId: "", v4l2Device: "adv:3", mirror: false, guides: false },
       trailer: { fitted: false, name: "Trailer", deviceId: "", v4l2Device: "adv:1", mirror: true,  guides: true },
       // Small analogue camera looking at the seats, on the video board's spare input (later).
       // Takes the face shot when someone tries the key while locked.
@@ -99,12 +104,14 @@ function merge(a, b) {
   return out;
 }
 
-/** Older settings files had one camera (camera.deviceId, .mirror, .guides, .v4l2Device). Those are the rear camera now. */
+/** Older settings files had one camera (camera.deviceId, .mirror, .guides, .v4l2Device). Those are the rear camera now.
+ *  Before 26 Nov the front was a Pi Camera Module 3 on csi0; it's a car camera on video board input 3 now. */
 export function migrate(v) {
   const c = v.camera || {};
   for (const k of ["deviceId", "mirror", "guides", "v4l2Device"]) {
     if (k in c) { if (c[k] !== "" && c[k] != null) c.cams.rear[k] = c[k]; delete c[k]; }
   }
+  if (c.cams && c.cams.front && c.cams.front.v4l2Device === "csi0") c.cams.front.v4l2Device = "adv:3";
   return v;
 }
 
