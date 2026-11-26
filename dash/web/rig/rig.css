@@ -111,3 +111,32 @@ details summary { cursor: pointer; color: var(--muted); font-size: 13px; padding
 .wiring-panel .wp-bar { display: flex; gap: 12px; align-items: center; padding: 6px 10px; background: #0c0a07; color: #d8d2c4; font-size: 13px; flex-wrap: wrap; }
 .wiring-panel .wp-bar a { color: #f5c84c; margin-left: auto; }
 .wiring-panel iframe { flex: 1; border: 0; width: 100%; }
+
+/* Dash + wiring on one page. Wide screens: the sim on the left, the live wiring on the right,
+   with a bar between them you can drag. Phones: the dash stays at the top, the controls scroll
+   under it, the live wiring fills the bottom part (drag its top edge). */
+.top button.pill { border: 0; cursor: pointer; font-family: inherit; }
+.top #split-btn[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.wp-handle { display: none; }
+body.split .wiring-panel { display: flex; inset: auto; z-index: 4; }
+body.split #wiring-close, body.split #wiring-btn { display: none; }
+body.split .wp-handle { display: block; position: absolute; background: #2c241b; z-index: 2; touch-action: none; }
+body.split .wp-handle::after { content: ""; position: absolute; background: #a8977f; border-radius: 3px; }
+@media (min-width: 900px) {
+  body.split .layout { position: fixed; top: var(--top-h, 58px); left: 0; bottom: 0; width: var(--split-x, 46vw);
+    overflow: auto; grid-template-columns: 1fr; max-width: none; padding: 12px; gap: 12px; }
+  body.split .screen-wrap { position: static; }
+  body.split .wiring-panel { position: fixed; top: var(--top-h, 58px); bottom: 0; right: 0; left: var(--split-x, 46vw); padding-left: 10px; background: #0c0a07; }
+  body.split .wiring-panel iframe { background: #fbfaf6; }
+  body.split .wp-handle { left: 0; top: 0; bottom: 0; width: 10px; cursor: col-resize; }
+  body.split .wp-handle::after { left: 3px; top: 50%; width: 4px; height: 48px; margin-top: -24px; }
+}
+@media (max-width: 899.98px) {
+  body.split .top .sub { display: none; }
+  body.split .layout { padding: 8px; gap: 8px; padding-bottom: calc(var(--split-y, 48vh) + 8px); }
+  body.split .screen-wrap { position: sticky; top: var(--top-h, 52px); z-index: 3; background: var(--bg); padding-bottom: 6px; }
+  body.split .wiring-panel { position: fixed; left: 0; right: 0; bottom: 0; height: var(--split-y, 48vh); padding-top: 14px; background: #0c0a07; }
+  body.split .wp-handle { left: 0; right: 0; top: 0; height: 14px; cursor: row-resize; }
+  body.split .wp-handle::after { top: 5px; left: 50%; width: 48px; height: 4px; margin-left: -24px; }
+  body.split .wp-bar { display: none; }
+}

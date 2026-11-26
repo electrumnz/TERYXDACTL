@@ -34,6 +34,12 @@ Press a light bar button on the dash and it goes dash -> Pi gateway -> CAN -> re
 firmware -> PCA9685 -> MOSFET -> fuse -> lamp, and the lamp lights up in the panel.
 Pull fuse FB.F1 and bars 1 and 4 go dark while the dash still thinks they're on.
 
+The page opens as **Dash + wiring**: the live wiring canvas sits beside the dash
+(under it on a phone), with a bar between them to drag. As you drive, change
+settings on the dash or flick switches, the powered wires go bold and dead ones
+fade. Tap the key, a switch, the E-stop or a fuse block on the canvas to work it
+from there. The button at the top (or `?split=0`) goes back to the sim on its own.
+
 The first load downloads Python for the browser (Pyodide, about 10 MB, from the
 jsDelivr CDN); after that it's cached. It runs in real time on a laptop and on most
 phones; if a phone can't keep up the status pill says "Running at 70% speed".
