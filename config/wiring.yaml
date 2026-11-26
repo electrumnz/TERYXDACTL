@@ -735,13 +735,13 @@ devices:
     optional: true
     pins: {USB: usb}
   DAC_HAT:
-    name: Raspberry Pi DAC+ (on jumper leads)
+    name: PCM5102 I2S DAC board (on jumper leads)
     zone: dash
     status: planned
     optional: true
     doc: docs/audio.md
-    note: "PCM5122 DAC HAT (ex IQaudio DAC+), RCA line out to the amp. Sits on standoffs in the right-hand end of the Pi box, off the Pi, so the top of the Pi stays free for the AI HAT+ 2. Joined by 7 male-to-female jumper leads (about 20 cm), not a full 40-way ribbon: a ribbon would cover the header pins the CAN board, 4G board and IMU leads plug onto. Uses GPIO 18, 19, 21 (I2S), 2 and 3 (I2C, shared with the IMU: DAC 0x4D, IMU 0x68), 5 V and GND. Nothing else on the Pi uses 18-21 (CAN is SPI0 + GPIO 25, 4G is UART GPIO 14/15). The ID EEPROM pins 27/28 are left off, so it never fights the AI HAT's EEPROM; set the overlay by hand: scripts/audio-setup.sh --i2s iqaudio-dacplus. A dab of hot glue on the leads at both ends against vibration. Later the leads move onto the AI HAT's stacking header pins"
-    pins: {BCK: 3v3, LRCK: 3v3, DIN: 3v3, SDA: 3v3, SCL: 3v3, V5: 5v, GND: gnd, OUT: audio}
+    note: "Swapped 26 Nov from the official Raspberry Pi DAC+ HAT to a cheap PCM5102(A) I2S DAC board from AliExpress (Sam). The ID stays DAC_HAT so nothing else moves. Small board with a 3.5 mm stereo jack out, to the amp's RCA inputs with a 3.5 mm to 2x RCA lead and a ground loop isolator. Sits on standoffs in the right-hand end of the Pi box, off the Pi, so the top of the Pi stays free for the AI HAT+ 2. Joined by 5 male-to-female jumper leads (about 20 cm): GPIO 18 to BCK, 19 to LCK, 21 to DIN, 5 V to VIN, GND to GND. No I2C on this chip, so SDA/SCL stay free for the IMU. On the board: SCK tied to GND (most boards have a solder bridge for it, else a short jumper), FLT, DEMP, FMT low and XSMT high (unmuted), which is how the usual purple board comes. Overlay: scripts/audio-setup.sh --i2s hifiberry-dac. Nothing else on the Pi uses 18-21 (CAN is SPI0 + GPIO 25, 4G is UART GPIO 14/15). A dab of hot glue on the leads at both ends against vibration. Later the leads move onto the AI HAT's stacking header pins"
+    pins: {BCK: 3v3, LRCK: 3v3, DIN: 3v3, V5: 5v, GND: gnd, OUT: audio}
   AMP:
     name: 4-ch class D amp (AliExpress, 4 x 63 W RMS at 4 ohm)
     zone: cab
@@ -1163,14 +1163,12 @@ wires:
   - {id: X18, from: PI_CAN.SO, to: PI5.P21_MISO, sys: dash, status: planned}
   - {id: X19, from: PI5.P24_CE0, to: PI_CAN.CS, sys: dash, status: planned}
   - {id: X20, from: PI_CAN.INT, to: PI5.P22_GPIO25, sys: dash, status: planned}
-  - {id: X21, from: DAC_HAT.OUT, to: AMP.IN, sys: dash, status: planned, optional: true, note: RCA to RCA lead out through the Pi box's spare PG7 gland}
+  - {id: X21, from: DAC_HAT.OUT, to: AMP.IN, sys: dash, status: planned, optional: true, note: "3.5 mm to 2x RCA lead out through the Pi box's spare PG7 gland, then a ground loop isolator at the amp"}
   - {id: X32, from: PI5.P8_TXD, to: MODEM_4G.R, sys: dash, status: placeholder, optional: true, note: "Soldered lead, 115200 baud"}
   - {id: X33, from: MODEM_4G.T, to: PI5.P10_RXD, sys: dash, status: placeholder, optional: true, note: "Soldered lead. Measure T first: 3.3 V ok, else BSS138"}
   - {id: X25, from: PI5.P12_GPIO18, to: DAC_HAT.BCK, sys: dash, status: planned, optional: true, note: jumper lead}
   - {id: X26, from: PI5.P35_GPIO19, to: DAC_HAT.LRCK, sys: dash, status: planned, optional: true, note: jumper lead}
   - {id: X27, from: PI5.P40_GPIO21, to: DAC_HAT.DIN, sys: dash, status: planned, optional: true, note: jumper lead}
-  - {id: X28, from: PI5.P3_SDA, to: DAC_HAT.SDA, sys: dash, status: planned, optional: true, note: jumper lead}
-  - {id: X29, from: PI5.P5_SCL, to: DAC_HAT.SCL, sys: dash, status: planned, optional: true, note: jumper lead}
   - {id: X30, from: PI5.P2_5V, to: DAC_HAT.V5, sys: dash, status: planned, optional: true, note: jumper lead}
   - {id: X31, from: DAC_HAT.GND, to: PI5.GND, sys: dash, status: planned, optional: true, note: jumper lead}
   - {id: X22, from: AMP.SPK, to: SPEAKERS.IN, sys: dash, status: planned, optional: true}

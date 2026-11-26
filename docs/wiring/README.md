@@ -13,7 +13,7 @@ web server). It's laid out from [`schematic.json`](schematic.json) by [`sld.js`]
 (elkjs, EPL-2.0, unchanged copy in [`vendor/`](vendor/)). The simulator page links to it and lights
 up the live wires.
 
-**97 devices, 377 wires.** By status: 19 from_manual, 3 confirmed, 299 planned, 52 tbc, 4 placeholder.
+**97 devices, 375 wires.** By status: 19 from_manual, 3 confirmed, 297 planned, 52 tbc, 4 placeholder.
 Nothing has been checked on the real Teryx yet.
 
 Wire sizes follow the conservative table in the YAML (from
@@ -34,7 +34,7 @@ runs up to about 5 m). Go one size up for bundled or hot runs.
 10. 12 V signals into the control box (opto board) (18 wires)
 11. CAN buses: main Teryx bus and the steering bus (8 wires)
 12. RC box: steering by remote (fake torque sensor) (37 wires)
-13. Dash computer: Pi 5, screen, cameras, USB, audio (41 wires)
+13. Dash computer: Pi 5, screen, cameras, USB, audio (39 wires)
 
 ## Things to check or photograph on the Teryx
 
@@ -541,14 +541,12 @@ Fuses not in the block (inline, at the battery or on a board):
 | X18 | PI_CAN.SO | PI5.P21_MISO |  |  |  | planned |  |
 | X19 | PI5.P24_CE0 | PI_CAN.CS |  |  |  | planned |  |
 | X20 | PI_CAN.INT | PI5.P22_GPIO25 |  |  |  | planned |  |
-| X21 | DAC_HAT.OUT | AMP.IN |  |  |  | planned (optional) | RCA to RCA lead out through the Pi box's spare PG7 gland |
+| X21 | DAC_HAT.OUT | AMP.IN |  |  |  | planned (optional) | 3.5 mm to 2x RCA lead out through the Pi box's spare PG7 gland, then a ground loop isolator at the amp |
 | X32 | PI5.P8_TXD | MODEM_4G.R |  |  |  | placeholder (optional) | Soldered lead, 115200 baud |
 | X33 | MODEM_4G.T | PI5.P10_RXD |  |  |  | placeholder (optional) | Soldered lead. Measure T first: 3.3 V ok, else BSS138 |
 | X25 | PI5.P12_GPIO18 | DAC_HAT.BCK |  |  |  | planned (optional) | jumper lead |
 | X26 | PI5.P35_GPIO19 | DAC_HAT.LRCK |  |  |  | planned (optional) | jumper lead |
 | X27 | PI5.P40_GPIO21 | DAC_HAT.DIN |  |  |  | planned (optional) | jumper lead |
-| X28 | PI5.P3_SDA | DAC_HAT.SDA |  |  |  | planned (optional) | jumper lead |
-| X29 | PI5.P5_SCL | DAC_HAT.SCL |  |  |  | planned (optional) | jumper lead |
 | X30 | PI5.P2_5V | DAC_HAT.V5 |  |  |  | planned (optional) | jumper lead |
 | X31 | DAC_HAT.GND | PI5.GND |  |  |  | planned (optional) | jumper lead |
 | X22 | AMP.SPK | SPEAKERS.IN |  |  |  | planned (optional) |  |
@@ -690,7 +688,7 @@ Fuses not in the block (inline, at the battery or on a board):
 | CAM_FRONT | Front camera (12 V car camera, Sam's best of the 3) | front | tbc | Replaces the Pi Camera Module 3 (26 Nov). Use the best of Sam's 3 AliExpress car cameras here: the front is the dashcam and the trail view at speed, so detail matters most. CVBS/PAL mode, not AHD. Mount behind the grille or on the bull bar, looking ahead, not mirrored. 12 V from the accessory relay (relay 7) through its own 2 A inline fuse, shielded video lead to video board input 3 |
 | MODEM_4G | SIMCom A7670SA 4G board | dash | placeholder (optional) | 6-pin header S G V K T R G. V takes 5-10 V: a soldered lead from the Pi buck (5 V). NEVER raw 12 V (10 V max, and the car runs 14.4 V with spikes). K is tied to ground on the board, so it starts by itself. T/R are 115200 baud TTL to the Pi's GPIO 15/14; measure T before connecting (3.3 V ok, else BSS138). Micro USB also on board. Its GNSS (FASE version, u.FL GPS socket on Sam's board) is the dash GPS too, so there is no separate USB GPS. Check on arrival that it gets a fix with the SIM out / 4G off. No USB: it's on the header pins (soldered leads), so texts, GPS and slow data only, no live video over 4G |
 | CARPLAY | Carlinkit CPC200-CCPA | dash | planned (optional) |  |
-| DAC_HAT | Raspberry Pi DAC+ (on jumper leads) | dash | planned (optional) | PCM5122 DAC HAT (ex IQaudio DAC+), RCA line out to the amp. Sits on standoffs in the right-hand end of the Pi box, off the Pi, so the top of the Pi stays free for the AI HAT+ 2. Joined by 7 male-to-female jumper leads (about 20 cm), not a full 40-way ribbon: a ribbon would cover the header pins the CAN board, 4G board and IMU leads plug onto. Uses GPIO 18, 19, 21 (I2S), 2 and 3 (I2C, shared with the IMU: DAC 0x4D, IMU 0x68), 5 V and GND. Nothing else on the Pi uses 18-21 (CAN is SPI0 + GPIO 25, 4G is UART GPIO 14/15). The ID EEPROM pins 27/28 are left off, so it never fights the AI HAT's EEPROM; set the overlay by hand: scripts/audio-setup.sh --i2s iqaudio-dacplus. A dab of hot glue on the leads at both ends against vibration. Later the leads move onto the AI HAT's stacking header pins See [`docs/audio.md`](../../docs/audio.md). |
+| DAC_HAT | PCM5102 I2S DAC board (on jumper leads) | dash | planned (optional) | Swapped 26 Nov from the official Raspberry Pi DAC+ HAT to a cheap PCM5102(A) I2S DAC board from AliExpress (Sam). The ID stays DAC_HAT so nothing else moves. Small board with a 3.5 mm stereo jack out, to the amp's RCA inputs with a 3.5 mm to 2x RCA lead and a ground loop isolator. Sits on standoffs in the right-hand end of the Pi box, off the Pi, so the top of the Pi stays free for the AI HAT+ 2. Joined by 5 male-to-female jumper leads (about 20 cm): GPIO 18 to BCK, 19 to LCK, 21 to DIN, 5 V to VIN, GND to GND. No I2C on this chip, so SDA/SCL stay free for the IMU. On the board: SCK tied to GND (most boards have a solder bridge for it, else a short jumper), FLT, DEMP, FMT low and XSMT high (unmuted), which is how the usual purple board comes. Overlay: scripts/audio-setup.sh --i2s hifiberry-dac. Nothing else on the Pi uses 18-21 (CAN is SPI0 + GPIO 25, 4G is UART GPIO 14/15). A dab of hot glue on the leads at both ends against vibration. Later the leads move onto the AI HAT's stacking header pins See [`docs/audio.md`](../../docs/audio.md). |
 | AMP | 4-ch class D amp (AliExpress, 4 x 63 W RMS at 4 ohm) | cab | confirmed (optional) | Sam's pick. 4 x 63 W RMS at 4 ohm, or 2 x 200 W RMS bridged at 4 ohm; built-in 90 Hz high and low pass; 8-16 V; up to 33 A flat out (16.5 A on music); 145 x 100 x 45 mm. Channels 1 and 2 drive the Kenwoods (set the HPF on). Channels 3 and 4 bridged (200 W at 4 ohm) drive the Kicker KM104 sub (LPF on, gain set so it stays under the sub's 150 W RMS) See [`docs/audio.md`](../../docs/audio.md). |
 | SPEAKERS | Kenwood KFC-2053MRB 8 in marine speakers (pair) | cab | confirmed (optional) | Sam has these. 8 in 2-way, 4 ohm, about 50 W RMS each (100 W the pair), 180 mm cut-out, about 86 mm mounting depth (Kenwood spec page). One amp channel each; speaker cable 1.5 mm² is plenty. In sealed printed pods on the roll cage (cad/parts/speaker_pod.scad, docs/speaker-pods.md); the cable goes in through a PG7 gland underneath each pod |
 | SUB | Kicker KM104 10 in marine subwoofer | cab | confirmed (optional) | Sam has bought it (18 Nov). 10 in, 4 ohm, 150 W RMS, 30-500 Hz. On amp ch 3 + 4 bridged, low pass on (90 Hz, matches the pods' EQ handover). Sealed printed box under the seat, on hold until Sam scans the space. 1.5 mm² speaker cable |

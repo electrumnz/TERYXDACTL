@@ -4,7 +4,7 @@ The dash's Tilt panel and the tilt warnings (dash/web/js/alerts.js) read these k
 simulator teryx/sim/sensors.py makes them up; on the Pi this reads the real board.
 
 Wiring (config/wiring.yaml, device IMU): VCC to 3.3 V, GND, SDA to GPIO2, SCL to GPIO3 (I2C bus 1).
-The DAC+ HAT shares that bus at 0x4C/0x4D, so there's no clash with the MPU-6050 at 0x68.
+The DAC board (PCM5102) has no I2C, so the MPU-6050 at 0x68 has the bus to itself.
 
 Register map from InvenSense's "MPU-6000/MPU-6050 Register Map and Descriptions" rev 4.2:
   0x6B PWR_MGMT_1   write 0 to wake it (it starts asleep)

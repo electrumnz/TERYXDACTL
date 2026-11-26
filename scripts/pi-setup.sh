@@ -21,7 +21,7 @@
 #   --can-int GPIO    CAN HAT interrupt pin (default 25)
 #   --bitrate BPS     CAN bit rate (default 250000, must match the Shinegle)
 #   --user NAME       Desktop user that sees the dash (default: the user running sudo)
-#   --i2s OVERLAY     I2S amp/DAC HAT overlay, e.g. hifiberry-dacplus (see docs/audio.md)
+#   --i2s OVERLAY     I2S amp/DAC HAT overlay, e.g. hifiberry-dac (the PCM5102 board, see docs/audio.md)
 #
 # Wifi is set in Raspberry Pi Imager or the desktop, never in this repo.
 set -euo pipefail

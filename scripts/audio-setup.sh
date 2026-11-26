@@ -13,8 +13,9 @@
 #   5. Lets the dash use a Carlinkit CarPlay adapter over USB with no pop-up.
 #
 # Options:
-#   --i2s OVERLAY   I2S HAT overlay, for example hifiberry-dacplus (most PCM5122 DACs),
-#                   hifiberry-amp4pro, iqaudio-dacplus or max98357a. Leave out for a USB DAC.
+#   --i2s OVERLAY   I2S DAC/amp overlay: hifiberry-dac for the Teryx's PCM5102 board,
+#                   hifiberry-dacplus (PCM5122 DACs), hifiberry-amp4pro, iqaudio-dacplus or
+#                   max98357a. Leave out for a USB DAC.
 #   --bt-name NAME  Bluetooth name phones see (default Teryx)
 #   --user NAME     Desktop user that runs the dash screen (default: the user running sudo)
 #

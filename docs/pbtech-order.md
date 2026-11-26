@@ -25,8 +25,7 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | [Raspberry Pi 27W USB-C power supply (bench)](https://www.pbtech.co.nz/product/SEVRBP0512) (SEVRBP0512) | 1 | 24.90 | 24.90 | Search result 18 Nov | Bench only |
 | [Raspberry Pi micro HDMI to HDMI cable 1m](https://www.pbtech.co.nz/product/SEVRBP0207) (SEVRBP0207) | 1 | 11.80 | 11.80 | Search result 18 Nov | Alt black SEVRBP0262 ~11.10 |
 | [Raspberry Pi A2 SD card 128GB (OS)](https://www.pbtech.co.nz/product/SEVRBP0538) (SEVRBP0538) | 1 | 47.32 | 47.32 | Search result 18 Nov | Official card, in the Pi's own slot. Not made for non-stop writes, so dashcam/Sentry recording stays off or minimal until extra storage is added |
-| [Raspberry Pi DAC+ HAT (ex IQaudio DAC+, SC0368)](https://www.pbtech.co.nz/product/SEVRBP0313) (SEVRBP0313) | 1 | 35.65 | 35.65 | Search result 18 Nov (out of stock when indexed) | Official board, RCA out. If PB Tech has none: Pakronics NZ ~NZ$40 |
-| **Total** | | | **540.38** | | |
+| **Total** | | | **504.73** | | |
 
 ### AliExpress (one order, 2 to 4 weeks)
 
@@ -53,13 +52,15 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 | 1N4728A zener diode, 3.3V 1W, 20 pack | 1 | 2.00 | 2.00 | Estimate, AliExpress | Need 3.3 V zener x1 (counted from the wiring), rest spare |
 | Resistor kit, 1/4W metal film 1%, about 30 values x 20 (600 pcs) | 1 | 6.00 | 6.00 | Estimate, AliExpress | Need 10k resistor x1, 1k resistor x3, 2.2k resistor x1 (counted from the wiring), rest spare |
 | Ground bus bar, 150A or more, M8 studs plus small screw terminals, with cover | 1 | 15.00 | 15.00 | Estimate, AliExpress | About 25 earths land here, the biggest is the 10mm² battery negative, and the total is well under 100 A. A bar with 2-4 M8 studs plus 8-12 small screw terminals saves stacking lots of rings on a stud. The winch earth goes straight to the battery, not here |
-| RCA stereo lead 3m (one cable, 2 plugs each end) | 1 | 8.00 | 8.00 | Estimate, AliExpress | One lead is all you need: it's the left + right pair in one cable, DAC HAT to the amp. If the amp has a 2CH/4CH input switch set it to 2CH so the sub channels get signal too, if not add a pair of RCA Y splitters (1 male to 2 female) |
+| PCM5102 (PCM5102A) I2S DAC board with 3.5mm stereo jack | 1 | 8.00 | 8.00 | Estimate, AliExpress | Search: PCM5102 I2S DAC Raspberry Pi (or PCM5102A DAC module). The small board (often purple, about 32 x 24 mm) with pins marked VIN, GND, LCK, DIN, BCK, SCK and a 3.5mm jack. Takes 3.3-5V. Replaces the official DAC+ HAT from PB Tech (26 Nov). Wired with 5 jumper leads, so no HAT version needed. Pi overlay: hifiberry-dac |
+| 3.5mm stereo jack to 2x RCA male lead, 3m | 1 | 6.00 | 6.00 | Estimate, AliExpress | DAC board's 3.5mm jack to the amp's left + right RCA inputs. If the amp has a 2CH/4CH input switch set it to 2CH so the sub channels get signal too, if not add a pair of RCA Y splitters (1 male to 2 female) |
+| Ground loop isolator, RCA stereo (2 RCA in, 2 RCA out), car audio noise filter | 1 | 8.00 | 8.00 | Estimate, AliExpress (Jaycar has them too, about NZ$20-30, if you want one sooner) | Search: car audio ground loop isolator RCA. Goes between the RCA lead and the amp. Stops hum or whine from the motor, DC-DC and the Pi sharing earths. A cheap DAC board has no filtering of its own, so fit it from the start |
 | Heavy duty momentary toggle switch, (ON)-OFF-(ON), SPDT 3 terminals, 20A 12V DC, 12mm hole, with waterproof rubber boot | 2 | 8.00 | 16.00 | Estimate, AliExpress | Search: 12V 20A momentary toggle switch ON-OFF-ON 3 pin, and pick one where both sides spring back to the middle (shown as (ON)-OFF-(ON) or momentary on both sides). Hidden winch in/out switches, one at the winch and one in the cab. They work the solenoid coil (5 A fuse), so 20A is plenty. Get boots that match the thread (usually 12mm) |
 | Tinned copper cable lug 4 mm², M8 hole (listed as SC4-8) | 6 | 1.00 | 6.00 | Estimate; counted from config/wiring.yaml | 2 spare. Crimp with a hex lug crimper (the ferrule crimper won't do these) |
 | Tinned copper cable lug 6 mm², M8 hole (listed as SC6-8) | 6 | 1.00 | 6.00 | Estimate; counted from config/wiring.yaml | 2 spare. Crimp with a hex lug crimper (the ferrule crimper won't do these) |
 | Tinned copper cable lug 10 mm², M8 hole (listed as SC10-8) | 10 | 1.00 | 10.00 | Estimate; counted from config/wiring.yaml | 2 spare. Crimp with a hex lug crimper (the ferrule crimper won't do these) |
 | Tinned copper cable lug 35 mm², M8 hole (listed as SC35-8) | 4 | 1.00 | 4.00 | Estimate; counted from config/wiring.yaml | 2 spare. Crimp with a hex lug crimper (the ferrule crimper won't do these) |
-| **Total** | | | **158.00** | | |
+| **Total** | | | **172.00** | | |
 
 ### Local: Jaycar, Narva stockist, Repco, auto electrical
 
@@ -105,12 +106,12 @@ changing it. Spreadsheet copy: [`pbtech-order.csv`](pbtech-order.csv). Why each 
 
 | Shop | NZ$ |
 |---|---|
-| PB Tech (buy Thursday) | 540.38 |
+| PB Tech (buy Thursday) | 504.73 |
 | AliExpress (one order, 2 to 4 weeks) | 120.00 |
-| AliExpress top-up (second order, not placed yet) | 158.00 |
+| AliExpress top-up (second order, not placed yet) | 172.00 |
 | Local: Jaycar, Narva stockist, Repco, auto electrical | 1,609.00 |
 | Separate pickup | 20.00 |
-| **Everything** | **2,447.38** |
+| **Everything** | **2,425.73** |
 
 ### Already got (not in the totals)
 

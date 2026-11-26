@@ -619,8 +619,6 @@
     "X25",
     "X26",
     "X27",
-    "X28",
-    "X29",
     "X30",
     "X31",
     "X22",
@@ -3935,11 +3933,11 @@
    }
   },
   "DAC_HAT": {
-   "name": "Raspberry Pi DAC+ (on jumper leads)",
+   "name": "PCM5102 I2S DAC board (on jumper leads)",
    "zone": "dash",
    "status": "planned",
    "optional": true,
-   "note": "PCM5122 DAC HAT (ex IQaudio DAC+), RCA line out to the amp. Sits on standoffs in the right-hand end of the Pi box, off the Pi, so the top of the Pi stays free for the AI HAT+ 2. Joined by 7 male-to-female jumper leads (about 20 cm), not a full 40-way ribbon: a ribbon would cover the header pins the CAN board, 4G board and IMU leads plug onto. Uses GPIO 18, 19, 21 (I2S), 2 and 3 (I2C, shared with the IMU: DAC 0x4D, IMU 0x68), 5 V and GND. Nothing else on the Pi uses 18-21 (CAN is SPI0 + GPIO 25, 4G is UART GPIO 14/15). The ID EEPROM pins 27/28 are left off, so it never fights the AI HAT's EEPROM; set the overlay by hand: scripts/audio-setup.sh --i2s iqaudio-dacplus. A dab of hot glue on the leads at both ends against vibration. Later the leads move onto the AI HAT's stacking header pins",
+   "note": "Swapped 26 Nov from the official Raspberry Pi DAC+ HAT to a cheap PCM5102(A) I2S DAC board from AliExpress (Sam). The ID stays DAC_HAT so nothing else moves. Small board with a 3.5 mm stereo jack out, to the amp's RCA inputs with a 3.5 mm to 2x RCA lead and a ground loop isolator. Sits on standoffs in the right-hand end of the Pi box, off the Pi, so the top of the Pi stays free for the AI HAT+ 2. Joined by 5 male-to-female jumper leads (about 20 cm): GPIO 18 to BCK, 19 to LCK, 21 to DIN, 5 V to VIN, GND to GND. No I2C on this chip, so SDA/SCL stay free for the IMU. On the board: SCK tied to GND (most boards have a solder bridge for it, else a short jumper), FLT, DEMP, FMT low and XSMT high (unmuted), which is how the usual purple board comes. Overlay: scripts/audio-setup.sh --i2s hifiberry-dac. Nothing else on the Pi uses 18-21 (CAN is SPI0 + GPIO 25, 4G is UART GPIO 14/15). A dab of hot glue on the leads at both ends against vibration. Later the leads move onto the AI HAT's stacking header pins",
    "check": "",
    "doc": "docs/audio.md",
    "kind": "module",
@@ -3955,12 +3953,6 @@
      "v": "3v3"
     },
     "DIN": {
-     "v": "3v3"
-    },
-    "SDA": {
-     "v": "3v3"
-    },
-    "SCL": {
      "v": "3v3"
     },
     "V5": {
@@ -7209,14 +7201,6 @@
     },
     {
      "pin": "DIN",
-     "side": "W"
-    },
-    {
-     "pin": "SDA",
-     "side": "W"
-    },
-    {
-     "pin": "SCL",
      "side": "W"
     },
     {
@@ -16167,7 +16151,7 @@
    "line": "signal",
    "status": "planned",
    "optional": true,
-   "note": "RCA to RCA lead out through the Pi box's spare PG7 gland",
+   "note": "3.5 mm to 2x RCA lead out through the Pi box's spare PG7 gland, then a ground loop isolator at the amp",
    "bus": null,
    "earth": null
   },
@@ -16277,54 +16261,6 @@
    "to": [
     "DAC_HAT",
     "DIN"
-   ],
-   "mm2": null,
-   "fuse": null,
-   "inline_fuse": null,
-   "via": null,
-   "via_kind": "plain",
-   "colour": "",
-   "line": "logic",
-   "status": "planned",
-   "optional": true,
-   "note": "jumper lead",
-   "bus": null,
-   "earth": null
-  },
-  {
-   "id": "X28",
-   "sec": "dash",
-   "from": [
-    "PI5",
-    "P3_SDA"
-   ],
-   "to": [
-    "DAC_HAT",
-    "SDA"
-   ],
-   "mm2": null,
-   "fuse": null,
-   "inline_fuse": null,
-   "via": null,
-   "via_kind": "plain",
-   "colour": "",
-   "line": "logic",
-   "status": "planned",
-   "optional": true,
-   "note": "jumper lead",
-   "bus": null,
-   "earth": null
-  },
-  {
-   "id": "X29",
-   "sec": "dash",
-   "from": [
-    "PI5",
-    "P5_SCL"
-   ],
-   "to": [
-    "DAC_HAT",
-    "SCL"
    ],
    "mm2": null,
    "fuse": null,

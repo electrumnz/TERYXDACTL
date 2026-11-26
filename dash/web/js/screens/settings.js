@@ -236,7 +236,7 @@ export class SettingsScreen {
     const s = this.ctx.settings, hub = this.ctx.media;
     this.title(body, "Audio and media", "Where the sound goes and how music behaves. Alert sounds are set under Sounds and alerts, and are never turned down by the music.");
     const outBox = el(`<div class="col" style="gap:10px"><div class="muted">Checking…</div></div>`);
-    body.appendChild(row("Sound goes to", "The Pi 5 has no headphone jack. The Raspberry Pi DAC+ (on jumper leads, I2S) feeds the amp over RCA.", outBox));
+    body.appendChild(row("Sound goes to", "The Pi 5 has no headphone jack. A PCM5102 DAC board (on jumper leads, I2S) feeds the amp over RCA.", outBox));
     const lvl = stepper(100, { step: 10, min: 10, max: 100, fmt: (v) => `${v}%`, onChange: (v) => api("audio/output-level", { method: "POST", body: { level: v / 100 } }).catch((e) => toast(`Couldn't set the level (${e.message}).`, "bad")) });
     body.appendChild(row("Output level", "The feed to the amp. Leave it at 100% and set the amp's gain once, so alerts are always loud enough.", lvl));
     const fill = async () => {
