@@ -20,7 +20,7 @@ from ..canbus import messages as M
 from ..canbus import shinegle as SG
 from ..canbus.bus import open_bus
 from ..canbus.node import Node
-from ..lights import LAMPS, LIGHT_SHOW
+from ..lights import FLASH_MODE, LAMPS, LIGHT_SHOW
 from ..vehicle_lock import encode_digits
 
 log = logging.getLogger("teryx.dash")
@@ -56,7 +56,7 @@ class Gateway:
         self.req = {
             "light.front_1": 0, "light.front_2": 0, "light.front_3": 0, "light.front_4": 0,
             "light.interior": 0, "light.effect": "none", "light.rear": "auto",
-            "light.head": "off", **LIGHT2_LEVELS, "light.show": "none",
+            "light.head": "off", **LIGHT2_LEVELS, "light.show": "none", "light.flash": "off",
             "act.4wd": 0, "act.diff": 0, "winch.armed": False,
         }
         self.holds = {"act.tray": (0, 0.0), "winch": (0, 0.0)}
@@ -127,6 +127,11 @@ class Gateway:
             elif id == "light.show":
                 if value not in LIGHT_SHOW.values():
                     raise ValueError(f"unknown light show {value}")
+                self.req[id] = value
+                self._dirty["lights2"] = True
+            elif id == "light.flash":
+                if value not in FLASH_MODE.values():
+                    raise ValueError("light.flash must be off, warning or emergency")
                 self.req[id] = value
                 self._dirty["lights2"] = True
             elif id == "act.4wd":
@@ -206,7 +211,8 @@ class Gateway:
                 "head_high": lvl if r["light.head"] == "high" else 0,
                 "tail": r["light.tail"], "rear": r["light.rear_level"],
                 "trailer_bar": r["light.trailer_bar"], "beacon": r["light.beacon"], "beacon_white": r["light.beacon_white"],
-                "show": M.enum_value(LIGHT_SHOW, r["light.show"])}
+                "show": M.enum_value(LIGHT_SHOW, r["light.show"]),
+                "flash": M.enum_value(FLASH_MODE, r["light.flash"])}
 
     def _drive_values(self) -> dict:
         return {"fourwd_req": self.req["act.4wd"], "diff_target": self.req["act.diff"]}
@@ -311,6 +317,7 @@ class Gateway:
                 st["light.show_running"] = bool(v["show_running"])
                 st["light.show_blocked"] = bool(v["show_blocked"])
                 st["light.pwm_ok"] = bool(v["pwm_ok"])
+                st["light.flash_running"] = bool(v.get("flash_running", 0))
             elif msg.name == "PICO_STEER":
                 # Power steering (docs/power-steering-aqua.md)
                 st["steer.state"] = M.STEER_STATE.get(v["state"], "off")

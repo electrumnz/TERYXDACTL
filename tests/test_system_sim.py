@@ -156,6 +156,48 @@ def test_trailer_plug_tail_stop_and_light_bar(teryx):
 
 
 @needs_cc
+def test_beacon_strobe_and_full_emergency_flash_the_real_lamps(teryx):
+    s, d = teryx, teryx.dash
+    s.trailer(True)
+    d.request("light.interior", 64)
+    d.request("light.flash", "warning")
+    seen = {"amber": 0, "white": 0}
+    for _ in range(100):
+        s.run(0.01)
+        a, w = s.lamp("BEACON", "amber"), s.lamp("BEACON", "white")
+        assert not (a and w)
+        seen["amber"] += a > 0
+        seen["white"] += w > 0
+    assert seen["amber"] > 5 and seen["white"] > 5
+    assert s.lamp("HEAD_L", "low") == 0 and snap(s)["light.flash_running"]
+
+    d.request("light.flash", "emergency")
+    pairs = set()
+    for _ in range(100):
+        s.run(0.01)
+        hl, hr = s.lamp("HEAD_L", "low") > 0, s.lamp("HEAD_R", "low") > 0
+        b1, b4 = s.lamp("LB1") > 0, s.lamp("LB4") > 0
+        assert s.lamp("HEAD_L", "high") == 0 and s.lamp("HEAD_R", "high") == 0
+        assert s.lamp("LB_INT") == pytest.approx(64 / 255, abs=0.01)    # cabin left alone
+        pairs.add((hl, hr, b1, b4, s.lamp("TAIL_L", "stop") > 0, s.lamp("TAIL_R", "stop") > 0,
+                   s.lamp("FLOOD_L") > 0, s.lamp("FLOOD_R") > 0, s.lamp("LB_TRL") > 0))
+    assert (True, False, True, False, True, False, True, False, True) in pairs     # left side
+    assert (False, True, False, True, False, True, False, True, False) in pairs    # right side
+    s.brake(True)                                     # rule 1: brake lamps steady full
+    for _ in range(30):
+        s.run(0.01)
+        assert s.lamp("TAIL_L", "stop") == 1.0 and s.lamp("TAIL_R", "stop") == 1.0
+    s.brake(False)
+
+    d.request("light.flash", "off")                  # one tap and it's all back to normal
+    s.run(0.3)
+    for _ in range(40):
+        s.run(0.01)
+        assert s.lamp("BEACON", "amber") == 0 and s.lamp("HEAD_L", "low") == 0 and s.lamp("LB1") == 0
+    assert not snap(s)["light.flash_running"]
+
+
+@needs_cc
 def test_4wd_and_diff_lock_move_and_report(teryx):
     s, d = teryx, teryx.dash
     d.request("act.4wd", 1)

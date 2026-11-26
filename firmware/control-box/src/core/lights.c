@@ -101,9 +101,33 @@ static uint8_t show_level(uint8_t show, int u, uint32_t t) {
 uint8_t show_level_lamp(uint8_t show, int lamp, uint32_t t) { return show_level(show, lamp, t); }
 uint8_t show_level_front(uint8_t show, int front, uint32_t t) { return show_level(show, U_FRONT0 + front, t); }
 
+bool lights_flash_ok(const lights_req_t *r, const lights_state_t *s) {
+    return (r->flash == FLASH_WARNING || r->flash == FLASH_EMERGENCY) && s->ignition && !s->locked;
+}
+
 bool lights_show_ok(const lights_req_t *r, const lights_state_t *s) {
     return r->show > SHOW_NONE && r->show < SHOW_COUNT && s->ignition && s->park && s->stopped &&
-           s->dash_ok && !s->locked;
+           s->dash_ok && !s->locked && !lights_flash_ok(r, s);
+}
+
+static bool strobe_amber(uint32_t t) {   // two quick pulses at the start of each group
+    uint32_t p = t % STROBE_PERIOD_MS;
+    return p < STROBE_PULSE_MS || (p >= 120u && p < 120u + STROBE_PULSE_MS);
+}
+static bool strobe_white(uint32_t t) { return strobe_amber(t + STROBE_PERIOD_MS / 2u); }
+
+// Emergency, stopped: left side in the first half of each group, right in the second.
+static bool flash_left(int u) {
+    return u == LP_HEAD_L_LOW || u == LP_TAIL_L || u == LP_BRAKE_L || u == LP_FLOOD_L ||
+           u == LP_TRAILER_TAIL || u == LP_TRAILER_BAR || u == U_FRONT0 + LF_FRONT_1 || u == U_FRONT0 + LF_FRONT_2;
+}
+static bool flash_right(int u) {
+    return u == LP_HEAD_R_LOW || u == LP_TAIL_R || u == LP_BRAKE_R || u == LP_FLOOD_R ||
+           u == LP_TRAILER_STOP || u == U_FRONT0 + LF_FRONT_3 || u == U_FRONT0 + LF_FRONT_4;
+}
+static uint8_t flash_side(int u, uint32_t t) {
+    bool first = t % STROBE_PERIOD_MS < STROBE_PERIOD_MS / 2u;
+    return (flash_left(u) ? first : !first) ? 255 : 0;
 }
 
 void lights_step(lights_t *L, const lights_req_t *r, const lights_state_t *s, lights_out_t *o) {
@@ -159,12 +183,43 @@ void lights_step(lights_t *L, const lights_req_t *r, const lights_state_t *s, li
         o->show_blocked = r->show != SHOW_NONE;
     }
 
+    // Flash modes (rule 11): beat the show, lose to the brake pedal
+    bool all_flash = false;
+    if (lights_flash_ok(r, s)) {
+        if (L->flash != r->flash) {
+            L->flash = r->flash;
+            L->flash_start_ms = s->now_ms;
+        }
+        uint32_t t = s->now_ms - L->flash_start_ms;
+        uint8_t amber = r->beacon ? r->beacon : 255, white = r->beacon_white ? r->beacon_white : 255;
+        if (s->stopped) {
+            lv[LP_BEACON] = strobe_amber(t) ? amber : 0;
+            lv[LP_BEACON_WHITE] = strobe_white(t) ? white : 0;
+        } else {
+            lv[LP_BEACON] = t % BEACON_PERIOD_MS < BEACON_ON_MS ? amber : 0;
+            lv[LP_BEACON_WHITE] = 0;
+        }
+        if (r->flash == FLASH_EMERGENCY && s->stopped) {
+            all_flash = true;
+            for (int i = 0; i < LP_COUNT; i++)
+                if (flash_left(i) || flash_right(i)) lv[i] = flash_side(i, t);
+            lv[LP_HEAD_L_HIGH] = lv[LP_HEAD_R_HIGH] = 0;
+            if (!s->trailer) lv[LP_TRAILER_BAR] = 0;
+            for (int i = 0; i < LF_INTERIOR; i++) o->front[i] = flash_side(U_FRONT0 + i, t);
+            o->front[LF_INTERIOR] = s->interior;
+            o->front_valid = true;
+        }
+        o->flash_running = true;
+    } else {
+        L->flash = FLASH_OFF;
+    }
+
     // Rule 2, then rule 1 last so nothing can undo it
     if (lv[LP_HEAD_L_HIGH]) lv[LP_HEAD_L_LOW] = 0;
     if (lv[LP_HEAD_R_HIGH]) lv[LP_HEAD_R_LOW] = 0;
     if (s->brake) {
         lv[LP_BRAKE_L] = lv[LP_BRAKE_R] = lv[LP_TRAILER_STOP] = 255;
-    } else if (!ok) {
+    } else if (!ok && !all_flash) {
         lv[LP_BRAKE_L] = lv[LP_BRAKE_R] = lv[LP_TRAILER_STOP] = 0;
     }
 }

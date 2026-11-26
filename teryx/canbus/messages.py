@@ -10,7 +10,7 @@ it (or not), and reports what the outputs are actually doing.
 from __future__ import annotations
 
 from .codec import Message, Signal as S
-from ..lights import LAMPS, LIGHT_SHOW
+from ..lights import FLASH_MODE, LAMPS, LIGHT_SHOW
 
 
 # ---------------------------------------------------------------- enums
@@ -211,7 +211,10 @@ PI_LIGHTS2 = Message(
         S("trailer_bar", 32, 8),
         S("beacon", 40, 8, comment="Roof beacon brightness, 0 = off. The Pico flashes it at 3 Hz"),
         S("show", 48, 4, choices=LIGHT_SHOW, comment="Light show, parked only"),
-        S("counter", 52, 4),
+        S("flash", 52, 2, choices=FLASH_MODE,
+          comment="Flash mode: warning = beacon strobe, emergency = every lamp flashes (stopped). "
+                  "Key on, not locked. Moving: amber beacon only, at 3 Hz"),
+        S("counter", 54, 2),
         S("beacon_white", 56, 8, comment="White side of the beacon, 0 = off. 3 Hz opposite the amber, only when stopped"),
     ),
 )
@@ -319,6 +322,7 @@ PICO_LIGHTS2 = Message(
         S("show_running", 60, 1),
         S("show_blocked", 61, 1, comment="A show was asked for but the Teryx isn't parked (key on, park brake, stopped)"),
         S("pwm_ok", 62, 1, comment="PCA9685 answering"),
+        S("flash_running", 63, 1, comment="Beacon warning or full emergency running"),
     ),
 )
 

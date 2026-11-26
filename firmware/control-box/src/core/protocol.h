@@ -61,12 +61,14 @@ enum {
 
 // ---- 0x706 more lights ---------------------------------------------------------
 // [0] low beam [1] high beam [2] tail (0 = auto) [3] rear flood level (0 = full)
-// [4] trailer bar [5] beacon [6] show (SHOW_* in lights.h) [7] counter.
+// [4] trailer bar [5] beacon amber [6] bits 0-3 show (SHOW_* in lights.h), bits 4-5 flash
+// mode (FLASH_* in lights.h), bits 6-7 counter [7] beacon white.
 // ---- 0x717 lamp levels ------------------------------------------------------------
 // 15 x 4-bit levels in LP_* order (low nibble first), then the top nibble of byte 7:
 #define LIGHTS2_FLAG_SHOW_RUNNING 0x10u
 #define LIGHTS2_FLAG_SHOW_BLOCKED 0x20u
 #define LIGHTS2_FLAG_PWM_OK       0x40u
+#define LIGHTS2_FLAG_FLASH        0x80u   // beacon warning / full emergency running
 
 // ---- 0x702 drive --------------------------------------------------------------
 #define DRIVE_NO_CHANGE 0xFFu

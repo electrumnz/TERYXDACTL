@@ -69,6 +69,7 @@ Keys follow the io-map ids in `config/io-map.yaml`.
 | `lamp.head_l_low` ... `lamp.trailer_bar` (14, see `LAMPS` in teryx/lights.py) | 0-255 | Actual PCA9685 lamp levels, in steps of 17 (0x717) |
 | `light.trailer_bar` | 0-255 | Actual trailer bar level |
 | `light.show_running`, `light.show_blocked`, `light.pwm_ok` | bool | Light show running; asked for but not parked; PWM board answering |
+| `light.flash_running` | bool | Beacon strobe or full emergency running (key on, not locked) |
 
 **Vehicle lock** (`0x716`, see `docs/vehicle-lock.md`)
 
@@ -128,6 +129,7 @@ simulator fakes them when those aren't there.
 | `light.trailer_bar` | 0-255 trailer light bar (only with the trailer plugged in) |
 | `light.beacon` | 0-255 roof beacon, 0 = off. The control box flashes it at 3 Hz |
 | `light.show` | `none`, `wave`, `breathe`, `roar`, `party`. Parked only (key on, park brake, stopped) |
+| `light.flash` | `off`, `warning` (beacon strobe), `emergency` (every lamp flashes when stopped, amber beacon only on the move). Key on, not locked. Beats the light show (docs/lights.md rule 11) |
 | `act.4wd` | 0 = 2WD, 1 = 4WD |
 | `act.diff` | 0-100 % |
 | `winch.armed` | true / false |

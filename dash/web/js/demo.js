@@ -23,7 +23,7 @@ export class DemoVehicle {
   constructor(scenario = "drive") {
     this.scenario = scenario;
     this.t = 0;
-    this.more = { "light.head": "off", "light.head_level": 255, "light.tail": 0, "light.rear_level": 0, "light.trailer_bar": 0, "light.beacon": 0, "light.beacon_white": 0, "light.show": "none" };
+    this.more = { "light.head": "off", "light.head_level": 255, "light.tail": 0, "light.rear_level": 0, "light.trailer_bar": 0, "light.beacon": 0, "light.beacon_white": 0, "light.show": "none", "light.flash": "off" };
     this.req = { lights: Object.fromEntries(LIGHT_IDS.map((k) => [k, 0])), effect: "none", rear: "auto", fourwd: 0, diff: 0, armed: false };
     this.holds = { "act.tray": { v: 0, at: 0 }, winch: { v: 0, at: 0 } };
     this.rejectCount = 0;
@@ -277,7 +277,7 @@ export class DemoVehicle {
     s["trailer.brake"] = s["in.brake"];
     // Headlights, beacon, trailer bar and the parked-only light show (the control box rules, roughly)
     const m = this.more;
-    if (this.lock.locked) { m["light.head"] = "off"; m["light.beacon"] = 0; m["light.beacon_white"] = 0; m["light.show"] = "none"; }
+    if (this.lock.locked) { m["light.head"] = "off"; m["light.beacon"] = 0; m["light.beacon_white"] = 0; m["light.show"] = "none"; m["light.flash"] = "off"; }
     for (const k of Object.keys(m)) s[`req.${k}`] = m[k];
     const parked = !!s["in.park"] && spdNow(s) < 0.5 && !this.lock.locked;
     s["light.show_running"] = m["light.show"] !== "none" && parked;
@@ -286,6 +286,23 @@ export class DemoVehicle {
     s["lamp.beacon"] = m["light.beacon"] && (this.t % 0.333) < 0.167 ? m["light.beacon"] : 0;
     s["lamp.beacon_white"] = m["light.beacon_white"] && spdNow(s) < 0.5 && (this.t % 0.333) >= 0.167 ? m["light.beacon_white"] : 0;
     s["lamp.brake_l"] = s["lamp.brake_r"] = s["in.brake"] ? 255 : 0;
+    // Beacon strobe / full emergency (teryx/lights.py rule 11, roughly)
+    const fl = m["light.flash"], stopped = spdNow(s) < 0.5;
+    s["light.flash_running"] = fl !== "off" && !this.lock.locked;
+    if (fl !== "off") s["light.show_running"] = false;
+    if (s["light.flash_running"]) {
+      const p = Math.round(this.t * 1000) % 500, dbl = (q) => q < 60 || (q >= 120 && q < 180);
+      s["lamp.beacon"] = stopped ? (dbl(p) ? 255 : 0) : ((this.t % 0.333) < 0.167 ? 255 : 0);
+      s["lamp.beacon_white"] = stopped && dbl((p + 250) % 500) ? 255 : 0;
+      if (fl === "emergency" && stopped) {
+        const left = p < 250;
+        for (const k of ["head_l_low", "tail_l", "flood_l", "trailer_tail", "trailer_bar"]) s[`lamp.${k}`] = left ? 255 : 0;
+        for (const k of ["head_r_low", "tail_r", "flood_r", "trailer_stop"]) s[`lamp.${k}`] = left ? 0 : 255;
+        if (!s["in.brake"]) { s["lamp.brake_l"] = left ? 255 : 0; s["lamp.brake_r"] = left ? 0 : 255; }
+        s["light.front_1"] = s["light.front_2"] = left ? 255 : 0;
+        s["light.front_3"] = s["light.front_4"] = left ? 0 : 255;
+      }
+    }
 
     // 4WD actuator runs to its end stop
     if (this.fourwdTimer > 0) {

@@ -104,7 +104,8 @@ Stock lamps, rear floods, beacon, trailer bar and the light show (docs/lights.md
 | `trailer_bar` | byte 4 | u8 |  |  |
 | `beacon` | byte 5 | u8 |  | Roof beacon brightness, 0 = off. The Pico flashes it at 3 Hz |
 | `show` | byte 6 bit 0 (+4 bits) | u4 |  | Light show, parked only 0=none, 1=wave, 2=breathe, 3=roar, 4=party |
-| `counter` | byte 6 bit 4 (+4 bits) | u4 |  |  |
+| `flash` | byte 6 bit 4 (+2 bits) | u2 |  | Flash mode: warning = beacon strobe, emergency = every lamp flashes (stopped). Key on, not locked. Moving: amber beacon only, at 3 Hz 0=off, 1=warning, 2=emergency |
+| `counter` | byte 6 bit 6 (+2 bits) | u2 |  |  |
 | `beacon_white` | byte 7 | u8 |  | White side of the beacon, 0 = off. 3 Hz opposite the amber, only when stopped |
 
 ### 0x71F PI_FW_UPDATE
@@ -247,6 +248,7 @@ What the PCA9685 lamps are actually doing, after every safety rule (docs/lights.
 | `show_running` | byte 7 bit 4 | u1 |  |  |
 | `show_blocked` | byte 7 bit 5 | u1 |  | A show was asked for but the Teryx isn't parked (key on, park brake, stopped) |
 | `pwm_ok` | byte 7 bit 6 | u1 |  | PCA9685 answering |
+| `flash_running` | byte 7 bit 7 | u1 |  | Beacon warning or full emergency running |
 
 ### 0x718 PICO_STEER
 

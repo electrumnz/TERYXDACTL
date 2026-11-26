@@ -201,7 +201,7 @@ class ControlBox:
             self.lights_req = {k: v[k] for k in self.lights_req}
         elif name == "PI_LIGHTS2":
             r = self.lights2_req
-            for k in ("head_low", "head_high", "tail", "rear", "trailer_bar", "beacon", "show", "beacon_white"):
+            for k in ("head_low", "head_high", "tail", "rear", "trailer_bar", "beacon", "show", "beacon_white", "flash"):
                 setattr(r, k, int(v.get(k, 0)))
         elif name == "PI_DRIVE":
             self._drive_request(v)
@@ -700,10 +700,11 @@ class ControlBox:
             brake=self.inp("in.brake"), reverse=self.inp("in.reverse"),
             trailer=self.inp("in.trailer"), stopped=self.stopped(), park=self.inp("in.park"),
             ignition=self.inp("in.ignition"), locked=self.locked, dash_ok=self.dash_ok(),
-            front_on=any(int(r[f"front_{n}"]) for n in range(1, 5)), now_ms=int(t * 1000))
+            front_on=any(int(r[f"front_{n}"]) for n in range(1, 5)), now_ms=int(t * 1000),
+            interior=levels[4])
         o2 = self.lights2.step(req, st)
         self.lights2_out = o2
-        if o2.front is not None:   # the show drives the front bars and cabin bar too
+        if o2.front is not None:   # the show / emergency drives the front bars and cabin bar too
             levels = [o2.front[f"front_{n}"] for n in range(1, 5)] + [o2.front["interior"]]
             levels = [lvl if mask & (1 << i) else (255 if lvl >= 128 else 0) for i, lvl in enumerate(levels)]
         self.lights_out = {
@@ -826,6 +827,7 @@ class ControlBox:
         if o2 is not None:
             out.append(("PICO_LIGHTS2", {**{k: o2.level[k] >> 4 for k in LAMPS},
                                          "show_running": int(o2.show_running),
-                                         "show_blocked": int(o2.show_blocked), "pwm_ok": 1}))
+                                         "show_blocked": int(o2.show_blocked), "pwm_ok": 1,
+                                         "flash_running": int(o2.flash_running)}))
         out.append(("PICO_STEER", self.steer_frame()))
         return out

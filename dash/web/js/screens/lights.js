@@ -1,5 +1,5 @@
 // Lights: 4 front bars, interior bar, headlights, tails, rear floods, beacon, trailer bar and the
-// light show. Each front bar is set up as dimmable or on/off in Settings. Everything else dims
+// light show, plus the beacon strobe and full emergency flash modes. Each front bar is set up as dimmable or on/off in Settings. Everything else dims
 // through the control box's PWM board (docs/lights.md), which also makes the safety calls:
 // brake lights always full, headlights and tails only dim when parked, show parked only.
 import { el, $, Slider } from "../ui/controls.js";
@@ -19,7 +19,7 @@ export class LightsScreen {
     this.want = Object.fromEntries(LIGHTS.map((l) => [l.id, 0]));
     this.lastLevel = Object.fromEntries(LIGHTS.map((l) => [l.id, 255]));
     this.effect = "none"; this.rear = "auto";
-    this.head = "off"; this.showSel = "none";
+    this.head = "off"; this.showSel = "none"; this.flash = "off";
     this.more = { "light.head_level": 255, "light.tail": 0, "light.rear_level": 0, "light.trailer_bar": 0, "light.beacon": 0, "light.beacon_white": 0 };
     this.lastBeacon = 255;
   }
@@ -33,6 +33,15 @@ export class LightsScreen {
           <div class="light-grid" id="l-more"></div>
         </div>
         <div class="col lights-side">
+          <div class="panel">
+            <h3>Warning lights</h3>
+            <div class="fx-grid flash-grid" id="l-flash">
+              <button class="btn sm" data-flash="warning">Beacon strobe</button>
+              <button class="btn sm danger" data-flash="emergency">Full emergency</button>
+              <button class="btn sm" data-flash="off">Cancel</button>
+            </div>
+            <div class="muted small" id="l-flash-state" style="margin-top:6px">Strobe: beacon only. Emergency: everything flashes when stopped.</div>
+          </div>
           <div class="panel">
             <h3>Headlights</h3>
             <div class="seg" id="l-head"><button data-v="off">Off</button><button data-v="low">Low</button><button data-v="high">High</button></div>
@@ -80,6 +89,8 @@ export class LightsScreen {
     stop.onclick = () => this.setShow("none");
     sh.appendChild(stop);
     this.paintShow();
+    this.root.querySelectorAll("[data-flash]").forEach((b) => (b.onclick = () => this.setFlash(this.flash === b.dataset.flash ? "off" : b.dataset.flash)));
+    this.paintFlash();
 
     const vp = el(`<div class="light-tile" style="align-items:center;justify-content:center;padding:4px"></div>`);
     this.veh = vehicleDiagram(); this.veh.root.classList.add("tiny"); vp.appendChild(this.veh.root); other.appendChild(vp);
@@ -164,6 +175,7 @@ export class LightsScreen {
 
   setHead(v) { this.head = v; this.ctx.link.request("light.head", v); this.paintHead(); }
   setShow(v) { this.showSel = v; this.ctx.link.request("light.show", v); this.paintShow(); }
+  setFlash(v) { this.flash = v; this.ctx.link.request("light.flash", v); this.paintFlash(); }
 
   paintLevel(id) {
     const t = this.levelTiles && this.levelTiles[id]; if (!t) return;
@@ -177,6 +189,8 @@ export class LightsScreen {
     this.root.querySelectorAll("#l-head button").forEach((b) => b.classList.toggle("on", b.dataset.v === this.head));
     this.headSlider.set(pct(this.more["light.head_level"]) || 100);
   }
+
+  paintFlash() { this.root.querySelectorAll("[data-flash]").forEach((b) => b.classList.toggle("on", b.dataset.flash === this.flash && this.flash !== "off")); }
 
   paintShow() { this.root.querySelectorAll("[data-show]").forEach((b) => b.classList.toggle("on", b.dataset.show === this.showSel && this.showSel !== "none")); }
 
@@ -245,6 +259,15 @@ export class LightsScreen {
         if (id === "light.head_level") this.paintHead(); else if (id === "light.rear_level") this.rearSlider.set(pct(r) || 100); else this.paintLevel(id);
       }
     }
+    const flash = st.get("req.light.flash");
+    const fp = st.pending("light.flash");   // the top bar chip and the phone can change it too
+    if (flash && flash !== this.flash && (!fp || fp.value === flash || Date.now() - fp.at > 1500)) { this.flash = flash; this.paintFlash(); }
+    const fs = $(this.root, "#l-flash-state");
+    const moving = !(st.get("pico.speed_valid") !== false && (st.get("mc.speed") || 0) < 0.5);
+    if (this.flash === "off") { fs.textContent = "Strobe: beacon only. Emergency: everything flashes when stopped."; fs.className = "muted small"; }
+    else if (!st.get("light.flash_running")) { fs.textContent = "Waiting: key on and unlocked first."; fs.className = "small warn"; }
+    else if (moving) { fs.textContent = "On the move: amber beacon only, 3 times a second. The rest flashes once you stop."; fs.className = "small warn"; }
+    else { fs.textContent = this.flash === "emergency" ? "Everything flashing. Brake still lights steady. Tap Cancel to stop." : "Beacon strobing. Tap Cancel to stop."; fs.className = "small ok"; }
     const show = st.get("req.light.show");
     if (show && show !== this.showSel && !st.pending("light.show")) { this.showSel = show; this.paintShow(); }
     const ss = $(this.root, "#l-show-state");
