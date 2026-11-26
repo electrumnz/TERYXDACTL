@@ -294,6 +294,7 @@ class Gateway:
                 st["act.4wd_wait"] = bool(v.get("fourwd_wait", 0))
                 st["act.diff_wait"] = bool(v.get("diff_wait", 0))
                 st["pico.throttle_hold"] = bool(v.get("throttle_hold", 0))
+                st["pico.park_block"] = bool(v.get("park_block", 0))
                 st["pico.sentry_hold"] = bool(v.get("sentry_hold", 0))
                 st["pico.sentry_flat"] = bool(v.get("sentry_flat", 0))
                 if self._last_reject_count is not None and v["reject_count"] != self._last_reject_count:

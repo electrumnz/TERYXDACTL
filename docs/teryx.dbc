@@ -108,6 +108,7 @@ BO_ 1808 PICO_STATUS: 8 PICO_BOX
  SG_ fourwd_wait : 36|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ diff_wait : 37|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ throttle_hold : 38|1@1+ (1,0) [0|1] "" Vector__XXX
+ SG_ park_block : 39|1@1+ (1,0) [0|1] "" Vector__XXX
  SG_ reject_reason : 40|4@1+ (1,0) [0|15] "" Vector__XXX
  SG_ reject_count : 44|4@1+ (1,0) [0|15] "" Vector__XXX
  SG_ winch_armed : 48|1@1+ (1,0) [0|1] "" Vector__XXX
@@ -251,6 +252,7 @@ CM_ SG_ 1808 on_defaults "Pico is running on default settings, please resend";
 CM_ SG_ 1808 fourwd_wait "A 2WD/4WD request is waiting for the right speed (docs/drive-changes.md)";
 CM_ SG_ 1808 diff_wait "A diff lock request is waiting for the right speed";
 CM_ SG_ 1808 throttle_hold "Throttle held: a shift is running from a standstill";
+CM_ SG_ 1808 park_block "Park brake on: drive blocked, relay 6 open (docs/park-brake.md)";
 CM_ SG_ 1808 reject_reason "Why the last request was refused";
 CM_ SG_ 1808 reject_count "Goes up by one each time a request is refused";
 CM_ SG_ 1808 shutdown_request "Key off: Pi should shut down";

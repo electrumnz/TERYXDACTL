@@ -541,6 +541,45 @@ def test_throttle_hold_only_from_a_standstill(b):
     assert b.cb.diff.moving and not b.cb.throttle_hold
 
 
+def test_park_brake_blocks_drive_never_on_the_move(b):
+    """Rule 11, same as test_park_interlock in the firmware tests (docs/park-brake.md)."""
+    cb = b.cb
+    cb.forced["in.park"] = True
+    b.run(0.1)
+    assert cb.park_block and status(b)["park_block"] == 1 and cb.relays()["drive.park_block"]
+    cb.forced["in.park"] = False
+    b.run(0.1)
+    assert not cb.park_block
+    b.speed = 15                # pulled on while rolling: not cut on the move
+    b.run(0.2)
+    cb.forced["in.park"] = True
+    b.run(0.2)
+    assert not cb.park_block
+    b.speed = 0                 # stopped: blocks, and stays on if it creeps
+    b.run(0.2)
+    assert cb.park_block
+    b.speed = 3
+    b.run(0.2)
+    assert cb.park_block
+    cb.settings["park_interlock"] = 0
+    b.run(0.1)
+    assert not cb.park_block
+
+
+def test_vehicle_honours_park_block():
+    from teryx.sim.vehicle import Vehicle
+    v = Vehicle()
+    v.inp.direction, v.inp.throttle = "forward", 0.5
+    v.park_block = True
+    for _ in range(50):
+        v.step(0.02)
+    assert v.speed_ms < 0.05
+    v.park_block = False
+    for _ in range(50):
+        v.step(0.02)
+    assert v.speed_ms > 0.5
+
+
 def test_vehicle_honours_throttle_hold():
     from teryx.sim.vehicle import Vehicle
     v = Vehicle()

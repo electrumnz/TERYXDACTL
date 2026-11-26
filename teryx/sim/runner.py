@@ -195,6 +195,8 @@ class Simulator:
                 self.vehicle.throttle_hold = self.cb.throttle_hold
                 # ...and the vehicle lock's drive inhibit (also TBC, docs/vehicle-lock.md)
                 self.vehicle.drive_inhibit = self.cb.drive_inhibit
+                # ...and the park brake interlock (relay 6 opens the pedal switch, docs/park-brake.md)
+                self.vehicle.park_block = self.cb.park_block
                 self.cb_node.enabled = self.links["controlbox"]
                 for name, values in self.cb.frames():
                     self.cb_node.send_due(BY_NAME[name], lambda values=values: values, now)

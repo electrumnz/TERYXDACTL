@@ -24,9 +24,11 @@ enum {
 #define BIT(n) (1u << (n))
 
 // Relays (MCP23017 port A). Bit 0 = relay 1.
+// Relay 6 (R_PARK_BLOCK) opens the throttle pedal switch line (its NC contact) while
+// the park brake is on, so the Shinegle sees the pedal as up: no drive.
 enum {
     R_REAR = 0, R_TRAILER_TAIL = 1, R_TRAILER_BRAKE = 2, R_WINCH_IN = 3,
-    R_WINCH_OUT = 4, R_SPARE6 = 5, R_ACCESSORY = 6, R_POWER_HOLD = 7,
+    R_WINCH_OUT = 4, R_PARK_BLOCK = 5, R_ACCESSORY = 6, R_POWER_HOLD = 7,
 };
 
 // Relays 9-16 (second MCP23017 port A). Bit 0 = relay 9.
@@ -62,6 +64,7 @@ typedef struct {
     bool save_settings;        // hardware layer: write settings to flash, then clear
     bool throttle_hold;        // ask the Shinegle to hold throttle (how is TBC until it's decoded)
     bool drive_inhibit;        // vehicle locked: no drive at all (how is TBC, docs/vehicle-lock.md)
+    bool park_block;           // park brake on: throttle pedal switch opened by relay 6 (docs/park-brake.md)
     bool save_lock;            // hardware layer: write c->lock.saved to its flash sector, then clear
     uint8_t relays2;           // R2_* bits on the second MCP23017 (0x21), logical
     bool eps_on;               // send the Toyota EPS frames (eps.h) every 20 ms
@@ -158,6 +161,9 @@ typedef struct {
     // moving: if the Teryx rolls, it drops and stays off until the shift ends.
     bool throttle_hold;
     bool throttle_hold_blocked;
+    // Park brake interlock (docs/park-brake.md): latched on while the park brake is on
+    // and the Teryx wasn't already moving when it went on.
+    bool park_block;
     tray_t tray;
     winch_t winch;
 

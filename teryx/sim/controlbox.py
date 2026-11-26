@@ -28,6 +28,9 @@ Safety rules (IO list section 7, values from SETTINGS):
  9. (Was brake pedal regen. Dropped 2026-11-19: regen is left to the Shinegle.)
 10. Vehicle lock (PIN): see teryx/vehicle_lock.py and docs/vehicle-lock.md. Locked =
     drive inhibit, nothing moves, lights off, no settings or firmware updates.
+11. Park brake interlock (docs/park-brake.md): key on + park brake on -> relay 6 opens
+    the throttle pedal switch, so no drive. Goes on only if stopped (or speed not known
+    yet), never cuts on the move, stays on until the park brake is let off. Setting 41.
 
 Requests act on a *change* of value. The dash resends 0x701/0x702 every second
 so a rebooted Pico picks them up, but a refused 4WD request is not quietly
@@ -104,6 +107,7 @@ class ControlBox:
     diff_wait: tuple | None = None
     throttle_hold: bool = False
     throttle_hold_blocked: bool = False
+    park_block: bool = False           # rule 11: park brake on, relay 6 open, no drive
     # winch
     winch_armed: bool = False
     winch_dir: int = 0
@@ -394,6 +398,14 @@ class ControlBox:
         elif not self.throttle_hold_blocked:
             self.throttle_hold = True
 
+    def _update_park_block(self) -> None:
+        on = (self.inp("in.park") and self.inp("in.ignition") and self.s("park_interlock")
+              and "io_bus_dead" not in self.bench_faults)
+        if not on:
+            self.park_block = False
+        elif not self.park_block and (self.stopped() or not self.speed_known()):
+            self.park_block = True
+
     def _hold_request(self, v: dict, now: float) -> None:
         self.last_hold = now
         tray, winch = int(v["tray"]), int(v["winch"])
@@ -571,6 +583,7 @@ class ControlBox:
             self._fault_actuator(self.diff)
 
         self._update_throttle_hold()
+        self._update_park_block()
 
         # --- tray: hold-to-run, limit switches, current, max run
         if self.hold_tray > 0 and not self.inp("in.tray_up"):
@@ -725,6 +738,7 @@ class ControlBox:
             "trailer.brake": bool(self.lights2_out and self.lights2_out.level["trailer_stop"]),
             "winch.in": self.winch_dir == 1,
             "winch.out": self.winch_dir == -1,
+            "drive.park_block": self.park_block,
             "aux.accessory": ign,
             "power.hold": holding,
         }
@@ -783,6 +797,7 @@ class ControlBox:
                 "fourwd_wait": int(self.fourwd_wait is not None),
                 "diff_wait": int(self.diff_wait is not None),
                 "throttle_hold": int(self.throttle_hold),
+                "park_block": int(self.park_block),
                 "reject_reason": M.enum_value(M.REJECT_REASON, self.reject_reason),
                 "reject_count": self.reject_count,
                 "winch_armed": int(self.winch_armed),

@@ -58,6 +58,7 @@ FALLBACK: list[Setting] = [
     Setting(38, "eps_silent_ms", "Steering quiet after", 1000, "ms", None, 100, 200, 5000, editable=False),
     Setting(39, "eps_rpm", "Fake engine RPM", 1674, "rpm", None, 1, 0, 8000, "What the column is told the engine is doing. Bench setting.", editable=False),
     Setting(40, "eps_wake_ms", "Steering wake time", 3000, "ms", None, 500, 500, 15000, "Time the column gets to boot before it's judged.", editable=False),
+    Setting(41, "park_interlock", "No drive with park brake on", 1, "", None, 1, 0, 1, "The control box blocks the throttle while the park brake is on. You can still pick F or R. Only blocks if you were stopped when it went on."),
     Setting(17, "hold_to_run_timeout_ms", "Hold-to-run stop after", 300, "ms", None, 50, 100, 2000, "Stop the tray or winch if the dash's repeats stop this long."),
 ]
 

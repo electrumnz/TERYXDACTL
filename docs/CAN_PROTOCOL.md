@@ -134,6 +134,7 @@ From **controlbox**, every 100 ms.
 | `fourwd_wait` | byte 4 bit 4 | u1 |  | A 2WD/4WD request is waiting for the right speed (docs/drive-changes.md) |
 | `diff_wait` | byte 4 bit 5 | u1 |  | A diff lock request is waiting for the right speed |
 | `throttle_hold` | byte 4 bit 6 | u1 |  | Throttle held: a shift is running from a standstill |
+| `park_block` | byte 4 bit 7 | u1 |  | Park brake on: drive blocked, relay 6 open (docs/park-brake.md) |
 | `reject_reason` | byte 5 bit 0 (+4 bits) | u4 |  | Why the last request was refused 0=none, 1=too_fast, 2=not_stopped, 3=speed_unknown, 4=not_armed, 5=interlock, 6=actuator_fault, 7=low_12v, 8=dash_link, 9=ignition_off, 10=at_limit, 11=not_parked, 12=winch_remote, 13=bad_frame, 14=wait_timeout, 15=busy |
 | `reject_count` | byte 5 bit 4 (+4 bits) | u4 |  | Goes up by one each time a request is refused |
 | `winch_armed` | byte 6 bit 0 | u1 |  |  |
@@ -342,7 +343,7 @@ HOST/BENCH BUILD ONLY. Lets the simulator drive the Pico's wired inputs and inje
 | 2 | `trailer.brake` |
 | 3 | `winch.in` |
 | 4 | `winch.out` |
-| 5 | `relay.spare6` |
+| 5 | `drive.park_block` |
 | 6 | `aux.accessory` |
 | 7 | `power.hold` |
 
@@ -403,6 +404,7 @@ HOST/BENCH BUILD ONLY. Lets the simulator drive the Pico's wired inputs and inje
 | 38 (0x26) | `eps_silent_ms` | ms | 1000 | 200-5000 |
 | 39 (0x27) | `eps_rpm` | rpm | 1674 | 0-8000 |
 | 40 (0x28) | `eps_wake_ms` | ms | 3000 | 500-15000 |
+| 41 (0x29) | `park_interlock` | bool | 1 | 0-1 |
 | 240 (0xF0) | save to flash | | | |
 | 241 (0xF1) | reset to defaults | | | |
 | 242 (0xF2) | clear latched faults | | | |

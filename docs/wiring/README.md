@@ -13,7 +13,7 @@ web server). It's laid out from [`schematic.json`](schematic.json) by [`sld.js`]
 (elkjs, EPL-2.0, unchanged copy in [`vendor/`](vendor/)). The simulator page links to it and lights
 up the live wires.
 
-**97 devices, 375 wires.** By status: 19 from_manual, 3 confirmed, 297 planned, 52 tbc, 4 placeholder.
+**97 devices, 377 wires.** By status: 18 from_manual, 3 confirmed, 300 planned, 52 tbc, 4 placeholder.
 Nothing has been checked on the real Teryx yet.
 
 Wire sizes follow the conservative table in the YAML (from
@@ -25,12 +25,12 @@ runs up to about 5 m). Go one size up for bundled or hot runs.
 1. Traction: 72 V pack, controller, motor, DC-DC (10 wires)
 2. 12 V power: battery, fuses, key, dash rail, bucks (25 wires)
 3. Grounds (chassis, star point) (1 wires)
-4. Shinegle low voltage: key, F-N-R, throttle, sensors, programmer (18 wires)
+4. Shinegle low voltage: key, F-N-R, throttle, sensors, programmer (19 wires)
 5. Winch (20 wires)
 6. Lights (85 wires)
 7. Drive: 4WD, diff lock, tray, power steering (39 wires)
 8. Trailer plug and trailer camera (24 wires)
-9. Control box inside: Pico 2 and its boards (51 wires)
+9. Control box inside: Pico 2 and its boards (52 wires)
 10. 12 V signals into the control box (opto board) (18 wires)
 11. CAN buses: main Teryx bus and the steering bus (8 wires)
 12. RC box: steering by remote (fake torque sensor) (37 wires)
@@ -179,7 +179,8 @@ Fuses not in the block (inline, at the battery or on a board):
 | S07 | SG1202.J1-25 | THROTTLE.V12 |  |  |  | from_manual |  |
 | S08 | THROTTLE.WIPER | SG1202.J1-16 |  |  |  | from_manual |  |
 | S09 | THROTTLE.GND | SG1202.J1-18 |  |  |  | from_manual |  |
-| S10 | THROTTLE.SW | SG1202.J1-9 |  |  |  | from_manual |  |
+| S10 | THROTTLE.SW | RELAYS.COM6 |  |  |  | planned | Pedal switch wire cut and run through relay 6 (park brake interlock, docs/park-brake.md) |
+| S10b | RELAYS.NC6 | SG1202.J1-9 |  |  |  | planned | NC contact: relay off = pedal switch works as normal, so a dead control box never strands you. Relay on (park brake on) = Shinegle sees the pedal as up, no drive |
 | S11 | SG1202.J1-25 | MOTOR.SPD_12V |  |  |  | from_manual | Speed sensor plugs J6/J7 |
 | S12 | MOTOR.SPD_A | SG1202.J1-31 |  |  |  | from_manual |  |
 | S13 | MOTOR.SPD_B | SG1202.J1-32 |  |  |  | from_manual |  |
@@ -315,6 +316,7 @@ Fuses not in the block (inline, at the battery or on a board):
 | L19 | MCP1.A0 | RELAYS.IN1 |  |  |  | planned | light.rear (relay 1 now only feeds the trailer reverse pin) |
 | L22 | MCP1.A3 | RELAYS.IN4 |  |  |  | planned | winch.in |
 | L23 | MCP1.A4 | RELAYS.IN5 |  |  |  | planned | winch.out |
+| L24 | MCP1.A5 | RELAYS.IN6 |  |  |  | planned | drive.park_block (park brake interlock) |
 | L25 | MCP1.A6 | RELAYS.IN7 |  |  |  | planned | aux.accessory |
 | L26 | MCP1.A7 | RELAYS.IN8 |  |  |  | planned | power.hold |
 | L27 | MCP2.A0 | RELAYS2.IN1 |  |  |  | planned (optional) | steering enable |
@@ -665,7 +667,7 @@ Fuses not in the block (inline, at the battery or on a board):
 | LIM_DN | Tray down limit (NC) | rear | planned |  |
 | LIM_UP | Tray up limit (NC) | rear | planned |  |
 | BRAKE_SW | Brake light switch (stock) | cab | tbc | Also feeds both brake filaments and the trailer stop pin through diodes, so the brake lights work at full even with the control box off |
-| PARK_SW | Parking brake switch (stock) | cab | tbc | Lights the red parking brake light in the meter |
+| PARK_SW | Parking brake switch (stock) | cab | tbc | Foot pedal park brake, cable only, no actuator. This switch only senses it: it lights the red park brake light in the meter and tells the control box (in.park), which then blocks drive through relay 6 (docs/park-brake.md) |
 | EPS_ECU | Toyota Aqua EPS ECU (89650-52B51) | cab | tbc (optional) | Owned with its power plug (B+, GND). Still need the signal plug (IG, CANH, CANL). Pin numbers TBC: Toyota's RAV4 EPS ECU has IG, CANH, CANL on one plug and PIG, PGND on the other See [`docs/power-steering-aqua.md`](../../docs/power-steering-aqua.md). |
 | EPS_COL | Aqua steering column (motor + torque sensor) | cab | tbc (optional) | Motor and torque sensor plugs go to the ECU on Toyota's own loom. For RC, the two torque sensor signal wires (TRQ1, TRQ2) are cut and go through the RC changeover relay; the sensor's own 5 V and ground stay as Toyota wired them |
 | RC_PICO | RC box Raspberry Pi Pico 2 (spare from the 5-pack) | control_box | planned (optional) | Second Pico, only for RC. Drives the steering by faking the torque sensor. If it stops or loses power the changeover relay drops and the real torque sensor is back. Pins TBC in the RC firmware; these are a starting point See [`docs/rc-beach-launch.md`](../../docs/rc-beach-launch.md). |

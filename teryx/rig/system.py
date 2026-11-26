@@ -318,6 +318,7 @@ class System:
             veh.inp.direction = sg.direction(get)
             veh.inp.throttle = sg.throttle(get)      # through the pedal wires (models.Shinegle)
             veh.inp.brake = 1.0 if self.m["BRAKE_SW"].on else 0.0
+            veh.inp.handbrake = self.m["PARK_SW"].on   # foot pedal park brake: a cable, the switch only senses it
             # a shorted or open-ground throttle wire is the controller's own throttle fault
             veh.forced_faults = set(self.sim.manual_faults) | ({"throttle"} if sg.throttle_fault(get) else set())
         else:   # a scripted drive: the F-N-R switch follows it

@@ -357,13 +357,13 @@ devices:
     status: planned
     note: One 16-channel board of mechanical 5 V relays with opto and JD-VCC jumper (AliExpress cart), in an aux box next to the control box. RELAYS2 is channels 9-16 of the same board. The solid state G3MB-202P board Sam has is AC only and won't turn off on 12 V DC. JD-VCC jumper off, coils on 5 V, inputs from 3.3 V
     check: Does the relay board click from 3.3 V logic? Active high or low? Relays are SRD-05VDC type, 10 A at 28-30 V DC. Keep each load under about 7 A. Nothing on the relays gets near that now the floods are on the MOSFET board (relay 1 only feeds the trailer reversing lamp)
-    # Relay loads (none carry big current): 1 trailer reversing pin, 2-3 spare (trailer tail/stop moved to BTS8), 4-5 winch solenoid COILS only, 6 spare (isolator dropped)
+    # Relay loads (none carry big current): 1 trailer reversing pin, 2-3 spare (trailer tail/stop moved to BTS8), 4-5 winch solenoid COILS only, 6 park brake interlock (NC contact in the throttle pedal switch wire, a few mA)
     # (the winch motor current goes through its own contactor), 7 accessory (phone charger + trailer cam, about 5 A), 8 power hold (dash rail, about 5 A).
-    # All other lights are on the MOSFET and BTS7960 boards via the PCA9685. 7 of 16 relays used, 9 spare
+    # All other lights are on the MOSFET and BTS7960 boards via the PCA9685. 8 of 16 relays used, 8 spare
     pins: {VCC: 3v3, JDVCC: 5v, GND: gnd,
            IN1: 3v3, IN2: 3v3, IN3: 3v3, IN4: 3v3, IN5: 3v3, IN6: 3v3, IN7: 3v3, IN8: 3v3,
-           COM1: 12v, COM2: 12v, COM3: 12v, COM4: 12v, COM5: 12v, COM6: 12v, COM7: 12v, COM8: 12v,
-           NO1: {v: 12v, multi: true}, NO2: 12v, NO3: 12v, NO4: 12v, NO5: 12v, NO6: 12v, NO7: {v: 12v, supply: true, multi: true, fuse_a: 10}, NO8: 12v}
+           COM1: 12v, COM2: 12v, COM3: 12v, COM4: 12v, COM5: 12v, COM6: sg, COM7: 12v, COM8: 12v,
+           NO1: {v: 12v, multi: true}, NO2: 12v, NO3: 12v, NO4: 12v, NO5: 12v, NC6: sg, NO7: {v: 12v, supply: true, multi: true, fuse_a: 10}, NO8: 12v}
   RELAYS2:
     name: 16-ch relay board, channels 9-16 (2 used, 6 spare)
     zone: control_box
@@ -529,7 +529,7 @@ devices:
     name: Parking brake switch (stock)
     zone: cab
     status: tbc
-    note: Lights the red parking brake light in the meter
+    note: "Foot pedal park brake, cable only, no actuator. This switch only senses it: it lights the red park brake light in the meter and tells the control box (in.park), which then blocks drive through relay 6 (docs/park-brake.md)"
     check: Find the parking brake switch wire at the meter plug. Does it switch ground or 12 V?
     pins: {OUT: 12v}
   EPS_ECU:
@@ -797,7 +797,8 @@ wires:
   - {id: S07, from: SG1202.J1-25, to: THROTTLE.V12, sys: sg, status: from_manual}
   - {id: S08, from: THROTTLE.WIPER, to: SG1202.J1-16, sys: sg, status: from_manual}
   - {id: S09, from: THROTTLE.GND, to: SG1202.J1-18, sys: sg, status: from_manual}
-  - {id: S10, from: THROTTLE.SW, to: SG1202.J1-9, sys: sg, status: from_manual}
+  - {id: S10, from: THROTTLE.SW, to: RELAYS.COM6, sys: sg, status: planned, note: "Pedal switch wire cut and run through relay 6 (park brake interlock, docs/park-brake.md)"}
+  - {id: S10b, from: RELAYS.NC6, to: SG1202.J1-9, sys: sg, status: planned, note: "NC contact: relay off = pedal switch works as normal, so a dead control box never strands you. Relay on (park brake on) = Shinegle sees the pedal as up, no drive"}
   - {id: S11, from: SG1202.J1-25, to: MOTOR.SPD_12V, sys: sg, status: from_manual, note: "Speed sensor plugs J6/J7"}
   - {id: S12, from: MOTOR.SPD_A, to: SG1202.J1-31, sys: sg, status: from_manual}
   - {id: S13, from: MOTOR.SPD_B, to: SG1202.J1-32, sys: sg, status: from_manual}
@@ -916,6 +917,7 @@ wires:
   - {id: L19, from: MCP1.A0, to: RELAYS.IN1, sys: logic, status: planned, note: "light.rear (relay 1 now only feeds the trailer reverse pin)"}
   - {id: L22, from: MCP1.A3, to: RELAYS.IN4, sys: logic, status: planned, note: "winch.in"}
   - {id: L23, from: MCP1.A4, to: RELAYS.IN5, sys: logic, status: planned, note: "winch.out"}
+  - {id: L24, from: MCP1.A5, to: RELAYS.IN6, sys: logic, status: planned, note: "drive.park_block (park brake interlock)"}
   - {id: L25, from: MCP1.A6, to: RELAYS.IN7, sys: logic, status: planned, note: "aux.accessory"}
   - {id: L26, from: MCP1.A7, to: RELAYS.IN8, sys: logic, status: planned, note: "power.hold"}
   - {id: L27, from: MCP2.A0, to: RELAYS2.IN1, sys: logic, status: planned, optional: true, note: "steering enable"}

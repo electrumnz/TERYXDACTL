@@ -262,6 +262,21 @@ static void wait_diff(controller_t *c, uint32_t now) {
 // Throttle hold: only while a shift runs AND the Teryx was stopped when it
 // started. If it starts rolling the hold drops and stays off for that shift,
 // so throttle is never cut while moving.
+// Park brake interlock (docs/park-brake.md). The park brake is a foot pedal with a
+// switch (in.park), no actuator. With it on, relay 6 opens the throttle pedal switch
+// line so the Shinegle sees the pedal as up and gives no drive. F-N-R can still be
+// moved. It only goes on if the Teryx isn't known to be rolling (stopped, or speed
+// not known yet at key-on), then stays on until the park brake is let off. Off with
+// the key off, the setting off, or the inputs not trusted (fails to "can drive").
+static void update_park_block(controller_t *c, uint32_t now) {
+    bool park = (c->in.din & BIT(IN_PARK)) != 0;
+    if (!park || !ignition(c) || !c->in.io_ok || !S(c, SET_PARK_INTERLOCK)) {
+        c->park_block = false;
+        return;
+    }
+    if (!c->park_block && (stopped(c, now) || !ctl_speed_valid(c, now))) c->park_block = true;
+}
+
 static void update_throttle_hold(controller_t *c, uint32_t now) {
     bool shifting = c->fwd.moving || c->diff.moving;
     if (!shifting || !S(c, SET_SHIFT_THROTTLE_HOLD)) {
@@ -829,6 +844,7 @@ static void send_status(controller_t *c, uint32_t now, cb_send_fn send, void *u)
     if (c->fwd.waiting) f.data[4] |= STATE_BIT_4WD_WAIT;
     if (c->diff.waiting) f.data[4] |= STATE_BIT_DIFF_WAIT;
     if (c->throttle_hold) f.data[4] |= STATE_BIT_THROTTLE_HOLD;
+    if (c->park_block) f.data[4] |= STATE_BIT_PARK_BLOCK;
     f.data[5] = (uint8_t)((c->reject_count << 4) | (c->reject_reason & 0x0F));
     uint8_t flags = 0;
     if (c->winch.armed) flags |= FLAG_WINCH_ARMED;
@@ -974,6 +990,9 @@ void ctl_tick(controller_t *c, const cb_in_t *in, cb_out_t *out, cb_send_fn send
     run_4wd(c, now, out);
     update_throttle_hold(c, now);
     out->throttle_hold = c->throttle_hold;
+    update_park_block(c, now);
+    out->park_block = c->park_block;
+    if (c->park_block) out->relays |= BIT(R_PARK_BLOCK);
     run_tray(c, now, out, dash_ok);
     run_winch(c, now, out, dash_ok);
     if (locked) memset(c->light_req, 0, sizeof(c->light_req));
@@ -1034,7 +1053,7 @@ void ctl_tick(controller_t *c, const cb_in_t *in, cb_out_t *out, cb_send_fn send
     // Firmware update: outputs go safe first, the hardware layer reboots.
     if (c->bootloader_pending) {
         if (ctl_parked(c, now)) {
-            uint8_t keep = out->relays & (BIT(R_POWER_HOLD) | BIT(R_ACCESSORY));
+            uint8_t keep = out->relays & (BIT(R_POWER_HOLD) | BIT(R_ACCESSORY) | BIT(R_PARK_BLOCK));
             memset(out->act_dir, 0, sizeof(out->act_dir));
             memset(out->act_duty, 0, sizeof(out->act_duty));
             out->relays = keep;
