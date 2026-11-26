@@ -113,3 +113,11 @@ table.pins td { border-top: 1px solid #eaeef2; padding: 3px 6px 3px 0; vertical-
 .simbtn { font: inherit; font-size: 14px; padding: 7px 12px; border-radius: 8px; border: 1px solid #0969da; background: #0969da; color: #fff; cursor: pointer; }
 .simbtn:disabled { opacity: .5; }
 #cols[aria-pressed="false"] { opacity: .6; }
+
+.embedded #sim, .embedded .back { display: none; }
+/* live and zoomed out: dead wires fade, powered ones stand out so you can see it working */
+.sld.live.far .w:not(.on-12):not(.on-hv):not(.on-lo) { stroke-opacity: .35; }
+.sld.live.far .w.on-12, .sld.live.far .w.on-lo { stroke-width: 6; }
+.sld.live.far .w.on-hv { stroke-width: 9; }
+.sld.live.veryfar .w.on-12, .sld.live.veryfar .w.on-lo { stroke-width: 12; }
+.sld.live.veryfar .w.on-hv { stroke-width: 16; }

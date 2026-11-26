@@ -80,12 +80,66 @@
     if (!wPanel.hidden && wFrame.contentWindow) wFrame.contentWindow.postMessage({ teryxWiring: state }, "*");
     if (chan && tabWants) chan.postMessage({ teryxWiring: state });
   }
+  const loadWiring = () => { if (!wFrame.src) wFrame.src = "../wiring/" + (ver ? `?v=${ver}` : ""); };
   $("wiring-btn").addEventListener("click", (e) => {
     e.preventDefault();
-    if (!wFrame.src) wFrame.src = "../wiring/" + (ver ? `?v=${ver}` : "");
+    loadWiring();
     wPanel.hidden = false;
     wiringFeed();
   });
+  $("wiring-close").addEventListener("click", () => { wPanel.hidden = true; wiringFeed(); });
+
+  // ---------------------------------------------------------------- dash + wiring on one page
+  // On by default (?split=0 or the button turns it off, remembered on this device).
+  const store = (k, v) => { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch { return null; } };
+  function setSplit(on) {
+    document.body.classList.toggle("split", on);
+    $("split-btn").setAttribute("aria-pressed", String(on));
+    if (on) loadWiring();
+    wPanel.hidden = !on;
+    store("teryx-rig-split", on ? "1" : "0");
+    topSize();
+    fit();
+    wiringFeed();
+  }
+  function topSize() { document.body.style.setProperty("--top-h", document.querySelector(".top").offsetHeight + "px"); }
+  $("split-btn").addEventListener("click", () => setSplit(!document.body.classList.contains("split")));
+  window.addEventListener("resize", topSize);
+  // drag the bar between them (sideways on a wide screen, up and down on a phone)
+  const handle = $("wp-handle");
+  const wide = () => matchMedia("(min-width: 900px)").matches;
+  const savedX = store("teryx-rig-split-x"), savedY = store("teryx-rig-split-y");
+  if (savedX) document.body.style.setProperty("--split-x", savedX);
+  if (savedY) document.body.style.setProperty("--split-y", savedY);
+  handle.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    handle.setPointerCapture(e.pointerId);
+    wFrame.style.pointerEvents = "none";            // the iframe would swallow the drag
+    const move = (ev) => {
+      if (wide()) {
+        const x = Math.max(320, Math.min(innerWidth - 320, ev.clientX));
+        document.body.style.setProperty("--split-x", `${x}px`);
+      } else {
+        const y = Math.max(120, Math.min(innerHeight - 160, innerHeight - ev.clientY));
+        document.body.style.setProperty("--split-y", `${y}px`);
+      }
+      fit();
+    };
+    const up = () => {
+      handle.removeEventListener("pointermove", move);
+      handle.removeEventListener("pointerup", up);
+      handle.removeEventListener("pointercancel", up);
+      wFrame.style.pointerEvents = "";
+      const st = document.body.style;
+      if (wide()) store("teryx-rig-split-x", st.getPropertyValue("--split-x")); else store("teryx-rig-split-y", st.getPropertyValue("--split-y"));
+    };
+    handle.addEventListener("pointermove", move);
+    handle.addEventListener("pointerup", up);
+    handle.addEventListener("pointercancel", up);
+  });
+  const want = new URLSearchParams(location.search).get("split");
+  setSplit(want != null ? want !== "0" : store("teryx-rig-split") !== "0");
+
   // The wiring canvas can work the switches, key, E-stop and fuses too.
   window.addEventListener("message", (ev) => {
     if (ev.source === wFrame.contentWindow && ev.data && ev.data.teryxPanel) fromWiring(ev.data.teryxPanel);
@@ -96,7 +150,6 @@
     const ok = Object.fromEntries(Object.entries(cmd).filter(([k]) => WIRING_CONTROLS.has(k)));
     if (Object.keys(ok).length) panel(ok);
   }
-  $("wiring-close").addEventListener("click", () => { wPanel.hidden = true; wiringFeed(); });
 
   // ---------------------------------------------------------------- panel controls
   for (const b of document.querySelectorAll("button.tog[data-in]")) {
@@ -220,4 +273,5 @@
   }
 
   start();
+  wiringFeed();                 // the split view may already be showing the wiring
 })();

@@ -9,6 +9,8 @@ import { layout, draw, gridRef, rowName, GRID, wireText, SVG_STYLE, packGeom, un
 document.head.insertAdjacentHTML("beforeend", `<style>${SVG_STYLE}</style>`);
 
 const $ = (id) => document.getElementById(id);
+// Inside the simulator page (dash + wiring): the sim is right there, so no Sim or back buttons.
+if (window.parent !== window) document.body.classList.add("embedded");
 const stage = $("stage"), canvas = $("canvas");
 const REPO = "https://github.com/electrumnz/TERYXDACTL/blob/main/";
 let model, geom, svg;
